@@ -129,18 +129,14 @@ export function useNutrition() {
 
   // Delete meal with optimistic update
   const deleteMeal = useCallback(async (mealId) => {
-    console.log('deleteMeal called with ID:', mealId);
     try {
       const mealToDelete = meals.find(m => m._id === mealId);
-      console.log('Meal to delete:', mealToDelete);
       
       if (!mealToDelete) {
-        console.log('Meal not found in local state');
         return;
       }
 
       // Optimistic update
-      console.log('Performing optimistic update');
       setMeals(prev => prev.filter(m => m._id !== mealId));
       setTotals(prev => ({
         calories: Math.max(0, prev.calories - (mealToDelete.calories || 0)),
@@ -151,14 +147,10 @@ export function useNutrition() {
       }));
 
       // Send to server
-      console.log('Sending delete request to server');
       const response = await api.delete(`/nutrition/meals/${mealId}`);
-      console.log('Delete response:', response.data);
       
     } catch (err) {
-      console.error('Delete meal error:', err);
       // Rollback on error
-      console.log('Rolling back - reloading meals');
       await loadMeals();
       const errorMsg = err.response?.data?.message || err.message || 'Failed to delete meal';
       setError(errorMsg);

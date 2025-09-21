@@ -183,7 +183,7 @@ const Dashboard = () => {
           </button>
           
           <button 
-            onClick={() => navigate('/meals')}
+            onClick={() => navigate('/nutrition')}
             className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4 sm:py-6"
           >
             <div className="text-2xl sm:text-3xl mb-2">🍎</div>

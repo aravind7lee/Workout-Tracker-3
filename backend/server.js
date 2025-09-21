@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 
 // Import routes
 import authRoutes from './routes/auth.js';
+import nutritionRoutes from './routes/nutrition.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(cors({
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/auth', authRoutes);
+app.use('/api/nutrition', nutritionRoutes);
 
 // Root route
 app.get('/', (req, res) => {
