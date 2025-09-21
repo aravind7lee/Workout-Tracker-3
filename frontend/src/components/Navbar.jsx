@@ -232,11 +232,16 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 right-0 mt-2 bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl py-2 max-h-80 overflow-y-auto z-50"
+                          className="absolute top-full left-0 right-0 mt-2 rounded-xl shadow-2xl py-2 max-h-80 overflow-y-auto z-50"
+                          style={{
+                            background: 'var(--bg-soft)',
+                            border: '1px solid var(--panel-border)',
+                            backdropFilter: 'blur(20px)'
+                          }}
                         >
                           {searchResults.length > 0 ? (
                             <>
-                              <div className="px-4 py-2 text-xs text-slate-400 font-medium uppercase tracking-wide border-b border-slate-700/50">
+                              <div className="px-4 py-2 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)', borderBottom: '1px solid var(--panel-border)' }}>
                                 Search Results ({searchResults.length})
                               </div>
                               {searchResults.map((result) => (
@@ -244,23 +249,37 @@ export default function Navbar() {
                                   key={result.id}
                                   onClick={() => handleSearchResultClick(result)}
                                   whileHover={{ backgroundColor: 'rgba(71, 85, 105, 0.3)' }}
-                                  className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-700/30 transition-colors"
+                                  className="w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors"
+                                  style={{ background: 'transparent' }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.background = 'var(--bg-accent)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.background = 'transparent';
+                                  }}
                                 >
                                   <div className="text-2xl">{result.icon}</div>
                                   <div className="flex-1 min-w-0">
-                                    <div className="text-white font-medium truncate">{result.title}</div>
-                                    <div className="text-slate-400 text-sm truncate">{result.description}</div>
+                                    <div className="font-medium truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
+                                    <div className="text-sm truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
                                   </div>
-                                  <div className={`text-xs px-2 py-1 rounded-full bg-slate-700/50 ${getResultTypeColor(result.type)} capitalize`}>
+                                  <div className={`text-xs px-2 py-1 rounded-full capitalize ${getResultTypeColor(result.type)}`} style={{ background: 'var(--bg-accent)' }}>
                                     {result.type}
                                   </div>
                                 </motion.button>
                               ))}
                               {searchQuery && (
-                                <div className="border-t border-slate-700/50 mt-2 pt-2">
+                                <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--panel-border)' }}>
                                   <button
                                     onClick={handleSearch}
-                                    className="w-full flex items-center space-x-3 px-4 py-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-colors"
+                                    className="w-full flex items-center space-x-3 px-4 py-2 transition-colors"
+                                    style={{ color: 'var(--accent)', background: 'transparent' }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.background = 'var(--bg-accent)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.background = 'transparent';
+                                    }}
                                   >
                                     <Search size={16} />
                                     <span>Search for "{searchQuery}"</span>
@@ -270,8 +289,8 @@ export default function Navbar() {
                             </>
                           ) : searchQuery && !isSearching ? (
                             <div className="px-4 py-8 text-center">
-                              <div className="text-slate-400 mb-2">No results found</div>
-                              <div className="text-slate-500 text-sm">Try searching for workouts, meals, or plans</div>
+                              <div className="mb-2" style={{ color: 'var(--muted)' }}>No results found</div>
+                              <div className="text-sm" style={{ color: 'var(--muted)' }}>Try searching for workouts, meals, or plans</div>
                             </div>
                           ) : null}
                         </motion.div>
@@ -333,12 +352,28 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl py-2"
+                      className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2"
+                      style={{
+                        background: 'var(--bg-soft)',
+                        border: '1px solid var(--panel-border)',
+                        backdropFilter: 'blur(20px)'
+                      }}
                     >
                       <Link
                         to="/profile"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center space-x-3 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors"
+                        className="flex items-center space-x-3 px-4 py-2 transition-colors"
+                        style={{
+                          color: 'var(--text)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = 'var(--heading)';
+                          e.target.style.background = 'var(--bg-accent)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = 'var(--text)';
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <UserCircle size={16} />
                         <span>My Account</span>
@@ -346,15 +381,36 @@ export default function Navbar() {
                       <Link
                         to="/settings"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center space-x-3 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors"
+                        className="flex items-center space-x-3 px-4 py-2 transition-colors"
+                        style={{
+                          color: 'var(--text)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = 'var(--heading)';
+                          e.target.style.background = 'var(--bg-accent)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = 'var(--text)';
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <Settings size={16} />
                         <span>Settings</span>
                       </Link>
-                      <hr className="my-2 border-slate-700/50" />
+                      <hr style={{ margin: '8px 0', border: 'none', borderTop: '1px solid var(--panel-border)' }} />
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors w-full text-left"
+                        className="flex items-center space-x-3 px-4 py-2 transition-colors w-full text-left"
+                        style={{
+                          color: 'var(--danger)',
+                          background: 'transparent'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(255, 71, 87, 0.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <LogOut size={16} />
                         <span>Logout</span>
@@ -364,16 +420,16 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
                 <Link
                   to="/login"
-                  className="px-4 py-2 login-link transition-colors duration-300"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 flex items-center justify-center"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center"
                 >
                   Sign Up
                 </Link>
@@ -415,7 +471,11 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="xl:hidden fixed top-0 right-0 h-full w-80 sm:w-96 mobile-sidebar backdrop-blur-xl shadow-2xl z-50"
+              className="xl:hidden fixed top-0 right-0 h-full w-80 sm:w-96 backdrop-blur-xl shadow-2xl z-50"
+              style={{
+                background: 'var(--bg-soft)',
+                border: '1px solid var(--panel-border)'
+              }}
             >
               <div className="p-6">
                 {/* Mobile Header */}
@@ -424,11 +484,14 @@ export default function Navbar() {
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                       GT
                     </div>
-                    <span className="text-xl font-bold brand-text">GymTracker</span>
+                    <span className="text-xl font-bold" style={{ color: 'var(--heading)' }}>GymTracker</span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
                     className="p-2 rounded-xl transition-colors duration-300"
+                    style={{ color: 'var(--text)' }}
+                    onMouseEnter={(e) => e.target.style.color = 'var(--accent)'}
+                    onMouseLeave={(e) => e.target.style.color = 'var(--text)'}
                   >
                     <X size={24} />
                   </button>
@@ -445,6 +508,13 @@ export default function Navbar() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search workouts, meals, plans..."
                         className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none transition-all duration-300"
+                        style={{
+                          background: 'var(--bg-soft)',
+                          border: '2px solid var(--panel-border)',
+                          color: 'var(--text)'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                        onBlur={(e) => e.target.style.borderColor = 'var(--panel-border)'}
                       />
                       {isSearching && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -456,8 +526,8 @@ export default function Navbar() {
                   
                   {/* Mobile Search Results */}
                   {searchResults.length > 0 && searchQuery && (
-                    <div className="mt-4 bg-slate-800/60 border border-slate-600/50 rounded-xl p-2 max-h-60 overflow-y-auto">
-                      <div className="text-xs text-slate-400 font-medium uppercase tracking-wide px-2 py-1 mb-2">
+                    <div className="mt-4 rounded-xl p-2 max-h-60 overflow-y-auto" style={{ background: 'var(--bg-soft)', border: '1px solid var(--panel-border)' }}>
+                      <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2" style={{ color: 'var(--muted)' }}>
                         Results ({searchResults.length})
                       </div>
                       {searchResults.map((result) => (
@@ -467,12 +537,15 @@ export default function Navbar() {
                             handleSearchResultClick(result);
                             setIsOpen(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-2 py-2 text-left hover:bg-slate-700/50 rounded-lg transition-colors"
+                          className="w-full flex items-center space-x-3 px-2 py-2 text-left rounded-lg transition-colors"
+                          style={{ background: 'transparent' }}
+                          onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
+                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
                         >
                           <div className="text-lg">{result.icon}</div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-white font-medium text-sm truncate">{result.title}</div>
-                            <div className="text-slate-400 text-xs truncate">{result.description}</div>
+                            <div className="font-medium text-sm truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
+                            <div className="text-xs truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
                           </div>
                           <div className={`text-xs px-2 py-1 rounded-full bg-slate-700/50 ${getResultTypeColor(result.type)} capitalize`}>
                             {result.type}
@@ -507,14 +580,14 @@ export default function Navbar() {
 
                 {/* Mobile Profile Section */}
                 {isAuthenticated() && (
-                  <div className="border-t border-slate-700/50 pt-6">
+                  <div className="border-t pt-6" style={{ borderColor: 'var(--panel-border)' }}>
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                         {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                       <div>
-                        <div className="text-white font-medium">{user?.name || 'User'}</div>
-                        <div className="text-slate-400 text-sm">{user?.email}</div>
+                        <div className="font-medium" style={{ color: 'var(--heading)' }}>{user?.name || 'User'}</div>
+                        <div className="text-sm" style={{ color: 'var(--muted)' }}>{user?.email}</div>
                       </div>
                     </div>
                     
@@ -522,7 +595,16 @@ export default function Navbar() {
                       <Link
                         to="/profile"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-colors"
+                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors"
+                        style={{ color: 'var(--text)' }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = 'var(--heading)';
+                          e.target.style.background = 'var(--bg-accent)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = 'var(--text)';
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <UserCircle size={16} />
                         <span>My Account</span>
@@ -530,14 +612,30 @@ export default function Navbar() {
                       <Link
                         to="/settings"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-colors"
+                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors"
+                        style={{ color: 'var(--text)' }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = 'var(--heading)';
+                          e.target.style.background = 'var(--bg-accent)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = 'var(--text)';
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <Settings size={16} />
                         <span>Settings</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors w-full text-left"
+                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors w-full text-left"
+                        style={{ color: 'var(--danger)', background: 'transparent' }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(255, 71, 87, 0.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'transparent';
+                        }}
                       >
                         <LogOut size={16} />
                         <span>Logout</span>

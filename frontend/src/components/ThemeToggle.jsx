@@ -18,11 +18,10 @@ export default function ThemeToggle() {
       whileTap={{ scale: 0.95 }}
       onClick={toggleTheme}
       onKeyDown={handleKeyDown}
-      className="theme-toggle"
+      className="theme-toggle theme-toggle-mobile"
       role="switch"
       aria-checked={theme === 'light'}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-      className="theme-toggle-mobile"
       style={{
         position: 'relative',
         display: 'inline-flex',
