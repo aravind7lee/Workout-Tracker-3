@@ -24,11 +24,13 @@ export const registerUser = async (userData) => {
     if (error.response?.status === 400) {
       throw new Error(error.response.data.message || 'Registration failed');
     } else if (error.response?.status === 404) {
-      throw new Error('Backend server not found. Please check deployment.');
-    } else if (error.code === 'ERR_NETWORK') {
-      throw new Error('Network error. Please check your connection.');
+      throw new Error('API endpoint not found. Backend may not be properly deployed.');
+    } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+      throw new Error('Cannot connect to server. Please check if backend is deployed.');
+    } else if (error.response?.status === 500) {
+      throw new Error('Server error. Please try again later.');
     } else {
-      throw new Error('Registration failed. Please try again.');
+      throw new Error(error.response?.data?.message || 'Registration failed. Please try again.');
     }
   }
 };
@@ -53,11 +55,13 @@ export const loginUser = async (credentials) => {
     if (error.response?.status === 400) {
       throw new Error(error.response.data.message || 'Invalid credentials');
     } else if (error.response?.status === 404) {
-      throw new Error('Backend server not found. Please check deployment.');
-    } else if (error.code === 'ERR_NETWORK') {
-      throw new Error('Network error. Please check your connection.');
+      throw new Error('API endpoint not found. Backend may not be properly deployed.');
+    } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+      throw new Error('Cannot connect to server. Please check if backend is deployed.');
+    } else if (error.response?.status === 500) {
+      throw new Error('Server error. Please try again later.');
     } else {
-      throw new Error('Login failed. Please try again.');
+      throw new Error(error.response?.data?.message || 'Login failed. Please try again.');
     }
   }
 };

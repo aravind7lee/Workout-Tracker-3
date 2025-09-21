@@ -8,6 +8,7 @@ const router = express.Router();
 
 // Real-time user registration to MongoDB Atlas
 router.post("/register", async (req, res) => {
+  console.log('📝 Registration request received:', { email: req.body.email, name: req.body.name });
   try {
     const { name, email, password } = req.body;
 
@@ -81,6 +82,7 @@ router.post("/register", async (req, res) => {
 
 // Real-time user login with MongoDB Atlas tracking
 router.post("/login", async (req, res) => {
+  console.log('🔐 Login request received:', { email: req.body.email });
   try {
     const { email, password } = req.body;
 

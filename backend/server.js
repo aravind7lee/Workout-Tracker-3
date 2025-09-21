@@ -44,18 +44,30 @@ app.use(morgan('dev'));
 
 // CORS configuration for multiple origins
 app.use(cors({ 
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:5173', 
-    'http://localhost:5174', 
-    'http://localhost:5175', 
-    'http://127.0.0.1:5173', 
-    'http://127.0.0.1:5175',
-    // Add your Vercel frontend URL here after deployment
-    'https://your-frontend-app.vercel.app',
-    // Allow any Vercel preview deployments
-    /\.vercel\.app$/
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, etc.)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000', 
+      'http://localhost:5173', 
+      'http://localhost:5174', 
+      'http://localhost:5175', 
+      'http://127.0.0.1:5173', 
+      'http://127.0.0.1:5175'
+    ];
+    
+    // Allow any Vercel deployment
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(null, true); // Allow all origins for now
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -129,6 +141,21 @@ app.get('/api/health', (req, res) => {
     cloudinary: 'Configured',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
+  });
+});
+
+// 404 handler for undefined routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`,
+    availableRoutes: [
+      'GET / - API Info',
+      'GET /api - API Status',
+      'GET /api/health - Health Check',
+      'POST /api/auth/register - User Registration',
+      'POST /api/auth/login - User Login'
+    ]
   });
 });
 
