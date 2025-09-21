@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:5000/api',
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -40,6 +40,11 @@ api.interceptors.response.use(
     
     if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
       console.error('Backend server is not running or not accessible');
+      console.error('Please check if your backend is deployed and running');
+    }
+    
+    if (error.response?.status === 404) {
+      console.error('API endpoint not found. Check your backend routes.');
     }
     
     return Promise.reject(error);

@@ -1,8 +1,9 @@
 // src/pages/Register.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { checkBackendHealth } from '../utils/healthCheck';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,8 +14,21 @@ const Register = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [backendStatus, setBackendStatus] = useState('checking');
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  // Check backend health on component mount
+  useEffect(() => {
+    const checkBackend = async () => {
+      const health = await checkBackendHealth();
+      setBackendStatus(health.success ? 'online' : 'offline');
+      if (!health.success) {
+        setError(`Backend connection failed: ${health.error}. ${health.suggestion}`);
+      }
+    };
+    checkBackend();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -92,6 +106,21 @@ const Register = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Account</h1>
           <p className="text-slate-400">Join the ultimate fitness experience</p>
         </div>
+
+        {/* Backend Status Indicator */}
+        {backendStatus === 'checking' && (
+          <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-3 mb-4">
+            <p className="text-blue-300 text-sm">🔄 Checking backend connection...</p>
+          </div>
+        )}
+        
+        {backendStatus === 'offline' && (
+          <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-3 mb-4">
+            <p className="text-yellow-300 text-sm">⚠️ Backend server is offline. Please try again later.</p>
+          </div>
+        )}
+        
+
 
         {error && (
           <div className="bg-red-900/20 border border-red-500 rounded-lg p-3 mb-4">
