@@ -102,11 +102,7 @@ const Register = () => {
           </div>
         )}
 
-        {backendStatus === 'offline' && (
-          <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-3 mb-4">
-            <p className="text-blue-300 text-sm">💡 Backend offline - Demo mode available</p>
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

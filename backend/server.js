@@ -14,23 +14,19 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = process.env.PORT || 5000;
 const app = express();
 
 // Basic middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// CORS - Allow all origins for development
+// CORS - Allow all origins
 app.use(cors({
-  origin: true,
+  origin: '*',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Static uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -41,6 +37,11 @@ app.get('/', (req, res) => {
     message: '🏋️ GymTracker API Server',
     status: 'Running',
     version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      register: '/api/auth/register',
+      login: '/api/auth/login'
+    },
     timestamp: new Date().toISOString()
   });
 });
@@ -52,6 +53,7 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     message: 'GymTracker API Ready', 
     database: dbStatus,
+    mongodb: process.env.MONGO_URI ? 'Configured' : 'Not configured',
     timestamp: new Date().toISOString()
   });
 });
@@ -60,7 +62,13 @@ app.get('/api/health', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.originalUrl} not found`
+    message: `Route ${req.originalUrl} not found`,
+    availableRoutes: [
+      'GET /',
+      'GET /api/health',
+      'POST /api/auth/register',
+      'POST /api/auth/login'
+    ]
   });
 });
 
@@ -73,30 +81,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-async function start() {
-  try {
-    const MONGO_URI = process.env.MONGO_URI;
-    
-    if (!MONGO_URI) {
-      console.error('❌ MONGO_URI not found in environment variables');
-      process.exit(1);
-    }
-    
-    console.log('🔄 Connecting to MongoDB...');
-    await mongoose.connect(MONGO_URI);
-    console.log('✅ MongoDB Connected');
-
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🌐 API URL: http://localhost:${PORT}/api`);
-      console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
-    });
-    
-  } catch (err) {
-    console.error('❌ Server startup failed:', err.message);
-    process.exit(1);
-  }
+// MongoDB connection
+if (process.env.MONGO_URI) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ MongoDB Connected'))
+    .catch(err => console.error('❌ MongoDB Connection Failed:', err.message));
+} else {
+  console.log('⚠️ MONGO_URI not found - running without database');
 }
 
-start();
+// For Vercel
+export default app;
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🌐 API URL: http://localhost:${PORT}/api`);
+    console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
+  });
+}
