@@ -12,14 +12,13 @@ export default function handler(req, res) {
   }
 
   res.status(200).json({
-    message: '🏋️ GymTracker API Server',
-    status: 'Running',
-    version: '1.0.0',
+    status: 'SUCCESS',
+    message: '✅ API is working perfectly!',
+    timestamp: new Date().toISOString(),
     endpoints: {
       health: '/api/health',
-      register: '/api/auth/register',
+      register: '/api/auth/register', 
       login: '/api/auth/login'
-    },
-    timestamp: new Date().toISOString()
+    }
   });
 }
