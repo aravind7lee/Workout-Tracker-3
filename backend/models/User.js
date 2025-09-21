@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  email: { type: String, required: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   profileImage: { type: String, default: null },
   bio: { type: String, default: 'Passionate about fitness and achieving my goals!' },
@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-UserSchema.index({ email: 1 });
+UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ createdAt: -1 });
 
 // Virtual for daily protein target
