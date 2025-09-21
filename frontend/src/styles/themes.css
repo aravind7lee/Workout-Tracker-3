@@ -1,0 +1,674 @@
+/* ===== GYMTRACKER THEME SYSTEM ===== */
+/* Production-ready Dark ↔ Light theme with Apple-inspired toggle */
+/* Energetic fitness-focused palette with premium aesthetics */
+
+/* ===== ROOT VARIABLES (DEFAULT: DARK THEME) ===== */
+:root {
+  /* === BACKGROUNDS === */
+  --bg: #0f1419;                    /* Deep charcoal background */
+  --bg-soft: #1a1f26;              /* Card backgrounds - darker for contrast */
+  --bg-accent: rgba(0,212,255,0.08); /* Gradient overlays - cyan tint */
+  
+  /* === TEXT COLORS === */
+  --text: #f5f5f5;                  /* Off-white body text - high contrast */
+  --heading: #ffffff;               /* Bright white headings */
+  --muted: #a0a9b8;                 /* Muted text - lighter for readability */
+  --link: #00d4ff;                  /* Neon cyan links */
+  
+  /* === BORDERS & STRUCTURE === */
+  --panel-border: rgba(255,255,255,0.12); /* Brighter borders for visibility */
+  
+  /* === BRAND ACCENT (Energetic Cyan) === */
+  --accent: #00D4FF;                /* Primary accent - neon cyan */
+  --accent-hover: #00b8e6;          /* Darker cyan for hover */
+  --accent-contrast: #000000;       /* Dark text on bright backgrounds */
+  
+  /* === SHADOWS & DEPTH === */
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.4); /* Deeper shadows */
+  
+  /* === STATE COLORS === */
+  --success: #00ff88;               /* Bright neon green */
+  --danger: #ff4757;                /* Bright neon red */
+  --warning: #ffa502;               /* Bright orange */
+  
+  /* === BUTTON COLORS === */
+  --btn-primary-bg: var(--accent);
+  --btn-primary-text: #000000;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: var(--accent);
+  --btn-secondary-border: var(--accent);
+  
+  /* === TOGGLE SPECIFIC === */
+  --toggle-bg: rgba(255,255,255,0.15);
+  --toggle-knob: #ffffff;
+  --toggle-active-bg: var(--accent);
+}
+
+/* ===== LIGHT THEME OVERRIDE ===== */
+.light-theme,
+[data-theme="light"] {
+  /* === BACKGROUNDS === */
+  --bg: #ffffff;                    /* Pure white background */
+  --bg-soft: #f8f9fa;              /* Light gray cards */
+  --bg-accent: rgba(0,123,255,0.1); /* Blue accent tint */
+  
+  /* === TEXT COLORS === */
+  --text: #212529;                  /* Rich dark text - high contrast */
+  --heading: #000000;               /* Pure black headings - maximum visibility */
+  --muted: #495057;                 /* Dark gray muted text - readable */
+  --link: #007bff;                  /* Vibrant blue links */
+  
+  /* === BORDERS & STRUCTURE === */
+  --panel-border: rgba(0,0,0,0.15); /* Darker borders for visibility */
+  
+  /* === BRAND ACCENT === */
+  --accent: #007bff;                /* Strong blue accent */
+  --accent-hover: #0056b3;          /* Darker blue for hover */
+  --accent-contrast: #ffffff;       /* White text on blue */
+  
+  /* === SHADOWS & DEPTH === */
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.12); /* Visible shadows */
+  
+  /* === STATE COLORS === */
+  --success: #28a745;               /* Strong green */
+  --danger: #dc3545;                /* Strong red */
+  --warning: #ffc107;               /* Strong yellow */
+  
+  /* === BUTTON COLORS === */
+  --btn-primary-bg: var(--accent);
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: var(--accent);
+  --btn-secondary-border: var(--accent);
+  
+  /* === TOGGLE SPECIFIC === */
+  --toggle-bg: rgba(0,0,0,0.15);
+  --toggle-knob: #ffffff;
+  --toggle-active-bg: var(--accent);
+}
+
+/* ===== SMOOTH THEME TRANSITIONS ===== */
+.theme-transition,
+.theme-transition *,
+.theme-transition *:before,
+.theme-transition *:after {
+  transition: background-color 220ms ease-in-out,
+              border-color 220ms ease-in-out,
+              color 220ms ease-in-out,
+              box-shadow 220ms ease-in-out !important;
+}
+
+/* ===== APPLE-INSPIRED THEME TOGGLE ===== */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 56px;
+  height: 28px;
+  background: var(--toggle-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 180ms ease-in-out;
+  backdrop-filter: blur(10px);
+}
+
+.theme-toggle-mobile {
+  width: 52px !important;
+  height: 26px !important;
+  border-radius: 13px !important;
+}
+
+@media (min-width: 640px) {
+  .theme-toggle-mobile {
+    width: 56px !important;
+    height: 28px !important;
+    border-radius: 14px !important;
+  }
+}
+
+.theme-toggle:hover {
+  background: var(--toggle-active-bg);
+  box-shadow: 0 0 0 4px rgba(0,212,255,0.15);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.4);
+}
+
+.theme-toggle[aria-checked="true"] {
+  background: var(--toggle-active-bg);
+}
+
+/* Toggle Knob */
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--toggle-knob);
+  border-radius: 50%;
+  transition: transform 180ms ease-in-out;
+  box-shadow: var(--shadow-soft);
+}
+
+.theme-toggle[aria-checked="true"]::before {
+  transform: translateX(28px);
+}
+
+/* Mobile theme toggle ensures icons are always visible */
+.theme-toggle-mobile .theme-toggle-icon {
+  opacity: 1 !important;
+  z-index: 10;
+}
+
+.theme-toggle-mobile .theme-toggle-icon.sun {
+  color: #FFA500;
+}
+
+.theme-toggle-mobile .theme-toggle-icon.moon {
+  color: #87CEEB;
+}
+
+/* Light theme icon visibility */
+.light-theme .theme-toggle-mobile .theme-toggle-icon.sun,
+[data-theme="light"] .theme-toggle-mobile .theme-toggle-icon.sun {
+  opacity: 1 !important;
+}
+
+.light-theme .theme-toggle-mobile .theme-toggle-icon.moon,
+[data-theme="light"] .theme-toggle-mobile .theme-toggle-icon.moon {
+  opacity: 0.3 !important;
+}
+
+/* Dark theme icon visibility */
+.dark-theme .theme-toggle-mobile .theme-toggle-icon.moon,
+:root .theme-toggle-mobile .theme-toggle-icon.moon {
+  opacity: 1 !important;
+}
+
+.dark-theme .theme-toggle-mobile .theme-toggle-icon.sun,
+:root .theme-toggle-mobile .theme-toggle-icon.sun {
+  opacity: 0.3 !important;
+}
+
+/* Toggle Bounce Animation */
+.theme-toggle:active::before {
+  transform: translateX(0) scale(0.95);
+  transition: transform 150ms ease-in-out;
+}
+
+.theme-toggle[aria-checked="true"]:active::before {
+  transform: translateX(28px) scale(0.95);
+}
+
+/* Toggle Icon */
+.theme-toggle-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: var(--accent-contrast);
+  transition: opacity 180ms ease-in-out;
+  pointer-events: none;
+}
+
+.theme-toggle-icon.sun {
+  left: 6px;
+  opacity: 0;
+}
+
+.theme-toggle-icon.moon {
+  right: 6px;
+  opacity: 1;
+}
+
+.light-theme .theme-toggle-icon.sun,
+[data-theme="light"] .theme-toggle-icon.sun {
+  opacity: 1;
+}
+
+.light-theme .theme-toggle-icon.moon,
+[data-theme="light"] .theme-toggle-icon.moon {
+  opacity: 0;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Card Components */
+.card {
+  background: var(--bg-soft);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+}
+
+/* Glass Panel Effect */
+.glass-panel {
+  background: var(--bg-soft);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: all 300ms ease;
+  box-shadow: 0 4px 12px rgba(0,212,255,0.3);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+/* Dark mode glow */
+:root .btn-primary:hover {
+  box-shadow: 0 8px 25px var(--accent), 0 0 20px var(--accent);
+}
+
+/* Light mode - subtle shadow */
+.light-theme .btn-primary:hover,
+[data-theme="light"] .btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+}
+
+.btn-ghost {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 2px solid var(--btn-secondary-border);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 500;
+  transition: all 300ms ease;
+}
+
+.btn-ghost:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  transform: translateY(-1px);
+}
+
+/* Dark mode glow */
+:root .btn-ghost:hover {
+  box-shadow: 0 0 15px var(--accent);
+}
+
+/* Light mode - subtle shadow */
+.light-theme .btn-ghost:hover,
+[data-theme="light"] .btn-ghost:hover {
+  box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+}
+
+/* Text Utilities */
+.muted-text {
+  color: var(--muted);
+  transition: color 300ms ease;
+}
+
+.heading-text {
+  color: var(--heading);
+  transition: color 300ms ease;
+}
+
+.link-text {
+  color: var(--link);
+  transition: all 300ms ease;
+}
+
+.link-text:hover {
+  color: var(--accent-hover);
+  text-shadow: 0 0 8px var(--accent);
+}
+
+/* Badge Component */
+.badge {
+  background: var(--bg-accent);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 300ms ease;
+}
+
+.badge:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* Stat Value (for workout metrics) */
+.stat-value {
+  color: var(--heading);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 0 0 10px var(--accent);
+  transition: all 300ms ease;
+}
+
+.stat-value:hover {
+  color: var(--accent);
+  text-shadow: 0 0 15px var(--accent);
+}
+
+/* ===== GLOBAL THEME APPLICATION ===== */
+
+/* Root Background */
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: all 300ms ease;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading);
+  transition: color 300ms ease;
+}
+
+p, span, div {
+  color: var(--text);
+  transition: color 300ms ease;
+}
+
+a {
+  color: var(--link);
+  transition: all 300ms ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Dark mode glow effect */
+:root a:hover {
+  text-shadow: 0 0 8px var(--accent);
+}
+
+/* Light mode - no glow, just underline */
+.light-theme a:hover,
+[data-theme="light"] a:hover {
+  text-shadow: none;
+  text-decoration: underline;
+}
+
+/* Navbar Theming */
+.navbar {
+  background: var(--bg-soft);
+  border-bottom: 2px solid var(--panel-border);
+  backdrop-filter: blur(20px);
+  transition: all 300ms ease;
+}
+
+.navbar .nav-link {
+  color: var(--text);
+  transition: all 300ms ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--accent);
+}
+
+/* Dark mode glow */
+:root .navbar .nav-link:hover {
+  text-shadow: 0 0 8px var(--accent);
+}
+
+/* Light mode - no glow */
+.light-theme .navbar .nav-link:hover,
+[data-theme="light"] .navbar .nav-link:hover {
+  text-shadow: none;
+  background: rgba(0,123,255,0.1);
+  border-radius: 8px;
+}
+
+.navbar .nav-link.active {
+  color: var(--accent);
+  background: rgba(0,212,255,0.1);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 10px rgba(0,212,255,0.3);
+}
+
+/* Form Inputs */
+input, textarea, select {
+  background: var(--bg-soft);
+  border: 2px solid var(--panel-border);
+  color: var(--text);
+  border-radius: 12px;
+  transition: all 300ms ease;
+  font-size: 16px;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  outline: none;
+  background: var(--bg-soft);
+}
+
+/* Dark mode glow */
+:root input:focus, :root textarea:focus, :root select:focus {
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.2), 0 0 15px var(--accent);
+}
+
+/* Light mode - clean focus */
+.light-theme input:focus, .light-theme textarea:focus, .light-theme select:focus,
+[data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus {
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Modal/Dialog */
+.modal {
+  background: var(--bg-soft);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  backdrop-filter: blur(20px);
+}
+
+/* Tooltip */
+.tooltip {
+  background: var(--bg-soft);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+}
+
+/* Footer */
+.footer {
+  background: var(--bg-soft);
+  border-top: 1px solid var(--panel-border);
+  color: var(--muted);
+}
+
+/* Success/Danger States */
+.success {
+  color: var(--success);
+}
+
+.danger {
+  color: var(--danger);
+}
+
+/* ===== RESPONSIVE TOGGLE PLACEMENT ===== */
+
+/* Mobile-first responsive toggle */
+.theme-toggle {
+  min-width: 52px;
+  min-height: 26px;
+}
+
+@media (min-width: 640px) {
+  .theme-toggle {
+    min-width: 56px;
+    min-height: 28px;
+  }
+}
+
+/* Desktop Navbar Toggle */
+.navbar-toggle-desktop {
+  margin-left: 8px;
+}
+
+@media (min-width: 640px) {
+  .navbar-toggle-desktop {
+    margin-left: 16px;
+  }
+}
+
+/* Mobile Menu Toggle */
+.navbar-toggle-mobile {
+  margin: 16px 0;
+  align-self: flex-start;
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+/* High contrast focus for better visibility */
+.theme-toggle:focus-visible,
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle::before,
+  .theme-toggle-icon,
+  .theme-transition,
+  .theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* ===== CHART/GRAPH THEMING ===== */
+/* Variables for chart libraries that support CSS custom properties */
+:root {
+  --chart-primary: var(--accent);
+  --chart-secondary: var(--muted);
+  --chart-background: var(--bg-soft);
+  --chart-grid: var(--panel-border);
+  --chart-text: var(--text);
+}
+
+/* ===== LIGHT MODE TEXT VISIBILITY OVERRIDES ===== */
+/* Force high contrast text in light mode */
+.light-theme *,
+[data-theme="light"] * {
+  color: var(--text) !important;
+}
+
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+  color: var(--heading) !important;
+  font-weight: 700 !important;
+}
+
+.light-theme a,
+[data-theme="light"] a {
+  color: var(--link) !important;
+}
+
+.light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
+[data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
+  color: var(--text) !important;
+}
+
+.light-theme .text-white,
+[data-theme="light"] .text-white {
+  color: var(--heading) !important;
+}
+
+/* Button text overrides */
+.light-theme .btn-primary,
+[data-theme="light"] .btn-primary {
+  background: var(--accent) !important;
+  color: var(--accent-contrast) !important;
+}
+
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+/* Navbar specific overrides */
+.light-theme nav *,
+[data-theme="light"] nav * {
+  color: var(--text) !important;
+}
+
+.light-theme nav h1, .light-theme nav h2, .light-theme nav h3,
+[data-theme="light"] nav h1, [data-theme="light"] nav h2, [data-theme="light"] nav h3 {
+  color: var(--heading) !important;
+}
+
+/* Card and panel overrides */
+.light-theme .card *,
+[data-theme="light"] .card * {
+  color: var(--text) !important;
+}
+
+.light-theme .card h1, .light-theme .card h2, .light-theme .card h3,
+[data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3 {
+  color: var(--heading) !important;
+}
+
+/* Hero section overrides */
+.light-theme .hero *,
+[data-theme="light"] .hero * {
+  color: var(--text) !important;
+}
+
+.light-theme .hero h1, .light-theme .hero h2,
+[data-theme="light"] .hero h1, [data-theme="light"] .hero h2 {
+  color: var(--heading) !important;
+  font-weight: 800 !important;
+}
+
+/* Feature section overrides */
+.light-theme .features *,
+[data-theme="light"] .features * {
+  color: var(--text) !important;
+}
+
+.light-theme .features h3, .light-theme .features h4,
+[data-theme="light"] .features h3, [data-theme="light"] .features h4 {
+  color: var(--heading) !important;
+}
+
+/* Footer overrides */
+.light-theme footer *,
+[data-theme="light"] footer * {
+  color: var(--text) !important;
+}
+
+.light-theme footer h3, .light-theme footer h4,
+[data-theme="light"] footer h3, [data-theme="light"] footer h4 {
+  color: var(--heading) !important;
+}

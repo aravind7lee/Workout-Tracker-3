@@ -1,0 +1,443 @@
+/* ===== LIGHT MODE TEXT VISIBILITY FIX ===== */
+/* Force maximum contrast for all text elements in light mode */
+
+/* Global text color enforcement */
+.light-theme,
+[data-theme="light"] {
+  color: #212529 !important;
+}
+
+/* All text elements */
+.light-theme *:not(svg):not(path),
+[data-theme="light"] *:not(svg):not(path) {
+  color: #212529 !important;
+}
+
+/* Headings - Pure black for maximum visibility */
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Links - Vibrant blue */
+.light-theme a,
+[data-theme="light"] a {
+  color: #007bff !important;
+  text-decoration: none;
+}
+
+.light-theme a:hover,
+[data-theme="light"] a:hover {
+  color: #0056b3 !important;
+  text-decoration: underline;
+}
+
+/* Buttons */
+.light-theme button,
+[data-theme="light"] button {
+  color: #212529 !important;
+}
+
+.light-theme .btn-primary,
+[data-theme="light"] .btn-primary {
+  background: #007bff !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  background: transparent !important;
+  color: #007bff !important;
+  border: 2px solid #007bff !important;
+}
+
+/* Paragraphs and spans */
+.light-theme p, .light-theme span, .light-theme div,
+[data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div {
+  color: #212529 !important;
+}
+
+/* Navigation */
+.light-theme nav, .light-theme nav *,
+[data-theme="light"] nav, [data-theme="light"] nav * {
+  color: #212529 !important;
+}
+
+/* Cards and panels */
+.light-theme .card, .light-theme .card *,
+[data-theme="light"] .card, [data-theme="light"] .card * {
+  color: #212529 !important;
+}
+
+.light-theme .card h1, .light-theme .card h2, .light-theme .card h3,
+[data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3 {
+  color: #000000 !important;
+}
+
+/* Forms */
+.light-theme input, .light-theme textarea, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+  color: #212529 !important;
+  background: #f8f9fa !important;
+  border: 2px solid rgba(0,0,0,0.15) !important;
+}
+
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: #495057 !important;
+  opacity: 1 !important;
+}
+
+/* Labels */
+.light-theme label,
+[data-theme="light"] label {
+  color: #212529 !important;
+  font-weight: 600 !important;
+}
+
+/* Override Tailwind classes */
+.light-theme .text-white,
+[data-theme="light"] .text-white {
+  color: #000000 !important;
+}
+
+.light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
+[data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
+  color: #212529 !important;
+}
+
+.light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
+[data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
+  color: #212529 !important;
+}
+
+/* Muted text */
+.light-theme .text-muted, .light-theme .muted-text,
+[data-theme="light"] .text-muted, [data-theme="light"] .muted-text {
+  color: #495057 !important;
+}
+
+/* Hero section */
+.light-theme .hero *, .light-theme [class*="hero"] *,
+[data-theme="light"] .hero *, [data-theme="light"] [class*="hero"] * {
+  color: #212529 !important;
+}
+
+.light-theme .hero h1, .light-theme .hero h2, .light-theme [class*="hero"] h1, .light-theme [class*="hero"] h2,
+[data-theme="light"] .hero h1, [data-theme="light"] .hero h2, [data-theme="light"] [class*="hero"] h1, [data-theme="light"] [class*="hero"] h2 {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+/* Features section */
+.light-theme .features *, .light-theme [class*="feature"] *,
+[data-theme="light"] .features *, [data-theme="light"] [class*="feature"] * {
+  color: #212529 !important;
+}
+
+.light-theme .features h3, .light-theme [class*="feature"] h3,
+[data-theme="light"] .features h3, [data-theme="light"] [class*="feature"] h3 {
+  color: #000000 !important;
+}
+
+/* Community section */
+.light-theme .community *, .light-theme [class*="community"] *,
+[data-theme="light"] .community *, [data-theme="light"] [class*="community"] * {
+  color: #212529 !important;
+}
+
+/* Success stories */
+.light-theme .testimonial *, .light-theme [class*="testimonial"] *,
+[data-theme="light"] .testimonial *, [data-theme="light"] [class*="testimonial"] * {
+  color: #212529 !important;
+}
+
+/* Footer */
+.light-theme footer, .light-theme footer *,
+[data-theme="light"] footer, [data-theme="light"] footer * {
+  color: #212529 !important;
+}
+
+.light-theme footer h3, .light-theme footer h4,
+[data-theme="light"] footer h3, [data-theme="light"] footer h4 {
+  color: #000000 !important;
+}
+
+/* CTA sections */
+.light-theme .cta *, .light-theme [class*="cta"] *,
+[data-theme="light"] .cta *, [data-theme="light"] [class*="cta"] * {
+  color: #212529 !important;
+}
+
+.light-theme .cta h2, .light-theme [class*="cta"] h2,
+[data-theme="light"] .cta h2, [data-theme="light"] [class*="cta"] h2 {
+  color: #000000 !important;
+}
+
+/* Stats and metrics */
+.light-theme .stat-value, .light-theme [class*="stat"] *,
+[data-theme="light"] .stat-value, [data-theme="light"] [class*="stat"] * {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Badges and tags */
+.light-theme .badge, .light-theme [class*="badge"] *,
+[data-theme="light"] .badge, [data-theme="light"] [class*="badge"] * {
+  color: #007bff !important;
+  background: rgba(0,123,255,0.1) !important;
+  border: 1px solid #007bff !important;
+}
+
+/* Lists */
+.light-theme li, .light-theme ul *, .light-theme ol *,
+[data-theme="light"] li, [data-theme="light"] ul *, [data-theme="light"] ol * {
+  color: #212529 !important;
+}
+
+/* Tables */
+.light-theme table, .light-theme td, .light-theme th,
+[data-theme="light"] table, [data-theme="light"] td, [data-theme="light"] th {
+  color: #212529 !important;
+}
+
+/* Ensure backgrounds are light */
+.light-theme,
+[data-theme="light"] {
+  background: #ffffff !important;
+}
+
+.light-theme .card, .light-theme [class*="card"],
+[data-theme="light"] .card, [data-theme="light"] [class*="card"] {
+  background: #f8f9fa !important;
+  border: 2px solid rgba(0,0,0,0.1) !important;
+}
+
+/* ===== NAVBAR LIGHT MODE CONTRAST FIXES ===== */
+/* Desktop Navigation Links */
+.light-theme nav a, .light-theme nav .nav-link,
+[data-theme="light"] nav a, [data-theme="light"] nav .nav-link {
+  color: #1a1a1a !important;
+  transition: color 300ms ease !important;
+}
+
+.light-theme nav a:hover, .light-theme nav .nav-link:hover,
+[data-theme="light"] nav a:hover, [data-theme="light"] nav .nav-link:hover {
+  color: #ff9800 !important;
+  border-bottom: 2px solid #ff9800 !important;
+}
+
+/* Active nav links */
+.light-theme nav .nav-link.active,
+[data-theme="light"] nav .nav-link.active {
+  color: #ff9800 !important;
+  border-bottom: 2px solid #ff9800 !important;
+}
+
+/* Mobile Menu Button & Icons */
+.light-theme nav button,
+[data-theme="light"] nav button {
+  color: #374151 !important;
+  transition: color 300ms ease !important;
+}
+
+.light-theme nav button:hover,
+[data-theme="light"] nav button:hover {
+  color: #1a1a1a !important;
+  background: rgba(0,0,0,0.05) !important;
+}
+
+/* All SVG Icons in Navbar */
+.light-theme nav svg,
+[data-theme="light"] nav svg {
+  color: #374151 !important;
+  transition: color 300ms ease !important;
+}
+
+/* Brand Logo Text */
+.light-theme nav .brand-text, .light-theme nav h1, .light-theme nav h2,
+[data-theme="light"] nav .brand-text, [data-theme="light"] nav h1, [data-theme="light"] nav h2 {
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+}
+
+/* Login/Register Links */
+.light-theme nav .login-link,
+[data-theme="light"] nav .login-link {
+  color: #1a1a1a !important;
+}
+
+.light-theme nav .login-link:hover,
+[data-theme="light"] nav .login-link:hover {
+  color: #ff9800 !important;
+}
+
+/* Mobile Sidebar Background */
+.light-theme nav .mobile-sidebar,
+[data-theme="light"] nav .mobile-sidebar {
+  background: #ffffff !important;
+  border-left: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+/* Mobile Sidebar Text */
+.light-theme nav .mobile-sidebar *,
+[data-theme="light"] nav .mobile-sidebar * {
+  color: #1a1a1a !important;
+}
+
+.light-theme nav .mobile-sidebar a:hover,
+[data-theme="light"] nav .mobile-sidebar a:hover {
+  background: rgba(255,152,0,0.1) !important;
+  color: #ff9800 !important;
+}
+
+/* Search Input */
+.light-theme nav input,
+[data-theme="light"] nav input {
+  background: #f8f9fa !important;
+  color: #1a1a1a !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.light-theme nav input::placeholder,
+[data-theme="light"] nav input::placeholder {
+  color: #6b7280 !important;
+}
+
+/* ===== NAVBAR BACKGROUND FIXES ===== */
+/* Navbar container base styles */
+.navbar-container {
+  background: var(--navbar-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--navbar-border) !important;
+  box-shadow: var(--navbar-shadow) !important;
+  transition: all 300ms ease !important;
+}
+
+.navbar-container.navbar-scrolled {
+  background: var(--navbar-bg-scrolled) !important;
+  backdrop-filter: blur(24px) !important;
+  box-shadow: var(--navbar-shadow-scrolled) !important;
+}
+
+/* Light Mode Navbar Variables */
+.light-theme,
+[data-theme="light"] {
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-bg-scrolled: rgba(255, 255, 255, 0.95);
+  --navbar-border: rgba(0, 0, 0, 0.1);
+  --navbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --navbar-shadow-scrolled: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Navbar Variables */
+:root {
+  --navbar-bg: rgba(15, 23, 42, 0.85);
+  --navbar-bg-scrolled: rgba(15, 23, 42, 0.95);
+  --navbar-border: rgba(148, 163, 184, 0.1);
+  --navbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  --navbar-shadow-scrolled: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark Mode Navbar Text (preserve existing) */
+:root nav a, :root nav .nav-link {
+  color: #f9f9f9 !important;
+  transition: color 300ms ease !important;
+}
+
+:root nav a:hover, :root nav .nav-link:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--accent) !important;
+}
+
+:root nav svg {
+  color: #e5e7eb !important;
+}
+
+:root nav button {
+  color: #f9f9f9 !important;
+}
+
+/* ===== PLANS BUILDER EXERCISE LIBRARY FIXES ===== */
+/* Exercise Library Section Title */
+.light-theme h3,
+[data-theme="light"] h3 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Exercise Library Cards */
+.light-theme .card,
+[data-theme="light"] .card {
+  background: #ffffff !important;
+  border: 2px solid rgba(0,0,0,0.1) !important;
+  color: #212529 !important;
+}
+
+/* Exercise Items */
+.light-theme .card .font-medium,
+[data-theme="light"] .card .font-medium {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Exercise Details */
+.light-theme .card .text-slate-400,
+[data-theme="light"] .card .text-slate-400 {
+  color: #495057 !important;
+}
+
+/* Exercise Cards Background */
+.light-theme .bg-slate-800\/60,
+[data-theme="light"] .bg-slate-800\/60 {
+  background: #f8f9fa !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.light-theme .bg-slate-800\/60:hover,
+[data-theme="light"] .bg-slate-800\/60:hover {
+  background: #e9ecef !important;
+  border-color: rgba(0,0,0,0.2) !important;
+}
+
+/* Muscle Group Tabs */
+.light-theme .bg-slate-700\/50,
+[data-theme="light"] .bg-slate-700\/50 {
+  background: #e9ecef !important;
+  color: #212529 !important;
+}
+
+.light-theme .bg-slate-700\/50:hover,
+[data-theme="light"] .bg-slate-700\/50:hover {
+  background: #dee2e6 !important;
+  color: #000000 !important;
+}
+
+/* Plan Area */
+.light-theme .bg-green-900\/20,
+[data-theme="light"] .bg-green-900\/20 {
+  background: rgba(40,167,69,0.1) !important;
+  border-color: rgba(40,167,69,0.3) !important;
+}
+
+/* Page Title */
+.light-theme h2,
+[data-theme="light"] h2 {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+/* Input Fields */
+.light-theme input, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] select {
+  background: #ffffff !important;
+  border: 2px solid rgba(0,0,0,0.15) !important;
+  color: #212529 !important;
+}
+
+.light-theme input::placeholder,
+[data-theme="light"] input::placeholder {
+  color: #6c757d !important;
+}
