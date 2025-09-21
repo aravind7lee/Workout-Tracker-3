@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard-simple';
 import Library from './pages/Library';
 import Analytics from './pages/Analytics';
 import Nutrition from './pages/Nutrition';

@@ -22,8 +22,6 @@ const Register = () => {
     const checkBackend = async () => {
       const status = await checkBackendStatus();
       setBackendStatus(status.online ? 'online' : 'offline');
-      
-      // Backend status checked silently
     };
     
     checkBackend();
@@ -101,6 +99,12 @@ const Register = () => {
         {error && (
           <div className="bg-red-900/20 border border-red-500 rounded-lg p-3 mb-4">
             <p className="text-red-300 text-sm">{error}</p>
+          </div>
+        )}
+
+        {backendStatus === 'offline' && (
+          <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-3 mb-4">
+            <p className="text-blue-300 text-sm">💡 Backend offline - Demo mode available</p>
           </div>
         )}
 

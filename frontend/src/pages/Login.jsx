@@ -81,6 +81,12 @@ const Login = () => {
           <p className="text-slate-400">Sign in to your workout tracker account</p>
         </div>
         
+        {backendStatus === 'offline' && (
+          <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-3 mb-4">
+            <p className="text-blue-300 text-sm">💡 Backend offline - Use demo@gym.com / demo123</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="card space-y-4">
           <h2 className="text-xl font-semibold text-white mb-4">Login</h2>
           

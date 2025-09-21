@@ -20,13 +20,32 @@ export const registerUser = async (userData) => {
     };
     
   } catch (error) {
+    // Fallback to demo mode if backend is not available
+    if (error.response?.status === 404 || error.code === 'ERR_NETWORK') {
+      const demoUser = {
+        id: 'demo_' + Date.now(),
+        name: userData.name,
+        email: userData.email,
+        profileImage: null,
+        bio: 'Demo user - Backend offline'
+      };
+      
+      const demoToken = 'demo_token_' + Date.now();
+      
+      // Store in localStorage for demo
+      localStorage.setItem('demo_user', JSON.stringify(demoUser));
+      localStorage.setItem('demo_token', demoToken);
+      
+      return {
+        success: true,
+        user: demoUser,
+        token: demoToken,
+        message: 'Demo registration successful (Backend offline)'
+      };
+    }
     
     if (error.response?.status === 400) {
       throw new Error(error.response.data.message || 'Registration failed');
-    } else if (error.response?.status === 404) {
-      throw new Error('API endpoint not found. Backend may not be properly deployed.');
-    } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-      throw new Error('Cannot connect to server. Please check if backend is deployed.');
     } else if (error.response?.status === 500) {
       throw new Error('Server error. Please try again later.');
     } else {
@@ -51,13 +70,37 @@ export const loginUser = async (credentials) => {
     };
     
   } catch (error) {
+    // Fallback to demo mode if backend is not available
+    if (error.response?.status === 404 || error.code === 'ERR_NETWORK') {
+      // Check for demo credentials
+      if (credentials.email === 'demo@gym.com' && credentials.password === 'demo123') {
+        const demoUser = {
+          id: 'demo_user',
+          name: 'Demo User',
+          email: 'demo@gym.com',
+          profileImage: null,
+          bio: 'Demo user - Backend offline'
+        };
+        
+        const demoToken = 'demo_token_' + Date.now();
+        
+        // Store in localStorage for demo
+        localStorage.setItem('demo_user', JSON.stringify(demoUser));
+        localStorage.setItem('demo_token', demoToken);
+        
+        return {
+          success: true,
+          user: demoUser,
+          token: demoToken,
+          message: 'Demo login successful (Backend offline)'
+        };
+      } else {
+        throw new Error('Backend offline. Use demo@gym.com / demo123 to continue.');
+      }
+    }
     
     if (error.response?.status === 400) {
       throw new Error(error.response.data.message || 'Invalid credentials');
-    } else if (error.response?.status === 404) {
-      throw new Error('API endpoint not found. Backend may not be properly deployed.');
-    } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-      throw new Error('Cannot connect to server. Please check if backend is deployed.');
     } else if (error.response?.status === 500) {
       throw new Error('Server error. Please try again later.');
     } else {
@@ -68,22 +111,26 @@ export const loginUser = async (credentials) => {
 
 // Demo user creation and login
 export const createDemoUser = async () => {
-  try {
-    // Try to register demo user first
-    await registerUser({
-      name: 'Demo User',
-      email: 'demo@gymtracker.com',
-      password: 'demo123456'
-    });
-  } catch (error) {
-    // Demo user might already exist
-  }
+  const demoUser = {
+    id: 'demo_user',
+    name: 'Demo User',
+    email: 'demo@gym.com',
+    profileImage: null,
+    bio: 'Demo user for testing'
+  };
   
-  // Login with demo credentials
-  return await loginUser({
-    email: 'demo@gymtracker.com',
-    password: 'demo123456'
-  });
+  const demoToken = 'demo_token_' + Date.now();
+  
+  // Store in localStorage for demo
+  localStorage.setItem('demo_user', JSON.stringify(demoUser));
+  localStorage.setItem('demo_token', demoToken);
+  
+  return {
+    success: true,
+    user: demoUser,
+    token: demoToken,
+    message: 'Demo user created successfully'
+  };
 };
 
 // Check if backend is accessible
