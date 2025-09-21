@@ -75,6 +75,45 @@ app.use('/api/posts', postRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: '🏋️ GymTracker API Server',
+    status: 'Running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      users: '/api/users',
+      workouts: '/api/workouts',
+      nutrition: '/api/nutrition',
+      plans: '/api/plans'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API root route
+app.get('/api', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
+  res.json({
+    message: '🏋️ GymTracker API',
+    status: 'Active',
+    database: dbStatus,
+    version: '1.0.0',
+    availableRoutes: [
+      'GET /api/health - Health check',
+      'POST /api/auth/register - User registration',
+      'POST /api/auth/login - User login',
+      'GET /api/users/profile - User profile',
+      'GET /api/workouts - Get workouts',
+      'GET /api/nutrition - Get nutrition data',
+      'GET /api/plans - Get workout plans'
+    ],
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check route
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
