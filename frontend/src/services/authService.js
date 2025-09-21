@@ -1,120 +1,101 @@
 // frontend/src/services/authService.js
-const USERS_KEY = 'registeredUsers';
-const CURRENT_USER_KEY = 'currentUser';
-const TOKEN_KEY = 'token';
+// Production-ready authentication service with MongoDB integration
 
-export const authService = {
-  // Register new user
-  register: async (userData) => {
-    try {
-      const existingUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-      
-      // Check if user already exists
-      const userExists = existingUsers.find(user => user.email === userData.email);
-      if (userExists) {
-        throw new Error('User already exists with this email');
-      }
-      
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        name: userData.name,
-        email: userData.email,
-        password: userData.password, // In real app, this would be hashed
-        createdAt: new Date().toISOString()
-      };
-      
-      // Save user
-      const updatedUsers = [...existingUsers, newUser];
-      localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-      
-      // Auto login after registration
-      const token = `token_${newUser.id}_${Date.now()}`;
-      localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify({
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email
-      }));
-      
-      return {
-        user: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email
-        },
-        token
-      };
-    } catch (error) {
-      throw error;
-    }
-  },
+import api from '../utils/api';
 
-  // Login user
-  login: async (credentials) => {
-    try {
-      const existingUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-      
-      // Find user
-      const user = existingUsers.find(u => 
-        u.email === credentials.email && u.password === credentials.password
-      );
-      
-      if (!user) {
-        throw new Error('Invalid email or password');
-      }
-      
-      // Create session
-      const token = `token_${user.id}_${Date.now()}`;
-      localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify({
-        id: user.id,
-        name: user.name,
-        email: user.email
-      }));
-      
-      return {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email
-        },
-        token
-      };
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Logout user
-  logout: () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(CURRENT_USER_KEY);
-  },
-
-  // Get current user
-  getCurrentUser: () => {
-    try {
-      const user = localStorage.getItem(CURRENT_USER_KEY);
-      return user ? JSON.parse(user) : null;
-    } catch (error) {
-      return null;
-    }
-  },
-
-  // Check if user is authenticated
-  isAuthenticated: () => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    const user = authService.getCurrentUser();
-    return !!(token && user);
-  },
-
-  // Get demo account
-  getDemoAccount: () => {
+// Real-time user registration with MongoDB storage
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post('/auth/register', {
+      name: userData.name.trim(),
+      email: userData.email.toLowerCase().trim(),
+      password: userData.password
+    });
+    
     return {
-      email: 'demo@gym.com',
-      password: 'demo123',
-      name: 'Demo User'
+      success: true,
+      user: response.data.user,
+      token: response.data.token,
+      message: response.data.message
+    };
+    
+  } catch (error) {
+    
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Registration failed');
+    } else if (error.response?.status === 404) {
+      throw new Error('Backend server not found. Please check deployment.');
+    } else if (error.code === 'ERR_NETWORK') {
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      throw new Error('Registration failed. Please try again.');
+    }
+  }
+};
+
+// Real-time user login with MongoDB authentication
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post('/auth/login', {
+      email: credentials.email.toLowerCase().trim(),
+      password: credentials.password
+    });
+    
+    return {
+      success: true,
+      user: response.data.user,
+      token: response.data.token,
+      message: response.data.message
+    };
+    
+  } catch (error) {
+    
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Invalid credentials');
+    } else if (error.response?.status === 404) {
+      throw new Error('Backend server not found. Please check deployment.');
+    } else if (error.code === 'ERR_NETWORK') {
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      throw new Error('Login failed. Please try again.');
+    }
+  }
+};
+
+// Demo user creation and login
+export const createDemoUser = async () => {
+  try {
+    // Try to register demo user first
+    await registerUser({
+      name: 'Demo User',
+      email: 'demo@gymtracker.com',
+      password: 'demo123456'
+    });
+  } catch (error) {
+    // Demo user might already exist
+  }
+  
+  // Login with demo credentials
+  return await loginUser({
+    email: 'demo@gymtracker.com',
+    password: 'demo123456'
+  });
+};
+
+// Check if backend is accessible
+export const checkBackendStatus = async () => {
+  try {
+    const response = await api.get('/health');
+    return {
+      online: true,
+      message: 'Backend connected',
+      data: response.data
+    };
+  } catch (error) {
+    return {
+      online: false,
+      message: 'Backend not accessible',
+      error: error.message
     };
   }
 };

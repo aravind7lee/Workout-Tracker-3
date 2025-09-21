@@ -1,9 +1,8 @@
 // src/pages/Register.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { checkBackendHealth } from '../utils/healthCheck';
+import { registerUser, createDemoUser, checkBackendStatus } from '../services/authService';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,15 +17,15 @@ const Register = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Check backend health on component mount
+  // Check backend status on component mount
   useEffect(() => {
     const checkBackend = async () => {
-      const health = await checkBackendHealth();
-      setBackendStatus(health.success ? 'online' : 'offline');
-      if (!health.success) {
-        setError(`Backend connection failed: ${health.error}. ${health.suggestion}`);
-      }
+      const status = await checkBackendStatus();
+      setBackendStatus(status.online ? 'online' : 'offline');
+      
+      // Backend status checked silently
     };
+    
     checkBackend();
   }, []);
 
@@ -49,20 +48,21 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/register', {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
+      const result = await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
       });
       
-      // Update auth context
-      login(response.data.user, response.data.token);
+      // Update auth context with MongoDB user data
+      login(result.user, result.token);
       
       // Navigate to dashboard
       navigate("/dashboard");
+      
     } catch (err) {
       console.error('Registration error:', err);
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -71,29 +71,16 @@ const Register = () => {
   const handleDemoLogin = async () => {
     setLoading(true);
     try {
-      // Try to register demo user first
-      try {
-        await api.post('/auth/register', {
-          name: 'Demo User',
-          email: 'demo@gym.com',
-          password: 'demo123'
-        });
-      } catch (regError) {
-        // Demo user might already exist, try to login
-      }
+      const result = await createDemoUser();
       
-      // Login with demo credentials
-      const response = await api.post('/auth/login', {
-        email: 'demo@gym.com',
-        password: 'demo123'
-      });
-      
-      // Update auth context
-      login(response.data.user, response.data.token);
+      // Update auth context with demo user data from MongoDB
+      login(result.user, result.token);
       
       navigate('/dashboard');
+      
     } catch (err) {
-      setError('Demo login failed. Please try again.');
+      console.error('Demo login error:', err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -107,18 +94,7 @@ const Register = () => {
           <p className="text-slate-400">Join the ultimate fitness experience</p>
         </div>
 
-        {/* Backend Status Indicator */}
-        {backendStatus === 'checking' && (
-          <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-3 mb-4">
-            <p className="text-blue-300 text-sm">🔄 Checking backend connection...</p>
-          </div>
-        )}
-        
-        {backendStatus === 'offline' && (
-          <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-3 mb-4">
-            <p className="text-yellow-300 text-sm">⚠️ Backend server is offline. Please try again later.</p>
-          </div>
-        )}
+
         
 
 

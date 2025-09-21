@@ -1,15 +1,25 @@
 // src/pages/Login.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { loginUser, createDemoUser, checkBackendStatus } from '../services/authService';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [backendStatus, setBackendStatus] = useState('checking');
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  // Check backend status
+  useEffect(() => {
+    const checkBackend = async () => {
+      const status = await checkBackendStatus();
+      setBackendStatus(status.online ? 'online' : 'offline');
+    };
+    checkBackend();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,18 +37,18 @@ const Login = () => {
     }
 
     try {
-      const response = await api.post('/auth/login', {
-        email: formData.email.trim(),
+      const result = await loginUser({
+        email: formData.email,
         password: formData.password
       });
       
-      // Update auth context
-      login(response.data.user, response.data.token);
+      // Update auth context with MongoDB user data
+      login(result.user, result.token);
       
       navigate('/dashboard');
+      
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -49,30 +59,15 @@ const Login = () => {
     setError('');
     
     try {
-      // Try to register demo user first (in case it doesn't exist)
-      try {
-        await api.post('/auth/register', {
-          name: 'Demo User',
-          email: 'demo@gym.com',
-          password: 'demo123'
-        });
-      } catch (regError) {
-        // Demo user might already exist, continue to login
-      }
+      const result = await createDemoUser();
       
-      // Login with demo credentials
-      const response = await api.post('/auth/login', {
-        email: 'demo@gym.com',
-        password: 'demo123'
-      });
-      
-      // Update auth context
-      login(response.data.user, response.data.token);
+      // Update auth context with demo user data from MongoDB
+      login(result.user, result.token);
       
       navigate('/dashboard');
-    } catch (error) {
-      console.error('Demo login error:', error);
-      setError('Demo login failed. Please try again.');
+      
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
