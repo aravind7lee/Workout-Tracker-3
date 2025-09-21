@@ -1,7 +1,7 @@
 // frontend/src/api/auth.js
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth"; // change for production
+const API_URL = "https://workout-tracker-backend-wga7.onrender.com/api/auth"; // Render production URL
 
 export const registerUser = async (userData) => {
   const response = await axios.post(`${API_URL}/register`, userData, {

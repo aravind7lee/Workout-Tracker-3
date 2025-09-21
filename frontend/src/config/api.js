@@ -1,7 +1,7 @@
-// Frontend API Configuration - FIXED BACKEND URLS
+// Frontend API Configuration - RENDER BACKEND URL
 export const API_CONFIG = {
-  // Your deployed backend URL
-  BASE_URL: 'https://grindx-backend.vercel.app',
+  // Your deployed backend URL on Render
+  BASE_URL: 'https://workout-tracker-backend-wga7.onrender.com',
   
   // API Endpoints
   ENDPOINTS: {
@@ -21,11 +21,11 @@ export const API_CONFIG = {
   
   // Full URLs for direct use
   URLS: {
-    ROOT: 'https://grindx-backend.vercel.app/api',
-    TEST: 'https://grindx-backend.vercel.app/api/test',
-    HEALTH: 'https://grindx-backend.vercel.app/api/health',
-    REGISTER: 'https://grindx-backend.vercel.app/api/auth/register',
-    LOGIN: 'https://grindx-backend.vercel.app/api/auth/login',
+    ROOT: 'https://workout-tracker-backend-wga7.onrender.com/api',
+    TEST: 'https://workout-tracker-backend-wga7.onrender.com/api/test',
+    HEALTH: 'https://workout-tracker-backend-wga7.onrender.com/api/health',
+    REGISTER: 'https://workout-tracker-backend-wga7.onrender.com/api/auth/register',
+    LOGIN: 'https://workout-tracker-backend-wga7.onrender.com/api/auth/login',
   }
 };
 
