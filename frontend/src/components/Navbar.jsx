@@ -137,7 +137,7 @@ export default function Navbar() {
               className="relative"
             >
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-sm sm:text-lg shadow-lg">
-                GT
+                GX
               </div>
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-30 blur-md group-hover:opacity-60 transition-opacity duration-300"></div>
             </motion.div>
@@ -146,7 +146,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <span className="hidden xs:inline">GymTracker</span>
-              <span className="xs:hidden">GT</span>
+              <span className="xs:hidden">GrindX</span>
             </motion.div>
           </Link>
 
