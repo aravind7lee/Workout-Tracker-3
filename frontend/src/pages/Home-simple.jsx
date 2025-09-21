@@ -1,19 +1,9 @@
-// Simple Home page that works reliably
+// Simple Home page fallback
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
-export default function Home() {
+export default function HomeSimple() {
   const navigate = useNavigate();
-  const auth = useAuth();
-  
-  const isAuthenticated = () => {
-    try {
-      return auth?.isAuthenticated() || false;
-    } catch {
-      return false;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -30,10 +20,10 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => navigate(isAuthenticated() ? '/dashboard' : '/register')}
+              onClick={() => navigate('/register')}
               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors"
             >
-              🚀 {isAuthenticated() ? 'Go to Dashboard' : 'Get Started'}
+              🚀 Get Started
             </button>
             <Link to="/login">
               <button className="px-8 py-4 border-2 border-slate-600 text-slate-300 font-bold rounded-lg hover:bg-slate-700 transition-colors">
@@ -59,26 +49,6 @@ export default function Home() {
             <div className="text-4xl mb-4">🎯</div>
             <h3 className="text-xl font-bold text-white mb-2">Goal Setting</h3>
             <p className="text-slate-400">Set and achieve your fitness milestones</p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-center">
-          <div>
-            <div className="text-3xl font-bold text-blue-400 mb-2">10K+</div>
-            <div className="text-slate-400">Active Users</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-purple-400 mb-2">50K+</div>
-            <div className="text-slate-400">Workouts Logged</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-green-400 mb-2">25K+</div>
-            <div className="text-slate-400">Goals Achieved</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-yellow-400 mb-2">4.9★</div>
-            <div className="text-slate-400">App Rating</div>
           </div>
         </div>
 
