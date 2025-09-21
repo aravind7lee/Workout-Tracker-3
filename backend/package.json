@@ -1,16 +1,14 @@
 {
+  "engines": {
+    "node": "22.x"
+  },
   "name": "gymtracker-backend",
   "version": "1.0.0",
   "description": "GymTracker Backend API",
   "type": "module",
-  "main": "api/index.js",
-  "engines": {
-    "node": "18.x"
-  },
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "vercel-build": "echo 'Build complete'"
+    "start": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
