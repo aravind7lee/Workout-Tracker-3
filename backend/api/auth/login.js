@@ -1,8 +1,7 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
-// User Schema
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, lowercase: true },
@@ -10,9 +9,13 @@ const UserSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const User = mongoose.models.User || mongoose.model('User', UserSchema);
+let User;
+try {
+  User = mongoose.model('User');
+} catch {
+  User = mongoose.model('User', UserSchema);
+}
 
-// Connect to MongoDB
 async function connectDB() {
   if (mongoose.connections[0].readyState) return;
   
@@ -20,7 +23,15 @@ async function connectDB() {
   await mongoose.connect(MONGO_URI);
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -65,4 +76,4 @@ export default async function handler(req, res) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Login failed', error: error.message });
   }
-}
+};
