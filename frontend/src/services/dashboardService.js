@@ -1,109 +1,115 @@
-// frontend/src/services/dashboardService.js - OFFLINE FIRST APPROACH
+// Real-time dashboard service integrated with backend
+import { realTimeService } from './realTimeService.js';
+import api from '../utils/api.js';
+
 class DashboardService {
   constructor() {
     this.cache = new Map();
-    this.mockData = this.generateMockData();
+    this.realTimeService = realTimeService;
   }
 
-  generateMockData() {
-    return {
-      stats: {
-        totalWorkouts: 45,
-        totalCalories: 12450,
-        avgDuration: 42,
-        streak: 7
-      },
-      achievements: [
-        { id: 1, title: '7 Day Streak', description: 'Workout for 7 consecutive days', unlocked: true, date: new Date().toISOString() },
-        { id: 2, title: 'Calorie Crusher', description: 'Burn 500+ calories in a session', unlocked: true, date: new Date().toISOString() },
-        { id: 3, title: 'Consistency King', description: 'Complete 30 workouts', unlocked: false, progress: 45 }
-      ],
-      calories: [
-        { date: '2024-01-01', calories: 450 },
-        { date: '2024-01-02', calories: 520 },
-        { date: '2024-01-03', calories: 380 },
-        { date: '2024-01-04', calories: 610 },
-        { date: '2024-01-05', calories: 490 },
-        { date: '2024-01-06', calories: 550 },
-        { date: '2024-01-07', calories: 420 }
-      ],
-      frequency: [
-        { day: 'Mon', count: 8 },
-        { day: 'Tue', count: 6 },
-        { day: 'Wed', count: 9 },
-        { day: 'Thu', count: 7 },
-        { day: 'Fri', count: 10 },
-        { day: 'Sat', count: 5 },
-        { day: 'Sun', count: 4 }
-      ],
-      muscles: [
-        { muscle: 'Chest', percentage: 25 },
-        { muscle: 'Back', percentage: 20 },
-        { muscle: 'Legs', percentage: 30 },
-        { muscle: 'Arms', percentage: 15 },
-        { muscle: 'Core', percentage: 10 }
-      ]
-    };
-  }
-
-  // Always return mock data immediately - no API calls
+  // Real-time data fetching methods
   async getAnalyticsStats() {
-    return this.mockData.stats;
+    try {
+      const response = await api.get('/analytics/stats');
+      return response.data;
+    } catch (error) {
+      return this.realTimeService.getFallbackDashboard();
+    }
   }
 
   async getAchievements() {
-    return this.mockData.achievements;
+    try {
+      const response = await api.get('/analytics/achievements');
+      return response.data;
+    } catch (error) {
+      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      return this.realTimeService.generateAchievements(workouts, meals);
+    }
   }
 
   async getCalorieTrends() {
-    return this.mockData.calories;
+    try {
+      const response = await api.get('/analytics/calories');
+      return response.data;
+    } catch (error) {
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      return this.realTimeService.generateCaloriesData(meals);
+    }
   }
 
   async getWorkoutFrequency() {
-    return this.mockData.frequency;
+    try {
+      const response = await api.get('/analytics/frequency');
+      return response.data;
+    } catch (error) {
+      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+      return this.realTimeService.generateWeeklyData(workouts);
+    }
   }
 
   async getMuscleDistribution() {
-    return this.mockData.muscles;
+    try {
+      const response = await api.get('/analytics/muscles');
+      return response.data;
+    } catch (error) {
+      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+      return this.realTimeService.generateMuscleData(workouts);
+    }
   }
 
   async getDashboardStats() {
-    return this.mockData.stats;
+    return this.realTimeService.getDashboardData();
   }
+
+
 
   clearCache() {
     this.cache.clear();
+    this.realTimeService.cache.clear();
   }
 
-  // Return all mock data immediately
+  // Real-time data refresh
   async refreshAllData() {
-    return {
-      stats: this.mockData.stats,
-      achievements: this.mockData.achievements,
-      calories: this.mockData.calories,
-      frequency: this.mockData.frequency,
-      muscles: this.mockData.muscles,
-      dashboardStats: this.mockData.stats
-    };
+    try {
+      const [stats, achievements, calories, frequency, muscles] = await Promise.all([
+        this.getAnalyticsStats(),
+        this.getAchievements(),
+        this.getCalorieTrends(),
+        this.getWorkoutFrequency(),
+        this.getMuscleDistribution()
+      ]);
+
+      return {
+        stats,
+        achievements,
+        calories,
+        frequency,
+        muscles,
+        dashboardStats: stats
+      };
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+      return this.realTimeService.getFallbackDashboard();
+    }
   }
 
-  // Simulate real-time updates with mock data
+  // Real-time updates with backend sync
   startRealTimeUpdates(callback, interval = 30000) {
     const updateData = async () => {
-      // Slightly modify mock data to simulate real-time changes
-      this.mockData.stats.totalWorkouts += Math.floor(Math.random() * 2);
-      this.mockData.stats.totalCalories += Math.floor(Math.random() * 50);
-      
-      const data = await this.refreshAllData();
-      callback(data);
+      try {
+        await this.realTimeService.syncAllData();
+        const data = await this.refreshAllData();
+        callback(data);
+      } catch (error) {
+        console.error('Real-time update failed:', error);
+      }
     };
 
-    // Initial fetch
     updateData();
-
-    // Set up polling with mock updates
     const intervalId = setInterval(updateData, interval);
-
+    
     return () => clearInterval(intervalId);
   }
 }

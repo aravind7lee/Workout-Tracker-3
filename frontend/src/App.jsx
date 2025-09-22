@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { realTimeService } from './services/realTimeService';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Library from './pages/Library';
@@ -330,6 +331,12 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 
 export default function App() {
+  // Initialize real-time service on app start
+  useEffect(() => {
+    const cleanup = realTimeService.startRealTimeUpdates(30000);
+    return cleanup;
+  }, []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider>

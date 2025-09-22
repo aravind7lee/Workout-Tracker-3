@@ -2,21 +2,23 @@
 import React from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import { useRealAnalytics } from '../hooks/useRealAnalytics';
+import { useRealTimeAnalytics } from '../hooks/useRealTimeData';
 
 Chart.register(...registerables);
 
 export default function Analytics() {
   const {
-    stats,
-    caloriesData,
-    frequencyData,
-    muscleData,
-    achievements,
-    isLoading,
+    data: analyticsData,
+    loading: isLoading,
     error,
     refresh
-  } = useRealAnalytics();
+  } = useRealTimeAnalytics();
+
+  const stats = analyticsData?.stats;
+  const caloriesData = analyticsData?.caloriesTrend;
+  const frequencyData = analyticsData?.workoutFrequency;
+  const muscleData = analyticsData?.muscleDistribution;
+  const achievements = analyticsData?.achievements;
 
   const chartOptions = {
     responsive: true,
@@ -75,8 +77,9 @@ export default function Analytics() {
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Progress & Analytics</h2>
           <p className="text-slate-400 text-sm mt-1">
-            Real-time insights from your GymTracker data
-            <span className="ml-2 text-green-400 text-xs">• Live Data</span>
+            Real-time insights synced with backend storage
+            <span className="ml-2 text-green-400 text-xs">• Backend Integrated</span>
+            <span className="ml-2 text-blue-400 text-xs">• Auto-Sync</span>
           </p>
         </div>
         <button

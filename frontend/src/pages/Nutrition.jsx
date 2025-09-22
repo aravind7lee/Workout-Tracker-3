@@ -3,12 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useNutrition } from '../hooks/useNutrition';
+import { useRealTimeNutrition } from '../hooks/useRealTimeData';
+import { nutritionServiceReal } from '../services/nutritionServiceReal';
 import MealInput from '../components/MealInput';
 import NutritionPreviewModal from '../components/NutritionPreviewModal';
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get('search') || '';
+  
+  // Real-time nutrition data
+  const { data: nutritionData, loading: nutritionLoading, refresh: refreshNutrition } = useRealTimeNutrition();
   
   const {
     meals,
@@ -21,10 +26,33 @@ export default function Nutrition() {
     error,
     loadMeals,
     lookupNutrition,
-    addMeal,
-    deleteMeal,
+    addMeal: addMealLocal,
+    deleteMeal: deleteMealLocal,
     clearError
   } = useNutrition();
+
+  // Enhanced meal operations with real-time sync
+  const addMeal = async (mealData) => {
+    try {
+      await nutritionServiceReal.logMeal(mealData);
+      await addMealLocal(mealData);
+      refreshNutrition();
+    } catch (error) {
+      console.error('Failed to add meal:', error);
+      throw error;
+    }
+  };
+
+  const deleteMeal = async (mealId) => {
+    try {
+      await nutritionServiceReal.deleteMeal(mealId);
+      await deleteMealLocal(mealId);
+      refreshNutrition();
+    } catch (error) {
+      console.error('Failed to delete meal:', error);
+      throw error;
+    }
+  };
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [nutritionItems, setNutritionItems] = useState([]);

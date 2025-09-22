@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
-import { realDashboardService } from '../services/realDashboardService';
+import { realTimeService } from '../services/realTimeService';
+import { useRealTimeDashboard } from '../hooks/useRealTimeData';
 
 // Suppress React DevTools message in production
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
@@ -29,27 +30,27 @@ const Dashboard = () => {
   const [lastUpdated, setLastUpdated] = useState(null);
   const navigate = useNavigate();
 
-  // Real data fetching using real dashboard service
+  // Real-time dashboard data hook
+  const { data: dashboardData, loading: dashboardLoading, refresh: refreshDashboard } = useRealTimeDashboard();
+
+  // Real data fetching using real-time service
   const fetchRealTimeData = useCallback(async () => {
     try {
-      const data = await realDashboardService.refreshAllData();
+      const data = await realTimeService.getDashboardData();
       
-      if (data.stats) {
-        setRealTimeStats(data.stats);
+      if (data) {
+        setRealTimeStats(data);
         setWorkoutStats({
-          total: data.stats.totalWorkouts || 0,
-          today: data.stats.completedToday || 0,
-          thisWeek: data.stats.currentStreak || 0,
-          xpPoints: data.stats.xpPoints || 0
+          total: data.totalWorkouts || 0,
+          today: data.completedToday || 0,
+          thisWeek: data.completedThisWeek || 0,
+          xpPoints: data.xpPoints || 0
         });
       }
 
-      if (data.achievements) {
-        setAchievements(data.achievements);
-      }
-
-      if (data.activity) {
-        setRecentActivity(data.activity);
+      const achievements = await realTimeService.getAnalytics();
+      if (achievements?.achievements) {
+        setAchievements(achievements.achievements);
       }
 
       setLastUpdated(new Date());
@@ -78,27 +79,27 @@ const Dashboard = () => {
     
     loadDashboardData();
     
-    // Set up real-time updates using real dashboard service
-    const cleanup = realDashboardService.startRealTimeUpdates((data) => {
-      if (data.stats) {
-        setRealTimeStats(data.stats);
+    // Set up real-time updates using real-time service
+    const cleanup = realTimeService.startRealTimeUpdates(30000);
+    
+    // Subscribe to dashboard updates
+    const unsubscribe = realTimeService.subscribe('dashboard', (data) => {
+      if (data) {
+        setRealTimeStats(data);
         setWorkoutStats({
-          total: data.stats.totalWorkouts || 0,
-          today: data.stats.completedToday || 0,
-          thisWeek: data.stats.currentStreak || 0,
-          xpPoints: data.stats.xpPoints || 0
+          total: data.totalWorkouts || 0,
+          today: data.completedToday || 0,
+          thisWeek: data.completedThisWeek || 0,
+          xpPoints: data.xpPoints || 0
         });
       }
-      if (data.achievements) {
-        setAchievements(data.achievements);
-      }
-      if (data.activity) {
-        setRecentActivity(data.activity);
-      }
       setLastUpdated(new Date());
-    }, 30000);
+    });
     
-    return cleanup;
+    return () => {
+      cleanup();
+      unsubscribe();
+    };
   }, [fetchRealTimeData]);
 
   const loadDashboardData = async () => {
