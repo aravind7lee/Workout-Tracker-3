@@ -216,7 +216,7 @@ const Dashboard = () => {
             <p className="text-slate-400 mt-1 text-sm sm:text-base">
               Ready to crush your fitness goals today?
               {lastUpdated && (
-                <span className="ml-2 text-green-400 text-xs">
+                <span className="ml-2 text-green-400 text-xs preserve-color">
                   • Live data active
                 </span>
               )}

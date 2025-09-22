@@ -1,0 +1,140 @@
+/* ===== COMPREHENSIVE LIGHT MODE TEXT VISIBILITY FIX ===== */
+/* Global overrides to ensure all text is readable in light mode */
+
+/* Base text elements - preserve colored stats */
+.light-theme *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
+[data-theme="light"] *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
+  color: var(--text) !important;
+}
+
+/* Headings */
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+  color: var(--heading) !important;
+  font-weight: 700 !important;
+}
+
+/* Links */
+.light-theme a,
+[data-theme="light"] a {
+  color: var(--link) !important;
+}
+
+/* Preserve colored stat elements */
+.light-theme .text-blue-400, .light-theme .text-blue-500,
+[data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
+  color: #3b82f6 !important;
+}
+
+.light-theme .text-green-400, .light-theme .text-green-500,
+[data-theme="light"] .text-green-400, [data-theme="light"] .text-green-500 {
+  color: #10b981 !important;
+}
+
+.light-theme .text-purple-400, .light-theme .text-purple-500,
+[data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
+  color: #8b5cf6 !important;
+}
+
+.light-theme .text-orange-400, .light-theme .text-orange-500,
+[data-theme="light"] .text-orange-400, [data-theme="light"] .text-orange-500 {
+  color: #f59e0b !important;
+}
+
+.light-theme .text-red-400, .light-theme .text-red-500,
+[data-theme="light"] .text-red-400, [data-theme="light"] .text-red-500 {
+  color: #ef4444 !important;
+}
+
+.light-theme .text-yellow-400, .light-theme .text-yellow-500,
+[data-theme="light"] .text-yellow-400, [data-theme="light"] .text-yellow-500 {
+  color: #f59e0b !important;
+}
+
+/* Override problematic Tailwind classes */
+.light-theme .text-white, .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
+[data-theme="light"] .text-white, [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
+  color: var(--text) !important;
+}
+
+.light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
+[data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
+  color: var(--text) !important;
+}
+
+/* Muted text */
+.light-theme .text-muted,
+[data-theme="light"] .text-muted {
+  color: var(--muted) !important;
+}
+
+/* Buttons */
+.light-theme .btn-primary,
+[data-theme="light"] .btn-primary {
+  background: var(--accent) !important;
+  color: var(--accent-contrast) !important;
+}
+
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+/* Forms */
+.light-theme input, .light-theme textarea, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+  color: var(--text) !important;
+  background: var(--bg-soft) !important;
+  border-color: var(--panel-border) !important;
+}
+
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Cards */
+.light-theme .card,
+[data-theme="light"] .card {
+  background: var(--bg-soft) !important;
+  border-color: var(--panel-border) !important;
+}
+
+/* Navigation */
+.light-theme nav .nav-link,
+[data-theme="light"] nav .nav-link {
+  color: var(--text) !important;
+}
+
+.light-theme nav .nav-link:hover, .light-theme nav .nav-link.active,
+[data-theme="light"] nav .nav-link:hover, [data-theme="light"] nav .nav-link.active {
+  color: var(--accent) !important;
+}
+
+/* Background overrides for better contrast */
+.light-theme .bg-slate-700\/50, .light-theme .bg-slate-800\/60,
+[data-theme="light"] .bg-slate-700\/50, [data-theme="light"] .bg-slate-800\/60 {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid var(--panel-border) !important;
+}
+
+/* Search result badges */
+.light-theme .bg-slate-700\/50,
+[data-theme="light"] .bg-slate-700\/50 {
+  background: var(--bg-accent) !important;
+  color: var(--accent) !important;
+}
+
+/* Labels */
+.light-theme label,
+[data-theme="light"] label {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure icons inherit proper colors */
+.light-theme svg,
+[data-theme="light"] svg {
+  color: inherit !important;
+}

@@ -49,30 +49,30 @@
 [data-theme="light"] {
   /* === BACKGROUNDS === */
   --bg: #ffffff;                    /* Pure white background */
-  --bg-soft: #f8f9fa;              /* Light gray cards */
-  --bg-accent: rgba(0,123,255,0.1); /* Blue accent tint */
+  --bg-soft: #f8fafc;              /* Very light gray cards */
+  --bg-accent: rgba(59,130,246,0.08); /* Blue accent tint */
   
-  /* === TEXT COLORS === */
-  --text: #212529;                  /* Rich dark text - high contrast */
-  --heading: #000000;               /* Pure black headings - maximum visibility */
-  --muted: #495057;                 /* Dark gray muted text - readable */
-  --link: #007bff;                  /* Vibrant blue links */
+  /* === TEXT COLORS - MAXIMUM CONTRAST === */
+  --text: #0f172a;                  /* Very dark text - maximum contrast */
+  --heading: #020617;               /* Nearly black headings - ultimate visibility */
+  --muted: #475569;                 /* Dark gray muted text - still readable */
+  --link: #1d4ed8;                  /* Strong blue links */
   
   /* === BORDERS & STRUCTURE === */
-  --panel-border: rgba(0,0,0,0.15); /* Darker borders for visibility */
+  --panel-border: rgba(0,0,0,0.15); /* Stronger borders for better definition */
   
   /* === BRAND ACCENT === */
-  --accent: #007bff;                /* Strong blue accent */
-  --accent-hover: #0056b3;          /* Darker blue for hover */
+  --accent: #1d4ed8;                /* Strong blue accent */
+  --accent-hover: #1e40af;          /* Darker blue for hover */
   --accent-contrast: #ffffff;       /* White text on blue */
   
   /* === SHADOWS & DEPTH === */
-  --shadow-soft: 0 4px 20px rgba(0,0,0,0.12); /* Visible shadows */
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.12); /* Slightly stronger shadows */
   
   /* === STATE COLORS === */
-  --success: #28a745;               /* Strong green */
-  --danger: #dc3545;                /* Strong red */
-  --warning: #ffc107;               /* Strong yellow */
+  --success: #059669;               /* Strong green */
+  --danger: #dc2626;                /* Strong red */
+  --warning: #d97706;               /* Strong orange */
   
   /* === BUTTON COLORS === */
   --btn-primary-bg: var(--accent);
@@ -82,7 +82,7 @@
   --btn-secondary-border: var(--accent);
   
   /* === TOGGLE SPECIFIC === */
-  --toggle-bg: rgba(0,0,0,0.15);
+  --toggle-bg: rgba(0,0,0,0.1);
   --toggle-knob: #ffffff;
   --toggle-active-bg: var(--accent);
 }
@@ -576,32 +576,72 @@ input::placeholder, textarea::placeholder {
   --chart-text: var(--text);
 }
 
-/* ===== LIGHT MODE TEXT VISIBILITY OVERRIDES ===== */
-/* Force high contrast text in light mode */
-.light-theme *,
-[data-theme="light"] * {
+/* ===== COMPREHENSIVE LIGHT MODE TEXT VISIBILITY OVERRIDES ===== */
+/* Global text color enforcement with maximum contrast */
+.light-theme,
+[data-theme="light"] {
   color: var(--text) !important;
 }
 
+/* Base text elements - exclude colored stats and SVG elements */
+.light-theme *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color),
+[data-theme="light"] *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color) {
+  color: var(--text) !important;
+}
+
+/* Headings - Maximum contrast */
 .light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
   color: var(--heading) !important;
   font-weight: 700 !important;
 }
 
+/* Links */
 .light-theme a,
 [data-theme="light"] a {
   color: var(--link) !important;
 }
 
-.light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
-[data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
+/* Override problematic Tailwind classes */
+.light-theme .text-white, .light-theme .text-slate-200, .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
+[data-theme="light"] .text-white, [data-theme="light"] .text-slate-200, [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
   color: var(--text) !important;
 }
 
-.light-theme .text-white,
-[data-theme="light"] .text-white {
-  color: var(--heading) !important;
+.light-theme .text-gray-200, .light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
+[data-theme="light"] .text-gray-200, [data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
+  color: var(--text) !important;
+}
+
+/* Preserve colored stat elements */
+.light-theme .text-blue-400, .light-theme .text-blue-500,
+[data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
+  color: #1d4ed8 !important;
+}
+
+.light-theme .text-green-400, .light-theme .text-green-500,
+[data-theme="light"] .text-green-400, [data-theme="light"] .text-green-500 {
+  color: #059669 !important;
+}
+
+.light-theme .text-purple-400, .light-theme .text-purple-500,
+[data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
+  color: #7c3aed !important;
+}
+
+.light-theme .text-orange-400, .light-theme .text-orange-500,
+[data-theme="light"] .text-orange-400, [data-theme="light"] .text-orange-500 {
+  color: #d97706 !important;
+}
+
+.light-theme .text-red-400, .light-theme .text-red-500,
+[data-theme="light"] .text-red-400, [data-theme="light"] .text-red-500 {
+  color: #dc2626 !important;
+}
+
+.light-theme .text-yellow-400, .light-theme .text-yellow-500,
+[data-theme="light"] .text-yellow-400, [data-theme="light"] .text-yellow-500 {
+  color: #d97706 !important;
 }
 
 /* Button text overrides */
@@ -618,8 +658,8 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Navbar specific overrides */
-.light-theme nav *,
-[data-theme="light"] nav * {
+.light-theme nav *:not(svg):not(path),
+[data-theme="light"] nav *:not(svg):not(path) {
   color: var(--text) !important;
 }
 
@@ -629,31 +669,31 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Card and panel overrides */
-.light-theme .card *,
-[data-theme="light"] .card * {
+.light-theme .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
+[data-theme="light"] .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
   color: var(--text) !important;
 }
 
-.light-theme .card h1, .light-theme .card h2, .light-theme .card h3,
-[data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3 {
+.light-theme .card h1, .light-theme .card h2, .light-theme .card h3, .light-theme .card h4, .light-theme .card h5, .light-theme .card h6,
+[data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3, [data-theme="light"] .card h4, [data-theme="light"] .card h5, [data-theme="light"] .card h6 {
   color: var(--heading) !important;
 }
 
 /* Hero section overrides */
-.light-theme .hero *,
-[data-theme="light"] .hero * {
+.light-theme section *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.preserve-color):not(svg):not(path),
+[data-theme="light"] section *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.preserve-color):not(svg):not(path) {
   color: var(--text) !important;
 }
 
-.light-theme .hero h1, .light-theme .hero h2,
-[data-theme="light"] .hero h1, [data-theme="light"] .hero h2 {
+.light-theme section h1, .light-theme section h2, .light-theme section h3, .light-theme section h4,
+[data-theme="light"] section h1, [data-theme="light"] section h2, [data-theme="light"] section h3, [data-theme="light"] section h4 {
   color: var(--heading) !important;
   font-weight: 800 !important;
 }
 
 /* Feature section overrides */
-.light-theme .features *,
-[data-theme="light"] .features * {
+.light-theme .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path),
+[data-theme="light"] .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path) {
   color: var(--text) !important;
 }
 
@@ -663,12 +703,45 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Footer overrides */
-.light-theme footer *,
-[data-theme="light"] footer * {
+.light-theme footer *:not(svg):not(path),
+[data-theme="light"] footer *:not(svg):not(path) {
   color: var(--text) !important;
 }
 
 .light-theme footer h3, .light-theme footer h4,
 [data-theme="light"] footer h3, [data-theme="light"] footer h4 {
   color: var(--heading) !important;
+}
+
+/* Background overrides for better contrast */
+.light-theme .bg-slate-700\/50, .light-theme .bg-slate-800\/60, .light-theme .bg-slate-900,
+[data-theme="light"] .bg-slate-700\/50, [data-theme="light"] .bg-slate-800\/60, [data-theme="light"] .bg-slate-900 {
+  background: var(--bg-soft) !important;
+  border: 1px solid var(--panel-border) !important;
+}
+
+/* Form elements */
+.light-theme input, .light-theme textarea, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+  color: var(--text) !important;
+  background: var(--bg-soft) !important;
+  border-color: var(--panel-border) !important;
+}
+
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Labels */
+.light-theme label,
+[data-theme="light"] label {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+/* Muted text */
+.light-theme .text-muted,
+[data-theme="light"] .text-muted {
+  color: var(--muted) !important;
 }

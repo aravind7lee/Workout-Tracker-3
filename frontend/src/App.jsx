@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
-import { realTimeService } from './services/realTimeService';
+// import { realTimeService } from './services/realTimeService';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Library from './pages/Library';
@@ -330,12 +330,17 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Register from './pages/Register';
 import Login from './pages/Login';
 
+// Import light mode test utility for development
+if (process.env.NODE_ENV === 'development') {
+  import('./utils/lightModeTest.js');
+}
+
 export default function App() {
-  // Initialize real-time service on app start
-  useEffect(() => {
-    const cleanup = realTimeService.startRealTimeUpdates(30000);
-    return cleanup;
-  }, []);
+  // Disable real-time service to prevent API errors
+  // useEffect(() => {
+  //   const cleanup = realTimeService.startRealTimeUpdates(30000);
+  //   return cleanup;
+  // }, []);
 
   return (
     <ErrorBoundary>

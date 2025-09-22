@@ -1,0 +1,246 @@
+/* ===== FINAL LIGHT MODE OVERRIDE - HIGHEST PRIORITY ===== */
+/* This file has the highest specificity to ensure ALL text is visible in light mode */
+
+/* ===== GLOBAL BODY AND ROOT OVERRIDES ===== */
+body.light-theme,
+html[data-theme="light"] body {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* ===== UNIVERSAL TEXT COLOR ENFORCEMENT ===== */
+/* Apply to ALL elements except those that should preserve their colors */
+.light-theme *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color):not(svg):not(path):not([class*="gradient"]):not(.bg-gradient-to-r),
+[data-theme="light"] *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color):not(svg):not(path):not([class*="gradient"]):not(.bg-gradient-to-r) {
+  color: #0f172a !important;
+}
+
+/* ===== HEADINGS - ABSOLUTE MAXIMUM CONTRAST ===== */
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* ===== PARAGRAPH AND SPAN ELEMENTS ===== */
+.light-theme p:not(.preserve-color), .light-theme span:not(.preserve-color), .light-theme div:not(.preserve-color):not([class*="gradient"]),
+[data-theme="light"] p:not(.preserve-color), [data-theme="light"] span:not(.preserve-color), [data-theme="light"] div:not(.preserve-color):not([class*="gradient"]) {
+  color: #0f172a !important;
+}
+
+/* ===== LINKS ===== */
+.light-theme a:not(.preserve-color),
+[data-theme="light"] a:not(.preserve-color) {
+  color: #1d4ed8 !important;
+}
+
+/* ===== BUTTON TEXT ===== */
+.light-theme button:not(.btn-primary):not(.preserve-color),
+[data-theme="light"] button:not(.btn-primary):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme .btn-primary,
+[data-theme="light"] .btn-primary {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* ===== OVERRIDE ALL PROBLEMATIC TAILWIND CLASSES ===== */
+.light-theme .text-white:not(.preserve-color), 
+.light-theme .text-slate-100:not(.preserve-color), 
+.light-theme .text-slate-200:not(.preserve-color), 
+.light-theme .text-slate-300:not(.preserve-color), 
+.light-theme .text-slate-400:not(.preserve-color), 
+.light-theme .text-slate-500:not(.preserve-color),
+.light-theme .text-gray-100:not(.preserve-color), 
+.light-theme .text-gray-200:not(.preserve-color), 
+.light-theme .text-gray-300:not(.preserve-color), 
+.light-theme .text-gray-400:not(.preserve-color), 
+.light-theme .text-gray-500:not(.preserve-color),
+[data-theme="light"] .text-white:not(.preserve-color), 
+[data-theme="light"] .text-slate-100:not(.preserve-color), 
+[data-theme="light"] .text-slate-200:not(.preserve-color), 
+[data-theme="light"] .text-slate-300:not(.preserve-color), 
+[data-theme="light"] .text-slate-400:not(.preserve-color), 
+[data-theme="light"] .text-slate-500:not(.preserve-color),
+[data-theme="light"] .text-gray-100:not(.preserve-color), 
+[data-theme="light"] .text-gray-200:not(.preserve-color), 
+[data-theme="light"] .text-gray-300:not(.preserve-color), 
+[data-theme="light"] .text-gray-400:not(.preserve-color), 
+[data-theme="light"] .text-gray-500:not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+/* ===== PRESERVE COLORED STATS WITH STRONG COLORS ===== */
+.light-theme .text-blue-400, .light-theme .text-blue-500,
+[data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
+  color: #1d4ed8 !important;
+}
+
+.light-theme .text-green-400, .light-theme .text-green-500,
+[data-theme="light"] .text-green-400, [data-theme="light"] .text-green-500 {
+  color: #059669 !important;
+}
+
+.light-theme .text-purple-400, .light-theme .text-purple-500,
+[data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
+  color: #7c3aed !important;
+}
+
+.light-theme .text-orange-400, .light-theme .text-orange-500,
+[data-theme="light"] .text-orange-400, [data-theme="light"] .text-orange-500 {
+  color: #d97706 !important;
+}
+
+.light-theme .text-red-400, .light-theme .text-red-500,
+[data-theme="light"] .text-red-400, [data-theme="light"] .text-red-500 {
+  color: #dc2626 !important;
+}
+
+.light-theme .text-yellow-400, .light-theme .text-yellow-500,
+[data-theme="light"] .text-yellow-400, [data-theme="light"] .text-yellow-500 {
+  color: #d97706 !important;
+}
+
+/* ===== BACKGROUND OVERRIDES ===== */
+.light-theme .bg-slate-700\/50, 
+.light-theme .bg-slate-800\/60, 
+.light-theme .bg-slate-900,
+.light-theme .bg-gradient-to-br.from-slate-900.via-slate-800.to-slate-900,
+[data-theme="light"] .bg-slate-700\/50, 
+[data-theme="light"] .bg-slate-800\/60, 
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-gradient-to-br.from-slate-900.via-slate-800.to-slate-900 {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== CARD BACKGROUNDS ===== */
+.light-theme .card,
+[data-theme="light"] .card {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ===== NAVBAR BACKGROUND ===== */
+.light-theme nav,
+[data-theme="light"] nav {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.light-theme input, .light-theme textarea, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: #475569 !important;
+}
+
+.light-theme label,
+[data-theme="light"] label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+/* ===== SPECIFIC COMPONENT OVERRIDES ===== */
+
+/* Hero Section */
+.light-theme section:not(.preserve-color),
+[data-theme="light"] section:not(.preserve-color) {
+  background: #ffffff !important;
+}
+
+/* Dashboard Stats */
+.light-theme .stat-value,
+[data-theme="light"] .stat-value {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Navigation Links */
+.light-theme .nav-link:not(.preserve-color),
+[data-theme="light"] .nav-link:not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme .nav-link:hover,
+[data-theme="light"] .nav-link:hover {
+  color: #1d4ed8 !important;
+  background: rgba(29, 78, 216, 0.1) !important;
+}
+
+.light-theme .nav-link.active,
+[data-theme="light"] .nav-link.active {
+  color: #1d4ed8 !important;
+  background: rgba(29, 78, 216, 0.15) !important;
+}
+
+/* Lists */
+.light-theme li:not(.preserve-color), .light-theme ul *:not(.preserve-color), .light-theme ol *:not(.preserve-color),
+[data-theme="light"] li:not(.preserve-color), [data-theme="light"] ul *:not(.preserve-color), [data-theme="light"] ol *:not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+/* Tables */
+.light-theme table, .light-theme td, .light-theme th,
+[data-theme="light"] table, [data-theme="light"] td, [data-theme="light"] th {
+  color: #0f172a !important;
+}
+
+/* Badges */
+.light-theme .badge,
+[data-theme="light"] .badge {
+  background: rgba(29, 78, 216, 0.1) !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #1d4ed8 !important;
+}
+
+/* Muted Text */
+.light-theme .text-muted,
+[data-theme="light"] .text-muted {
+  color: #475569 !important;
+}
+
+/* ===== FINAL CATCH-ALL FOR ANY MISSED ELEMENTS ===== */
+.light-theme *[class*="text-"]:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color),
+[data-theme="light"] *[class*="text-"]:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+/* ===== ENSURE MINIMUM HEIGHT ELEMENTS HAVE PROPER BACKGROUND ===== */
+.light-theme .min-h-screen,
+[data-theme="light"] .min-h-screen {
+  background: #ffffff !important;
+}
+
+/* ===== CONTAINER ELEMENTS ===== */
+.light-theme .container,
+[data-theme="light"] .container {
+  color: #0f172a !important;
+}
+
+/* ===== GRID ELEMENTS ===== */
+.light-theme .grid *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400),
+[data-theme="light"] .grid *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400) {
+  color: #0f172a !important;
+}
+
+/* ===== FLEX ELEMENTS ===== */
+.light-theme .flex *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400),
+[data-theme="light"] .flex *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400) {
+  color: #0f172a !important;
+}

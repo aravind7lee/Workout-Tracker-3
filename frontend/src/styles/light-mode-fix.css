@@ -1,22 +1,22 @@
 /* ===== LIGHT MODE TEXT VISIBILITY FIX ===== */
-/* Force maximum contrast for all text elements in light mode */
+/* Proper contrast with text hierarchy for light mode */
 
 /* Global text color enforcement */
 .light-theme,
 [data-theme="light"] {
-  color: #212529 !important;
+  color: #2d3748;
 }
 
-/* All text elements */
-.light-theme *:not(svg):not(path),
-[data-theme="light"] *:not(svg):not(path) {
-  color: #212529 !important;
+/* Base text elements with proper hierarchy */
+.light-theme p, .light-theme span, .light-theme div:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400),
+[data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400) {
+  color: #2d3748 !important;
 }
 
-/* Headings - Pure black for maximum visibility */
+/* Headings - Dark for maximum visibility */
 .light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
-  color: #000000 !important;
+  color: #1a202c !important;
   font-weight: 700 !important;
 }
 
@@ -53,11 +53,7 @@
   border: 2px solid #007bff !important;
 }
 
-/* Paragraphs and spans */
-.light-theme p, .light-theme span, .light-theme div,
-[data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div {
-  color: #212529 !important;
-}
+/* Remove this duplicate rule - already handled above */
 
 /* Navigation */
 .light-theme nav, .light-theme nav *,
@@ -65,15 +61,17 @@
   color: #212529 !important;
 }
 
-/* Cards and panels */
-.light-theme .card, .light-theme .card *,
-[data-theme="light"] .card, [data-theme="light"] .card * {
-  color: #212529 !important;
+/* Cards and panels with proper hierarchy */
+.light-theme .card,
+[data-theme="light"] .card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #2d3748 !important;
 }
 
 .light-theme .card h1, .light-theme .card h2, .light-theme .card h3,
 [data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3 {
-  color: #000000 !important;
+  color: #1a202c !important;
 }
 
 /* Forms */
@@ -97,26 +95,57 @@
   font-weight: 600 !important;
 }
 
-/* Override Tailwind classes */
+/* Override Tailwind classes with proper hierarchy */
 .light-theme .text-white,
 [data-theme="light"] .text-white {
-  color: #000000 !important;
+  color: #1a202c !important;
 }
 
 .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
 [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
-  color: #212529 !important;
+  color: #4a5568 !important;
 }
 
 .light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
 [data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
-  color: #212529 !important;
+  color: #4a5568 !important;
+}
+
+/* Preserve colored text elements */
+.light-theme .text-blue-400, .light-theme .text-blue-500,
+[data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
+  color: #3182ce !important;
+}
+
+.light-theme .text-green-400, .light-theme .text-green-500,
+[data-theme="light"] .text-green-400, [data-theme="light"] .text-green-500 {
+  color: #38a169 !important;
+}
+
+.light-theme .text-purple-400, .light-theme .text-purple-500,
+[data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
+  color: #805ad5 !important;
+}
+
+.light-theme .text-orange-400, .light-theme .text-orange-500,
+[data-theme="light"] .text-orange-400, [data-theme="light"] .text-orange-500 {
+  color: #dd6b20 !important;
+}
+
+.light-theme .text-red-400, .light-theme .text-red-500,
+[data-theme="light"] .text-red-400, [data-theme="light"] .text-red-500 {
+  color: #e53e3e !important;
+}
+
+.light-theme .text-yellow-400, .light-theme .text-yellow-500,
+[data-theme="light"] .text-yellow-400, [data-theme="light"] .text-yellow-500 {
+  color: #d69e2e !important;
 }
 
 /* Muted text */
 .light-theme .text-muted, .light-theme .muted-text,
 [data-theme="light"] .text-muted, [data-theme="light"] .muted-text {
-  color: #495057 !important;
+  color: #718096 !important;
 }
 
 /* Hero section */
@@ -219,59 +248,57 @@
 /* Desktop Navigation Links */
 .light-theme nav a, .light-theme nav .nav-link,
 [data-theme="light"] nav a, [data-theme="light"] nav .nav-link {
-  color: #1a1a1a !important;
+  color: #2d3748 !important;
   transition: color 300ms ease !important;
 }
 
 .light-theme nav a:hover, .light-theme nav .nav-link:hover,
 [data-theme="light"] nav a:hover, [data-theme="light"] nav .nav-link:hover {
-  color: #ff9800 !important;
-  border-bottom: 2px solid #ff9800 !important;
+  color: #3182ce !important;
 }
 
 /* Active nav links */
 .light-theme nav .nav-link.active,
 [data-theme="light"] nav .nav-link.active {
-  color: #ff9800 !important;
-  border-bottom: 2px solid #ff9800 !important;
+  color: #3182ce !important;
 }
 
 /* Mobile Menu Button & Icons */
 .light-theme nav button,
 [data-theme="light"] nav button {
-  color: #374151 !important;
+  color: #2d3748 !important;
   transition: color 300ms ease !important;
 }
 
 .light-theme nav button:hover,
 [data-theme="light"] nav button:hover {
-  color: #1a1a1a !important;
+  color: #1a202c !important;
   background: rgba(0,0,0,0.05) !important;
 }
 
 /* All SVG Icons in Navbar */
 .light-theme nav svg,
 [data-theme="light"] nav svg {
-  color: #374151 !important;
+  color: #2d3748 !important;
   transition: color 300ms ease !important;
 }
 
 /* Brand Logo Text */
 .light-theme nav .brand-text, .light-theme nav h1, .light-theme nav h2,
 [data-theme="light"] nav .brand-text, [data-theme="light"] nav h1, [data-theme="light"] nav h2 {
-  color: #1a1a1a !important;
+  color: #1a202c !important;
   font-weight: 700 !important;
 }
 
 /* Login/Register Links */
 .light-theme nav .login-link,
 [data-theme="light"] nav .login-link {
-  color: #1a1a1a !important;
+  color: #2d3748 !important;
 }
 
 .light-theme nav .login-link:hover,
 [data-theme="light"] nav .login-link:hover {
-  color: #ff9800 !important;
+  color: #3182ce !important;
 }
 
 /* Mobile Sidebar Background */
@@ -284,26 +311,26 @@
 /* Mobile Sidebar Text */
 .light-theme nav .mobile-sidebar *,
 [data-theme="light"] nav .mobile-sidebar * {
-  color: #1a1a1a !important;
+  color: #2d3748 !important;
 }
 
 .light-theme nav .mobile-sidebar a:hover,
 [data-theme="light"] nav .mobile-sidebar a:hover {
-  background: rgba(255,152,0,0.1) !important;
-  color: #ff9800 !important;
+  background: rgba(49,130,206,0.1) !important;
+  color: #3182ce !important;
 }
 
 /* Search Input */
 .light-theme nav input,
 [data-theme="light"] nav input {
-  background: #f8f9fa !important;
-  color: #1a1a1a !important;
-  border: 1px solid rgba(0,0,0,0.1) !important;
+  background: #f7fafc !important;
+  color: #2d3748 !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 .light-theme nav input::placeholder,
 [data-theme="light"] nav input::placeholder {
-  color: #6b7280 !important;
+  color: #a0aec0 !important;
 }
 
 /* ===== NAVBAR BACKGROUND FIXES ===== */
@@ -368,25 +395,19 @@
   font-weight: 700 !important;
 }
 
-/* Exercise Library Cards */
-.light-theme .card,
-[data-theme="light"] .card {
-  background: #ffffff !important;
-  border: 2px solid rgba(0,0,0,0.1) !important;
-  color: #212529 !important;
-}
+/* Exercise Library Cards - already handled above */
 
 /* Exercise Items */
 .light-theme .card .font-medium,
 [data-theme="light"] .card .font-medium {
-  color: #000000 !important;
+  color: #1a202c !important;
   font-weight: 700 !important;
 }
 
 /* Exercise Details */
 .light-theme .card .text-slate-400,
 [data-theme="light"] .card .text-slate-400 {
-  color: #495057 !important;
+  color: #718096 !important;
 }
 
 /* Exercise Cards Background */
@@ -422,22 +443,17 @@
   border-color: rgba(40,167,69,0.3) !important;
 }
 
-/* Page Title */
-.light-theme h2,
-[data-theme="light"] h2 {
-  color: #000000 !important;
-  font-weight: 800 !important;
-}
+/* Page Title - already handled by headings rule above */
 
 /* Input Fields */
-.light-theme input, .light-theme select,
-[data-theme="light"] input, [data-theme="light"] select {
+.light-theme input, .light-theme select, .light-theme textarea,
+[data-theme="light"] input, [data-theme="light"] select, [data-theme="light"] textarea {
   background: #ffffff !important;
-  border: 2px solid rgba(0,0,0,0.15) !important;
-  color: #212529 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #2d3748 !important;
 }
 
-.light-theme input::placeholder,
-[data-theme="light"] input::placeholder {
-  color: #6c757d !important;
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: #a0aec0 !important;
 }

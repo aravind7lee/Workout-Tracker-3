@@ -1,11 +1,19 @@
-// frontend/src/pages/Profile.jsx - WORKING PROFILE WITH MOCK DATA
+// frontend/src/pages/Profile.jsx - REAL-TIME PROFILE DATA
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImageUploader from '../components/ImageUploader';
+import { useRealTimeProfile } from '../hooks/useRealTimeProfile';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    profile: user,
+    stats,
+    loading,
+    error,
+    updateProfile,
+    uploadProfilePicture
+  } = useRealTimeProfile();
+  
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -15,45 +23,21 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadUserProfile();
-  }, []);
-
-  const loadUserProfile = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      // Use mock data or localStorage data
-      let userData = localStorage.getItem('user');
-      if (userData) {
-        userData = JSON.parse(userData);
-      } else {
-        // Create mock user data
-        userData = {
-          id: 'user_123',
-          name: 'John Doe',
-          email: 'john.doe@example.com',
-          profileImage: null,
-          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-          lastLogin: new Date().toISOString()
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
-
-      setUser(userData);
-      setFormData({
-        name: userData.name || '',
-        email: userData.email || ''
-      });
-    } catch (error) {
-      console.error('Profile load error:', error);
-    } finally {
-      setLoading(false);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || ''
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -67,19 +51,8 @@ const Profile = () => {
     setSaving(true);
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Update user data in localStorage
-      const updatedUser = {
-        ...user,
-        ...formData
-      };
-      
-      setUser(updatedUser);
+      await updateProfile(formData);
       setEditing(false);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Profile update error:', error);
@@ -89,13 +62,17 @@ const Profile = () => {
     }
   };
 
-  const handleImageUpdate = (newImageUrl) => {
-    const updatedUser = {
-      ...user,
-      profileImage: newImageUrl
-    };
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+  const handleImageUpdate = async (imageUrl) => {
+    try {
+      // The ImageUploader already handles the upload, we just need to update the profile
+      const updatedUser = {
+        ...user,
+        profileImage: imageUrl
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Image update error:', error);
+    }
   };
 
   const handleLogout = () => {
@@ -111,6 +88,22 @@ const Profile = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-4 text-slate-400">Loading profile...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-6xl mb-6">⚠️</div>
+        <h2 className="text-2xl font-bold text-white mb-4">Error Loading Profile</h2>
+        <p className="text-slate-400 mb-4">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="btn bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -154,7 +147,7 @@ const Profile = () => {
           <div className="card">
             <h2 className="text-xl font-semibold text-white mb-6">Profile Picture</h2>
             <ImageUploader
-              currentImage={user.profileImage}
+              currentImage={user?.profileImage}
               onImageUpdate={handleImageUpdate}
             />
           </div>
@@ -267,27 +260,40 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Account Stats */}
+      {/* Your Progress - Real-time Stats */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-white mb-6">Account Statistics</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-blue-400">12</div>
-            <div className="text-sm text-slate-400">Workouts</div>
+        <h2 className="text-xl font-semibold text-white mb-6">Your Progress</h2>
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="text-center p-4 bg-slate-700/30 rounded-lg">
+                <div className="animate-pulse">
+                  <div className="h-8 bg-slate-600 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-600 rounded"></div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-green-400">45</div>
-            <div className="text-sm text-slate-400">Meals Logged</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
+              <div className="text-2xl font-bold text-blue-400">{stats?.totalWorkouts || 0}</div>
+              <div className="text-sm text-slate-400">Total Workouts</div>
+            </div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
+              <div className="text-2xl font-bold text-green-400">{stats?.totalMeals || 0}</div>
+              <div className="text-sm text-slate-400">Meals Logged</div>
+            </div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
+              <div className="text-2xl font-bold text-purple-400">{stats?.xpPoints || 0}</div>
+              <div className="text-sm text-slate-400">XP Points</div>
+            </div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
+              <div className="text-2xl font-bold text-orange-400">{stats?.currentStreak || 0}</div>
+              <div className="text-sm text-slate-400">Day Streak</div>
+            </div>
           </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-purple-400">1,250</div>
-            <div className="text-sm text-slate-400">XP Points</div>
-          </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-orange-400">7</div>
-            <div className="text-sm text-slate-400">Day Streak</div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Profile Actions */}

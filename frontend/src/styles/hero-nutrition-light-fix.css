@@ -1,0 +1,330 @@
+/* ===== HERO SECTION LIGHT MODE FIXES ===== */
+
+/* Hero overlays */
+.hero-overlay-primary {
+  background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.6), rgba(0,0,0,0.4));
+}
+
+.hero-overlay-secondary {
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+
+.light-theme .hero-overlay-primary,
+[data-theme="light"] .hero-overlay-primary {
+  background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+}
+
+.light-theme .hero-overlay-secondary,
+[data-theme="light"] .hero-overlay-secondary {
+  background: linear-gradient(to top, rgba(255,255,255,0.8), transparent);
+}
+
+/* Hero text */
+.hero-title {
+  color: #ffffff;
+}
+
+.light-theme .hero-title,
+[data-theme="light"] .hero-title {
+  color: #000000 !important;
+}
+
+.hero-subtitle {
+  color: #ffffff;
+}
+
+.light-theme .hero-subtitle,
+[data-theme="light"] .hero-subtitle {
+  color: #000000 !important;
+}
+
+.hero-description {
+  color: #e2e8f0;
+}
+
+.light-theme .hero-description,
+[data-theme="light"] .hero-description {
+  color: #1f2937 !important;
+}
+
+.hero-accent {
+  color: #93c5fd;
+}
+
+.light-theme .hero-accent,
+[data-theme="light"] .hero-accent {
+  color: #1d4ed8 !important;
+}
+
+/* Hero feature badges */
+.hero-feature-badge {
+  background: rgba(255,255,255,0.1);
+}
+
+.light-theme .hero-feature-badge,
+[data-theme="light"] .hero-feature-badge {
+  background: rgba(0,0,0,0.1) !important;
+  border: 1px solid rgba(0,0,0,0.2) !important;
+}
+
+.hero-feature-text {
+  color: #ffffff;
+}
+
+.light-theme .hero-feature-text,
+[data-theme="light"] .hero-feature-text {
+  color: #000000 !important;
+}
+
+/* Hero secondary button */
+.hero-secondary-btn {
+  border: 2px solid rgba(255,255,255,0.3);
+  color: #ffffff;
+}
+
+.hero-secondary-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.light-theme .hero-secondary-btn,
+[data-theme="light"] .hero-secondary-btn {
+  border: 2px solid rgba(0,0,0,0.3) !important;
+  color: #000000 !important;
+}
+
+.light-theme .hero-secondary-btn:hover,
+[data-theme="light"] .hero-secondary-btn:hover {
+  background: rgba(0,0,0,0.1) !important;
+  border-color: rgba(0,0,0,0.5) !important;
+}
+
+/* Hero stats card */
+.hero-stats-card {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.light-theme .hero-stats-card,
+[data-theme="light"] .hero-stats-card {
+  background: rgba(255,255,255,0.9) !important;
+  border: 1px solid rgba(0,0,0,0.2) !important;
+}
+
+.hero-stats-title {
+  color: #ffffff;
+}
+
+.light-theme .hero-stats-title,
+[data-theme="light"] .hero-stats-title {
+  color: #000000 !important;
+}
+
+.hero-stats-label {
+  color: #cbd5e1;
+}
+
+.light-theme .hero-stats-label,
+[data-theme="light"] .hero-stats-label {
+  color: #475569 !important;
+}
+
+.hero-stats-divider {
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 1rem;
+}
+
+.light-theme .hero-stats-divider,
+[data-theme="light"] .hero-stats-divider {
+  border-top: 1px solid rgba(0,0,0,0.2) !important;
+}
+
+.hero-progress-bg {
+  background: rgba(71,85,105,0.5);
+}
+
+.light-theme .hero-progress-bg,
+[data-theme="light"] .hero-progress-bg {
+  background: rgba(0,0,0,0.2) !important;
+}
+
+.hero-progress-text {
+  color: #94a3b8;
+}
+
+.light-theme .hero-progress-text,
+[data-theme="light"] .hero-progress-text {
+  color: #64748b !important;
+}
+
+/* ===== NUTRITION MODAL LIGHT MODE FIXES ===== */
+
+/* Modal background */
+.nutrition-modal-bg {
+  background: #1e293b;
+}
+
+.light-theme .nutrition-modal-bg,
+[data-theme="light"] .nutrition-modal-bg {
+  background: #ffffff !important;
+}
+
+.nutrition-modal-border {
+  border: 1px solid #374151;
+}
+
+.light-theme .nutrition-modal-border,
+[data-theme="light"] .nutrition-modal-border {
+  border: 1px solid rgba(0,0,0,0.2) !important;
+}
+
+/* Modal header */
+.nutrition-modal-header {
+  border-bottom: 1px solid #374151;
+}
+
+.light-theme .nutrition-modal-header,
+[data-theme="light"] .nutrition-modal-header {
+  border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.nutrition-modal-title {
+  color: #ffffff;
+}
+
+.light-theme .nutrition-modal-title,
+[data-theme="light"] .nutrition-modal-title {
+  color: #000000 !important;
+}
+
+.nutrition-modal-close {
+  color: #94a3b8;
+}
+
+.nutrition-modal-close:hover {
+  color: #ffffff;
+  background: rgba(71,85,105,0.5);
+}
+
+.light-theme .nutrition-modal-close,
+[data-theme="light"] .nutrition-modal-close {
+  color: #64748b !important;
+}
+
+.light-theme .nutrition-modal-close:hover,
+[data-theme="light"] .nutrition-modal-close:hover {
+  color: #000000 !important;
+  background: rgba(0,0,0,0.1) !important;
+}
+
+/* Modal labels and text */
+.nutrition-modal-label {
+  color: #cbd5e1;
+}
+
+.light-theme .nutrition-modal-label,
+[data-theme="light"] .nutrition-modal-label {
+  color: #374151 !important;
+}
+
+.nutrition-modal-muted {
+  color: #94a3b8;
+}
+
+.light-theme .nutrition-modal-muted,
+[data-theme="light"] .nutrition-modal-muted {
+  color: #6b7280 !important;
+}
+
+.nutrition-modal-hint {
+  color: #6b7280;
+}
+
+.light-theme .nutrition-modal-hint,
+[data-theme="light"] .nutrition-modal-hint {
+  color: #9ca3af !important;
+}
+
+/* Modal inputs */
+.nutrition-modal-input {
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #ffffff;
+}
+
+.nutrition-modal-input:focus {
+  border-color: #3b82f6;
+}
+
+.light-theme .nutrition-modal-input,
+[data-theme="light"] .nutrition-modal-input {
+  background: #f9fafb !important;
+  border: 1px solid #d1d5db !important;
+  color: #000000 !important;
+}
+
+.light-theme .nutrition-modal-input:focus,
+[data-theme="light"] .nutrition-modal-input:focus {
+  border-color: #3b82f6 !important;
+}
+
+/* Nutrition info card */
+.nutrition-info-card {
+  background: rgba(71,85,105,0.3);
+}
+
+.light-theme .nutrition-info-card,
+[data-theme="light"] .nutrition-info-card {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+/* Modal footer */
+.nutrition-modal-footer {
+  border-top: 1px solid #374151;
+}
+
+.light-theme .nutrition-modal-footer,
+[data-theme="light"] .nutrition-modal-footer {
+  border-top: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.nutrition-modal-cancel {
+  color: #cbd5e1;
+}
+
+.nutrition-modal-cancel:hover {
+  color: #ffffff;
+  background: rgba(71,85,105,0.5);
+}
+
+.light-theme .nutrition-modal-cancel,
+[data-theme="light"] .nutrition-modal-cancel {
+  color: #6b7280 !important;
+}
+
+.light-theme .nutrition-modal-cancel:hover,
+[data-theme="light"] .nutrition-modal-cancel:hover {
+  color: #000000 !important;
+  background: rgba(0,0,0,0.1) !important;
+}
+
+.nutrition-modal-confirm {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nutrition-modal-confirm:hover {
+  background: #1d4ed8;
+}
+
+.light-theme .nutrition-modal-confirm,
+[data-theme="light"] .nutrition-modal-confirm {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.light-theme .nutrition-modal-confirm:hover,
+[data-theme="light"] .nutrition-modal-confirm:hover {
+  background: #1d4ed8 !important;
+}

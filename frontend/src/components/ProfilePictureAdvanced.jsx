@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
@@ -8,9 +8,16 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [history, setHistory] = useState([]);
+  const [displayImage, setDisplayImage] = useState(null);
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
+
+  // Update display image when props or user changes
+  useEffect(() => {
+    const imageToShow = currentImage || user?.profileImage;
+    setDisplayImage(imageToShow);
+  }, [currentImage, user?.profileImage]);
 
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -70,13 +77,15 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
       // Convert to base64 for storage
       const base64Image = await convertToBase64(file);
       
-      // Update UI immediately
+      // Update display immediately
+      setDisplayImage(base64Image);
+      
+      // Update parent component
       onImageUpdate(base64Image);
       
-      // Update localStorage
-      const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      userData.profileImage = base64Image;
-      localStorage.setItem('user', JSON.stringify(userData));
+      // Update user context and localStorage
+      const updatedUser = { ...user, profileImage: base64Image };
+      updateUser(updatedUser);
       
       setMessage('Profile updated ✅');
       setTimeout(() => setMessage(''), 2000);
@@ -107,12 +116,15 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
         setHistory(prev => [currentImage, ...prev.slice(0, 4)]);
       }
       
+      // Update display immediately
+      setDisplayImage(null);
+      
+      // Update parent component
       onImageUpdate(null);
       
-      // Update localStorage
-      const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      userData.profileImage = null;
-      localStorage.setItem('user', JSON.stringify(userData));
+      // Update user context
+      const updatedUser = { ...user, profileImage: null };
+      updateUser(updatedUser);
       
       setMessage('Photo removed ✅');
       setTimeout(() => setMessage(''), 2000);
@@ -127,11 +139,15 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
   };
 
   const handleRevertPhoto = (imageUrl) => {
+    // Update display immediately
+    setDisplayImage(imageUrl);
+    
+    // Update parent component
     onImageUpdate(imageUrl);
     
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    userData.profileImage = imageUrl;
-    localStorage.setItem('user', JSON.stringify(userData));
+    // Update user context
+    const updatedUser = { ...user, profileImage: imageUrl };
+    updateUser(updatedUser);
     
     setMessage('Photo restored ✅');
     setTimeout(() => setMessage(''), 2000);
@@ -173,11 +189,15 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
         <div className={`relative w-32 h-32 rounded-full overflow-hidden cursor-pointer border-4 transition-all duration-300 ${
           dragOver ? 'border-blue-400 scale-105' : 'border-slate-600 hover:border-blue-500'
         }`}>
-          {currentImage ? (
+          {displayImage ? (
             <img 
-              src={currentImage} 
+              src={displayImage} 
               alt={`Profile picture of ${user?.name || 'User'}`}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              onError={(e) => {
+                console.error('Image load error:', e);
+                setDisplayImage(null);
+              }}
             />
           ) : (
             <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
@@ -259,7 +279,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
                     📷
                   </button>
                 )}
-                {currentImage && (
+                {displayImage && (
                   <button
                     onClick={handleRemovePhoto}
                     className="p-2 bg-red-500 hover:bg-red-600 rounded-full text-white transition-colors"

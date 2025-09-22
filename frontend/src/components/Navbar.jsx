@@ -6,6 +6,7 @@ import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap }
 import { useAuth } from '../context/AuthContext';
 import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
 import ThemeToggle from './ThemeToggle';
+import logo from '../assets/logo.png';
 
 
 export default function Navbar() {
@@ -132,23 +133,18 @@ export default function Navbar() {
         }`}>
           
           {/* Logo Section */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+          <Link to="/" className="group">
             <motion.div
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.95 }}
               className="relative"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-sm sm:text-lg shadow-lg">
-                GX
-              </div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-30 blur-md group-hover:opacity-60 transition-opacity duration-300"></div>
-            </motion.div>
-            <motion.div
-              className="text-lg sm:text-xl font-bold brand-text transition-colors duration-300"
-              whileHover={{ scale: 1.05 }}
-            >
-              <span className="hidden xs:inline">GymTracker</span>
-              <span className="xs:hidden">GrindX</span>
+              <img 
+                src={logo} 
+                alt="GymTracker Logo" 
+                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain transition-all duration-300 drop-shadow-lg"
+              />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md group-hover:opacity-40 transition-opacity duration-300"></div>
             </motion.div>
           </Link>
 
@@ -482,11 +478,12 @@ export default function Navbar() {
               <div className="p-6">
                 {/* Mobile Header */}
                 <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                      GT
-                    </div>
-                    <span className="text-xl font-bold" style={{ color: 'var(--heading)' }}>GymTracker</span>
+                  <div className="flex items-center">
+                    <img 
+                      src={logo} 
+                      alt="GymTracker Logo" 
+                      className="w-48 h-48 object-contain drop-shadow-lg"
+                    />
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}

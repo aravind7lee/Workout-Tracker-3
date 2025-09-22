@@ -1,5 +1,9 @@
 @import './styles/themes.css';
 @import './styles/light-mode-fix.css';
+@import './styles/light-mode-global-fix.css';
+@import './styles/light-mode-complete-fix.css';
+@import './styles/light-mode-final-override.css';
+@import './styles/hero-nutrition-light-fix.css';
 
 @tailwind base;
 @tailwind components;
