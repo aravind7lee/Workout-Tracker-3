@@ -6,7 +6,7 @@ import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap }
 import { useAuth } from '../context/AuthContext';
 import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
 import ThemeToggle from './ThemeToggle';
-import RealTimeStatus from './RealTimeStatus';
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -438,9 +438,6 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Real-time Status */}
-            <RealTimeStatus />
-            
             {/* Theme Toggle - Always visible on all screens */}
             <ThemeToggle />
 

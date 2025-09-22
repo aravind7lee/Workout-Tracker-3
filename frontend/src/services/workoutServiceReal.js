@@ -1,6 +1,6 @@
 // Real-time workout service with backend integration
-import api from '../utils/api.js';
-import { realTimeService } from './realTimeService.js';
+import api from '../utils/api';
+import { realTimeService } from './realTimeService';
 
 class WorkoutServiceReal {
   constructor() {

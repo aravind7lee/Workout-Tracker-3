@@ -1,6 +1,6 @@
 // Real-time data hook for all components
 import { useState, useEffect, useCallback } from 'react';
-import { realTimeService } from '../services/realTimeService.js';
+import { realTimeService } from '../services/realTimeService';
 
 export function useRealTimeData(dataType, options = {}) {
   const [data, setData] = useState(null);

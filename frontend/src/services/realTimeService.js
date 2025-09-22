@@ -1,5 +1,5 @@
 // Real-time backend service for GymTracker
-import api from '../utils/api.js';
+import api from '../utils/api';
 
 class RealTimeService {
   constructor() {
@@ -68,6 +68,19 @@ class RealTimeService {
       return data;
     } catch (error) {
       return JSON.parse(localStorage.getItem('nutrition') || '[]');
+    }
+  }
+
+  // Real-time profile data
+  async getProfileData() {
+    try {
+      const response = await api.get('/users/profile');
+      const data = response.data;
+      this.cache.set('profile', data);
+      this.notifySubscribers('profile', data);
+      return data;
+    } catch (error) {
+      return JSON.parse(localStorage.getItem('user') || '{}');
     }
   }
 
@@ -194,7 +207,8 @@ class RealTimeService {
         this.getDashboardData(),
         this.getWorkouts(),
         this.getNutritionData(),
-        this.getAnalytics()
+        this.getAnalytics(),
+        this.getProfileData()
       ]);
     } catch (error) {
       console.error('Sync failed:', error);

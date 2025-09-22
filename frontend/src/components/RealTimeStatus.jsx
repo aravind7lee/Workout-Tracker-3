@@ -69,14 +69,14 @@ export default function RealTimeStatus() {
     if (!isOnline) return '🔴';
     if (backendStatus === 'connected') return '🟢';
     if (backendStatus === 'disconnected') return '🟡';
-    return '⚪';
+    return '';
   };
 
   const getStatusText = () => {
     if (!isOnline) return 'Offline';
     if (backendStatus === 'connected') return 'Live';
     if (backendStatus === 'disconnected') return 'Backend Offline';
-    return 'Checking...';
+    return '';
   };
 
   const handleForceSync = async () => {

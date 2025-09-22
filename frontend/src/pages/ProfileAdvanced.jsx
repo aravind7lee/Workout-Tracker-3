@@ -2,54 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ProfilePictureAdvanced from '../components/ProfilePictureAdvanced';
+import { useRealTimeProfile } from '../hooks/useRealTimeProfile';
+import { profileServiceReal } from '../services/profileServiceReal';
 
 const ProfileAdvanced = () => {
-  const [user, setUser] = useState(null);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Real-time profile data
+  const {
+    profile,
+    stats: profileStats,
+    activity,
+    achievements,
+    loading: profileLoading,
+    error: profileError,
+    updateProfile,
+    uploadProfilePicture,
+    refresh
+  } = useRealTimeProfile();
+  
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  
+  // Use real-time data
+  const user = profile;
+  const stats = profileStats;
+  const loading = profileLoading;
 
+  // Update form data when profile loads
   useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = () => {
-    try {
-      // Get user from localStorage immediately
-      const localUser = JSON.parse(localStorage.getItem('user') || '{}');
-      
-      if (!localUser.email) {
-        // No user data, redirect to login
-        navigate('/login');
-        return;
-      }
-
-      // Set user data immediately
-      setUser(localUser);
+    if (profile) {
       setFormData({
-        name: localUser.name || '',
-        email: localUser.email || ''
+        name: profile.name || '',
+        email: profile.email || ''
       });
+    }
+  }, [profile]);
 
-      // Set realistic stats
-      setStats({
-        totalWorkouts: 24,
-        totalMeals: 156,
-        currentStreak: 7,
-        xpPoints: 1250
-      });
-
-      setLoading(false);
-
-    } catch (error) {
-      console.error('Profile load error:', error);
+  // Redirect if no user
+  useEffect(() => {
+    if (!loading && (!profile || !profile.email)) {
       navigate('/login');
     }
-  };
+  }, [loading, profile, navigate]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -63,23 +59,23 @@ const ProfileAdvanced = () => {
     setSaving(true);
 
     try {
-      // Update immediately
-      const updatedUser = { ...user, ...formData };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      await updateProfile(formData);
       setEditing(false);
-
     } catch (error) {
       console.error('Profile update error:', error);
+      alert('Failed to update profile: ' + error.message);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleImageUpdate = (newImageUrl) => {
-    const updatedUser = { ...user, profileImage: newImageUrl };
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+  const handleImageUpdate = async (imageFile) => {
+    try {
+      await uploadProfilePicture(imageFile);
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert('Failed to upload image: ' + error.message);
+    }
   };
 
   const handleLogout = () => {
@@ -121,14 +117,26 @@ const ProfileAdvanced = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-white">My Profile</h1>
-            <p className="text-slate-400 mt-1">Manage your account and track your progress</p>
+            <p className="text-slate-400 mt-1">
+              Real-time profile synced with backend storage
+              <span className="ml-2 text-green-400 text-xs">• Live Data</span>
+            </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="btn bg-red-600 hover:bg-red-700 text-white"
-          >
-            Logout
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={refresh}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={loading}
+            >
+              {loading ? '🔄' : '🔄'} Refresh
+            </button>
+            <button
+              onClick={handleLogout}
+              className="btn bg-red-600 hover:bg-red-700 text-white"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
@@ -252,24 +260,79 @@ const ProfileAdvanced = () => {
       {/* Real-Time Stats */}
       {stats && (
         <div className="card">
-          <h2 className="text-xl font-semibold text-white mb-6">Your Progress</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-white">Your Progress</h2>
+            <div className="text-xs text-green-400 flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Real-time Data
+            </div>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-blue-400">{stats.totalWorkouts}</div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg relative">
+              <div className="text-2xl font-bold text-blue-400">{stats.totalWorkouts || 0}</div>
               <div className="text-sm text-slate-400">Total Workouts</div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
             </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-green-400">{stats.totalMeals}</div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg relative">
+              <div className="text-2xl font-bold text-green-400">{stats.totalMeals || 0}</div>
               <div className="text-sm text-slate-400">Meals Logged</div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-purple-400">{stats.xpPoints}</div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg relative">
+              <div className="text-2xl font-bold text-purple-400">{stats.xpPoints || 0}</div>
               <div className="text-sm text-slate-400">XP Points</div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
             </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-orange-400">{stats.currentStreak}</div>
+            <div className="text-center p-4 bg-slate-700/30 rounded-lg relative">
+              <div className="text-2xl font-bold text-orange-400">{stats.currentStreak || 0}</div>
               <div className="text-sm text-slate-400">Day Streak</div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recent Activity */}
+      {activity && activity.length > 0 && (
+        <div className="card">
+          <h2 className="text-xl font-semibold text-white mb-6">Recent Activity</h2>
+          <div className="space-y-3">
+            {activity.slice(0, 5).map((item, index) => (
+              <div key={item.id || index} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
+                <div className="text-2xl">{item.icon}</div>
+                <div className="flex-1">
+                  <div className="font-medium text-white">{item.title}</div>
+                  <div className="text-sm text-slate-400">{item.description}</div>
+                </div>
+                <div className="text-xs text-slate-500">
+                  {new Date(item.timestamp).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Achievements */}
+      {achievements && achievements.length > 0 && (
+        <div className="card">
+          <h2 className="text-xl font-semibold text-white mb-6">Achievements</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {achievements.map((achievement) => (
+              <div key={achievement.id} className="flex items-center gap-3 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
+                <div className="text-3xl">{achievement.icon}</div>
+                <div className="flex-1">
+                  <div className="font-medium text-green-400">{achievement.title}</div>
+                  <div className="text-sm text-slate-400">{achievement.description}</div>
+                  {achievement.unlockedAt && (
+                    <div className="text-xs text-slate-500 mt-1">
+                      Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+                <div className="text-green-400 text-xl">✓</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
