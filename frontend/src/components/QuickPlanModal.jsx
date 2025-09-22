@@ -8,11 +8,17 @@ export default function QuickPlanModal({ exercise, onClose, onSave }) {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
+    if (!planName.trim()) {
+      alert('Please enter a plan name');
+      return;
+    }
+    
     setSaving(true);
     try {
       const planData = {
         name: planName.trim(),
         exercises: [{
+          id: `${exercise.id}-${Date.now()}`,
           name: exercise.name,
           category: exercise.category,
           sets: exercise.sets,
@@ -23,11 +29,15 @@ export default function QuickPlanModal({ exercise, onClose, onSave }) {
       };
       
       const savedPlan = planService.savePlan(planData);
+      
+      // Show success message
+      alert(`✅ Plan "${savedPlan.name}" created successfully with "${exercise.name}"!`);
+      
       onSave(savedPlan);
       onClose();
     } catch (error) {
       console.error('Error saving plan:', error);
-      alert('Failed to save plan. Please try again.');
+      alert('❌ Failed to save plan. Please try again.');
     } finally {
       setSaving(false);
     }

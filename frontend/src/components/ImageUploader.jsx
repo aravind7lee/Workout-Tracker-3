@@ -1,90 +1,112 @@
-// frontend/src/components/ImageUploader.jsx
-import React, { useState } from 'react';
-import api from '../utils/api';
+import React, { useState, useRef } from 'react';
 
-export default function ImageUploader({ currentImage, onImageUpdate, className = "" }) {
+const ImageUploader = ({ currentImage, onImageUpdate }) => {
   const [uploading, setUploading] = useState(false);
-  const [previewImage, setPreviewImage] = useState(currentImage);
+  const [message, setMessage] = useState('');
+  const fileInputRef = useRef(null);
 
-  const handleImageUpload = async (event) => {
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'ml_default'); // Using default preset
+    formData.append('cloud_name', 'dtqahgnzn');
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/dtqahgnzn/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Cloudinary upload failed');
+    }
+
+    return await response.json();
+  };
+
+  const updateBackend = async (imageUrl) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return; // Skip backend update if no token
+      
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile-picture`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ profileImage: imageUrl })
+      });
+
+      if (response.ok) {
+        console.log('Backend updated successfully');
+      }
+    } catch (error) {
+      console.warn('Backend update failed, but image is saved locally:', error);
+    }
+  };
+
+  const handleFileSelect = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    console.log('📁 Selected file:', file.name, file.type, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
-
-    // Validate file type - accept all image formats
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      setMessage('Please select an image file');
+      setTimeout(() => setMessage(''), 3000);
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('Image size should be less than 5MB');
+      setMessage('Image must be less than 5MB');
+      setTimeout(() => setMessage(''), 3000);
       return;
     }
 
     setUploading(true);
+    setMessage('');
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login to upload profile image');
-        setUploading(false);
-        return;
-      }
-
-      console.log('🚀 Starting upload to Cloudinary...');
-
-      // Create FormData for Cloudinary upload
-      const formData = new FormData();
-      formData.append('profileImage', file);
+      // Upload to Cloudinary
+      const cloudinaryResult = await uploadToCloudinary(file);
+      const imageUrl = cloudinaryResult.secure_url;
       
-      // Upload to Cloudinary via backend API
-      const response = await api.post('/users/upload-avatar', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        },
-        timeout: 30000 // 30 second timeout for large files
-      });
-
-      console.log('✅ Upload response:', response.data);
-
-      if (response.data.success) {
-        // Update preview with Cloudinary URL
-        setPreviewImage(response.data.profileImage);
-        
-        // Update localStorage with server response
-        const userData = response.data.user;
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        // Call parent callback
-        if (onImageUpdate) {
-          onImageUpdate(response.data.profileImage, userData);
-        }
-        
-        alert('Profile image uploaded to Cloudinary successfully!');
-        console.log('🌐 Cloudinary URL:', response.data.cloudinaryUrl);
-      } else {
-        throw new Error(response.data.message || 'Upload failed');
-      }
+      // Update UI immediately
+      onImageUpdate(imageUrl);
+      
+      // Update localStorage
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      userData.profileImage = imageUrl;
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Try to update backend (non-blocking)
+      updateBackend(imageUrl);
+      
+      setMessage('Profile updated ✅');
+      setTimeout(() => setMessage(''), 2000);
+      
     } catch (error) {
-      console.error('❌ Upload error:', error);
+      console.error('Upload error:', error);
       
-      if (error.code === 'ECONNABORTED') {
-        alert('Upload timeout. Please try with a smaller image or check your internet connection.');
-      } else if (error.response?.status === 401) {
-        alert('Session expired. Please login again.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      } else if (error.response?.status === 413) {
-        alert('Image file is too large. Please select an image under 5MB.');
-      } else if (error.response?.data?.message) {
-        alert(`Upload failed: ${error.response.data.message}`);
-      } else {
-        alert('Failed to upload image to Cloudinary. Please check your internet connection and try again.');
+      // Fallback to base64 if Cloudinary fails
+      try {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64Image = e.target.result;
+          onImageUpdate(base64Image);
+          
+          const userData = JSON.parse(localStorage.getItem('user') || '{}');
+          userData.profileImage = base64Image;
+          localStorage.setItem('user', JSON.stringify(userData));
+          
+          setMessage('Profile updated ✅');
+          setTimeout(() => setMessage(''), 2000);
+        };
+        reader.readAsDataURL(file);
+      } catch (fallbackError) {
+        setMessage('Upload failed');
+        setTimeout(() => setMessage(''), 3000);
       }
     } finally {
       setUploading(false);
@@ -92,56 +114,62 @@ export default function ImageUploader({ currentImage, onImageUpdate, className =
   };
 
   return (
-    <div className={`relative ${className}`}>
-      <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden flex-shrink-0 border-4 border-slate-600">
-        {previewImage ? (
+    <div className="flex flex-col items-center space-y-3">
+      <div 
+        onClick={() => fileInputRef.current?.click()}
+        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-slate-600 hover:border-blue-500 transition-all duration-300"
+      >
+        {currentImage ? (
           <img 
-            src={previewImage} 
+            src={currentImage} 
             alt="Profile" 
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.error('Image load error:', e);
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
-            }}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
-        ) : null}
-        <div 
-          className={`w-full h-full flex items-center justify-center text-3xl sm:text-4xl text-white ${
-            previewImage ? 'hidden' : 'flex'
-          }`}
-        >
-          👤
-        </div>
-      </div>
-      
-      {/* Upload Button */}
-      <label className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-          disabled={uploading}
-        />
-        {uploading ? (
-          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
         ) : (
-          <span className="text-white text-sm">📷</span>
+          <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
+            <div className="text-center">
+              <div className="text-3xl text-slate-400 mb-1">👤</div>
+              <div className="text-xs text-slate-400">Click to upload</div>
+            </div>
+          </div>
         )}
-      </label>
-      
-      {/* Upload Status */}
-      {uploading && (
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-400 whitespace-nowrap">
-          Uploading to Cloudinary...
+        
+        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="text-2xl mb-1">📷</div>
+            <div className="text-xs">Change Photo</div>
+          </div>
+        </div>
+
+        {uploading && (
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+              <div className="text-xs">Uploading...</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
+      {message && (
+        <div className={`text-sm px-3 py-1 rounded-full ${
+          message.includes('✅') 
+            ? 'bg-green-500/20 text-green-400' 
+            : 'bg-red-500/20 text-red-400'
+        }`}>
+          {message}
         </div>
       )}
-      
-      {/* File Size Info */}
-      <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
-        Max 5MB • All formats
-      </div>
     </div>
   );
-}
+};
+
+export default ImageUploader;

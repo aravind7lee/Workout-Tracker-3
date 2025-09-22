@@ -21,7 +21,20 @@ export default function AddToExistingPlanModal({ exercise, onClose, onSave }) {
     setSaving(true);
     try {
       const plan = planService.getPlanById(selectedPlanId);
+      if (!plan) {
+        throw new Error('Plan not found');
+      }
+      
+      // Check if exercise already exists in plan
+      const exerciseExists = plan.exercises.some(ex => ex.name === exercise.name);
+      if (exerciseExists) {
+        alert(`"${exercise.name}" is already in "${plan.name}"`);
+        setSaving(false);
+        return;
+      }
+      
       const newExercise = {
+        id: `${exercise.id}-${Date.now()}`,
         name: exercise.name,
         category: exercise.category,
         sets: exercise.sets,
@@ -31,15 +44,20 @@ export default function AddToExistingPlanModal({ exercise, onClose, onSave }) {
       
       const updatedPlan = {
         ...plan,
-        exercises: [...plan.exercises, newExercise]
+        exercises: [...plan.exercises, newExercise],
+        updatedAt: new Date().toISOString()
       };
       
-      planService.updatePlan(selectedPlanId, updatedPlan);
-      onSave(updatedPlan);
+      const savedPlan = planService.updatePlan(selectedPlanId, updatedPlan);
+      
+      // Show success message with exercise and plan names
+      alert(`✅ "${exercise.name}" added to "${plan.name}" successfully!`);
+      
+      onSave(savedPlan);
       onClose();
     } catch (error) {
       console.error('Error adding to plan:', error);
-      alert('Failed to add exercise to plan. Please try again.');
+      alert('❌ Failed to add exercise to plan. Please try again.');
     } finally {
       setSaving(false);
     }

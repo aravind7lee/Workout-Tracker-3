@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useSearch } from '../hooks/useSearch';
+import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
@@ -15,7 +15,7 @@ export default function Navbar() {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [notifications] = useState(3); // Mock notification count
   
-  const { searchQuery, setSearchQuery, searchResults, isSearching, clearSearch } = useSearch();
+  const { searchQuery, setSearchQuery, searchResults, isSearching, clearSearch } = useRealTimeSearch();
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -73,22 +73,23 @@ export default function Navbar() {
   };
 
   const handleSearchResultClick = (result) => {
-    // Navigate based on result type
+    // Navigate to existing pages with search parameters
     switch (result.type) {
-      case 'workout':
-        navigate(`/workouts/${result.id}`);
+      case 'exercise':
+        navigate(`/library?search=${encodeURIComponent(result.title)}`);
         break;
       case 'meal':
-        navigate(`/nutrition?search=${result.title}`);
+        navigate(`/nutrition?search=${encodeURIComponent(result.title)}`);
         break;
       case 'plan':
-        navigate(`/plans/${result.id}`);
-        break;
-      case 'exercise':
-        navigate(`/exercises/${result.id}`);
+        if (result.id) {
+          navigate(`/my-plans?highlight=${result.id}`);
+        } else {
+          navigate(`/my-plans?search=${encodeURIComponent(result.title)}`);
+        }
         break;
       default:
-        navigate(`/search?q=${encodeURIComponent(result.title)}`);
+        navigate(`/library?search=${encodeURIComponent(result.title)}`);
     }
     clearSearch();
     setSearchExpanded(false);
@@ -525,33 +526,62 @@ export default function Navbar() {
                   </form>
                   
                   {/* Mobile Search Results */}
-                  {searchResults.length > 0 && searchQuery && (
+                  {searchQuery && (
                     <div className="mt-4 rounded-xl p-2 max-h-60 overflow-y-auto" style={{ background: 'var(--bg-soft)', border: '1px solid var(--panel-border)' }}>
-                      <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2" style={{ color: 'var(--muted)' }}>
-                        Results ({searchResults.length})
-                      </div>
-                      {searchResults.map((result) => (
-                        <button
-                          key={result.id}
-                          onClick={() => {
-                            handleSearchResultClick(result);
-                            setIsOpen(false);
-                          }}
-                          className="w-full flex items-center space-x-3 px-2 py-2 text-left rounded-lg transition-colors"
-                          style={{ background: 'transparent' }}
-                          onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
-                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                        >
-                          <div className="text-lg">{result.icon}</div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
-                            <div className="text-xs truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
+                      {searchResults.length > 0 ? (
+                        <>
+                          <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2" style={{ color: 'var(--muted)' }}>
+                            Results ({searchResults.length})
                           </div>
-                          <div className={`text-xs px-2 py-1 rounded-full bg-slate-700/50 ${getResultTypeColor(result.type)} capitalize`}>
-                            {result.type}
+                          {searchResults.map((result) => (
+                            <button
+                              key={result.id}
+                              onClick={() => {
+                                handleSearchResultClick(result);
+                                setIsOpen(false);
+                              }}
+                              className="w-full flex items-center space-x-3 px-2 py-2 text-left rounded-lg transition-colors"
+                              style={{ background: 'transparent' }}
+                              onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
+                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                            >
+                              <div className="text-lg">{result.icon}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-sm truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
+                                <div className="text-xs truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
+                              </div>
+                              <div className={`text-xs px-2 py-1 rounded-full bg-slate-700/50 ${getResultTypeColor(result.type)} capitalize`}>
+                                {result.type}
+                              </div>
+                            </button>
+                          ))}
+                          <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--panel-border)' }}>
+                            <button
+                              onClick={() => {
+                                handleSearch({ preventDefault: () => {} });
+                                setIsOpen(false);
+                              }}
+                              className="w-full flex items-center space-x-3 px-2 py-2 transition-colors rounded-lg"
+                              style={{ color: 'var(--accent)', background: 'transparent' }}
+                              onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
+                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                            >
+                              <Search size={16} />
+                              <span>View all results for "{searchQuery}"</span>
+                            </button>
                           </div>
-                        </button>
-                      ))}
+                        </>
+                      ) : !isSearching ? (
+                        <div className="px-2 py-4 text-center">
+                          <div className="text-sm" style={{ color: 'var(--muted)' }}>No results found</div>
+                          <div className="text-xs mt-1" style={{ color: 'var(--muted)' }}>Try different keywords</div>
+                        </div>
+                      ) : (
+                        <div className="px-2 py-4 text-center">
+                          <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+                          <div className="text-xs mt-2" style={{ color: 'var(--muted)' }}>Searching...</div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

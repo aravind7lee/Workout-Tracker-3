@@ -16,6 +16,8 @@ export default function EditPlan() {
   const [dragOverArea, setDragOverArea] = useState(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
 
   const currentMuscleGroup = exerciseLibrary[selectedMuscleGroup];
   const availableExercises = currentMuscleGroup.exercises;
@@ -118,10 +120,12 @@ export default function EditPlan() {
       category: currentMuscleGroup.name
     };
     setExercises(prev => [...prev, newPlanItem]);
+    setHasUnsavedChanges(true);
   }, [currentMuscleGroup]);
 
   const removeFromPlan = useCallback((planId) => {
     setExercises(prev => prev.filter(item => item.planId !== planId));
+    setHasUnsavedChanges(true);
   }, []);
 
   const moveUp = useCallback((index) => {
@@ -131,6 +135,7 @@ export default function EditPlan() {
       [newExercises[index - 1], newExercises[index]] = [newExercises[index], newExercises[index - 1]];
       return newExercises;
     });
+    setHasUnsavedChanges(true);
   }, []);
 
   const moveDown = useCallback((index) => {
@@ -140,6 +145,7 @@ export default function EditPlan() {
       [newExercises[index], newExercises[index + 1]] = [newExercises[index + 1], newExercises[index]];
       return newExercises;
     });
+    setHasUnsavedChanges(true);
   }, []);
 
   const savePlan = async () => {
@@ -166,9 +172,16 @@ export default function EditPlan() {
         category: planCategory
       };
       
-      planService.updatePlan(planId, updatedPlanData);
-      alert(`Plan "${planName}" updated successfully!`);
-      navigate('/my-plans');
+      const updatedPlan = planService.updatePlan(planId, updatedPlanData);
+      
+      setHasUnsavedChanges(false);
+      setLastSaved(new Date());
+      
+      // Show success message with details
+      alert(`✅ Plan "${planName}" updated successfully!\n\n📊 Summary:\n• ${exercises.length} exercises\n• Category: ${planCategory}\n• Last updated: ${new Date().toLocaleString()}`);
+      
+      // Navigate back with the updated plan highlighted
+      navigate(`/my-plans?highlight=${planId}`);
     } catch (error) {
       console.error('Error updating plan:', error);
       alert('Failed to update plan. Please try again.');
@@ -212,13 +225,19 @@ export default function EditPlan() {
           <input
             type="text"
             value={planName}
-            onChange={(e) => setPlanName(e.target.value)}
+            onChange={(e) => {
+              setPlanName(e.target.value);
+              setHasUnsavedChanges(true);
+            }}
             placeholder="Enter plan name..."
             className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base"
           />
           <select
             value={planCategory}
-            onChange={(e) => setPlanCategory(e.target.value)}
+            onChange={(e) => {
+              setPlanCategory(e.target.value);
+              setHasUnsavedChanges(true);
+            }}
             className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
           >
             <option value="General">General</option>
@@ -229,10 +248,29 @@ export default function EditPlan() {
           </select>
           <button
             onClick={savePlan}
-            disabled={saving}
-            className="btn bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={saving || !hasUnsavedChanges}
+            className={`btn text-white disabled:opacity-50 disabled:cursor-not-allowed ${
+              hasUnsavedChanges 
+                ? 'bg-green-600 hover:bg-green-700 ring-2 ring-green-400/50' 
+                : 'bg-slate-600'
+            }`}
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? (
+              <>
+                <span className="animate-spin mr-2">⏳</span>
+                Saving...
+              </>
+            ) : hasUnsavedChanges ? (
+              <>
+                <span className="mr-2">💾</span>
+                Save Changes
+              </>
+            ) : (
+              <>
+                <span className="mr-2">✓</span>
+                Saved
+              </>
+            )}
           </button>
           <button
             onClick={() => navigate('/my-plans')}
@@ -244,9 +282,20 @@ export default function EditPlan() {
       </div>
 
       <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 sm:p-4">
-        <p className="text-blue-300 text-sm sm:text-base">
-          ✏️ <strong>Editing:</strong> Add new exercises from the library or remove/reorder existing ones. Changes are saved when you click "Save Changes".
-        </p>
+        <div className="flex items-start gap-3">
+          <div className="text-2xl">✏️</div>
+          <div>
+            <p className="text-blue-300 text-sm sm:text-base font-medium mb-2">
+              <strong>Editing Plan:</strong> {plan.name}
+            </p>
+            <div className="text-blue-200 text-xs sm:text-sm space-y-1">
+              <p>• Drag & drop exercises between library and plan</p>
+              <p>• Use + and × buttons for quick add/remove</p>
+              <p>• Reorder exercises with ↑ ↓ arrows</p>
+              <p>• Changes are saved when you click "Save Changes"</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -342,9 +391,21 @@ export default function EditPlan() {
             <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
               <span>✏️</span> Editing Plan
             </h3>
-            <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full">
-              {exercises.length} {exercises.length === 1 ? 'exercise' : 'exercises'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full">
+                {exercises.length} {exercises.length === 1 ? 'exercise' : 'exercises'}
+              </span>
+              {hasUnsavedChanges && (
+                <span className="text-xs text-yellow-400 bg-yellow-900/30 px-2 py-1 rounded-full animate-pulse">
+                  ⚠ Unsaved
+                </span>
+              )}
+              {lastSaved && !hasUnsavedChanges && (
+                <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full">
+                  ✓ Saved {lastSaved.toLocaleTimeString()}
+                </span>
+              )}
+            </div>
           </div>
           
           {exercises.length === 0 ? (

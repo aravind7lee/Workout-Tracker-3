@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 export default function auth(req, res, next) {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   
@@ -6,8 +8,7 @@ export default function auth(req, res, next) {
   }
 
   try {
-    // For demo purposes, extract user ID from token (in production, verify JWT)
-    const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'workout_tracker_super_secret_jwt_key_2024_secure_token_generator');
     req.user = { id: decoded.id };
     next();
   } catch (error) {

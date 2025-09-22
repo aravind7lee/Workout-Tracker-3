@@ -1,8 +1,8 @@
-// frontend/src/pages/Analytics.jsx
+// frontend/src/pages/Analytics.jsx - Production Ready
 import React from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import { useAnalytics } from '../hooks/useAnalytics';
+import { useRealAnalytics } from '../hooks/useRealAnalytics';
 
 Chart.register(...registerables);
 
@@ -16,7 +16,7 @@ export default function Analytics() {
     isLoading,
     error,
     refresh
-  } = useAnalytics();
+  } = useRealAnalytics();
 
   const chartOptions = {
     responsive: true,
@@ -31,22 +31,12 @@ export default function Analytics() {
     },
     scales: {
       x: {
-        ticks: {
-          color: '#94a3b8',
-          font: { size: 11 }
-        },
-        grid: {
-          color: 'rgba(148, 163, 184, 0.1)'
-        }
+        ticks: { color: '#94a3b8', font: { size: 11 } },
+        grid: { color: 'rgba(148, 163, 184, 0.1)' }
       },
       y: {
-        ticks: {
-          color: '#94a3b8',
-          font: { size: 11 }
-        },
-        grid: {
-          color: 'rgba(148, 163, 184, 0.1)'
-        }
+        ticks: { color: '#94a3b8', font: { size: 11 } },
+        grid: { color: 'rgba(148, 163, 184, 0.1)' }
       }
     }
   };
@@ -57,11 +47,7 @@ export default function Analytics() {
     plugins: {
       legend: {
         position: 'bottom',
-        labels: {
-          color: '#e2e8f0',
-          font: { size: 11 },
-          padding: 15
-        }
+        labels: { color: '#e2e8f0', font: { size: 11 }, padding: 15 }
       }
     }
   };
@@ -71,10 +57,7 @@ export default function Analytics() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl lg:text-3xl font-semibold text-white">Progress & Analytics</h2>
-          <button
-            onClick={refresh}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-          >
+          <button onClick={refresh} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
             Retry
           </button>
         </div>
@@ -88,21 +71,27 @@ export default function Analytics() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Progress & Analytics</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Progress & Analytics</h2>
+          <p className="text-slate-400 text-sm mt-1">
+            Real-time insights from your GymTracker data
+            <span className="ml-2 text-green-400 text-xs">• Live Data</span>
+          </p>
+        </div>
         <button
           onClick={refresh}
-          className="px-3 py-1 text-sm bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
           disabled={isLoading}
         >
-          {isLoading ? '⟳' : '🔄'} Refresh
+          <span className={isLoading ? 'animate-spin' : ''}>{isLoading ? '⟳' : '🔄'}</span>
+          {isLoading ? 'Refreshing...' : 'Refresh Data'}
         </button>
       </div>
       
       {/* Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {isLoading ? (
-          // Loading skeletons
           Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="card">
               <div className="animate-pulse">
@@ -114,57 +103,46 @@ export default function Analytics() {
           ))
         ) : stats ? (
           [
-            { 
-              label: 'Total Workouts', 
-              value: stats.totalWorkouts.toString(), 
-              change: stats.changes.workouts, 
-              color: 'text-blue-400' 
-            },
-            { 
-              label: 'Calories Burned', 
-              value: stats.totalCalories, 
-              change: stats.changes.calories, 
-              color: 'text-green-400' 
-            },
-            { 
-              label: 'Personal Records', 
-              value: stats.personalRecords.toString(), 
-              change: stats.changes.records, 
-              color: 'text-purple-400' 
-            },
-            { 
-              label: 'Streak Days', 
-              value: stats.streak.toString(), 
-              change: stats.changes.streak, 
-              color: 'text-orange-400' 
-            }
+            { label: 'Total Workouts', value: (stats.totalWorkouts || 0).toString(), change: stats.totalWorkouts > 0 ? 'Great progress!' : 'Start your first workout', color: 'text-blue-400' },
+            { label: 'Workout Plans', value: (stats.totalPlans || 0).toString(), change: stats.totalPlans > 0 ? `${stats.totalPlans} plans created` : 'Create your first plan', color: 'text-green-400' },
+            { label: 'XP Points', value: (stats.xpPoints || 0).toString(), change: stats.xpPoints > 0 ? `Level ${Math.floor(stats.xpPoints / 500) + 1}` : 'Earn XP by working out', color: 'text-purple-400' },
+            { label: 'Current Streak', value: (stats.currentStreak || 0).toString(), change: stats.currentStreak > 0 ? `${stats.currentStreak} days strong!` : 'Start your streak', color: 'text-orange-400' }
           ].map((stat, index) => (
             <div key={index} className="card">
               <div className="text-center">
-                <div className={`text-2xl sm:text-3xl font-bold ${stat.color} mb-1`}>
-                  {stat.value}
-                </div>
-                <div className="text-xs sm:text-sm text-slate-400 mb-1">
-                  {stat.label}
-                </div>
-                <div className="text-xs text-green-400">
-                  {stat.change}
-                </div>
+                <div className={`text-2xl sm:text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
+                <div className="text-xs sm:text-sm text-slate-400 mb-1">{stat.label}</div>
+                <div className="text-xs text-green-400">{stat.change}</div>
               </div>
             </div>
           ))
         ) : (
-          <div className="col-span-full card text-center py-4">
-            <div className="text-slate-400">No workout data available</div>
+          <div className="col-span-full card text-center py-8">
+            <div className="text-4xl mb-3">📊</div>
+            <div className="text-white font-medium mb-2">No Data Yet</div>
+            <div className="text-slate-400 text-sm mb-4">Start working out to see your analytics</div>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+              <button 
+                onClick={() => window.location.href = '/library'}
+                className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+              >
+                Browse Exercises
+              </button>
+              <button 
+                onClick={() => window.location.href = '/plans'}
+                className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
+              >
+                Create Plan
+              </button>
+            </div>
           </div>
         )}
       </div>
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {/* Calories Chart */}
         <div className="card">
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Calories Burned</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Calories</h3>
           <div className="h-48 sm:h-64">
             {isLoading ? (
               <div className="flex items-center justify-center h-full">
@@ -173,16 +151,13 @@ export default function Analytics() {
             ) : caloriesData ? (
               <Line data={caloriesData} options={chartOptions} />
             ) : (
-              <div className="flex items-center justify-center h-full text-slate-400">
-                No calorie data available
-              </div>
+              <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
             )}
           </div>
         </div>
 
-        {/* Workout Frequency Chart */}
         <div className="card">
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Monthly Workout Frequency</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Workouts</h3>
           <div className="h-48 sm:h-64">
             {isLoading ? (
               <div className="flex items-center justify-center h-full">
@@ -191,18 +166,16 @@ export default function Analytics() {
             ) : frequencyData ? (
               <Bar data={frequencyData} options={chartOptions} />
             ) : (
-              <div className="flex items-center justify-center h-full text-slate-400">
-                No frequency data available
-              </div>
+              <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Muscle Group Distribution & Achievements */}
+      {/* Muscle Groups & Achievements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="card lg:col-span-1">
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">Muscle Group Focus</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">Muscle Groups</h3>
           <div className="h-48 sm:h-64">
             {isLoading ? (
               <div className="flex items-center justify-center h-full">
@@ -211,20 +184,16 @@ export default function Analytics() {
             ) : muscleData ? (
               <Doughnut data={muscleData} options={doughnutOptions} />
             ) : (
-              <div className="flex items-center justify-center h-full text-slate-400">
-                No muscle data available
-              </div>
+              <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
             )}
           </div>
         </div>
 
-        {/* Recent Achievements */}
         <div className="card lg:col-span-2">
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Recent Achievements</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Achievements</h3>
           <div className="space-y-3">
             {isLoading ? (
-              // Loading skeletons
-              Array.from({ length: 4 }).map((_, i) => (
+              Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
                   <div className="animate-pulse">
                     <div className="w-8 h-8 bg-slate-600 rounded"></div>
@@ -233,20 +202,17 @@ export default function Analytics() {
                     <div className="h-4 bg-slate-600 rounded mb-1"></div>
                     <div className="h-3 bg-slate-600 rounded"></div>
                   </div>
-                  <div className="animate-pulse">
-                    <div className="w-16 h-3 bg-slate-600 rounded"></div>
-                  </div>
                 </div>
               ))
-            ) : achievements.length > 0 ? (
+            ) : achievements && achievements.length > 0 ? (
               achievements.slice(0, 4).map((achievement, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                  <div className="text-2xl">{achievement.icon}</div>
+                <div key={achievement.id || index} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
+                  <div className="text-2xl">{achievement.icon || '🏆'}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-white text-sm sm:text-base">{achievement.title}</div>
-                    <div className="text-xs sm:text-sm text-slate-400">{achievement.description}</div>
+                    <div className="font-medium text-white text-sm sm:text-base">{achievement.title || 'Achievement'}</div>
+                    <div className="text-xs sm:text-sm text-slate-400">{achievement.description || 'Great job!'}</div>
                   </div>
-                  <div className="text-xs text-slate-500 flex-shrink-0">{achievement.timeAgo}</div>
+                  <div className="text-xs text-slate-500 flex-shrink-0">{achievement.timeAgo || 'Recently'}</div>
                 </div>
               ))
             ) : (

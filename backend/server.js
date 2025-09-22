@@ -1,120 +1,120 @@
-// backend/server.js
-import dotenv from 'dotenv';
+// backend/server.js - Updated server with user routes
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 // Import routes
 import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import exerciseRoutes from './routes/exercises.js';
+import planRoutes from './routes/plans.js';
+import workoutRoutes from './routes/workouts.js';
+import mealRoutes from './routes/meals.js';
 import nutritionRoutes from './routes/nutrition.js';
+import analyticsRoutes from './routes/analytics.js';
+import dashboardRoutes from './routes/dashboard.js';
+import reviewRoutes from './routes/reviews.js';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
+const PORT = process.env.PORT || 5001;
 
-// Basic middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-// CORS - Allow all origins
+// Middleware
 app.use(cors({
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://grindx-workout-tracker.onrender.com'
+  ],
+  credentials: true
 }));
 
-// API routes
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/plans', planRoutes);
+app.use('/api/workouts', workoutRoutes);
+app.use('/api/meals', mealRoutes);
 app.use('/api/nutrition', nutritionRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/reviews', reviewRoutes);
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({
-    message: '🏋️ GymTracker API Server',
-    status: 'Running',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      register: '/api/auth/register',
-      login: '/api/auth/login'
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Health check routes
-app.get('/health', (req, res) => {
-  const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
-  res.json({ 
-    status: 'OK', 
-    message: 'GymTracker API Ready', 
-    database: dbStatus,
-    mongodb: process.env.MONGO_URI ? 'Configured' : 'Not configured',
-    timestamp: new Date().toISOString()
-  });
-});
-
+// Health check
 app.get('/api/health', (req, res) => {
-  const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
   res.json({ 
     status: 'OK', 
-    message: 'GymTracker API Ready', 
-    database: dbStatus,
-    mongodb: process.env.MONGO_URI ? 'Configured' : 'Not configured',
-    timestamp: new Date().toISOString()
+    message: 'Workout Tracker API is running',
+    timestamp: new Date().toISOString(),
+    cloudinary: {
+      configured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
+    }
+  });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Server Error:', error);
+  
+  if (error.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      message: 'File too large. Maximum size is 5MB.'
+    });
+  }
+  
+  if (error.message === 'Only image files are allowed!') {
+    return res.status(400).json({
+      message: 'Only image files are allowed.'
+    });
+  }
+  
+  res.status(500).json({
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
   });
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use('*', (req, res) => {
   res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-    availableRoutes: [
-      'GET /',
-      'GET /api/health',
-      'POST /api/auth/register',
-      'POST /api/auth/login'
-    ]
+    message: 'Route not found',
+    path: req.originalUrl
   });
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Server Error:', err.message);
-  res.status(500).json({ 
-    success: false,
-    message: 'Internal server error'
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    console.log('🔧 Cloudinary configured:', !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY));
+    
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📡 API Health: http://localhost:${PORT}/api/health`);
+    });
+    
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`❌ Port ${PORT} is busy, trying port ${PORT + 1}`);
+        const newPort = PORT + 1;
+        app.listen(newPort, () => {
+          console.log(`🚀 Server running on port ${newPort}`);
+          console.log(`📡 API Health: http://localhost:${newPort}/api/health`);
+        });
+      } else {
+        console.error('❌ Server error:', err);
+      }
+    });
+  })
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
   });
-});
 
-// MongoDB connection
-if (process.env.MONGO_URI) {
-  mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ MongoDB Connected'))
-    .catch(err => console.error('❌ MongoDB Connection Failed:', err.message));
-} else {
-  console.log('⚠️ MONGO_URI not found - running without database');
-}
-
-// For Vercel serverless
-export default (req, res) => {
-  return app(req, res);
-};
-
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`🌐 API URL: http://localhost:${PORT}`);
-    console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
-  });
-}
+export default app;

@@ -1,11 +1,15 @@
 // frontend/src/pages/Nutrition.jsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { useNutrition } from '../hooks/useNutrition';
 import MealInput from '../components/MealInput';
 import NutritionPreviewModal from '../components/NutritionPreviewModal';
 
 export default function Nutrition() {
+  const [searchParams] = useSearchParams();
+  const navbarSearch = searchParams.get('search') || '';
+  
   const {
     meals,
     totals,
@@ -26,6 +30,13 @@ export default function Nutrition() {
   const [nutritionItems, setNutritionItems] = useState([]);
   const [isAddingMeal, setIsAddingMeal] = useState(false);
   const [customCalorieTarget, setCustomCalorieTarget] = useState(null);
+  
+  // Auto-search when coming from navbar
+  useEffect(() => {
+    if (navbarSearch) {
+      handleLookup(navbarSearch);
+    }
+  }, [navbarSearch]);
 
   useEffect(() => {
     loadMeals();
@@ -43,13 +54,20 @@ export default function Nutrition() {
       const result = await lookupNutrition(query);
       console.log('Lookup result:', result);
       
-      if (result && result.ok && result.items && result.items.length > 0) {
-        console.log('Found nutrition items:', result.items);
-        setNutritionItems(result.items);
+      if (result && result.success && result.data) {
+        console.log('Found nutrition data:', result.data);
+        // Convert single nutrition item to array format for modal
+        const nutritionItem = {
+          ...result.data,
+          parsedName: result.data.name,
+          servingText: '100g serving',
+          servingGrams: 100,
+          mealType: 'snack'
+        };
+        setNutritionItems([nutritionItem]);
         setShowPreviewModal(true);
       } else {
         console.error('No nutrition data in result:', result);
-        // Show error but don't throw - let user try again
         const errorMsg = result?.error || 'No nutrition data found. Try a different food name.';
         alert(errorMsg);
       }

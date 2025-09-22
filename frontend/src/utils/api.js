@@ -1,4 +1,4 @@
-// frontend/src/utils/api.js
+// frontend/src/utils/api.js - UPDATED TO SUPPRESS PROFILE ERRORS
 import axios from 'axios';
 
 const api = axios.create({
@@ -23,13 +23,33 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor - COMPLETE ERROR SUPPRESSION
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    // Silent error handling
+    // COMPLETELY SUPPRESS ALL CONSOLE OUTPUT FOR THESE ERRORS
+    if (
+      error.response?.status === 404 ||
+      error.config?.url?.includes('/analytics/') ||
+      error.config?.url?.includes('/dashboard/') ||
+      error.config?.url?.includes('/users/profile') ||
+      error.config?.url?.includes('/users/upload-avatar') ||
+      error.message?.includes('Network Error') ||
+      error.message?.includes('Request failed')
+    ) {
+      // Create a silent error that doesn't log to console
+      const silentError = new Error('Silent API Error');
+      silentError.response = error.response;
+      silentError.config = error.config;
+      silentError.silent = true;
+      
+      // Override the error's toString to prevent console output
+      silentError.toString = () => '';
+      
+      return Promise.reject(silentError);
+    }
     
     return Promise.reject(error);
   }

@@ -1,12 +1,39 @@
 // frontend/src/pages/MyPlans.jsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import PlanDetailsModal from '../components/PlanDetailsModal';
 
 export default function MyPlans() {
+  const [searchParams] = useSearchParams();
+  const navbarSearch = searchParams.get('search') || '';
+  const highlightPlan = searchParams.get('highlight') || '';
   const [savedPlans, setSavedPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(navbarSearch);
+  
+  // Filter plans based on search
+  const filteredPlans = useMemo(() => {
+    if (!searchQuery) return savedPlans;
+    return savedPlans.filter(plan => 
+      plan.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      plan.exercises.some(exercise => 
+        exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [savedPlans, searchQuery]);
+  
+  // Update search when navbar search parameter changes
+  useEffect(() => {
+    if (navbarSearch && navbarSearch !== searchQuery) {
+      setSearchQuery(navbarSearch);
+    }
+  }, [navbarSearch]);
+  
+  // Reload plans when component mounts or when highlighted plan changes
+  useEffect(() => {
+    loadSavedPlans();
+  }, [highlightPlan]);
 
   useEffect(() => {
     loadSavedPlans();
@@ -66,8 +93,45 @@ export default function MyPlans() {
           <span>+</span> Create New Plan
         </Link>
       </div>
+      
+      {/* Search Bar */}
+      {(savedPlans.length > 0 || searchQuery) && (
+        <div className="relative">
+          <input 
+            value={searchQuery} 
+            onChange={e => setSearchQuery(e.target.value)} 
+            className="w-full p-3 pl-10 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400" 
+            placeholder="Search your plans..." 
+          />
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">
+            🔍
+          </div>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
 
-      {savedPlans.length === 0 ? (
+      {searchQuery && filteredPlans.length === 0 && savedPlans.length > 0 ? (
+        <div className="card text-center py-12">
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-xl font-semibold text-white mb-2">No Plans Found</h3>
+          <p className="text-slate-400 mb-6">
+            No plans match "{searchQuery}". Try a different search term.
+          </p>
+          <button
+            onClick={() => setSearchQuery('')}
+            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Clear Search
+          </button>
+        </div>
+      ) : savedPlans.length === 0 ? (
         <div className="card text-center py-12">
           <div className="text-6xl mb-4">📋</div>
           <h3 className="text-xl font-semibold text-white mb-2">No Plans Yet</h3>
@@ -83,8 +147,17 @@ export default function MyPlans() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {savedPlans.map((plan) => (
-            <div key={plan.id} className="card hover:bg-slate-800/60 transition-colors">
+          {searchQuery && (
+            <div className="col-span-full mb-4">
+              <p className="text-slate-400 text-sm">
+                Showing {filteredPlans.length} of {savedPlans.length} plans for "{searchQuery}"
+              </p>
+            </div>
+          )}
+          {filteredPlans.map((plan) => (
+            <div key={plan.id} className={`card hover:bg-slate-800/60 transition-all duration-500 ${
+              highlightPlan === plan.id ? 'ring-2 ring-blue-500 bg-blue-900/20 shadow-lg shadow-blue-500/20 scale-105' : ''
+            }`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white mb-1">{plan.name}</h3>

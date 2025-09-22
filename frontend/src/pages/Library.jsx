@@ -1,18 +1,27 @@
 // frontend/src/pages/Library.jsx
-import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 
 export default function Library() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const navbarSearch = searchParams.get('search') || '';
+  const [searchQuery, setSearchQuery] = useState(navbarSearch);
   const [filters, setFilters] = useState({
     category: '',
     difficulty: '',
     muscle: ''
   });
+  
+  // Update search when navbar search parameter changes
+  useEffect(() => {
+    if (navbarSearch && navbarSearch !== searchQuery) {
+      setSearchQuery(navbarSearch);
+    }
+  }, [navbarSearch]);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showQuickPlan, setShowQuickPlan] = useState(null);
   const [showAddToExisting, setShowAddToExisting] = useState(null);
@@ -60,10 +69,10 @@ export default function Library() {
   };
   
   const handlePlanSaved = (savedPlan) => {
-    alert(`Plan "${savedPlan.name}" saved successfully!`);
+    // Show success message and navigate immediately for better UX
     setTimeout(() => {
-      navigate('/my-plans');
-    }, 1000);
+      navigate('/my-plans?highlight=' + savedPlan.id);
+    }, 500);
   };
   
   const handleAddToExisting = (exercise) => {
