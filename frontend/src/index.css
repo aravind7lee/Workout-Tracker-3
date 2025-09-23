@@ -4,6 +4,7 @@
 @import './styles/light-mode-complete-fix.css';
 @import './styles/light-mode-final-override.css';
 @import './styles/hero-nutrition-light-fix.css';
+@import './styles/hero-styles.css';
 
 @tailwind base;
 @tailwind components;

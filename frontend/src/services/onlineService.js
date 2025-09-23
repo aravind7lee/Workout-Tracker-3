@@ -14,12 +14,12 @@ class OnlineService {
     
     this.checkingStatus = true;
     try {
-      const response = await api.get('/health', { timeout: 10000 });
+      const response = await api.get('/health', { timeout: 8000 });
       this.isOnline = response.status === 200;
-      console.log('Backend status:', this.isOnline ? 'Online' : 'Offline');
+      console.log('✅ Backend Online - Real-time mode active');
       return this.isOnline;
     } catch (error) {
-      console.log('Backend offline:', error.message);
+      console.log('⚠️ Backend offline, using local data');
       this.isOnline = false;
       return false;
     } finally {
@@ -42,12 +42,11 @@ class OnlineService {
 
   async getWorkoutPlans() {
     try {
-      if (!this.isOnline) return [];
-      
       const response = await api.get('/plans');
       return response.data.plans || [];
     } catch (error) {
       console.error('Failed to fetch workout plans:', error);
+      this.isOnline = false;
       return [];
     }
   }
@@ -66,12 +65,11 @@ class OnlineService {
 
   async getWorkoutHistory() {
     try {
-      if (!this.isOnline) return [];
-      
       const response = await api.get('/workouts');
       return response.data.workouts || [];
     } catch (error) {
       console.error('Failed to fetch workout history:', error);
+      this.isOnline = false;
       return [];
     }
   }
@@ -115,14 +113,12 @@ class OnlineService {
 
   async getAnalytics() {
     try {
-      const online = await this.checkBackendStatus();
-      if (!online) return null;
-      
       // Get hero stats which contains the main analytics data
       const response = await api.get('/analytics/hero-stats');
       return response.data?.data || response.data;
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
+      this.isOnline = false;
       return null;
     }
   }

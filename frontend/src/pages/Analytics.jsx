@@ -1,36 +1,74 @@
-// frontend/src/pages/Analytics.jsx - Production Ready
-import React, { useState, useEffect } from 'react';
+// frontend/src/pages/Analytics.jsx - Real-time MongoDB Backend Integration
+import React, { useState, useEffect, useCallback } from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import { useRealTimeAnalytics } from '../hooks/useRealTimeData';
-import { realTimeStatsService } from '../services/realTimeStatsService';
+import { onlineService } from '../services/onlineService';
+import { useAuth } from '../context/AuthContext';
 
 Chart.register(...registerables);
 
 export default function Analytics() {
-  const {
-    data: analyticsData,
-    loading: isLoading,
-    error,
-    refresh
-  } = useRealTimeAnalytics();
+  const { isAuthenticated } = useAuth();
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [realTimeStats, setRealTimeStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isOnline, setIsOnline] = useState(false);
   
-  const [realTimeStats, setRealTimeStats] = useState(() => {
-    try {
-      return {
-        totalWorkouts: JSON.parse(localStorage.getItem('recentWorkouts') || '[]').length,
-        totalPlans: JSON.parse(localStorage.getItem('workoutPlans') || '[]').length,
-        totalMeals: JSON.parse(localStorage.getItem('recentMeals') || '[]').length,
-        currentStreak: 0,
-        xpPoints: JSON.parse(localStorage.getItem('recentWorkouts') || '[]').length * 100
-      };
-    } catch (error) {
-      return { totalWorkouts: 0, totalPlans: 0, totalMeals: 0, currentStreak: 0, xpPoints: 0 };
+  const loadAnalyticsData = useCallback(async () => {
+    if (!isAuthenticated()) {
+      setIsLoading(false);
+      return;
     }
-  });
+    
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Check if backend is online
+      const online = await onlineService.checkBackendStatus();
+      setIsOnline(online);
+      
+      if (online) {
+        // Load real-time data from MongoDB backend
+        const [analytics, workouts, plans] = await Promise.all([
+          onlineService.getAnalytics(),
+          onlineService.getWorkoutHistory(),
+          onlineService.getWorkoutPlans()
+        ]);
+        
+        if (analytics) {
+          setRealTimeStats({
+            totalWorkouts: analytics.totalWorkouts || 0,
+            totalPlans: plans?.length || 0,
+            totalMeals: analytics.totalMeals || 0,
+            currentStreak: analytics.currentStreak || 0,
+            xpPoints: analytics.xpPoints || 0
+          });
+          
+          // Set chart data from backend
+          setAnalyticsData({
+            stats: analytics,
+            caloriesTrend: generateChartData(analytics.caloriesTrend, 'Calories'),
+            workoutFrequency: generateChartData(analytics.workoutFrequency, 'Workouts'),
+            muscleDistribution: generateDoughnutData(analytics.muscleGroups),
+            achievements: analytics.achievements || []
+          });
+        }
+      } else {
+        // Fallback to localStorage data
+        loadOfflineData();
+      }
+    } catch (err) {
+      console.error('Analytics loading error:', err);
+      setError(err.message);
+      loadOfflineData();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated]);
   
-  useEffect(() => {
-    // Update stats from localStorage
+  const loadOfflineData = () => {
     try {
       const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
@@ -43,10 +81,63 @@ export default function Analytics() {
         currentStreak: 0,
         xpPoints: workouts.length * 100 + plans.length * 50
       });
+      
+      setAnalyticsData({
+        stats: null,
+        caloriesTrend: null,
+        workoutFrequency: null,
+        muscleDistribution: null,
+        achievements: []
+      });
     } catch (error) {
-      console.error('Error updating stats:', error);
+      console.error('Error loading offline data:', error);
     }
-  }, []);
+  };
+  
+  const generateChartData = (data, label) => {
+    if (!data || !Array.isArray(data)) return null;
+    
+    return {
+      labels: data.map(item => item.date || item.day || 'Day'),
+      datasets: [{
+        label,
+        data: data.map(item => item.value || item.count || 0),
+        borderColor: label === 'Calories' ? '#3b82f6' : '#10b981',
+        backgroundColor: label === 'Calories' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+        tension: 0.4
+      }]
+    };
+  };
+  
+  const generateDoughnutData = (muscleGroups) => {
+    if (!muscleGroups || !Array.isArray(muscleGroups)) return null;
+    
+    return {
+      labels: muscleGroups.map(group => group.name || 'Unknown'),
+      datasets: [{
+        data: muscleGroups.map(group => group.count || 0),
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+        borderWidth: 0
+      }]
+    };
+  };
+  
+  useEffect(() => {
+    loadAnalyticsData();
+    
+    // Set up real-time refresh every 30 seconds
+    const interval = setInterval(() => {
+      if (isAuthenticated()) {
+        loadAnalyticsData();
+      }
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [loadAnalyticsData]);
+  
+  const refresh = () => {
+    loadAnalyticsData();
+  };
 
   const stats = analyticsData?.stats;
   const caloriesData = analyticsData?.caloriesTrend;
@@ -111,9 +202,10 @@ export default function Analytics() {
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Progress & Analytics</h2>
           <p className="text-slate-400 text-sm mt-1">
-            Real-time insights synced with backend storage
-            <span className="ml-2 text-green-400 text-xs">• Backend Integrated</span>
-            <span className="ml-2 text-blue-400 text-xs">• Auto-Sync</span>
+            Real-time insights from MongoDB backend
+            <span className={`ml-2 text-xs ${isOnline ? 'text-green-400' : 'text-yellow-400'}`}>
+              • {isOnline ? 'Online Mode - Live Data' : 'Offline Mode - Local Data'}
+            </span>
           </p>
         </div>
         <button

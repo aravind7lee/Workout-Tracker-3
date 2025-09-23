@@ -38,8 +38,11 @@ const Dashboard = () => {
       const online = await checkOnlineStatus();
       
       if (online) {
-        // Load from backend
+        // Load from backend with proper error handling
         try {
+          // First ensure we're actually online by checking the service status
+          onlineService.isOnline = true;
+          
           const [onlinePlans, onlineWorkouts, onlineAnalytics] = await Promise.all([
             onlineService.getWorkoutPlans(),
             onlineService.getWorkoutHistory(),
@@ -51,14 +54,15 @@ const Dashboard = () => {
           
           if (onlineAnalytics) {
             setWorkoutStats({
-              total: onlineAnalytics.workouts || onlineAnalytics.totalWorkouts || 0,
+              total: onlineAnalytics.totalWorkouts || onlineAnalytics.workouts || 0,
               today: onlineAnalytics.todayWorkouts || 0,
-              thisWeek: onlineAnalytics.weeklyGoal?.completed || onlineAnalytics.weeklyWorkouts || 0,
+              thisWeek: onlineAnalytics.weeklyWorkouts || onlineAnalytics.weeklyGoal?.completed || 0,
               xpPoints: onlineAnalytics.xpPoints || 0
             });
           }
         } catch (onlineError) {
           console.error('Failed to load online data:', onlineError);
+          setIsOnline(false);
           loadOfflineData();
         }
       } else {
@@ -105,9 +109,11 @@ const Dashboard = () => {
     
     loadDashboardData();
     
-    // Set up periodic refresh
+    // Set up periodic refresh for real-time updates
     const refreshInterval = setInterval(() => {
-      checkOnlineStatus();
+      if (isAuthenticated()) {
+        loadDashboardData();
+      }
     }, 30000);
     
     return () => clearInterval(refreshInterval);

@@ -1,8 +1,7 @@
-// frontend/src/components/Hero.jsx
+// frontend/src/components/Hero.jsx - FIXED VERSION
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import HeroImg from '../assets/Heroimg.jpg';
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
@@ -14,46 +13,85 @@ export default function Hero() {
     weeklyGoal: { completed: 0, target: 4, percentage: 0 }
   });
   const [loading, setLoading] = useState(true);
-
-  // Stats will be updated from localStorage
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    const fetchStats = () => {
-      if (isAuthenticated()) {
-        // Get stats from localStorage for now
-        const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+    const fetchStats = async () => {
+      try {
+        // Check if user is authenticated safely
+        const userIsAuth = isAuthenticated && typeof isAuthenticated === 'function' ? isAuthenticated() : false;
         
-        setStats({
-          workouts: workouts.length,
-          meals: meals.length,
-          xpPoints: workouts.length * 100 + meals.length * 50,
-          streak: 0,
-          weeklyGoal: { completed: Math.min(workouts.length, 4), target: 4, percentage: Math.min((workouts.length / 4) * 100, 100) }
-        });
+        if (userIsAuth) {
+          // Get stats from localStorage with error handling
+          let workouts = [];
+          let meals = [];
+          
+          try {
+            workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+            if (!Array.isArray(workouts)) workouts = [];
+          } catch (e) {
+            workouts = [];
+          }
+          
+          try {
+            meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+            if (!Array.isArray(meals)) meals = [];
+          } catch (e) {
+            meals = [];
+          }
+          
+          setStats({
+            workouts: workouts.length,
+            meals: meals.length,
+            xpPoints: workouts.length * 100 + meals.length * 50,
+            streak: 0,
+            weeklyGoal: { 
+              completed: Math.min(workouts.length, 4), 
+              target: 4, 
+              percentage: Math.min((workouts.length / 4) * 100, 100) 
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        // Keep default stats on error
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchStats();
+    // Add a small delay to prevent hydration issues
+    const timer = setTimeout(fetchStats, 100);
+    return () => clearTimeout(timer);
   }, [isAuthenticated]);
 
   const formatNumber = (num) => {
+    if (typeof num !== 'number' || isNaN(num)) return '0';
     if (num >= 1000) {
       return (num / 1000).toFixed(1) + 'K';
     }
     return num.toString();
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <section className="relative rounded-2xl overflow-hidden mb-6 sm:mb-8 min-h-[500px] md:min-h-[600px]">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
-        <img 
-          src={HeroImg} 
-          alt="GymTracker Hero" 
-          className="w-full h-full object-cover"
-        />
+        {!imageError ? (
+          <img 
+            src="/Heroimg.jpg" 
+            alt="GymTracker Hero" 
+            className="hero-mobile-image"
+            onError={handleImageError}
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
+        )}
         <div className="absolute inset-0 hero-overlay-primary"></div>
         <div className="absolute inset-0 hero-overlay-secondary"></div>
       </div>
@@ -74,7 +112,7 @@ export default function Hero() {
                 </h1>
                 <p className="text-lg sm:text-xl lg:text-2xl hero-description max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                   Transform your workouts with intelligent tracking, personalized plans, and real-time progress monitoring. 
-                  <span className="hero-accent font-semibold preserve-color">Achieve your fitness goals faster than ever.</span>
+                  <span className="hero-accent font-semibold preserve-color"> Achieve your fitness goals faster than ever.</span>
                 </p>
               </div>
 
@@ -123,13 +161,13 @@ export default function Hero() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
                       <div className="text-2xl sm:text-3xl font-bold text-blue-400 preserve-color">
-                        {loading ? '...' : stats.workouts}
+                        {loading ? '...' : formatNumber(stats.workouts)}
                       </div>
                       <div className="text-xs hero-stats-label">Workouts</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl sm:text-3xl font-bold text-green-400 preserve-color">
-                        {loading ? '...' : stats.meals}
+                        {loading ? '...' : formatNumber(stats.meals)}
                       </div>
                       <div className="text-xs hero-stats-label">Meals</div>
                     </div>
@@ -152,7 +190,7 @@ export default function Hero() {
                     <div className="mt-2 hero-progress-bg rounded-full h-2">
                       <div 
                         className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full preserve-color transition-all duration-500" 
-                        style={{width: `${stats.weeklyGoal.percentage}%`}}
+                        style={{width: `${Math.min(Math.max(stats.weeklyGoal.percentage || 0, 0), 100)}%`}}
                       ></div>
                     </div>
                     <div className="text-xs hero-progress-text mt-1">
