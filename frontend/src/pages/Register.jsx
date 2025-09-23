@@ -85,11 +85,15 @@ const Register = () => {
         <div className="text-center mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Account</h1>
           <p className="text-slate-400">Join the ultimate fitness experience</p>
-          {backendStatus === 'offline' && (
-            <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
-              Offline Mode - Account will be stored locally
-            </div>
-          )}
+          <div className={`mt-2 px-3 py-1 rounded-full text-xs ${
+            backendStatus === 'online' 
+              ? 'bg-green-600/20 text-green-400' 
+              : 'bg-yellow-600/20 text-yellow-400'
+          }`}>
+            {backendStatus === 'online' 
+              ? '✅ Online Mode - Account will be saved to database' 
+              : '⚠️ Offline Mode - Account will be stored locally'}
+          </div>
         </div>
 
         {error && (

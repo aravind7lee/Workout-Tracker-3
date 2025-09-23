@@ -227,6 +227,107 @@ router.post('/track-meal-logging', async (req, res) => {
   }
 });
 
+// Get all analytics data (general endpoint)
+router.get('/', async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      return res.json({ 
+        success: true, 
+        data: {
+          workouts: 0,
+          meals: 0,
+          xpPoints: 0,
+          streak: 0,
+          weeklyGoal: { completed: 0, target: 4, percentage: 0 }
+        }
+      });
+    }
+
+    // Import models
+    const User = (await import('../models/User.js')).default;
+    const Workout = (await import('../models/Workout.js')).default;
+    const Meal = (await import('../models/Meal.js')).default;
+
+    // Get user data
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Count total workouts
+    const totalWorkouts = await Workout.countDocuments({ userId });
+    
+    // Count total meals
+    const totalMeals = await Meal.countDocuments({ userId });
+    
+    // Calculate XP points (100 per workout, 50 per meal)
+    const xpPoints = (totalWorkouts * 100) + (totalMeals * 50);
+    
+    // Calculate current streak
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    let streak = 0;
+    let currentDate = new Date(startOfToday);
+    
+    while (true) {
+      const dayStart = new Date(currentDate);
+      const dayEnd = new Date(currentDate);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+      
+      const hasActivity = await Workout.exists({
+        userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      }) || await Meal.exists({
+        userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      });
+      
+      if (hasActivity) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    
+    // Calculate weekly goal progress
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+    
+    const weeklyWorkouts = await Workout.countDocuments({
+      userId,
+      createdAt: { $gte: startOfWeek }
+    });
+    
+    const weeklyTarget = 4;
+    const weeklyPercentage = Math.min((weeklyWorkouts / weeklyTarget) * 100, 100);
+
+    const analyticsData = {
+      workouts: totalWorkouts,
+      meals: totalMeals,
+      xpPoints,
+      streak,
+      totalWorkouts,
+      totalMeals,
+      currentStreak: streak,
+      weeklyGoal: {
+        completed: weeklyWorkouts,
+        target: weeklyTarget,
+        percentage: weeklyPercentage
+      },
+      weeklyWorkouts
+    };
+
+    res.json({ success: true, data: analyticsData });
+  } catch (error) {
+    console.error('Analytics error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Get achievements
 router.get('/achievements', async (req, res) => {
   try {

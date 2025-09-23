@@ -90,11 +90,13 @@ const Login = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-slate-400">Sign in to your workout tracker account</p>
-          {backendStatus === 'offline' && (
-            <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
-              Offline Mode - Limited functionality
-            </div>
-          )}
+          <div className={`mt-2 px-3 py-1 rounded-full text-xs ${
+            backendStatus === 'online' 
+              ? 'bg-green-600/20 text-green-400' 
+              : 'bg-yellow-600/20 text-yellow-400'
+          }`}>
+            {backendStatus === 'online' ? '✅ Online Mode - Full functionality' : '⚠️ Offline Mode - Limited functionality'}
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="card space-y-4">
@@ -165,26 +167,32 @@ const Login = () => {
           </p>
         </form>
         
-        {/* Quick Login Options */}
-        <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
-          <p className="text-slate-300 text-sm text-center mb-3">Quick Login Options:</p>
-          <div className="space-y-2">
-            <button
-              onClick={() => handleQuickLogin('demo@gymtracker.com', 'demo123456')}
-              className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
-              disabled={loading}
-            >
-              📧 demo@gymtracker.com / demo123456
-            </button>
-            <button
-              onClick={() => handleQuickLogin('test@example.com', 'password123')}
-              className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
-              disabled={loading}
-            >
-              📧 test@example.com / password123
-            </button>
+        {backendStatus === 'online' ? (
+          <div className="mt-6 p-4 bg-green-800/20 border border-green-700 rounded-lg">
+            <p className="text-green-300 text-sm text-center mb-3">🌐 Connected to Backend Database</p>
+            <p className="text-green-400 text-xs text-center">Your data will be saved to MongoDB</p>
           </div>
-        </div>
+        ) : (
+          <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
+            <p className="text-slate-300 text-sm text-center mb-3">Quick Login Options:</p>
+            <div className="space-y-2">
+              <button
+                onClick={() => handleQuickLogin('demo@gymtracker.com', 'demo123456')}
+                className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+                disabled={loading}
+              >
+                📧 demo@gymtracker.com / demo123456
+              </button>
+              <button
+                onClick={() => handleQuickLogin('test@example.com', 'password123')}
+                className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+                disabled={loading}
+              >
+                📧 test@example.com / password123
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

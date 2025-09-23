@@ -14,7 +14,7 @@ export const registerUser = async (userData) => {
       success: true,
       user: response.data.user,
       token: response.data.token,
-      message: response.data.message
+      message: response.data.message || 'Registration successful'
     };
     
   } catch (error) {
@@ -31,10 +31,9 @@ export const registerUser = async (userData) => {
       const offlineToken = btoa(JSON.stringify({
         userId: offlineUser.id,
         email: offlineUser.email,
-        exp: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
+        exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
       }));
       
-      // Store offline user
       localStorage.setItem('offline_users', JSON.stringify({
         [userData.email]: { ...offlineUser, password: userData.password }
       }));
@@ -43,7 +42,7 @@ export const registerUser = async (userData) => {
         success: true,
         user: offlineUser,
         token: offlineToken,
-        message: 'Account created offline'
+        message: 'Account created offline - will sync when online'
       };
     }
     
@@ -62,24 +61,26 @@ export const loginUser = async (credentials) => {
       success: true,
       user: response.data.user,
       token: response.data.token,
-      message: response.data.message
+      message: response.data.message || 'Login successful'
     };
     
   } catch (error) {
     // If backend is down, try offline login
     if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
-      return tryOfflineLogin(credentials);
-    }
-    
-    // If invalid credentials, try offline login as fallback
-    if (error.response?.status === 400 || error.response?.status === 401) {
       const offlineResult = tryOfflineLogin(credentials);
-      if (offlineResult) {
-        return offlineResult;
-      }
+      if (offlineResult) return offlineResult;
     }
     
-    throw new Error('Login failed. Please check your credentials.');
+    // For 401/400 errors, show the actual error message
+    if (error.response?.status === 401 || error.response?.status === 400) {
+      throw new Error(error.response.data?.message || 'Invalid credentials');
+    }
+    
+    // Try offline as last resort
+    const offlineResult = tryOfflineLogin(credentials);
+    if (offlineResult) return offlineResult;
+    
+    throw new Error(error.response?.data?.message || 'Login failed. Please try again.');
   }
 };
 

@@ -5,9 +5,11 @@ import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
 import { realTimeService } from '../services/realTimeService';
 import { demoService } from '../services/demoService';
+import { onlineService } from '../services/onlineService';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
+  const { user: authUser, logout, isAuthenticated } = useAuth();
   const [recentWorkouts, setRecentWorkouts] = useState([]);
   const [savedPlans, setSavedPlans] = useState([]);
   const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
@@ -15,6 +17,7 @@ const Dashboard = () => {
   const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [isOnline, setIsOnline] = useState(false);
   const navigate = useNavigate();
 
   // Fetch data - OFFLINE ONLY with Demo Support
@@ -58,23 +61,13 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
+    if (!isAuthenticated()) {
       setLoading(false);
       return;
     }
     
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (e) {
-        localStorage.removeItem('user');
-      }
-    }
-    
     loadDashboardData();
+    checkOnlineStatus();
     
     // Set up offline updates
     let cleanup = () => {};
@@ -109,43 +102,79 @@ const Dashboard = () => {
     };
   }, [fetchRealTimeData]);
 
-  const loadDashboardData = () => {
+  const checkOnlineStatus = async () => {
+    const online = await onlineService.checkBackendStatus();
+    setIsOnline(online);
+  };
+
+  const loadDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
+      if (!isAuthenticated()) {
         setLoading(false);
         return;
       }
       
-      // Load local data only
-      try {
-        const workouts = workoutService.getAllWorkouts() || [];
-        const plans = planService.getAllPlans() || [];
-        setRecentWorkouts(workouts);
-        setSavedPlans(plans);
-      } catch (localError) {
-        setRecentWorkouts([]);
-        setSavedPlans([]);
+      // Check if online first
+      const online = await onlineService.checkBackendStatus();
+      setIsOnline(online);
+      
+      if (online) {
+        // Load from backend
+        try {
+          const [onlinePlans, onlineWorkouts, onlineAnalytics] = await Promise.all([
+            onlineService.getWorkoutPlans(),
+            onlineService.getWorkoutHistory(),
+            onlineService.getAnalytics()
+          ]);
+          
+          setSavedPlans(onlinePlans || []);
+          setRecentWorkouts(onlineWorkouts || []);
+          
+          if (onlineAnalytics) {
+            setWorkoutStats({
+              total: onlineAnalytics.workouts || onlineAnalytics.totalWorkouts || 0,
+              today: onlineAnalytics.todayWorkouts || 0,
+              thisWeek: onlineAnalytics.weeklyGoal?.completed || onlineAnalytics.weeklyWorkouts || 0,
+              xpPoints: onlineAnalytics.xpPoints || 0
+            });
+            setRealTimeStats({
+              ...onlineAnalytics,
+              currentStreak: onlineAnalytics.streak || 0,
+              totalPlans: savedPlans.length
+            });
+          }
+        } catch (onlineError) {
+          console.error('Failed to load online data:', onlineError);
+          loadOfflineData();
+        }
+      } else {
+        loadOfflineData();
       }
       
-      // Fetch offline data
-      fetchRealTimeData();
-      
     } catch (error) {
-      // Silent
+      console.error('Dashboard load error:', error);
+      loadOfflineData();
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = () => {
+  const loadOfflineData = () => {
     try {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      navigate('/login');
+      const workouts = workoutService.getAllWorkouts() || [];
+      const plans = planService.getAllPlans() || [];
+      setRecentWorkouts(workouts);
+      setSavedPlans(plans);
+      fetchRealTimeData();
     } catch (error) {
-      navigate('/login');
+      setRecentWorkouts([]);
+      setSavedPlans([]);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
   
   const handleRefresh = () => {
@@ -163,8 +192,7 @@ const Dashboard = () => {
     );
   }
 
-  const token = localStorage.getItem('token');
-  if (!token) {
+  if (!isAuthenticated()) {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-6">🔒</div>
@@ -195,12 +223,12 @@ const Dashboard = () => {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
-              Welcome back{user?.name ? `, ${user.name}` : ''}! 👋
+              Welcome back{authUser?.name ? `, ${authUser.name}` : ''}! 👋
             </h1>
             <p className="text-slate-400 mt-1 text-sm sm:text-base">
               Ready to crush your fitness goals today?
-              <span className="ml-2 text-green-400 text-xs preserve-color">
-                • Offline mode
+              <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-yellow-400'}`}>
+                • {isOnline ? 'Online mode' : 'Offline mode'}
               </span>
             </p>
           </div>
@@ -212,7 +240,7 @@ const Dashboard = () => {
               🔄 Refresh
             </button>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="btn bg-red-600 hover:bg-red-700 text-white flex-1 sm:flex-none"
             >
               Logout
