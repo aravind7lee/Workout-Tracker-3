@@ -1,4 +1,4 @@
-// src/pages/Register.jsx
+// Fixed Register Page with Offline Support
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
@@ -18,7 +18,6 @@ const Register = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Check backend status on component mount
   useEffect(() => {
     const checkBackend = async () => {
       const status = await checkBackendStatus();
@@ -53,15 +52,12 @@ const Register = () => {
         password: formData.password
       });
       
-      // Update auth context with MongoDB user data
       login(result.user, result.token);
-      
-      // Navigate to dashboard
       navigate("/dashboard");
       
     } catch (err) {
       console.error('Registration error:', err);
-      setError(err.message);
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -72,15 +68,9 @@ const Register = () => {
     setError('');
     
     try {
-      // Create demo session with timeout and tracking
       const { user, token } = demoService.createDemoSession();
-      
-      // Login with demo user
       login(user, token);
-      
-      // Navigate to dashboard
       navigate('/dashboard');
-      
     } catch (err) {
       console.error('Demo login error:', err);
       setError('Failed to start demo. Please try again.');
@@ -95,19 +85,18 @@ const Register = () => {
         <div className="text-center mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Account</h1>
           <p className="text-slate-400">Join the ultimate fitness experience</p>
+          {backendStatus === 'offline' && (
+            <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
+              Offline Mode - Account will be stored locally
+            </div>
+          )}
         </div>
-
-
-        
-
 
         {error && (
           <div className="bg-red-900/20 border border-red-500 rounded-lg p-3 mb-4">
             <p className="text-red-300 text-sm">{error}</p>
           </div>
         )}
-
-
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -186,7 +175,7 @@ const Register = () => {
             disabled={loading}
             className="w-full mt-4 btn bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
           >
-            {loading ? 'Logging in...' : '🚀 Try Demo Account'}
+            {loading ? 'Starting Demo...' : '🚀 Try Demo Account'}
           </button>
         </div>
 
@@ -197,6 +186,23 @@ const Register = () => {
               Sign In
             </Link>
           </p>
+        </div>
+
+        {/* Quick Registration for Testing */}
+        <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
+          <p className="text-slate-300 text-sm text-center mb-3">Quick Test Registration:</p>
+          <button
+            onClick={() => setFormData({
+              name: 'Test User',
+              email: 'test@example.com',
+              password: 'password123',
+              confirmPassword: 'password123'
+            })}
+            className="w-full px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+            disabled={loading}
+          >
+            📝 Fill Test Data
+          </button>
         </div>
       </div>
     </div>

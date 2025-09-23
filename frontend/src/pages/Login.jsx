@@ -1,4 +1,4 @@
-// src/pages/Login.jsx
+// Fixed Login Page with Better Error Handling
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
@@ -13,7 +13,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Check backend status
   useEffect(() => {
     const checkBackend = async () => {
       const status = await checkBackendStatus();
@@ -43,13 +42,12 @@ const Login = () => {
         password: formData.password
       });
       
-      // Update auth context with MongoDB user data
       login(result.user, result.token);
-      
       navigate('/dashboard');
       
     } catch (err) {
-      setError(err.message);
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -60,18 +58,27 @@ const Login = () => {
     setError('');
     
     try {
-      // Create demo session with timeout and tracking
       const { user, token } = demoService.createDemoSession();
-      
-      // Login with demo user
       login(user, token);
-      
-      // Navigate to dashboard
       navigate('/dashboard');
-      
     } catch (err) {
       console.error('Demo login error:', err);
       setError('Failed to start demo. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickLogin = async (email, password) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const result = await loginUser({ email, password });
+      login(result.user, result.token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -83,10 +90,13 @@ const Login = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-slate-400">Sign in to your workout tracker account</p>
+          {backendStatus === 'offline' && (
+            <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
+              Offline Mode - Limited functionality
+            </div>
+          )}
         </div>
         
-
-
         <form onSubmit={handleSubmit} className="card space-y-4">
           <h2 className="text-xl font-semibold text-white mb-4">Login</h2>
           
@@ -142,9 +152,9 @@ const Login = () => {
           <button
             type="button"
             onClick={handleDemoLogin}
-            className="btn border border-slate-600 text-slate-300 hover:bg-slate-700 w-full"
+            className="btn bg-green-600 hover:bg-green-700 text-white w-full"
           >
-            🎯 Try Demo Account
+            🚀 Try Demo Account
           </button>
           
           <p className="text-center text-sm text-slate-400 mt-6">
@@ -155,10 +165,25 @@ const Login = () => {
           </p>
         </form>
         
-        <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-          <p className="text-blue-300 text-sm text-center">
-            💡 <strong>Demo Account:</strong> Click "Try Demo Account" or use demo@gym.com / demo123
-          </p>
+        {/* Quick Login Options */}
+        <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
+          <p className="text-slate-300 text-sm text-center mb-3">Quick Login Options:</p>
+          <div className="space-y-2">
+            <button
+              onClick={() => handleQuickLogin('demo@gymtracker.com', 'demo123456')}
+              className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+              disabled={loading}
+            >
+              📧 demo@gymtracker.com / demo123456
+            </button>
+            <button
+              onClick={() => handleQuickLogin('test@example.com', 'password123')}
+              className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+              disabled={loading}
+            >
+              📧 test@example.com / password123
+            </button>
+          </div>
         </div>
       </div>
     </div>

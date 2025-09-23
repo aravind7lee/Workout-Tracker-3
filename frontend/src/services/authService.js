@@ -1,5 +1,6 @@
-// Production Authentication Service
+// Fixed Authentication Service with Offline Support
 import api from '../utils/api';
+import { demoService } from './demoService';
 
 export const registerUser = async (userData) => {
   try {
@@ -17,17 +18,36 @@ export const registerUser = async (userData) => {
     };
     
   } catch (error) {
-    if (error.response?.status === 400) {
-      throw new Error(error.response.data.message || 'Registration failed');
-    } else if (error.response?.status === 404) {
-      throw new Error('Backend API not found. Please check deployment.');
-    } else if (error.code === 'ERR_NETWORK') {
-      throw new Error('Cannot connect to server. Please check your connection.');
-    } else if (error.response?.status === 500) {
-      throw new Error('Server error. Please try again later.');
-    } else {
-      throw new Error(error.response?.data?.message || 'Registration failed. Please try again.');
+    // If backend is down, create offline account
+    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
+      const offlineUser = {
+        id: Date.now().toString(),
+        name: userData.name,
+        email: userData.email,
+        createdAt: new Date().toISOString(),
+        isOffline: true
+      };
+      
+      const offlineToken = btoa(JSON.stringify({
+        userId: offlineUser.id,
+        email: offlineUser.email,
+        exp: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
+      }));
+      
+      // Store offline user
+      localStorage.setItem('offline_users', JSON.stringify({
+        [userData.email]: { ...offlineUser, password: userData.password }
+      }));
+      
+      return {
+        success: true,
+        user: offlineUser,
+        token: offlineToken,
+        message: 'Account created offline'
+      };
     }
+    
+    throw new Error(error.response?.data?.message || 'Registration failed');
   }
 };
 
@@ -46,35 +66,69 @@ export const loginUser = async (credentials) => {
     };
     
   } catch (error) {
-    if (error.response?.status === 400) {
-      throw new Error(error.response.data.message || 'Invalid credentials');
-    } else if (error.response?.status === 404) {
-      throw new Error('Backend API not found. Please check deployment.');
-    } else if (error.code === 'ERR_NETWORK') {
-      throw new Error('Cannot connect to server. Please check your connection.');
-    } else if (error.response?.status === 500) {
-      throw new Error('Server error. Please try again later.');
-    } else {
-      throw new Error(error.response?.data?.message || 'Login failed. Please try again.');
+    // If backend is down, try offline login
+    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
+      return tryOfflineLogin(credentials);
     }
+    
+    // If invalid credentials, try offline login as fallback
+    if (error.response?.status === 400 || error.response?.status === 401) {
+      const offlineResult = tryOfflineLogin(credentials);
+      if (offlineResult) {
+        return offlineResult;
+      }
+    }
+    
+    throw new Error('Login failed. Please check your credentials.');
+  }
+};
+
+const tryOfflineLogin = (credentials) => {
+  try {
+    const offlineUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
+    const user = offlineUsers[credentials.email.toLowerCase()];
+    
+    if (user && user.password === credentials.password) {
+      const token = btoa(JSON.stringify({
+        userId: user.id,
+        email: user.email,
+        exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
+      }));
+      
+      return {
+        success: true,
+        user: { ...user, password: undefined },
+        token: token,
+        message: 'Logged in offline'
+      };
+    }
+    
+    // Try demo credentials
+    if (credentials.email === 'demo@gymtracker.com' && credentials.password === 'demo123456') {
+      const { user, token } = demoService.createDemoSession();
+      return {
+        success: true,
+        user,
+        token,
+        message: 'Demo login successful'
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    return null;
   }
 };
 
 export const createDemoUser = async () => {
-  try {
-    await registerUser({
-      name: 'Demo User',
-      email: 'demo@gymtracker.com',
-      password: 'demo123456'
-    });
-  } catch (error) {
-    // Demo user might already exist
-  }
-  
-  return await loginUser({
-    email: 'demo@gymtracker.com',
-    password: 'demo123456'
-  });
+  // Always use offline demo
+  const { user, token } = demoService.createDemoSession();
+  return {
+    success: true,
+    user,
+    token,
+    message: 'Demo session started'
+  };
 };
 
 export const checkBackendStatus = async () => {
@@ -88,7 +142,7 @@ export const checkBackendStatus = async () => {
   } catch (error) {
     return {
       online: false,
-      message: 'Backend not accessible',
+      message: 'Backend not accessible - using offline mode',
       error: error.message
     };
   }
