@@ -169,8 +169,7 @@ const Login = () => {
         
         {backendStatus === 'online' ? (
           <div className="mt-6 p-4 bg-green-800/20 border border-green-700 rounded-lg">
-            <p className="text-green-300 text-sm text-center mb-3">🌐 Connected to Backend Database</p>
-            <p className="text-green-400 text-xs text-center">Your data will be saved to MongoDB</p>
+       
           </div>
         ) : (
           <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
