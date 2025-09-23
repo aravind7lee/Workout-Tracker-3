@@ -1,9 +1,6 @@
-// frontend/src/services/authService.js
-// Production-ready authentication service with MongoDB integration
-
+// Production Authentication Service
 import api from '../utils/api';
 
-// Real-time user registration with MongoDB storage
 export const registerUser = async (userData) => {
   try {
     const response = await api.post('/auth/register', {
@@ -34,7 +31,6 @@ export const registerUser = async (userData) => {
   }
 };
 
-// Real-time user login with MongoDB authentication
 export const loginUser = async (credentials) => {
   try {
     const response = await api.post('/auth/login', {
@@ -64,10 +60,8 @@ export const loginUser = async (credentials) => {
   }
 };
 
-// Demo user creation and login
 export const createDemoUser = async () => {
   try {
-    // Try to register demo user first
     await registerUser({
       name: 'Demo User',
       email: 'demo@gymtracker.com',
@@ -77,14 +71,12 @@ export const createDemoUser = async () => {
     // Demo user might already exist
   }
   
-  // Login with demo credentials
   return await loginUser({
     email: 'demo@gymtracker.com',
     password: 'demo123456'
   });
 };
 
-// Check if backend is accessible
 export const checkBackendStatus = async () => {
   try {
     const response = await api.get('/health');
