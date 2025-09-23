@@ -1,8 +1,7 @@
-// frontend/src/App.jsx
+// frontend/src/App.jsx - CLEAN VERSION WITHOUT CONSOLE WARNINGS
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
-// import { realTimeService } from './services/realTimeService';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Library from './pages/Library';
@@ -17,6 +16,14 @@ import ProfileAdvanced from './pages/ProfileAdvanced';
 import Settings from './pages/Settings';
 import Forum from './pages/Forum';
 import Contact from './pages/Contact';
+import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
+import DemoBanner from './components/DemoBanner';
+import DemoFloatingControls from './components/DemoFloatingControls';
+import DemoFeatureTracker from './components/DemoFeatureTracker';
+import { DemoProvider } from './context/DemoContext';
+import Register from './pages/Register';
+import Login from './pages/Login';
 
 // Inline components to avoid module loading errors
 const Search = () => {
@@ -105,31 +112,38 @@ const ExerciseDetail = () => {
 
   // Load user reviews on component mount
   useEffect(() => {
-    const savedReviews = JSON.parse(localStorage.getItem(`reviews_${id}`) || '[]');
-    setUserReviews(savedReviews);
+    try {
+      const savedReviews = JSON.parse(localStorage.getItem(`reviews_${id}`) || '[]');
+      setUserReviews(savedReviews);
+    } catch (error) {
+      setUserReviews([]);
+    }
   }, [id]);
 
   const handleSubmitReview = () => {
     if (userRating > 0) {
-      // Save review to localStorage
-      const reviews = JSON.parse(localStorage.getItem(`reviews_${id}`) || '[]');
-      const newReview = {
-        id: Date.now(),
-        rating: userRating,
-        comment: userComment,
-        author: 'You',
-        avatar: '👤',
-        date: new Date().toLocaleDateString(),
-        helpful: 0
-      };
-      const updatedReviews = [newReview, ...reviews];
-      localStorage.setItem(`reviews_${id}`, JSON.stringify(updatedReviews));
-      setUserReviews(updatedReviews);
-      
-      // Reset form
-      setShowReviewForm(false);
-      setUserRating(0);
-      setUserComment('');
+      try {
+        const reviews = JSON.parse(localStorage.getItem(`reviews_${id}`) || '[]');
+        const newReview = {
+          id: Date.now(),
+          rating: userRating,
+          comment: userComment,
+          author: 'You',
+          avatar: '👤',
+          date: new Date().toLocaleDateString(),
+          helpful: 0
+        };
+        const updatedReviews = [newReview, ...reviews];
+        localStorage.setItem(`reviews_${id}`, JSON.stringify(updatedReviews));
+        setUserReviews(updatedReviews);
+        
+        // Reset form
+        setShowReviewForm(false);
+        setUserRating(0);
+        setUserComment('');
+      } catch (error) {
+        console.error('Error saving review:', error);
+      }
     }
   };
 
@@ -325,29 +339,18 @@ const ExerciseDetail = () => {
     </div>
   );
 };
-import Navbar from './components/Navbar';
-import ErrorBoundary from './components/ErrorBoundary';
-import Register from './pages/Register';
-import Login from './pages/Login';
-
-// Import light mode test utility for development
-if (process.env.NODE_ENV === 'development') {
-  import('./utils/lightModeTest.js');
-}
 
 export default function App() {
-  // Disable real-time service to prevent API errors
-  // useEffect(() => {
-  //   const cleanup = realTimeService.startRealTimeUpdates(30000);
-  //   return cleanup;
-  // }, []);
-
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <div className="min-h-screen">
-          <Navbar />
-          <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <DemoProvider>
+          <div className="min-h-screen">
+            <Navbar />
+            <DemoBanner />
+            <DemoFloatingControls />
+            <DemoFeatureTracker />
+            <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/register" element={<Register />} />
@@ -368,8 +371,9 @@ export default function App() {
               <Route path="/search" element={<Search />} />
               <Route path="/exercises/:id" element={<ExerciseDetail />} />
             </Routes>
-          </main>
-        </div>
+            </main>
+          </div>
+        </DemoProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

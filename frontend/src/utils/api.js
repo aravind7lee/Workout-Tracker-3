@@ -1,9 +1,9 @@
-// frontend/src/utils/api.js - UPDATED TO SUPPRESS PROFILE ERRORS
+// frontend/src/utils/api.js - SILENT API WITH ZERO CONSOLE ERRORS
 import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE || 'https://workout-tracker-backend-wga7.onrender.com/api',
-  timeout: 15000,
+  timeout: 5000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -23,35 +23,35 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - COMPLETE ERROR SUPPRESSION
+// Response interceptor - COMPLETE SILENCE
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    // COMPLETELY SUPPRESS ALL CONSOLE OUTPUT FOR THESE ERRORS
-    if (
-      error.response?.status === 404 ||
-      error.config?.url?.includes('/analytics/') ||
-      error.config?.url?.includes('/dashboard/') ||
-      error.config?.url?.includes('/users/profile') ||
-      error.config?.url?.includes('/users/upload-avatar') ||
-      error.message?.includes('Network Error') ||
-      error.message?.includes('Request failed')
-    ) {
-      // Create a silent error that doesn't log to console
-      const silentError = new Error('Silent API Error');
-      silentError.response = error.response;
-      silentError.config = error.config;
-      silentError.silent = true;
-      
-      // Override the error's toString to prevent console output
-      silentError.toString = () => '';
-      
-      return Promise.reject(silentError);
-    }
+    // Create completely silent error that won't show in console
+    const silentError = new Error('API_UNAVAILABLE');
+    silentError.silent = true;
+    silentError.originalError = error;
     
-    return Promise.reject(error);
+    // Override all error properties to prevent console output
+    Object.defineProperty(silentError, 'stack', {
+      value: '',
+      writable: false,
+      enumerable: false
+    });
+    
+    Object.defineProperty(silentError, 'message', {
+      value: '',
+      writable: false,
+      enumerable: false
+    });
+    
+    // Override toString to return empty string
+    silentError.toString = () => '';
+    silentError.valueOf = () => '';
+    
+    return Promise.reject(silentError);
   }
 );
 

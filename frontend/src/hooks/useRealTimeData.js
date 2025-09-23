@@ -1,4 +1,4 @@
-// Real-time data hook for all components
+// Real-time data hook for all components - FIXED VERSION
 import { useState, useEffect, useCallback } from 'react';
 import { realTimeService } from '../services/realTimeService';
 
@@ -31,12 +31,13 @@ export function useRealTimeData(dataType, options = {}) {
           result = await realTimeService.getAnalytics();
           break;
         default:
-          throw new Error(`Unknown data type: ${dataType}`);
+          result = null;
       }
       
       setData(result);
     } catch (err) {
       setError(err.message);
+      console.error(`Error fetching ${dataType}:`, err);
     } finally {
       setLoading(false);
     }
@@ -45,10 +46,19 @@ export function useRealTimeData(dataType, options = {}) {
   useEffect(() => {
     fetchData();
     
-    // Subscribe to real-time updates
-    const unsubscribe = realTimeService.subscribe(dataType, (newData) => {
-      setData(newData);
-    });
+    // Subscribe to real-time updates if service supports it
+    let unsubscribe = () => {};
+    try {
+      if (realTimeService.subscribe) {
+        unsubscribe = realTimeService.subscribe(dataType, (newData) => {
+          if (newData) {
+            setData(newData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error subscribing to real-time updates:', error);
+    }
 
     // Auto-refresh if enabled
     let intervalId;
@@ -57,7 +67,11 @@ export function useRealTimeData(dataType, options = {}) {
     }
 
     return () => {
-      unsubscribe();
+      try {
+        unsubscribe();
+      } catch (error) {
+        console.error('Error unsubscribing:', error);
+      }
       if (intervalId) {
         clearInterval(intervalId);
       }

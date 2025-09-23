@@ -1,47 +1,27 @@
-// frontend/src/utils/consoleFilter.js
-// Production-ready console filter to suppress development warnings
-
-const originalConsoleError = console.error;
-const originalConsoleWarn = console.warn;
-
-// Filter out specific development warnings
-console.error = (...args) => {
-  const message = args.join(' ');
-  
-  // Suppress specific React and API warnings
-  if (
-    message.includes('Download the React DevTools') ||
-    message.includes('react-dom_client.js') ||
-    message.includes('404 (Not Found)') ||
-    message.includes('Request failed with status code 404') ||
-    message.includes('/analytics/stats') ||
-    message.includes('/analytics/achievements') ||
-    message.includes('injectIntoGlobalHook')
-  ) {
-    return; // Suppress these warnings
-  }
-  
-  originalConsoleError.apply(console, args);
-};
+// frontend/src/utils/consoleFilter.js - Filter console warnings
+const originalWarn = console.warn;
+const originalLog = console.log;
 
 console.warn = (...args) => {
   const message = args.join(' ');
   
-  // Suppress specific warnings
-  if (
-    message.includes('Using mock') ||
-    message.includes('analytics') ||
-    message.includes('404')
-  ) {
-    return; // Suppress these warnings
+  // Filter out React DevTools warning
+  if (message.includes('Download the React DevTools')) {
+    return;
   }
   
-  originalConsoleWarn.apply(console, args);
+  originalWarn.apply(console, args);
 };
 
-export default {
-  restore: () => {
-    console.error = originalConsoleError;
-    console.warn = originalConsoleWarn;
+console.log = (...args) => {
+  const message = args.join(' ');
+  
+  // Filter out light mode test messages
+  if (message.includes('Currently in dark mode') || message.includes('light mode')) {
+    return;
   }
+  
+  originalLog.apply(console, args);
 };
+
+export default {};

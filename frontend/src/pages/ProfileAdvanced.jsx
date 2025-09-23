@@ -151,7 +151,6 @@ const ProfileAdvanced = () => {
       setEditing(false);
       alert('Profile updated successfully!');
     } catch (error) {
-      console.error('Profile update error:', error);
       alert('Failed to update profile');
     } finally {
       setSaving(false);

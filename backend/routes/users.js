@@ -20,15 +20,46 @@ router.get('/profile', auth, async (req, res) => {
 // Update user profile
 router.put('/profile', auth, async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, profileImage } = req.body;
+    const updateData = { name, email };
+    
+    // Only update profileImage if provided
+    if (profileImage !== undefined) {
+      updateData.profileImage = profileImage;
+    }
+    
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { name, email },
+      updateData,
       { new: true }
     ).select('-password');
-    res.json(user);
+    
+    res.json({ success: true, user });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Profile update error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Upload profile picture
+router.post('/upload-profile-picture', auth, async (req, res) => {
+  try {
+    const { profileImage } = req.body;
+    
+    if (!profileImage) {
+      return res.status(400).json({ success: false, message: 'No image provided' });
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { profileImage },
+      { new: true }
+    ).select('-password');
+    
+    res.json({ success: true, user, profileImage: user.profileImage });
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload profile picture' });
   }
 });
 

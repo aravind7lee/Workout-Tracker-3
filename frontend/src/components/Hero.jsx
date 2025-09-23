@@ -1,9 +1,50 @@
 // frontend/src/components/Hero.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import HeroImg from '../assets/Heroimg.jpg';
 
 export default function Hero() {
+  const { isAuthenticated } = useAuth();
+  const [stats, setStats] = useState({
+    workouts: 0,
+    meals: 0,
+    xpPoints: 0,
+    streak: 0,
+    weeklyGoal: { completed: 0, target: 4, percentage: 0 }
+  });
+  const [loading, setLoading] = useState(true);
+
+  // Stats will be updated from localStorage
+
+  useEffect(() => {
+    const fetchStats = () => {
+      if (isAuthenticated()) {
+        // Get stats from localStorage for now
+        const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+        
+        setStats({
+          workouts: workouts.length,
+          meals: meals.length,
+          xpPoints: workouts.length * 100 + meals.length * 50,
+          streak: 0,
+          weeklyGoal: { completed: Math.min(workouts.length, 4), target: 4, percentage: Math.min((workouts.length / 4) * 100, 100) }
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchStats();
+  }, [isAuthenticated]);
+
+  const formatNumber = (num) => {
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+  };
+
   return (
     <section className="relative rounded-2xl overflow-hidden mb-6 sm:mb-8 min-h-[500px] md:min-h-[600px]">
       {/* Background Image with Overlay */}
@@ -81,19 +122,27 @@ export default function Hero() {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-blue-400 preserve-color">24</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-blue-400 preserve-color">
+                        {loading ? '...' : stats.workouts}
+                      </div>
                       <div className="text-xs hero-stats-label">Workouts</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-green-400 preserve-color">156</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-green-400 preserve-color">
+                        {loading ? '...' : stats.meals}
+                      </div>
                       <div className="text-xs hero-stats-label">Meals</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-purple-400 preserve-color">1.2K</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-purple-400 preserve-color">
+                        {loading ? '...' : formatNumber(stats.xpPoints)}
+                      </div>
                       <div className="text-xs hero-stats-label">XP Points</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-orange-400 preserve-color">7🔥</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-orange-400 preserve-color">
+                        {loading ? '...' : `${stats.streak}🔥`}
+                      </div>
                       <div className="text-xs hero-stats-label">Streak</div>
                     </div>
                   </div>
@@ -101,9 +150,14 @@ export default function Hero() {
                   <div className="pt-4 hero-stats-divider">
                     <div className="text-sm hero-stats-label">Weekly Goal</div>
                     <div className="mt-2 hero-progress-bg rounded-full h-2">
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full preserve-color" style={{width: '75%'}}></div>
+                      <div 
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full preserve-color transition-all duration-500" 
+                        style={{width: `${stats.weeklyGoal.percentage}%`}}
+                      ></div>
                     </div>
-                    <div className="text-xs hero-progress-text mt-1">3 of 4 workouts completed</div>
+                    <div className="text-xs hero-progress-text mt-1">
+                      {loading ? 'Loading...' : `${stats.weeklyGoal.completed} of ${stats.weeklyGoal.target} workouts completed`}
+                    </div>
                   </div>
                 </div>
               </div>

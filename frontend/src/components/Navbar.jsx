@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
+import { demoService } from '../services/demoService';
 import ThemeToggle from './ThemeToggle';
 import logo from '../assets/logo.png';
 
@@ -44,6 +45,26 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle body scroll lock when sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('sidebar-open');
+      document.body.style.top = `-${window.scrollY}px`;
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.classList.remove('sidebar-open');
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    
+    return () => {
+      document.body.classList.remove('sidebar-open');
+      document.body.style.top = '';
+    };
+  }, [isOpen]);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -58,6 +79,25 @@ export default function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (isOpen) {
+          setIsOpen(false);
+        } else if (searchExpanded) {
+          setSearchExpanded(false);
+          setShowSearchResults(false);
+        } else if (showProfileDropdown) {
+          setShowProfileDropdown(false);
+        }
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, searchExpanded, showProfileDropdown]);
 
   // Show search results when there's a query
   useEffect(() => {
@@ -142,7 +182,7 @@ export default function Navbar() {
               <img 
                 src={logo} 
                 alt="GymTracker Logo" 
-                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain transition-all duration-300 drop-shadow-lg"
+                className="h-10 w-auto object-contain transition-all duration-300 drop-shadow-lg"
               />
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md group-hover:opacity-40 transition-opacity duration-300"></div>
             </motion.div>
@@ -460,7 +500,8 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="xl:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              className="xl:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              style={{ touchAction: 'none' }}
             />
             
             {/* Sidebar */}
@@ -468,45 +509,56 @@ export default function Navbar() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="xl:hidden fixed top-0 right-0 h-full w-80 sm:w-96 backdrop-blur-xl shadow-2xl z-50"
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="mobile-sidebar xl:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] backdrop-blur-xl shadow-2xl z-50 overflow-y-auto"
               style={{
                 background: 'var(--bg-soft)',
                 border: '1px solid var(--panel-border)'
               }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
             >
-              <div className="p-6">
+              <div className="p-4 sm:p-6 pb-safe">
                 {/* Mobile Header */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
                   <div className="flex items-center">
-                    <img 
-                      src={logo} 
-                      alt="GymTracker Logo" 
-                      className="w-48 h-48 object-contain drop-shadow-lg"
-                    />
+                    <div className="flex items-center space-x-2">
+                      <img 
+                        src={logo} 
+                        alt="GymTracker Logo" 
+                        className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg"
+                      />
+                      {demoService.isDemoMode() && (
+                        <span className="px-2 py-1 text-xs bg-green-600 text-white rounded-full animate-pulse font-bold">
+                          DEMO
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-xl transition-colors duration-300"
+                    className="p-2 rounded-xl transition-colors duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                     style={{ color: 'var(--text)' }}
                     onMouseEnter={(e) => e.target.style.color = 'var(--accent)'}
                     onMouseLeave={(e) => e.target.style.color = 'var(--text)'}
+                    aria-label="Close menu"
                   >
-                    <X size={24} />
+                    <X size={20} />
                   </button>
                 </div>
 
                 {/* Mobile Search */}
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <form onSubmit={handleSearch}>
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-300" size={20} />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-300" size={18} />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search workouts, meals, plans..."
-                        className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none transition-all duration-300"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none transition-all duration-300 text-base"
                         style={{
                           background: 'var(--bg-soft)',
                           border: '2px solid var(--panel-border)',
@@ -525,7 +577,7 @@ export default function Navbar() {
                   
                   {/* Mobile Search Results */}
                   {searchQuery && (
-                    <div className="mt-4 rounded-xl p-2 max-h-60 overflow-y-auto" style={{ background: 'var(--bg-soft)', border: '1px solid var(--panel-border)' }}>
+                    <div className="mt-3 rounded-xl p-2 max-h-48 sm:max-h-60 overflow-y-auto" style={{ background: 'var(--bg-soft)', border: '1px solid var(--panel-border)' }}>
                       {searchResults.length > 0 ? (
                         <>
                           <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2" style={{ color: 'var(--muted)' }}>
@@ -585,45 +637,62 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Theme Toggle - Always show in sidebar */}
-                <div className="mb-6 flex justify-center">
+                <div className="mb-4 sm:mb-6 flex justify-center">
                   <ThemeToggle />
                 </div>
 
                 {/* Mobile Navigation Links */}
-                <div className="space-y-2 mb-6">
+                <div className="space-y-1 sm:space-y-2 mb-4 sm:mb-6">
                   {navLinks.map((link) => (
                     <Link
                       key={link.to}
                       to={link.to}
                       onClick={() => setIsOpen(false)}
-                      className={`nav-link flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                      className={`nav-link flex items-center space-x-3 px-3 sm:px-4 py-3 rounded-xl transition-all duration-300 min-h-[48px] ${
                         isActiveRoute(link.to) ? 'active' : ''
                       }`}
+                      style={{
+                        background: isActiveRoute(link.to) ? 'var(--bg-accent)' : 'transparent',
+                        color: isActiveRoute(link.to) ? 'var(--accent)' : 'var(--text)',
+                        border: isActiveRoute(link.to) ? '1px solid var(--accent)' : '1px solid transparent'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActiveRoute(link.to)) {
+                          e.target.style.background = 'var(--bg-accent)';
+                          e.target.style.color = 'var(--heading)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActiveRoute(link.to)) {
+                          e.target.style.background = 'transparent';
+                          e.target.style.color = 'var(--text)';
+                        }
+                      }}
                     >
                       <span className="text-lg">{link.icon}</span>
-                      <span className="font-medium">{link.label}</span>
+                      <span className="font-medium text-base">{link.label}</span>
                     </Link>
                   ))}
                 </div>
 
                 {/* Mobile Profile Section */}
                 {isAuthenticated() && (
-                  <div className="border-t pt-6" style={{ borderColor: 'var(--panel-border)' }}>
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                  <div className="border-t pt-4 sm:pt-6" style={{ borderColor: 'var(--panel-border)' }}>
+                    <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm sm:text-base">
                         {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
-                      <div>
-                        <div className="font-medium" style={{ color: 'var(--heading)' }}>{user?.name || 'User'}</div>
-                        <div className="text-sm" style={{ color: 'var(--muted)' }}>{user?.email}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate text-sm sm:text-base" style={{ color: 'var(--heading)' }}>{user?.name || 'User'}</div>
+                        <div className="text-xs sm:text-sm truncate" style={{ color: 'var(--muted)' }}>{user?.email}</div>
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-1 sm:space-y-2">
                       <Link
                         to="/profile"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors"
+                        className="flex items-center space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-colors min-h-[44px]"
                         style={{ color: 'var(--text)' }}
                         onMouseEnter={(e) => {
                           e.target.style.color = 'var(--heading)';
@@ -634,13 +703,13 @@ export default function Navbar() {
                           e.target.style.background = 'transparent';
                         }}
                       >
-                        <UserCircle size={16} />
-                        <span>My Account</span>
+                        <UserCircle size={18} />
+                        <span className="text-sm sm:text-base">My Account</span>
                       </Link>
                       <Link
                         to="/settings"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors"
+                        className="flex items-center space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-colors min-h-[44px]"
                         style={{ color: 'var(--text)' }}
                         onMouseEnter={(e) => {
                           e.target.style.color = 'var(--heading)';
@@ -651,12 +720,12 @@ export default function Navbar() {
                           e.target.style.background = 'transparent';
                         }}
                       >
-                        <Settings size={16} />
-                        <span>Settings</span>
+                        <Settings size={18} />
+                        <span className="text-sm sm:text-base">Settings</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-colors w-full text-left"
+                        className="flex items-center space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-colors w-full text-left min-h-[44px]"
                         style={{ color: 'var(--danger)', background: 'transparent' }}
                         onMouseEnter={(e) => {
                           e.target.style.background = 'rgba(255, 71, 87, 0.1)';
@@ -665,8 +734,8 @@ export default function Navbar() {
                           e.target.style.background = 'transparent';
                         }}
                       >
-                        <LogOut size={16} />
-                        <span>Logout</span>
+                        <LogOut size={18} />
+                        <span className="text-sm sm:text-base">Logout</span>
                       </button>
                     </div>
                   </div>

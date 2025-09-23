@@ -65,10 +65,10 @@ export default function Home() {
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Your Fitness Journey?</h2>
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate(isAuthenticated() ? '/dashboard' : '/register')}
             className="btn-primary px-12 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-lg hover:shadow-lg transition-all"
           >
-            Join Now - It's Free!
+            {isAuthenticated() ? 'Go to Dashboard' : 'Join Now - It\'s Free!'}
           </button>
         </div>
       </div>

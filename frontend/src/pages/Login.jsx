@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { loginUser, createDemoUser, checkBackendStatus } from '../services/authService';
+import { demoService } from '../services/demoService';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -59,15 +60,18 @@ const Login = () => {
     setError('');
     
     try {
-      const result = await createDemoUser();
+      // Create demo session with timeout and tracking
+      const { user, token } = demoService.createDemoSession();
       
-      // Update auth context with demo user data from MongoDB
-      login(result.user, result.token);
+      // Login with demo user
+      login(user, token);
       
+      // Navigate to dashboard
       navigate('/dashboard');
       
     } catch (err) {
-      setError(err.message);
+      console.error('Demo login error:', err);
+      setError('Failed to start demo. Please try again.');
     } finally {
       setLoading(false);
     }

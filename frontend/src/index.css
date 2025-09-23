@@ -792,3 +792,170 @@ body {
   background: rgba(71, 85, 105, 0.4);
   transform: scale(1.02);
 }
+/* ===== MOBILE NAVBAR ENHANCEMENTS ===== */
+
+/* Ensure mobile sidebar doesn't interfere with page content */
+@media (max-width: 1279px) {
+  .navbar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+  }
+  
+  /* Mobile sidebar specific styles */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    width: min(288px, 85vw);
+    max-width: 85vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    z-index: 60;
+  }
+  
+  /* Prevent body scroll when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+  
+  /* Safe area padding for devices with notches */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+  
+  /* Touch-friendly minimum sizes */
+  .min-touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Backdrop blur optimization for mobile */
+  .mobile-backdrop {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  
+  /* Smooth animations for mobile */
+  .mobile-slide-enter {
+    transform: translateX(100%);
+  }
+  
+  .mobile-slide-enter-active {
+    transform: translateX(0);
+    transition: transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .mobile-slide-exit {
+    transform: translateX(0);
+  }
+  
+  .mobile-slide-exit-active {
+    transform: translateX(100%);
+    transition: transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+}
+
+/* Prevent horizontal scroll on small screens */
+@media (max-width: 640px) {
+  html, body {
+    overflow-x: hidden;
+  }
+  
+  .mobile-sidebar {
+    width: min(280px, 90vw);
+    max-width: 90vw;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .mobile-sidebar {
+    width: min(260px, 95vw);
+    max-width: 95vw;
+  }
+}
+
+/* High DPI displays - ensure crisp rendering */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mobile-sidebar {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Focus management for accessibility */
+.mobile-sidebar:focus-within {
+  outline: none;
+}
+
+.mobile-sidebar .focus-trap {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Improved scrollbar for mobile sidebar */
+.mobile-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.mobile-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Light theme scrollbar */
+.light-theme .mobile-sidebar::-webkit-scrollbar-thumb,
+[data-theme="light"] .mobile-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .mobile-sidebar::-webkit-scrollbar-thumb:hover,
+[data-theme="light"] .mobile-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Navbar glass effect improvements for mobile */
+@media (max-width: 1279px) {
+  .navbar-container {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .navbar-scrolled {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  .mobile-sidebar * {
+    will-change: auto;
+  }
+  
+  .mobile-sidebar.animating * {
+    will-change: transform;
+  }
+}
