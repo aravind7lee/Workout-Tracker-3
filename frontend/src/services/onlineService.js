@@ -14,10 +14,12 @@ class OnlineService {
     
     this.checkingStatus = true;
     try {
-      const response = await api.get('/health', { timeout: 5000 });
+      const response = await api.get('/health', { timeout: 10000 });
       this.isOnline = response.status === 200;
+      console.log('Backend status:', this.isOnline ? 'Online' : 'Offline');
       return this.isOnline;
     } catch (error) {
+      console.log('Backend offline:', error.message);
       this.isOnline = false;
       return false;
     } finally {
@@ -27,7 +29,8 @@ class OnlineService {
 
   async syncUserData(userData) {
     try {
-      if (!this.isOnline) return false;
+      const online = await this.checkBackendStatus();
+      if (!online) return false;
       
       const response = await api.put('/users/profile', userData);
       return response.data;
@@ -75,7 +78,8 @@ class OnlineService {
 
   async saveWorkout(workoutData) {
     try {
-      if (!this.isOnline) return null;
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
       
       const response = await api.post('/workouts', workoutData);
       return response.data.workout;
@@ -111,7 +115,8 @@ class OnlineService {
 
   async getAnalytics() {
     try {
-      if (!this.isOnline) return null;
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
       
       // Get hero stats which contains the main analytics data
       const response = await api.get('/analytics/hero-stats');

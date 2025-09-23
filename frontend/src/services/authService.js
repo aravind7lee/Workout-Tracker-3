@@ -134,13 +134,15 @@ export const createDemoUser = async () => {
 
 export const checkBackendStatus = async () => {
   try {
-    const response = await api.get('/health');
+    const response = await api.get('/health', { timeout: 10000 });
+    console.log('Backend health check:', response.data);
     return {
-      online: true,
+      online: response.status === 200,
       message: 'Backend connected',
       data: response.data
     };
   } catch (error) {
+    console.log('Backend offline:', error.message);
     return {
       online: false,
       message: 'Backend not accessible - using offline mode',

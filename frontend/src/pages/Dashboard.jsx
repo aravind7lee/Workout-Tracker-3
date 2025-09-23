@@ -1,10 +1,8 @@
-// src/pages/Dashboard.jsx - ZERO ERRORS VERSION
+// Online-enabled Dashboard with MongoDB backend integration
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
-import { realTimeService } from '../services/realTimeService';
-import { demoService } from '../services/demoService';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,98 +11,20 @@ const Dashboard = () => {
   const [recentWorkouts, setRecentWorkouts] = useState([]);
   const [savedPlans, setSavedPlans] = useState([]);
   const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
-  const [realTimeStats, setRealTimeStats] = useState(null);
-  const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
+
   const navigate = useNavigate();
 
-  // Fetch data - OFFLINE ONLY with Demo Support
-  const fetchRealTimeData = useCallback(() => {
-    try {
-      let data;
-      
-      // Check if in demo mode
-      if (demoService.isDemoMode()) {
-        data = demoService.getDemoDashboardData();
-      } else {
-        data = realTimeService.getDashboardData();
-      }
-      
-      if (data) {
-        setRealTimeStats(data);
-        setWorkoutStats({
-          total: data.stats?.totalWorkouts || data.totalWorkouts || 0,
-          today: data.stats?.completedToday || data.completedToday || 0,
-          thisWeek: data.stats?.weeklyWorkouts || data.completedThisWeek || 0,
-          xpPoints: data.stats?.xpPoints || data.xpPoints || 0
-        });
-      }
-
-      // Get achievements
-      let achievementsData;
-      if (demoService.isDemoMode()) {
-        achievementsData = { achievements: JSON.parse(localStorage.getItem('achievements') || '[]') };
-      } else {
-        achievementsData = realTimeService.getAnalytics();
-      }
-      
-      if (achievementsData?.achievements) {
-        setAchievements(achievementsData.achievements);
-      }
-
-      setLastUpdated(new Date());
-    } catch (error) {
-      // Silent
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      setLoading(false);
-      return;
-    }
-    
-    loadDashboardData();
-    checkOnlineStatus();
-    
-    // Set up offline updates
-    let cleanup = () => {};
-    let unsubscribe = () => {};
-    
-    try {
-      cleanup = realTimeService.startRealTimeUpdates(30000);
-      
-      unsubscribe = realTimeService.subscribe('dashboard', (data) => {
-        if (data) {
-          setRealTimeStats(data);
-          setWorkoutStats({
-            total: data.totalWorkouts || 0,
-            today: data.completedToday || 0,
-            thisWeek: data.completedThisWeek || 0,
-            xpPoints: data.xpPoints || 0
-          });
-        }
-        setLastUpdated(new Date());
-      });
-    } catch (subscriptionError) {
-      // Silent
-    }
-    
-    return () => {
-      try {
-        cleanup();
-        unsubscribe();
-      } catch (cleanupError) {
-        // Silent
-      }
-    };
-  }, [fetchRealTimeData]);
-
   const checkOnlineStatus = async () => {
-    const online = await onlineService.checkBackendStatus();
-    setIsOnline(online);
+    try {
+      const online = await onlineService.checkBackendStatus();
+      setIsOnline(online);
+      return online;
+    } catch (error) {
+      setIsOnline(false);
+      return false;
+    }
   };
 
   const loadDashboardData = async () => {
@@ -115,8 +35,7 @@ const Dashboard = () => {
       }
       
       // Check if online first
-      const online = await onlineService.checkBackendStatus();
-      setIsOnline(online);
+      const online = await checkOnlineStatus();
       
       if (online) {
         // Load from backend
@@ -137,11 +56,6 @@ const Dashboard = () => {
               thisWeek: onlineAnalytics.weeklyGoal?.completed || onlineAnalytics.weeklyWorkouts || 0,
               xpPoints: onlineAnalytics.xpPoints || 0
             });
-            setRealTimeStats({
-              ...onlineAnalytics,
-              currentStreak: onlineAnalytics.streak || 0,
-              totalPlans: savedPlans.length
-            });
           }
         } catch (onlineError) {
           console.error('Failed to load online data:', onlineError);
@@ -159,18 +73,45 @@ const Dashboard = () => {
     }
   };
 
-  const loadOfflineData = () => {
+  // Load data from localStorage
+  const loadOfflineData = useCallback(() => {
     try {
       const workouts = workoutService.getAllWorkouts() || [];
       const plans = planService.getAllPlans() || [];
+      
       setRecentWorkouts(workouts);
       setSavedPlans(plans);
-      fetchRealTimeData();
+      setWorkoutStats({
+        total: workouts.length,
+        today: 0,
+        thisWeek: workouts.length,
+        xpPoints: workouts.length * 100 + plans.length * 50
+      });
     } catch (error) {
+      console.error('Offline data loading error:', error);
       setRecentWorkouts([]);
       setSavedPlans([]);
+      setWorkoutStats({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
     }
-  };
+  }, []);
+
+
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      setLoading(false);
+      return;
+    }
+    
+    loadDashboardData();
+    
+    // Set up periodic refresh
+    const refreshInterval = setInterval(() => {
+      checkOnlineStatus();
+    }, 30000);
+    
+    return () => clearInterval(refreshInterval);
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     logout();
@@ -180,6 +121,8 @@ const Dashboard = () => {
   const handleRefresh = () => {
     loadDashboardData();
   };
+
+
 
   if (loading) {
     return (
@@ -231,6 +174,7 @@ const Dashboard = () => {
                 • {isOnline ? 'Online mode' : 'Offline mode'}
               </span>
             </p>
+
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
             <button
@@ -249,6 +193,8 @@ const Dashboard = () => {
         </div>
       </div>
 
+
+
       {/* Stats */}
       <div className="grid-responsive">
         <div className="card">
@@ -257,7 +203,7 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">💪</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.total || 0}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.total}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
             </div>
           </div>
@@ -269,8 +215,8 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">🔥</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{realTimeStats?.currentStreak || workoutStats.thisWeek || 0}</div>
-              <div className="text-slate-400 text-xs sm:text-sm">Day Streak</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.thisWeek}</div>
+              <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
             </div>
           </div>
         </div>
@@ -281,7 +227,7 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">⭐</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{realTimeStats?.xpPoints || workoutStats.xpPoints || 0}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.xpPoints}</div>
               <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
             </div>
           </div>
@@ -293,7 +239,7 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">📋</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{realTimeStats?.totalPlans || savedPlans.length || 0}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{savedPlans.length}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Workout Plans</div>
             </div>
           </div>
@@ -317,7 +263,7 @@ const Dashboard = () => {
             className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 sm:py-6"
           >
             <div className="text-2xl sm:text-3xl mb-2">📋</div>
-            <div className="font-medium text-sm sm:text-base">My Plans ({savedPlans.length || 0})</div>
+            <div className="font-medium text-sm sm:text-base">My Plans ({savedPlans.length})</div>
           </button>
           
           <button 
@@ -435,6 +381,7 @@ const Dashboard = () => {
                     <span>{workout.duration || 0} min</span>
                     <span>•</span>
                     <span className="text-green-400">✓ Completed</span>
+                    {workout.synced && <span className="text-blue-400">☁️ Synced</span>}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

@@ -2,9 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ProfilePictureAdvanced from '../components/ProfilePictureAdvanced';
+import { realTimeStatsService } from '../services/realTimeStatsService';
 
 const ProfileAdvanced = () => {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState(() => {
+    try {
+      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      return {
+        totalWorkouts: workouts.length,
+        totalPlans: plans.length,
+        totalMeals: meals.length,
+        currentStreak: 0,
+        xpPoints: workouts.length * 100 + plans.length * 50
+      };
+    } catch (error) {
+      return { totalWorkouts: 0, totalPlans: 0, totalMeals: 0, currentStreak: 0, xpPoints: 0 };
+    }
+  });
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [saving, setSaving] = useState(false);
@@ -32,69 +48,49 @@ const ProfileAdvanced = () => {
     localStorage.setItem('recentMeals', '[]');
     localStorage.setItem('workoutPlans', '[]');
     
-    // Set stats to zero - only real user activity will increase these
-    const calculatedStats = {
-      totalWorkouts: 0,
-      totalMeals: 0,
-      totalPlans: 0,
-      currentStreak: 0,
-      xpPoints: 0
-    };
-    
-    setStats(calculatedStats);
+    // Get stats from localStorage
+    try {
+      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      const currentStats = {
+        totalWorkouts: workouts.length,
+        totalPlans: plans.length,
+        totalMeals: meals.length,
+        currentStreak: 0,
+        xpPoints: workouts.length * 100 + plans.length * 50
+      };
+      setStats(currentStats);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
     setLoading(false);
   }, [navigate]);
 
-  // Refresh stats when component mounts or data changes
+  // Update stats when localStorage changes
   useEffect(() => {
-    const refreshStats = () => {
-      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-      
-      // Only count data that was actually created by user actions
-      // Filter out any sample/test data by checking for user-generated properties
-      const realWorkouts = workouts.filter(w => 
-        w.userId || w.createdByUser || (w.name && !w.name.includes('Sample') && !w.name.includes('Test'))
-      );
-      const realMeals = meals.filter(m => 
-        m.userId || m.createdByUser || (m.name && !m.name.includes('Sample') && !m.name.includes('Test'))
-      );
-      const realPlans = plans.filter(p => 
-        p.userId || p.createdByUser || (p.name && !p.name.includes('Sample') && !p.name.includes('Test'))
-      );
-      
-      const calculatedStats = {
-        totalWorkouts: realWorkouts.length,
-        totalMeals: realMeals.length,
-        totalPlans: realPlans.length,
-        currentStreak: calculateStreak(realWorkouts),
-        xpPoints: realWorkouts.length * 100 + realPlans.length * 50
-      };
-      
-      setStats(calculatedStats);
+    const updateStats = () => {
+      try {
+        const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+        const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+        setStats({
+          totalWorkouts: workouts.length,
+          totalPlans: plans.length,
+          totalMeals: meals.length,
+          currentStreak: 0,
+          xpPoints: workouts.length * 100 + plans.length * 50
+        });
+      } catch (error) {
+        console.error('Error updating stats:', error);
+      }
     };
-
-    // Initial load
-    refreshStats();
-
-    // Listen for storage changes to update stats in real-time
-    const handleStorageChange = () => {
-      refreshStats();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
     
-    // Also listen for custom events when data is added
-    window.addEventListener('workoutAdded', handleStorageChange);
-    window.addEventListener('mealAdded', handleStorageChange);
-    window.addEventListener('planAdded', handleStorageChange);
-
+    // Listen for storage changes
+    window.addEventListener('storage', updateStats);
+    
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('workoutAdded', handleStorageChange);
-      window.removeEventListener('mealAdded', handleStorageChange);
-      window.removeEventListener('planAdded', handleStorageChange);
+      window.removeEventListener('storage', updateStats);
     };
   }, []);
 

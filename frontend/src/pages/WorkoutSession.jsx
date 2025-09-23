@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
+import { onlineService } from '../services/onlineService';
 
 export default function WorkoutSession() {
   const { planId } = useParams();
@@ -47,7 +48,7 @@ export default function WorkoutSession() {
     }
   };
 
-  const finishWorkout = () => {
+  const finishWorkout = async () => {
     const duration = Math.floor(elapsedTime / 60);
     
     // Save workout to recent workouts
@@ -64,8 +65,22 @@ export default function WorkoutSession() {
     };
     
     try {
+      // Save locally first
       workoutService.saveWorkout(workoutData);
-      alert(`Workout completed! Duration: ${duration} minutes\nSaved to Recent Workouts.`);
+      
+      // Try to sync with backend
+      const isOnline = await onlineService.checkBackendStatus();
+      if (isOnline) {
+        try {
+          await onlineService.saveWorkout(workoutData);
+          alert(`🎉 Workout Completed & Synced!\n\nDuration: ${duration} minutes\n☁️ Saved to MongoDB backend\n✅ Available across all devices!`);
+        } catch (syncError) {
+          console.error('Backend sync failed:', syncError);
+          alert(`🎉 Workout Completed!\n\nDuration: ${duration} minutes\n💾 Saved locally\n⚠️ Will sync when online`);
+        }
+      } else {
+        alert(`🎉 Workout Completed!\n\nDuration: ${duration} minutes\n💾 Saved locally\n⚠️ Will sync when online`);
+      }
     } catch (error) {
       console.error('Error saving workout:', error);
       alert(`Workout completed! Duration: ${duration} minutes`);

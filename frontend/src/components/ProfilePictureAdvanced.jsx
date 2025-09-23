@@ -120,6 +120,9 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
     } finally {
       setUploading(false);
       setProgress(0);
+      // Reset file inputs to allow new uploads
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (cameraInputRef.current) cameraInputRef.current.value = '';
     }
   };
 
@@ -129,6 +132,8 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
       if (file) {
         handleFileUpload(file);
       }
+      // Reset file input to allow same file upload again
+      event.target.value = '';
     } catch (error) {
       setMessage('❌ File selection failed');
       setTimeout(() => setMessage(''), 3000);

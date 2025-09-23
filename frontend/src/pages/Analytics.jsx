@@ -1,8 +1,9 @@
 // frontend/src/pages/Analytics.jsx - Production Ready
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useRealTimeAnalytics } from '../hooks/useRealTimeData';
+import { realTimeStatsService } from '../services/realTimeStatsService';
 
 Chart.register(...registerables);
 
@@ -13,6 +14,39 @@ export default function Analytics() {
     error,
     refresh
   } = useRealTimeAnalytics();
+  
+  const [realTimeStats, setRealTimeStats] = useState(() => {
+    try {
+      return {
+        totalWorkouts: JSON.parse(localStorage.getItem('recentWorkouts') || '[]').length,
+        totalPlans: JSON.parse(localStorage.getItem('workoutPlans') || '[]').length,
+        totalMeals: JSON.parse(localStorage.getItem('recentMeals') || '[]').length,
+        currentStreak: 0,
+        xpPoints: JSON.parse(localStorage.getItem('recentWorkouts') || '[]').length * 100
+      };
+    } catch (error) {
+      return { totalWorkouts: 0, totalPlans: 0, totalMeals: 0, currentStreak: 0, xpPoints: 0 };
+    }
+  });
+  
+  useEffect(() => {
+    // Update stats from localStorage
+    try {
+      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      
+      setRealTimeStats({
+        totalWorkouts: workouts.length,
+        totalPlans: plans.length,
+        totalMeals: meals.length,
+        currentStreak: 0,
+        xpPoints: workouts.length * 100 + plans.length * 50
+      });
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
+  }, []);
 
   const stats = analyticsData?.stats;
   const caloriesData = analyticsData?.caloriesTrend;
@@ -104,12 +138,12 @@ export default function Analytics() {
               </div>
             </div>
           ))
-        ) : stats ? (
+        ) : realTimeStats ? (
           [
-            { label: 'Total Workouts', value: (stats.totalWorkouts || 0).toString(), change: stats.totalWorkouts > 0 ? 'Great progress!' : 'Start your first workout', color: 'text-blue-400' },
-            { label: 'Workout Plans', value: (stats.totalPlans || 0).toString(), change: stats.totalPlans > 0 ? `${stats.totalPlans} plans created` : 'Create your first plan', color: 'text-green-400' },
-            { label: 'XP Points', value: (stats.xpPoints || 0).toString(), change: stats.xpPoints > 0 ? `Level ${Math.floor(stats.xpPoints / 500) + 1}` : 'Earn XP by working out', color: 'text-purple-400' },
-            { label: 'Current Streak', value: (stats.currentStreak || 0).toString(), change: stats.currentStreak > 0 ? `${stats.currentStreak} days strong!` : 'Start your streak', color: 'text-orange-400' }
+            { label: 'Total Workouts', value: (realTimeStats.totalWorkouts || 0).toString(), change: realTimeStats.totalWorkouts > 0 ? 'Great progress!' : 'Start your first workout', color: 'text-blue-400' },
+            { label: 'Workout Plans', value: (realTimeStats.totalPlans || 0).toString(), change: realTimeStats.totalPlans > 0 ? `${realTimeStats.totalPlans} plans created` : 'Create your first plan', color: 'text-green-400' },
+            { label: 'XP Points', value: (realTimeStats.xpPoints || 0).toString(), change: realTimeStats.xpPoints > 0 ? `Level ${Math.floor(realTimeStats.xpPoints / 500) + 1}` : 'Earn XP by working out', color: 'text-purple-400' },
+            { label: 'Current Streak', value: (realTimeStats.currentStreak || 0).toString(), change: realTimeStats.currentStreak > 0 ? `${realTimeStats.currentStreak} days strong!` : 'Start your streak', color: 'text-orange-400' }
           ].map((stat, index) => (
             <div key={index} className="card">
               <div className="text-center">

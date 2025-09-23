@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { exerciseLibrary } from '../data/exerciseLibrary';
+import { onlineService } from '../services/onlineService';
 
 export default function PlansBuilder() {
   const navigate = useNavigate();
@@ -164,13 +165,25 @@ export default function PlansBuilder() {
       const savedPlan = planService.savePlan(planData);
       console.log('Plan saved successfully:', savedPlan);
       
-      // Show success message and redirect
-      alert(`Plan "${planName}" saved successfully!`);
+      // Try to sync with backend
+      const isOnline = await onlineService.checkBackendStatus();
+      if (isOnline) {
+        try {
+          await onlineService.saveWorkoutPlan(savedPlan);
+          alert(`🎉 Plan "${planName}" created & synced!\n\n☁️ Saved to MongoDB backend\n✅ Available across all devices!`);
+        } catch (syncError) {
+          console.error('Backend sync failed:', syncError);
+          alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n⚠️ Will sync when online`);
+        }
+      } else {
+        alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n⚠️ Will sync when online`);
+      }
       
       // Reset form
       setPlanName('');
       setPlan([]);
       setPlanCategory('General');
+      
       
       // Navigate to My Plans page
       navigate('/my-plans');

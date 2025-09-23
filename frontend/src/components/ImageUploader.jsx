@@ -52,6 +52,9 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     const file = event.target.files[0];
     if (!file) return;
 
+    // Reset file input immediately to allow same file upload again
+    event.target.value = '';
+
     if (!file.type.startsWith('image/')) {
       setMessage('Please select an image file');
       setTimeout(() => setMessage(''), 3000);
@@ -99,6 +102,10 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
       setTimeout(() => setMessage(''), 4000);
     } finally {
       setUploading(false);
+      // Reset file input again to ensure clean state
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
