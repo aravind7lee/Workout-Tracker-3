@@ -62,19 +62,42 @@ app.get('/api/health', (req, res) => {
 app.use((error, req, res, next) => {
   console.error('Server Error:', error);
   
+  // Handle file size limit (5MB)
   if (error.code === 'LIMIT_FILE_SIZE') {
     return res.status(400).json({
-      message: 'File too large. Maximum size is 5MB.'
+      success: false,
+      message: 'File too large. Maximum size is 5MB.',
+      maxSize: '5MB'
     });
   }
   
+  // Handle file type errors
   if (error.message === 'Only image files are allowed!') {
     return res.status(400).json({
+      success: false,
       message: 'Only image files are allowed.'
     });
   }
   
+  // Handle custom file size error
+  if (error.message === 'File size must be less than 5MB') {
+    return res.status(400).json({
+      success: false,
+      message: 'File size must be less than 5MB.',
+      maxSize: '5MB'
+    });
+  }
+  
+  // Handle multer errors
+  if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({
+      success: false,
+      message: 'Unexpected file field.'
+    });
+  }
+  
   res.status(500).json({
+    success: false,
     message: 'Internal server error',
     error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
   });

@@ -5,22 +5,22 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
   const [message, setMessage] = useState('');
   const fileInputRef = useRef(null);
 
-  const uploadToCloudinary = async (file) => {
+  const uploadToBackend = async (file) => {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'ml_default'); // Using default preset
-    formData.append('cloud_name', 'dtqahgnzn');
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/dtqahgnzn/image/upload`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+    formData.append('profileImage', file);
+    
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/upload-profile-picture`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData,
+    });
 
     if (!response.ok) {
-      throw new Error('Cloudinary upload failed');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Upload failed');
     }
 
     return await response.json();
@@ -58,9 +58,10 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage('Image must be less than 5MB');
-      setTimeout(() => setMessage(''), 3000);
+    // Check file size (5MB = 5,242,880 bytes)
+    if (file.size > 5242880) {
+      setMessage(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum size is 5MB.`);
+      setTimeout(() => setMessage(''), 4000);
       return;
     }
 
@@ -68,9 +69,9 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     setMessage('');
 
     try {
-      // Upload to Cloudinary
-      const cloudinaryResult = await uploadToCloudinary(file);
-      const imageUrl = cloudinaryResult.secure_url;
+      // Upload to backend with Cloudinary integration
+      const uploadResult = await uploadToBackend(file);
+      const imageUrl = uploadResult.profileImage;
       
       // Update UI immediately
       onImageUpdate(imageUrl);
@@ -80,34 +81,22 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
       userData.profileImage = imageUrl;
       localStorage.setItem('user', JSON.stringify(userData));
       
-      // Try to update backend (non-blocking)
-      updateBackend(imageUrl);
-      
-      setMessage('Profile updated ✅');
-      setTimeout(() => setMessage(''), 2000);
+      setMessage('Profile photo updated successfully ✅');
+      setTimeout(() => setMessage(''), 3000);
       
     } catch (error) {
       console.error('Upload error:', error);
       
-      // Fallback to base64 if Cloudinary fails
-      try {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const base64Image = e.target.result;
-          onImageUpdate(base64Image);
-          
-          const userData = JSON.parse(localStorage.getItem('user') || '{}');
-          userData.profileImage = base64Image;
-          localStorage.setItem('user', JSON.stringify(userData));
-          
-          setMessage('Profile updated ✅');
-          setTimeout(() => setMessage(''), 2000);
-        };
-        reader.readAsDataURL(file);
-      } catch (fallbackError) {
-        setMessage('Upload failed');
-        setTimeout(() => setMessage(''), 3000);
+      // Show specific error message
+      if (error.message.includes('5MB')) {
+        setMessage('File too large. Maximum size is 5MB.');
+      } else if (error.message.includes('image')) {
+        setMessage('Only image files are allowed.');
+      } else {
+        setMessage(error.message || 'Upload failed. Please try again.');
       }
+      
+      setTimeout(() => setMessage(''), 4000);
     } finally {
       setUploading(false);
     }

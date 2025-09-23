@@ -49,14 +49,14 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
   };
 
   const validateFile = (file) => {
-    const maxSize = 1 * 1024 * 1024; // 1MB limit
+    const maxSize = 5 * 1024 * 1024; // 5MB limit
 
     if (!file.type.startsWith('image/')) {
       throw new Error('Please select an image file');
     }
 
     if (file.size > maxSize) {
-      throw new Error('Image must be under 1MB');
+      throw new Error('Image must be under 5MB');
     }
 
     return true;
@@ -358,7 +358,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
       </div>
 
       <div className="text-center text-xs text-slate-500">
-        <p>Supports all image formats • Maximum size: 1MB</p>
+        <p>Supports all image formats • Maximum size: 5MB</p>
         <p>Photos are automatically compressed and saved permanently</p>
       </div>
 

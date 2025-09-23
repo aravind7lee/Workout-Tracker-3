@@ -22,16 +22,23 @@ const storage = new CloudinaryStorage({
 const upload = multer({ 
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1 // Only one file at a time
   },
   fileFilter: (req, file, cb) => {
-    console.log('📁 File received:', file.originalname, file.mimetype, file.size);
+    console.log('📁 File received:', file.originalname, file.mimetype, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
     
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
+    // Check file type
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only image files are allowed!'), false);
     }
+    
+    // Additional size check (multer limits should handle this, but double-check)
+    if (file.size > 5 * 1024 * 1024) {
+      return cb(new Error('File size must be less than 5MB'), false);
+    }
+    
+    cb(null, true);
   }
 });
 

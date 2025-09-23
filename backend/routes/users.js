@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import Workout from '../models/Workout.js';
 import Meal from '../models/Meal.js';
 import auth from '../middleware/auth.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -41,8 +42,36 @@ router.put('/profile', auth, async (req, res) => {
   }
 });
 
-// Upload profile picture
-router.post('/upload-profile-picture', auth, async (req, res) => {
+// Upload profile picture with Cloudinary
+router.post('/upload-profile-picture', auth, upload.single('profileImage'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image file provided' });
+    }
+    
+    // Cloudinary URL from uploaded file
+    const profileImageUrl = req.file.path;
+    
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { profileImage: profileImageUrl },
+      { new: true }
+    ).select('-password');
+    
+    res.json({ 
+      success: true, 
+      user, 
+      profileImage: profileImageUrl,
+      message: 'Profile picture uploaded successfully'
+    });
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload profile picture' });
+  }
+});
+
+// Update profile picture (for base64 or URL updates)
+router.put('/profile-picture', auth, async (req, res) => {
   try {
     const { profileImage } = req.body;
     
@@ -58,8 +87,8 @@ router.post('/upload-profile-picture', auth, async (req, res) => {
     
     res.json({ success: true, user, profileImage: user.profileImage });
   } catch (error) {
-    console.error('Profile picture upload error:', error);
-    res.status(500).json({ success: false, message: 'Failed to upload profile picture' });
+    console.error('Profile picture update error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update profile picture' });
   }
 });
 
