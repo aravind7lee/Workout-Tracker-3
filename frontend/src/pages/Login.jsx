@@ -167,11 +167,7 @@ const Login = () => {
           </p>
         </form>
         
-        {backendStatus === 'online' ? (
-          <div className="mt-6 p-4 bg-green-800/20 border border-green-700 rounded-lg">
-       
-          </div>
-        ) : (
+        {backendStatus === 'offline' && (
           <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
             <p className="text-slate-300 text-sm text-center mb-3">Quick Login Options:</p>
             <div className="space-y-2">
