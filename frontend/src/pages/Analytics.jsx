@@ -4,6 +4,8 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
+import RealTimeAchievements from '../components/RealTimeAchievements';
+import RealTimeStats from '../components/RealTimeStats';
 
 Chart.register(...registerables);
 
@@ -218,55 +220,8 @@ export default function Analytics() {
         </button>
       </div>
       
-      {/* Stats Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="card">
-              <div className="animate-pulse">
-                <div className="h-8 bg-slate-700 rounded mb-2"></div>
-                <div className="h-4 bg-slate-700 rounded mb-1"></div>
-                <div className="h-3 bg-slate-700 rounded"></div>
-              </div>
-            </div>
-          ))
-        ) : realTimeStats ? (
-          [
-            { label: 'Total Workouts', value: (realTimeStats.totalWorkouts || 0).toString(), change: realTimeStats.totalWorkouts > 0 ? 'Great progress!' : 'Start your first workout', color: 'text-blue-400' },
-            { label: 'Workout Plans', value: (realTimeStats.totalPlans || 0).toString(), change: realTimeStats.totalPlans > 0 ? `${realTimeStats.totalPlans} plans created` : 'Create your first plan', color: 'text-green-400' },
-            { label: 'XP Points', value: (realTimeStats.xpPoints || 0).toString(), change: realTimeStats.xpPoints > 0 ? `Level ${Math.floor(realTimeStats.xpPoints / 500) + 1}` : 'Earn XP by working out', color: 'text-purple-400' },
-            { label: 'Current Streak', value: (realTimeStats.currentStreak || 0).toString(), change: realTimeStats.currentStreak > 0 ? `${realTimeStats.currentStreak} days strong!` : 'Start your streak', color: 'text-orange-400' }
-          ].map((stat, index) => (
-            <div key={index} className="card">
-              <div className="text-center">
-                <div className={`text-2xl sm:text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                <div className="text-xs sm:text-sm text-slate-400 mb-1">{stat.label}</div>
-                <div className="text-xs text-green-400">{stat.change}</div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full card text-center py-8">
-            <div className="text-4xl mb-3">📊</div>
-            <div className="text-white font-medium mb-2">No Data Yet</div>
-            <div className="text-slate-400 text-sm mb-4">Start working out to see your analytics</div>
-            <div className="flex flex-col sm:flex-row gap-2 justify-center">
-              <button 
-                onClick={() => window.location.href = '/library'}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
-              >
-                Browse Exercises
-              </button>
-              <button 
-                onClick={() => window.location.href = '/plans'}
-                className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
-              >
-                Create Plan
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Real-Time Stats Overview */}
+      <RealTimeStats />
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -318,41 +273,7 @@ export default function Analytics() {
           </div>
         </div>
 
-        <div className="card lg:col-span-2">
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Achievements</h3>
-          <div className="space-y-3">
-            {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                  <div className="animate-pulse">
-                    <div className="w-8 h-8 bg-slate-600 rounded"></div>
-                  </div>
-                  <div className="flex-1 animate-pulse">
-                    <div className="h-4 bg-slate-600 rounded mb-1"></div>
-                    <div className="h-3 bg-slate-600 rounded"></div>
-                  </div>
-                </div>
-              ))
-            ) : achievements && achievements.length > 0 ? (
-              achievements.slice(0, 4).map((achievement, index) => (
-                <div key={achievement.id || index} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                  <div className="text-2xl">{achievement.icon || '🏆'}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-white text-sm sm:text-base">{achievement.title || 'Achievement'}</div>
-                    <div className="text-xs sm:text-sm text-slate-400">{achievement.description || 'Great job!'}</div>
-                  </div>
-                  <div className="text-xs text-slate-500 flex-shrink-0">{achievement.timeAgo || 'Recently'}</div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <div className="text-4xl mb-3">🏆</div>
-                <p className="text-slate-400 mb-2">No achievements yet</p>
-                <p className="text-sm text-slate-500">Complete workouts to earn achievements!</p>
-              </div>
-            )}
-          </div>
-        </div>
+        <RealTimeAchievements />
       </div>
     </div>
   );
