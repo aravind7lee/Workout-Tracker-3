@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   define: {
-    __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })',
     'process.env.NODE_ENV': '"production"'
   },
   build: {
@@ -13,6 +12,15 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          motion: ['framer-motion']
+        }
       }
     }
   },

@@ -1,12 +1,16 @@
-// frontend/src/utils/api.js - SILENT API WITH ZERO CONSOLE ERRORS
+// Production API Configuration
 import axios from 'axios';
 
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-backend-url.com/api'
+  : 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || 'https://workout-tracker-backend-wga7.onrender.com/api',
-  timeout: 5000,
+  baseURL: API_BASE_URL,
+  timeout: 10000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 // Request interceptor
@@ -18,57 +22,28 @@ api.interceptors.request.use(
     }
     return config;
   },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );
 
-// Response interceptor - COMPLETE SILENCE
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    // Create completely silent error that won't show in console
-    const silentError = new Error('API_UNAVAILABLE');
-    silentError.silent = true;
-    silentError.originalError = error;
-    
-    // Override all error properties to prevent console output
-    Object.defineProperty(silentError, 'stack', {
-      value: '',
-      writable: false,
-      enumerable: false
-    });
-    
-    Object.defineProperty(silentError, 'message', {
-      value: '',
-      writable: false,
-      enumerable: false
-    });
-    
-    // Override toString to return empty string
-    silentError.toString = () => '';
-    silentError.valueOf = () => '';
-    
-    return Promise.reject(silentError);
-  }
-);
-
-export function setAuthToken(token) {
+export const setAuthToken = (token) => {
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    localStorage.setItem('token', token);
   } else {
     delete api.defaults.headers.common['Authorization'];
-    localStorage.removeItem('token');
   }
-}
-
-// Initialize auth token from localStorage
-const token = localStorage.getItem('token');
-if (token) {
-  setAuthToken(token);
-}
+};
 
 export default api;
