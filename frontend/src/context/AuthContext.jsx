@@ -1,5 +1,5 @@
 // Fixed AuthContext - No More Errors
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { setAuthToken } from '../utils/api';
 import { profileStorage } from '../utils/profileStorage';
 
@@ -18,6 +18,22 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = useCallback(() => {
+    try {
+      if (profileStorage?.clearCurrentUser) {
+        profileStorage.clearCurrentUser();
+      }
+      
+      setUser(null);
+      setToken(null);
+      setAuthToken(null);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }, []);
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -28,13 +44,15 @@ export const AuthProvider = ({ children }) => {
           try {
             const parsedUser = JSON.parse(savedUser);
             
-            if (parsedUser.email) {
+            if (parsedUser?.email && profileStorage?.getProfilePhoto) {
               const savedPhoto = profileStorage.getProfilePhoto(parsedUser.email);
               if (savedPhoto && parsedUser.profileImage !== savedPhoto) {
                 parsedUser.profileImage = savedPhoto;
               }
               
-              profileStorage.setCurrentUser?.(parsedUser.email);
+              if (profileStorage?.setCurrentUser) {
+                profileStorage.setCurrentUser(parsedUser.email);
+              }
             }
             
             setToken(savedToken);
@@ -54,53 +72,54 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [logout]);
 
   const login = (userData, authToken) => {
     try {
-      if (userData?.email) {
+      if (!userData || !authToken) {
+        throw new Error('Invalid login data');
+      }
+
+      let userWithPhoto = { ...userData };
+      
+      if (userData?.email && profileStorage?.getProfilePhoto) {
         const savedPhoto = profileStorage.getProfilePhoto(userData.email);
         if (savedPhoto) {
-          userData.profileImage = savedPhoto;
+          userWithPhoto.profileImage = savedPhoto;
         }
         
-        profileStorage.setCurrentUser?.(userData.email);
+        if (profileStorage?.setCurrentUser) {
+          profileStorage.setCurrentUser(userData.email);
+        }
       }
       
-      setUser(userData);
+      setUser(userWithPhoto);
       setToken(authToken);
       setAuthToken(authToken);
       localStorage.setItem('token', authToken);
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(userWithPhoto));
     } catch (error) {
       console.error('Login error:', error);
     }
   };
 
-  const logout = () => {
-    try {
-      profileStorage.clearCurrentUser?.();
-      
-      setUser(null);
-      setToken(null);
-      setAuthToken(null);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
   const updateUser = (updatedUserData) => {
     try {
-      if (updatedUserData?.email) {
-        if (updatedUserData.profileImage) {
+      if (!updatedUserData) {
+        console.error('No user data provided for update');
+        return;
+      }
+
+      if (updatedUserData?.email && profileStorage) {
+        if (updatedUserData.profileImage && profileStorage.saveProfilePhoto) {
           profileStorage.saveProfilePhoto(updatedUserData.email, updatedUserData.profileImage);
-        } else {
+        } else if (profileStorage.removeProfilePhoto) {
           profileStorage.removeProfilePhoto(updatedUserData.email);
         }
         
-        profileStorage.saveProfile(updatedUserData.email, updatedUserData);
+        if (profileStorage.saveProfile) {
+          profileStorage.saveProfile(updatedUserData.email, updatedUserData);
+        }
       }
       
       setUser(updatedUserData);
@@ -111,7 +130,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = () => {
-    return !!token && !!user;
+    return !!(token && user && user.id);
   };
 
   const value = {

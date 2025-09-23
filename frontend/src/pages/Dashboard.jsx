@@ -149,9 +149,7 @@ const Dashboard = () => {
   };
   
   const handleRefresh = () => {
-    setLoading(true);
     loadDashboardData();
-    setLoading(false);
   };
 
   if (loading) {

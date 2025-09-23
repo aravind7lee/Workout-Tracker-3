@@ -6,11 +6,18 @@ import { AuthProvider } from './context/AuthContext';
 import App from './App';
 import './index.css';
 
-// Production console suppression
+// Production console suppression - preserve critical errors
 if (process.env.NODE_ENV === 'production') {
+  const originalError = console.error;
   console.log = () => {};
   console.warn = () => {};
-  console.error = () => {};
+  console.error = (...args) => {
+    // Only log critical authentication and network errors
+    const message = args.join(' ');
+    if (message.includes('auth') || message.includes('network') || message.includes('Cannot read properties')) {
+      originalError.apply(console, args);
+    }
+  };
 }
 
 // Override localStorage to handle quota gracefully
@@ -26,13 +33,24 @@ Storage.prototype.setItem = function(key, value) {
   }
 };
 
-// Global error handlers for production
+// Global error handlers for production with selective logging
 window.addEventListener('error', (event) => {
+  // Log critical errors but prevent user-facing crashes
+  if (event.error && (event.error.message.includes('Cannot read properties') || 
+                     event.error.message.includes('auth') ||
+                     event.error.message.includes('user'))) {
+    console.error('Critical error:', event.error.message, event.error.stack);
+  }
   event.preventDefault();
   return false;
 });
 
 window.addEventListener('unhandledrejection', (event) => {
+  // Log critical promise rejections
+  if (event.reason && typeof event.reason === 'object' && 
+      (event.reason.message?.includes('auth') || event.reason.message?.includes('user'))) {
+    console.error('Critical promise rejection:', event.reason);
+  }
   event.preventDefault();
   return false;
 });

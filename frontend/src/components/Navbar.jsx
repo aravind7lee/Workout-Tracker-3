@@ -55,7 +55,8 @@ export default function Navbar() {
       document.body.classList.remove('sidebar-open');
       document.body.style.top = '';
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        const scrollPosition = Number(scrollY.replace('-', '')) || 0;
+        window.scrollTo(0, scrollPosition);
       }
     }
     
@@ -369,7 +370,7 @@ export default function Navbar() {
             )}
 
             {/* Profile Dropdown */}
-            {isAuthenticated() ? (
+            {isAuthenticated() && user ? (
               <div ref={profileRef} className="relative">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -378,7 +379,7 @@ export default function Navbar() {
                   className="flex items-center space-x-2 p-2 rounded-xl hover:bg-slate-700/50 transition-all duration-200"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
                   </div>
                   <span className="hidden sm:block text-white font-medium">{user?.name || 'User'}</span>
                 </motion.button>
@@ -676,15 +677,15 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Profile Section */}
-                {isAuthenticated() && (
+                {isAuthenticated() && user && (
                   <div className="border-t pt-4 sm:pt-6" style={{ borderColor: 'var(--panel-border)' }}>
                     <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm sm:text-base">
-                        {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                        {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate text-sm sm:text-base" style={{ color: 'var(--heading)' }}>{user?.name || 'User'}</div>
-                        <div className="text-xs sm:text-sm truncate" style={{ color: 'var(--muted)' }}>{user?.email}</div>
+                        <div className="text-xs sm:text-sm truncate" style={{ color: 'var(--muted)' }}>{user?.email || ''}</div>
                       </div>
                     </div>
                     
