@@ -82,7 +82,7 @@ router.get('/muscles', async (req, res) => {
 // Get hero stats for real-time display
 router.get('/hero-stats', async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user?._id || req.user?.id;
     
     if (!userId) {
       return res.json({ 
@@ -109,7 +109,7 @@ router.get('/hero-stats', async (req, res) => {
     }
 
     // Count total workouts
-    const totalWorkouts = await Workout.countDocuments({ userId });
+    const totalWorkouts = await Workout.countDocuments({ user: userId });
     
     // Count total meals
     const totalMeals = await Meal.countDocuments({ userId });
@@ -129,7 +129,7 @@ router.get('/hero-stats', async (req, res) => {
       dayEnd.setDate(dayEnd.getDate() + 1);
       
       const hasActivity = await Workout.exists({
-        userId,
+        user: userId,
         createdAt: { $gte: dayStart, $lt: dayEnd }
       }) || await Meal.exists({
         userId,
@@ -150,7 +150,7 @@ router.get('/hero-stats', async (req, res) => {
     startOfWeek.setHours(0, 0, 0, 0);
     
     const weeklyWorkouts = await Workout.countDocuments({
-      userId,
+      user: userId,
       createdAt: { $gte: startOfWeek }
     });
     
@@ -179,7 +179,7 @@ router.get('/hero-stats', async (req, res) => {
 // Track workout completion
 router.post('/track-workout-completion', async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user?._id || req.user?.id;
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
@@ -188,10 +188,10 @@ router.post('/track-workout-completion', async (req, res) => {
     
     // Create workout entry
     const workout = new Workout({
-      userId,
-      name: 'Quick Workout',
+      user: userId,
+      title: 'Quick Workout',
       exercises: [],
-      duration: 0,
+      durationMinutes: 0,
       createdAt: new Date()
     });
     
@@ -205,7 +205,7 @@ router.post('/track-workout-completion', async (req, res) => {
 // Track meal logging
 router.post('/track-meal-logging', async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user?._id || req.user?.id;
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
@@ -230,7 +230,7 @@ router.post('/track-meal-logging', async (req, res) => {
 // Get all analytics data (general endpoint)
 router.get('/', async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user?._id || req.user?.id;
     
     if (!userId) {
       return res.json({ 
@@ -257,7 +257,7 @@ router.get('/', async (req, res) => {
     }
 
     // Count total workouts
-    const totalWorkouts = await Workout.countDocuments({ userId });
+    const totalWorkouts = await Workout.countDocuments({ user: userId });
     
     // Count total meals
     const totalMeals = await Meal.countDocuments({ userId });
@@ -277,7 +277,7 @@ router.get('/', async (req, res) => {
       dayEnd.setDate(dayEnd.getDate() + 1);
       
       const hasActivity = await Workout.exists({
-        userId,
+        user: userId,
         createdAt: { $gte: dayStart, $lt: dayEnd }
       }) || await Meal.exists({
         userId,
@@ -298,7 +298,7 @@ router.get('/', async (req, res) => {
     startOfWeek.setHours(0, 0, 0, 0);
     
     const weeklyWorkouts = await Workout.countDocuments({
-      userId,
+      user: userId,
       createdAt: { $gte: startOfWeek }
     });
     
@@ -324,6 +324,162 @@ router.get('/', async (req, res) => {
     res.json({ success: true, data: analyticsData });
   } catch (error) {
     console.error('Analytics error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get user exercise statistics
+router.get('/exercise-stats', async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+      return res.json({ success: true, data: {} });
+    }
+
+    const Workout = (await import('../models/Workout.js')).default;
+    
+    // Get all user workouts with exercises
+    const workouts = await Workout.find({ user: userId })
+      .populate('exercises.exercise')
+      .sort({ date: -1 });
+    
+    // Calculate exercise-specific statistics
+    const exerciseStats = {};
+    
+    workouts.forEach(workout => {
+      workout.exercises?.forEach(exerciseLog => {
+        const exerciseName = exerciseLog.exercise?.name || 'Unknown Exercise';
+        
+        if (!exerciseStats[exerciseName]) {
+          exerciseStats[exerciseName] = {
+            totalSessions: 0,
+            totalSets: 0,
+            totalReps: 0,
+            maxWeight: 0,
+            lastPerformed: null,
+            personalBest: 0,
+            averageReps: 0,
+            totalVolume: 0
+          };
+        }
+        
+        const stats = exerciseStats[exerciseName];
+        stats.totalSessions++;
+        stats.totalSets += exerciseLog.sets?.length || 0;
+        
+        let sessionReps = 0;
+        let sessionVolume = 0;
+        
+        exerciseLog.sets?.forEach(set => {
+          const reps = set.reps || 0;
+          const weight = set.weight || 0;
+          
+          stats.totalReps += reps;
+          sessionReps += reps;
+          sessionVolume += reps * weight;
+          
+          if (weight > stats.maxWeight) {
+            stats.maxWeight = weight;
+            stats.personalBest = weight;
+          }
+        });
+        
+        stats.totalVolume += sessionVolume;
+        stats.averageReps = Math.round(stats.totalReps / stats.totalSessions);
+        
+        const workoutDate = new Date(workout.date || workout.createdAt);
+        if (!stats.lastPerformed || workoutDate > stats.lastPerformed) {
+          stats.lastPerformed = workoutDate;
+        }
+      });
+    });
+    
+    res.json({ success: true, data: exerciseStats });
+  } catch (error) {
+    console.error('Exercise stats error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Track exercise interactions
+router.post('/track-exercise', async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { exerciseId, action, timestamp } = req.body;
+    
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    // Log exercise interaction (could be stored in a separate collection)
+    console.log(`User ${userId} performed ${action} on exercise ${exerciseId} at ${timestamp}`);
+    
+    // You could create an ExerciseInteraction model to track this data
+    // For now, we'll just acknowledge the tracking
+    
+    res.json({ success: true, message: 'Exercise interaction tracked' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Sync offline data
+router.post('/sync-offline-data', async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { workouts, meals, exercises, timestamp } = req.body;
+    
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const Workout = (await import('../models/Workout.js')).default;
+    const Meal = (await import('../models/Meal.js')).default;
+    
+    let syncedCount = 0;
+    
+    // Sync workouts
+    if (workouts && workouts.length > 0) {
+      for (const workoutData of workouts) {
+        try {
+          const workout = new Workout({
+            ...workoutData,
+            user: userId,
+            syncedFromOffline: true
+          });
+          await workout.save();
+          syncedCount++;
+        } catch (error) {
+          console.error('Failed to sync workout:', error);
+        }
+      }
+    }
+    
+    // Sync meals
+    if (meals && meals.length > 0) {
+      for (const mealData of meals) {
+        try {
+          const meal = new Meal({
+            ...mealData,
+            userId,
+            syncedFromOffline: true
+          });
+          await meal.save();
+          syncedCount++;
+        } catch (error) {
+          console.error('Failed to sync meal:', error);
+        }
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      message: `Synced ${syncedCount} items from offline storage`,
+      syncedCount 
+    });
+  } catch (error) {
+    console.error('Offline sync error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -372,6 +528,16 @@ router.get('/achievements', async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
+});
+
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.json({ 
+    success: true, 
+    status: 'online',
+    timestamp: new Date().toISOString(),
+    message: 'Analytics service is running' 
+  });
 });
 
 export default router;

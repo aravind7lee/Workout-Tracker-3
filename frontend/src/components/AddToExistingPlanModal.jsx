@@ -1,163 +1,115 @@
-// frontend/src/components/AddToExistingPlanModal.jsx
+// Add to Existing Plan Modal Component
 import React, { useState, useEffect } from 'react';
-import { planService } from '../services/planService';
 
-export default function AddToExistingPlanModal({ exercise, onClose, onSave }) {
-  const [existingPlans, setExistingPlans] = useState([]);
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [saving, setSaving] = useState(false);
+const AddToExistingPlanModal = ({ exercise, onClose, onSave }) => {
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const plans = planService.getAllPlans();
-    setExistingPlans(plans);
-    if (plans.length > 0) {
-      setSelectedPlanId(plans[0].id);
-    }
+    // Load existing plans
+    const savedPlans = JSON.parse(localStorage.getItem('userPlans') || '[]');
+    setPlans(savedPlans);
   }, []);
 
-  const handleAddToExisting = async () => {
-    if (!selectedPlanId) return;
+  const handleAddToPlan = async () => {
+    if (!selectedPlan) return;
     
-    setSaving(true);
+    setLoading(true);
     try {
-      const plan = planService.getPlanById(selectedPlanId);
-      if (!plan) {
-        throw new Error('Plan not found');
+      const savedPlans = JSON.parse(localStorage.getItem('userPlans') || '[]');
+      const planIndex = savedPlans.findIndex(p => p.id.toString() === selectedPlan);
+      
+      if (planIndex !== -1) {
+        // Check if exercise already exists in plan
+        const exerciseExists = savedPlans[planIndex].exercises.some(ex => ex.id === exercise.id);
+        
+        if (!exerciseExists) {
+          savedPlans[planIndex].exercises.push(exercise);
+          savedPlans[planIndex].updatedAt = new Date().toISOString();
+          localStorage.setItem('userPlans', JSON.stringify(savedPlans));
+          
+          onSave(savedPlans[planIndex]);
+        }
       }
       
-      // Check if exercise already exists in plan
-      const exerciseExists = plan.exercises.some(ex => ex.name === exercise.name);
-      if (exerciseExists) {
-        alert(`"${exercise.name}" is already in "${plan.name}"`);
-        setSaving(false);
-        return;
-      }
-      
-      const newExercise = {
-        id: `${exercise.id}-${Date.now()}`,
-        name: exercise.name,
-        category: exercise.category,
-        sets: exercise.sets,
-        type: exercise.type,
-        difficulty: exercise.difficulty
-      };
-      
-      const updatedPlan = {
-        ...plan,
-        exercises: [...plan.exercises, newExercise],
-        updatedAt: new Date().toISOString()
-      };
-      
-      const savedPlan = planService.updatePlan(selectedPlanId, updatedPlan);
-      
-      // Show success message with exercise and plan names
-      alert(`✅ "${exercise.name}" added to "${plan.name}" successfully!`);
-      
-      onSave(savedPlan);
       onClose();
     } catch (error) {
-      console.error('Error adding to plan:', error);
-      alert('❌ Failed to add exercise to plan. Please try again.');
+      console.error('Failed to add exercise to plan:', error);
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
-  if (existingPlans.length === 0) {
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-        <div className="card max-w-md w-full" onClick={e => e.stopPropagation()}>
-          <div className="text-center py-8">
-            <div className="text-4xl mb-4">📋</div>
-            <h3 className="text-lg font-semibold text-white mb-2">No Plans Found</h3>
-            <p className="text-slate-400 mb-6">You don't have any workout plans yet. Create your first plan to add exercises.</p>
-            <div className="flex gap-3">
-              <button onClick={onClose} className="btn-secondary flex-1">
-                Cancel
-              </button>
-              <button 
-                onClick={() => {
-                  onClose();
-                  // This will trigger the QuickPlanModal instead
-                  window.dispatchEvent(new CustomEvent('createNewPlan', { detail: exercise }));
-                }}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
-              >
-                Create New Plan
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50" onClick={onClose}>
-      <div className="card max-w-xs sm:max-w-md w-full max-h-[90vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div className="card max-w-md w-full" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg sm:text-xl font-semibold text-white">Choose Your Plan</h3>
+          <h3 className="text-xl font-semibold text-white">Add to Existing Plan</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-white text-2xl">×</button>
         </div>
         
-        <div className="space-y-4 overflow-y-auto">
-          <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-slate-700/30 rounded-lg">
-            <div className={`w-8 h-8 sm:w-10 sm:h-10 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-              <span className="text-lg sm:text-xl">{exercise.icon}</span>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+            <div className={`w-10 h-10 ${exercise.color} rounded-lg flex items-center justify-center`}>
+              <span className="text-xl">{exercise.icon}</span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="font-medium text-white text-sm sm:text-base truncate">{exercise.name}</div>
-              <div className="text-xs sm:text-sm text-slate-400">{exercise.sets}</div>
+            <div>
+              <div className="font-medium text-white">{exercise.name}</div>
+              <div className="text-sm text-slate-400">{exercise.category}</div>
             </div>
           </div>
           
-          <div>
-            <label className="block text-sm text-slate-300 mb-3">Select Plan to Add Exercise</label>
-            <div className="space-y-2 max-h-40 sm:max-h-48 overflow-y-auto">
-              {existingPlans.map(plan => (
-                <div
-                  key={plan.id}
-                  onClick={() => setSelectedPlanId(plan.id)}
-                  className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all ${
-                    selectedPlanId === plan.id
-                      ? 'bg-blue-900/30 border-blue-500 ring-2 ring-blue-400/50'
-                      : 'bg-slate-700/30 border-slate-600 hover:bg-slate-600/30 hover:border-slate-500'
-                  }`}
+          {plans.length === 0 ? (
+            <div className="text-center py-6">
+              <div className="text-slate-400 mb-4">No existing plans found</div>
+              <button
+                onClick={onClose}
+                className="btn bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Create New Plan Instead
+              </button>
+            </div>
+          ) : (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Select Plan</label>
+                <select
+                  value={selectedPlan}
+                  onChange={(e) => setSelectedPlan(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-white text-sm truncate">{plan.name}</div>
-                      <div className="text-xs text-slate-400 mt-1">
-                        {plan.exercises.length} {plan.exercises.length === 1 ? 'exercise' : 'exercises'} • {plan.category}
-                      </div>
-                    </div>
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ml-2 ${
-                      selectedPlanId === plan.id
-                        ? 'border-blue-400 bg-blue-400'
-                        : 'border-slate-500'
-                    }`}>
-                      {selectedPlanId === plan.id && (
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button onClick={onClose} className="btn-secondary flex-1 text-sm sm:text-base">Cancel</button>
-            <button
-              onClick={handleAddToExisting}
-              disabled={saving || !selectedPlanId}
-              className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 text-sm sm:text-base"
-            >
-              {saving ? 'Adding...' : '✓ Add to Plan'}
-            </button>
-          </div>
+                  <option value="">Choose a plan...</option>
+                  {plans.map(plan => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.name} ({plan.exercises?.length || 0} exercises)
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={onClose}
+                  className="btn-secondary flex-1"
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddToPlan}
+                  disabled={loading || !selectedPlan}
+                  className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50"
+                >
+                  {loading ? 'Adding...' : 'Add to Plan'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AddToExistingPlanModal;

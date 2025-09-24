@@ -1,59 +1,86 @@
-// Test Backend Connection
-const axios = require('axios');
+// Test Backend Connection Script
+import axios from 'axios';
 
-const BACKEND_URL = 'https://workout-tracker-backend-wga7.onrender.com/api';
+const API_BASE = 'https://workout-tracker-backend-wga7.onrender.com/api';
+const LOCAL_API = 'http://localhost:5000/api';
 
-async function testBackend() {
-  console.log('🔍 Testing backend connection...');
-  console.log(`📡 Backend URL: ${BACKEND_URL}`);
+async function testConnection(baseUrl, name) {
+  console.log(`\n🔍 Testing ${name} connection...`);
   
   try {
-    // Test health endpoint
-    console.log('\n1. Testing health endpoint...');
-    const healthResponse = await axios.get(`${BACKEND_URL}/health`, {
-      timeout: 10000
-    });
-    
-    console.log('✅ Health check passed');
-    console.log('📊 Response:', healthResponse.data);
-    
-    // Test CORS
-    console.log('\n2. Testing CORS headers...');
-    console.log('🌐 CORS Origin:', healthResponse.headers['access-control-allow-origin']);
-    
+    const response = await axios.get(`${baseUrl}/health`, { timeout: 10000 });
+    console.log(`✅ ${name} is ONLINE`);
+    console.log(`📊 Response:`, response.data);
     return true;
-    
   } catch (error) {
-    console.log('❌ Backend connection failed');
-    
-    if (error.code === 'ECONNREFUSED') {
-      console.log('🚫 Connection refused - backend server is not running');
-    } else if (error.code === 'ENOTFOUND') {
-      console.log('🌐 DNS resolution failed - check the backend URL');
-    } else if (error.code === 'ETIMEDOUT') {
-      console.log('⏰ Connection timeout - backend server is slow or unreachable');
-    } else if (error.response) {
-      console.log(`📄 HTTP ${error.response.status}: ${error.response.statusText}`);
-      console.log('📝 Response:', error.response.data);
-    } else {
-      console.log('🔧 Error:', error.message);
-    }
-    
+    console.log(`❌ ${name} is OFFLINE`);
+    console.log(`🔍 Error:`, error.message);
     return false;
   }
 }
 
-// Run the test
-testBackend().then(success => {
-  if (success) {
-    console.log('\n🎉 Backend is working correctly!');
-  } else {
-    console.log('\n💡 Suggestions:');
-    console.log('   1. Check if the backend server is running');
-    console.log('   2. Verify the backend URL is correct');
-    console.log('   3. Check your internet connection');
-    console.log('   4. Try running the backend locally on port 5001');
+async function testWorkoutSave(baseUrl, name) {
+  console.log(`\n💾 Testing workout save on ${name}...`);
+  
+  const testWorkout = {
+    title: 'Test Workout',
+    exercises: [{
+      exercise: 'Push-ups',
+      sets: [{ reps: 10, weight: 0, rest: 60 }],
+      notes: 'Test workout'
+    }],
+    durationMinutes: 5,
+    calories: 25,
+    date: new Date().toISOString()
+  };
+  
+  try {
+    const response = await axios.post(`${baseUrl}/workouts`, testWorkout, {
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer test-token' // This will fail auth but test the route
+      }
+    });
+    
+    console.log(`✅ ${name} workout endpoint is working`);
+    return true;
+  } catch (error) {
+    if (error.response?.status === 401) {
+      console.log(`✅ ${name} workout endpoint is working (auth required)`);
+      return true;
+    } else {
+      console.log(`❌ ${name} workout endpoint error:`, error.response?.status, error.response?.data || error.message);
+      return false;
+    }
+  }
+}
+
+async function runTests() {
+  console.log('🚀 BACKEND CONNECTION TEST');
+  console.log('========================');
+  
+  // Test remote backend
+  const remoteOnline = await testConnection(API_BASE, 'Remote Backend (Render)');
+  if (remoteOnline) {
+    await testWorkoutSave(API_BASE, 'Remote Backend');
   }
   
-  process.exit(success ? 0 : 1);
-});
+  // Test local backend
+  const localOnline = await testConnection(LOCAL_API, 'Local Backend');
+  if (localOnline) {
+    await testWorkoutSave(LOCAL_API, 'Local Backend');
+  }
+  
+  console.log('\n📋 SUMMARY:');
+  console.log('===========');
+  console.log(`Remote Backend: ${remoteOnline ? '✅ ONLINE' : '❌ OFFLINE'}`);
+  console.log(`Local Backend: ${localOnline ? '✅ ONLINE' : '❌ OFFLINE'}`);
+  
+  if (!remoteOnline && !localOnline) {
+    console.log('\n⚠️  NO BACKENDS AVAILABLE');
+    console.log('Please start your local backend with: cd backend && npm start');
+  }
+}
+
+runTests().catch(console.error);

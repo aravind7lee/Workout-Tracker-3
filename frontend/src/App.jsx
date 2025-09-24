@@ -4,7 +4,7 @@ import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-ro
 import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import Library from './pages/Library';
+import LibrarySimple from './pages/LibrarySimple';
 import Analytics from './pages/Analytics';
 import Nutrition from './pages/Nutrition';
 import PlansBuilder from './pages/PlansBuilder';
@@ -16,6 +16,7 @@ import ProfileAdvanced from './pages/ProfileAdvanced';
 import Settings from './pages/Settings';
 import Forum from './pages/Forum';
 import Contact from './pages/Contact';
+import StartWorkout from './pages/StartWorkout';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 import DemoBanner from './components/DemoBanner';
@@ -356,7 +357,7 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/library" element={<Library />} />
+              <Route path="/library" element={<LibrarySimple />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/nutrition" element={<Nutrition />} />
               <Route path="/plans" element={<PlansBuilder />} />
@@ -368,6 +369,7 @@ export default function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/forum" element={<Forum />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/start-workout" element={<StartWorkout />} />
               <Route path="/search" element={<Search />} />
               <Route path="/exercises/:id" element={<ExerciseDetail />} />
             </Routes>

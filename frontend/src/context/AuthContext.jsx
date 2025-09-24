@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeAuth = () => {
       try {
         const savedToken = localStorage.getItem('token');
         const savedUser = localStorage.getItem('user');
@@ -43,35 +43,22 @@ export const AuthProvider = ({ children }) => {
         if (savedToken && savedUser) {
           try {
             const parsedUser = JSON.parse(savedUser);
-            
-            if (parsedUser?.email && profileStorage?.getProfilePhoto) {
-              const savedPhoto = profileStorage.getProfilePhoto(parsedUser.email);
-              if (savedPhoto && parsedUser.profileImage !== savedPhoto) {
-                parsedUser.profileImage = savedPhoto;
-              }
-              
-              if (profileStorage?.setCurrentUser) {
-                profileStorage.setCurrentUser(parsedUser.email);
-              }
-            }
-            
             setToken(savedToken);
             setUser(parsedUser);
             setAuthToken(savedToken);
           } catch (parseError) {
-            console.error('Error parsing saved user data:', parseError);
             logout();
           }
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
         logout();
       } finally {
         setLoading(false);
       }
     };
 
-    initializeAuth();
+    // Use setTimeout to prevent blocking
+    setTimeout(initializeAuth, 0);
   }, [logout]);
 
   const login = (userData, authToken) => {

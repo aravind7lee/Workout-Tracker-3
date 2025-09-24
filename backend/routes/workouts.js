@@ -29,13 +29,58 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
   try {
+    console.log('📝 Received workout data:', JSON.stringify(req.body, null, 2));
+    console.log('👤 User ID:', req.user._id);
+    
     const data = req.body;
-    const workout = new Workout({ ...data, user: req.user._id });
-    await workout.save();
-    await workout.populate('exercises.exercise');
-    res.status(201).json(workout);
+    
+    // Validate required fields
+    if (!data.title) {
+      console.log('❌ Missing title');
+      return res.status(400).json({ message: 'Workout title is required' });
+    }
+    
+    // Create workout with proper structure - simplified for MongoDB
+    const workoutData = {
+      user: req.user._id,
+      title: data.title,
+      exercises: (data.exercises || []).map(ex => ({
+        exercise: ex.exercise || ex.name || 'Unknown Exercise',
+        sets: (ex.sets || []).map(set => ({
+          reps: Number(set.reps) || 0,
+          weight: Number(set.weight) || 0,
+          rest: Number(set.rest) || 60
+        })),
+        notes: ex.notes || ''
+      })),
+      durationMinutes: Number(data.durationMinutes) || 0,
+      calories: Number(data.calories) || 0,
+      date: data.date ? new Date(data.date) : new Date(),
+      isPublic: Boolean(data.isPublic)
+    };
+    
+    console.log('💾 Creating workout with data:', JSON.stringify(workoutData, null, 2));
+    
+    const workout = new Workout(workoutData);
+    const savedWorkout = await workout.save();
+    
+    console.log('✅ Workout saved successfully with ID:', savedWorkout._id);
+    
+    res.status(201).json({ 
+      success: true,
+      workout: savedWorkout,
+      message: 'Workout saved successfully'
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('❌ Workout save error:', error);
+    console.error('Stack trace:', error.stack);
+    
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to save workout', 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : 'Internal server error'
+    });
   }
 });
 

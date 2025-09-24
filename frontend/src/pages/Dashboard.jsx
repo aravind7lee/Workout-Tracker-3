@@ -13,6 +13,8 @@ const Dashboard = () => {
   const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(false);
+  const [showCompletionMessage, setShowCompletionMessage] = useState(false);
+  const [completionData, setCompletionData] = useState(null);
 
   const navigate = useNavigate();
 
@@ -109,6 +111,45 @@ const Dashboard = () => {
     
     loadDashboardData();
     
+    // Listen for real-time workout completion events
+    const handleWorkoutCompleted = (event) => {
+      const { workout, exercise, duration, sets, offline } = event.detail;
+      
+      // Show completion message
+      setCompletionData({ exercise, duration, sets, offline });
+      setShowCompletionMessage(true);
+      
+      // Instantly update workout stats
+      setWorkoutStats(prev => ({
+        ...prev,
+        total: prev.total + 1,
+        thisWeek: prev.thisWeek + 1,
+        xpPoints: prev.xpPoints + (sets * 10) + 50
+      }));
+      
+      // Add to recent workouts
+      setRecentWorkouts(prev => [{
+        id: workout.id || Date.now(),
+        planName: workout.title || workout.exerciseName || exercise,
+        exercises: workout.exercises || [{ exercise: workout.exerciseName || exercise }],
+        duration: Math.floor(duration / 60) || workout.durationMinutes,
+        completedAt: new Date(),
+        synced: !offline
+      }, ...prev]);
+      
+      // Hide completion message after 5 seconds
+      setTimeout(() => {
+        setShowCompletionMessage(false);
+      }, 5000);
+      
+      // Reload full data after a short delay to ensure backend sync
+      setTimeout(() => {
+        loadDashboardData();
+      }, 2000);
+    };
+    
+    window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    
     // Set up periodic refresh for real-time updates
     const refreshInterval = setInterval(() => {
       if (isAuthenticated()) {
@@ -116,7 +157,10 @@ const Dashboard = () => {
       }
     }, 30000);
     
-    return () => clearInterval(refreshInterval);
+    return () => {
+      window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+      clearInterval(refreshInterval);
+    };
   }, [isAuthenticated]);
 
   const handleLogout = () => {
@@ -167,6 +211,30 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Workout Completion Notification */}
+      {showCompletionMessage && completionData && (
+        <div className="fixed top-20 right-4 z-50 bg-green-600 text-white p-4 rounded-lg shadow-lg border border-green-500 animate-pulse">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🎉</span>
+            <div>
+              <div className="font-bold">Workout Completed!</div>
+              <div className="text-sm opacity-90">
+                {completionData.exercise} • {Math.floor(completionData.duration / 60)}:{(completionData.duration % 60).toString().padStart(2, '0')} • {completionData.sets} sets
+              </div>
+              <div className="text-xs opacity-75">
+                {completionData.offline ? '💾 Saved offline' : '☁️ Synced online'} • +{completionData.sets * 10 + 50} XP
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowCompletionMessage(false)}
+              className="text-white hover:text-green-200 ml-2"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Header */}
       <div className="card">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">

@@ -15,6 +15,7 @@ import nutritionRoutes from './routes/nutrition.js';
 import analyticsRoutes from './routes/analytics.js';
 import dashboardRoutes from './routes/dashboard.js';
 import reviewRoutes from './routes/reviews.js';
+import syncRoutes from './routes/sync.js';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/sync', syncRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
