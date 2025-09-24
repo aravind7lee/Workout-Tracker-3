@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ProfilePictureAdvanced from '../components/ProfilePictureAdvanced';
-import { realTimeStatsService } from '../services/realTimeStatsService';
+import { realTimeProfileService } from '../services/realTimeProfileService';
+import { onlineService } from '../services/onlineService';
 
 const ProfileAdvanced = () => {
-  const [stats, setStats] = useState(() => {
-    try {
-      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      return {
-        totalWorkouts: workouts.length,
-        totalPlans: plans.length,
-        totalMeals: meals.length,
-        currentStreak: 0,
-        xpPoints: workouts.length * 100 + plans.length * 50
-      };
-    } catch (error) {
-      return { totalWorkouts: 0, totalPlans: 0, totalMeals: 0, currentStreak: 0, xpPoints: 0 };
-    }
+  const [stats, setStats] = useState({
+    totalWorkouts: 0,
+    totalPlans: 0,
+    totalMeals: 0,
+    currentStreak: 0,
+    xpPoints: 0,
+    lastSync: null,
+    isRealTime: false
   });
+  const [activity, setActivity] = useState([]);
+  const [achievements, setAchievements] = useState([]);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [syncStatus, setSyncStatus] = useState('idle');
+  const [lastSyncTime, setLastSyncTime] = useState(null);
+  const syncInterval = useRef(null);
   const navigate = useNavigate();
   const { user, logout, updateUser, isAuthenticated } = useAuth();
 
-  // Load user data and stats
+  // Initialize real-time profile system
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
@@ -37,62 +37,175 @@ const ProfileAdvanced = () => {
       navigate('/login');
       return;
     }
-    
-    // Clear any existing fake data first
-    localStorage.removeItem('workouts');
-    localStorage.removeItem('recentMeals');
-    localStorage.removeItem('workoutPlans');
-    
-    // Initialize with empty arrays for clean start
-    localStorage.setItem('workouts', '[]');
-    localStorage.setItem('recentMeals', '[]');
-    localStorage.setItem('workoutPlans', '[]');
-    
-    // Get stats from localStorage
+
+    const initializeRealTimeProfile = async () => {
+      try {
+        // Check online status
+        const online = await onlineService.checkBackendStatus();
+        setIsOnline(online);
+        
+        if (online) {
+          setSyncStatus('syncing');
+          
+          // Start real-time sync
+          realTimeProfileService.startRealTimeSync();
+          
+          // Load real-time data
+          await loadRealTimeData();
+          
+          setSyncStatus('synced');
+          setLastSyncTime(new Date().toISOString());
+        } else {
+          setSyncStatus('offline');
+          // Load local data as fallback
+          loadLocalData();
+        }
+      } catch (error) {
+        console.error('Failed to initialize real-time profile:', error);
+        setSyncStatus('error');
+        loadLocalData();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeRealTimeProfile();
+
+    // Set up real-time event listeners
+    const handleStatsUpdate = (data) => {
+      setStats(data.stats);
+      setLastSyncTime(new Date().toISOString());
+    };
+
+    const handleActivityUpdate = (data) => {
+      setActivity(data.activity);
+    };
+
+    const handleSyncStatus = (data) => {
+      setSyncStatus(data.status);
+      if (data.timestamp) {
+        setLastSyncTime(data.timestamp);
+      }
+    };
+
+    const handleNetworkStatus = (data) => {
+      setIsOnline(data.isOnline);
+      if (data.isOnline) {
+        setSyncStatus('syncing');
+        setTimeout(() => loadRealTimeData(), 2000);
+      } else {
+        setSyncStatus('offline');
+      }
+    };
+
+    realTimeProfileService.addEventListener('statsUpdated', handleStatsUpdate);
+    realTimeProfileService.addEventListener('activityUpdated', handleActivityUpdate);
+    realTimeProfileService.addEventListener('syncStatus', handleSyncStatus);
+    realTimeProfileService.addEventListener('networkStatusChanged', handleNetworkStatus);
+
+    // Set up sync interval
+    syncInterval.current = setInterval(() => {
+      if (isOnline) {
+        loadRealTimeData();
+      }
+    }, 30000);
+
+    return () => {
+      if (syncInterval.current) clearInterval(syncInterval.current);
+      realTimeProfileService.removeEventListener('statsUpdated', handleStatsUpdate);
+      realTimeProfileService.removeEventListener('activityUpdated', handleActivityUpdate);
+      realTimeProfileService.removeEventListener('syncStatus', handleSyncStatus);
+      realTimeProfileService.removeEventListener('networkStatusChanged', handleNetworkStatus);
+      realTimeProfileService.cleanup();
+    };
+  }, [navigate, isOnline]);
+
+  // Load real-time data from MongoDB
+  const loadRealTimeData = async () => {
+    try {
+      const [statsData, activityData, achievementsData] = await Promise.all([
+        realTimeProfileService.getRealTimeStats(),
+        loadActivity(),
+        loadAchievements()
+      ]);
+      
+      if (statsData) {
+        setStats({
+          ...statsData,
+          isRealTime: true,
+          lastSync: new Date().toISOString()
+        });
+      }
+      
+      if (activityData) setActivity(activityData);
+      if (achievementsData) setAchievements(achievementsData);
+      
+    } catch (error) {
+      console.error('Failed to load real-time data:', error);
+      loadLocalData();
+    }
+  };
+
+  // Load local data as fallback
+  const loadLocalData = () => {
     try {
       const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      const currentStats = {
+      
+      setStats({
         totalWorkouts: workouts.length,
         totalPlans: plans.length,
         totalMeals: meals.length,
-        currentStreak: 0,
-        xpPoints: workouts.length * 100 + plans.length * 50
-      };
-      setStats(currentStats);
+        currentStreak: calculateStreak(workouts),
+        xpPoints: workouts.length * 100 + plans.length * 50,
+        isRealTime: false,
+        lastSync: null
+      });
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('Error loading local data:', error);
     }
-    setLoading(false);
-  }, [navigate]);
+  };
 
-  // Update stats when localStorage changes
-  useEffect(() => {
-    const updateStats = () => {
-      try {
-        const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
-        const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-        setStats({
-          totalWorkouts: workouts.length,
-          totalPlans: plans.length,
-          totalMeals: meals.length,
-          currentStreak: 0,
-          xpPoints: workouts.length * 100 + plans.length * 50
-        });
-      } catch (error) {
-        console.error('Error updating stats:', error);
+  // Load activity data
+  const loadActivity = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/activity`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const activityData = await response.json();
+        return activityData;
       }
-    };
-    
-    // Listen for storage changes
-    window.addEventListener('storage', updateStats);
-    
-    return () => {
-      window.removeEventListener('storage', updateStats);
-    };
-  }, []);
+    } catch (error) {
+      console.error('Failed to load activity:', error);
+    }
+    return [];
+  };
+
+  // Load achievements data
+  const loadAchievements = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/achievements`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const achievementsData = await response.json();
+        return achievementsData;
+      }
+    } catch (error) {
+      console.error('Failed to load achievements:', error);
+    }
+    return [];
+  };
 
   // Update form data when user changes
   useEffect(() => {
@@ -140,24 +253,58 @@ const ProfileAdvanced = () => {
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setSyncStatus('saving');
 
     try {
-      const updatedUser = { ...user, ...formData };
-      updateUser(updatedUser);
-      setEditing(false);
-      alert('Profile updated successfully!');
+      // Use real-time profile service for MongoDB update
+      const result = await realTimeProfileService.updateProfile(formData);
+      
+      if (result.success) {
+        updateUser(result.user);
+        setEditing(false);
+        setSyncStatus('synced');
+        setLastSyncTime(new Date().toISOString());
+        
+        alert('🎉 Profile updated successfully!\n\n✅ Saved to MongoDB\n☁️ Real-time sync active\n📱 Available on all devices');
+      }
     } catch (error) {
-      alert('Failed to update profile');
+      console.error('Profile update failed:', error);
+      setSyncStatus('error');
+      alert('Failed to update profile. Please try again.');
     } finally {
       setSaving(false);
+      setTimeout(() => {
+        if (syncStatus !== 'synced') {
+          setSyncStatus(isOnline ? 'idle' : 'offline');
+        }
+      }, 3000);
     }
   };
 
-  const handleImageUpdate = (newImageUrl) => {
-    const updatedUser = { ...user, profileImage: newImageUrl };
-    updateUser(updatedUser);
-    // Force re-render by updating localStorage
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+  const handleImageUpdate = async (newImageUrl) => {
+    try {
+      setSyncStatus('syncing');
+      
+      // Update via real-time service
+      const result = await realTimeProfileService.updateProfile({ profileImage: newImageUrl });
+      
+      if (result.success) {
+        updateUser(result.user);
+        setSyncStatus('synced');
+        setLastSyncTime(new Date().toISOString());
+        
+        // Force re-render by updating localStorage
+        localStorage.setItem('user', JSON.stringify(result.user));
+      }
+    } catch (error) {
+      console.error('Image update failed:', error);
+      setSyncStatus('error');
+      
+      // Fallback to local update
+      const updatedUser = { ...user, profileImage: newImageUrl };
+      updateUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
   };
 
   const handleLogout = () => {
@@ -166,12 +313,27 @@ const ProfileAdvanced = () => {
     navigate('/login');
   };
 
+  // Get sync status display
+  const getSyncStatusDisplay = () => {
+    switch (syncStatus) {
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
+      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-blue-400' };
+      case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
+      case 'offline': return { icon: '📱', text: 'Offline', color: 'text-orange-400' };
+      case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
+      default: return { icon: '⚡', text: 'Ready', color: 'text-slate-400' };
+    }
+  };
+
+  const statusDisplay = getSyncStatusDisplay();
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-slate-400">Loading profile...</p>
+          <p className="mt-4 text-slate-400">Loading real-time profile...</p>
+          <p className="mt-2 text-xs text-slate-500">Connecting to MongoDB...</p>
         </div>
       </div>
     );
@@ -181,12 +343,48 @@ const ProfileAdvanced = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      {/* Real-Time Status Bar */}
+      <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className={`${statusDisplay.color} text-sm font-medium`}>
+              {statusDisplay.icon} {statusDisplay.text}
+            </span>
+            {isOnline && (
+              <span className="text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded-full">
+                🌐 Live MongoDB
+              </span>
+            )}
+            {stats.isRealTime && (
+              <span className="text-xs text-blue-300 bg-blue-900/30 px-2 py-1 rounded-full">
+                ⚡ Real-time
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            {lastSyncTime && (
+              <span>Last sync: {new Date(lastSyncTime).toLocaleTimeString()}</span>
+            )}
+            <button
+              onClick={() => realTimeProfileService.forceSync()}
+              className="px-2 py-1 bg-blue-900/30 text-blue-300 rounded hover:bg-blue-800/30"
+            >
+              🔄 Sync
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="card">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-white">My Profile</h1>
-            <p className="text-slate-400 mt-1">Manage your account and track your progress</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2">
+              <span>💪</span>
+              <span>My Profile</span>
+              <span className="text-lg">🏋️</span>
+            </h1>
+            <p className="text-slate-400 mt-1">Professional Gym Tracker • Real-time MongoDB Integration</p>
             {currentUser && (
               <div className="text-xs text-green-400 mt-1">
                 Logged in as: {currentUser.name} ({currentUser.email})
@@ -319,39 +517,157 @@ const ProfileAdvanced = () => {
         </div>
       </div>
 
-      {/* Your Progress - Real Stats */}
+      {/* Real-Time Progress Stats */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-white mb-6">Your Progress</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-blue-400">{stats?.totalWorkouts || 0}</div>
-            <div className="text-sm text-slate-400">Total Workouts</div>
-          </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-green-400">{stats?.totalMeals || 0}</div>
-            <div className="text-sm text-slate-400">Meals Logged</div>
-          </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-purple-400">{stats?.xpPoints || 0}</div>
-            <div className="text-sm text-slate-400">XP Points</div>
-          </div>
-          <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-orange-400">{stats?.currentStreak || 0}</div>
-            <div className="text-sm text-slate-400">Day Streak</div>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+            <span>📊</span>
+            <span>Real-Time Progress</span>
+            {stats.isRealTime && (
+              <span className="text-xs bg-green-900/30 text-green-300 px-2 py-1 rounded-full">
+                Live
+              </span>
+            )}
+          </h2>
+          <div className="text-xs text-slate-400">
+            {stats.isRealTime ? '☁️ MongoDB Live Data' : '📱 Local Data'}
           </div>
         </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="text-center p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 border border-blue-700/30 rounded-lg">
+            <div className="text-2xl font-bold text-blue-400 animate-pulse">{stats?.totalWorkouts || 0}</div>
+            <div className="text-sm text-slate-400">Total Workouts</div>
+            <div className="text-xs text-blue-300 mt-1">💪 Completed</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700/30 rounded-lg">
+            <div className="text-2xl font-bold text-green-400 animate-pulse">{stats?.totalMeals || 0}</div>
+            <div className="text-sm text-slate-400">Meals Logged</div>
+            <div className="text-xs text-green-300 mt-1">🍽️ Nutrition</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-purple-900/30 to-purple-800/20 border border-purple-700/30 rounded-lg">
+            <div className="text-2xl font-bold text-purple-400 animate-pulse">{stats?.totalPlans || 0}</div>
+            <div className="text-sm text-slate-400">Workout Plans</div>
+            <div className="text-xs text-purple-300 mt-1">📋 Created</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-orange-900/30 to-orange-800/20 border border-orange-700/30 rounded-lg">
+            <div className="text-2xl font-bold text-orange-400 animate-pulse">{stats?.currentStreak || 0}</div>
+            <div className="text-sm text-slate-400">Day Streak</div>
+            <div className="text-xs text-orange-300 mt-1">🔥 Consistency</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 border border-yellow-700/30 rounded-lg">
+            <div className="text-2xl font-bold text-yellow-400 animate-pulse">{stats?.xpPoints || 0}</div>
+            <div className="text-sm text-slate-400">XP Points</div>
+            <div className="text-xs text-yellow-300 mt-1">⭐ Experience</div>
+          </div>
+        </div>
+        
+        {stats.isRealTime && (
+          <div className="mt-4 p-3 bg-green-900/20 border border-green-700/50 rounded-lg">
+            <div className="text-green-300 text-sm flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span>Real-time data from MongoDB • Updates automatically across all devices</span>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Recent Activity */}
+      {activity.length > 0 && (
+        <div className="card">
+          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <span>🎯</span>
+            <span>Recent Activity</span>
+            <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full">
+              Live Feed
+            </span>
+          </h2>
+          
+          <div className="space-y-3">
+            {activity.slice(0, 5).map((item, index) => (
+              <div key={item.id} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
+                <span className="text-2xl">{item.icon}</span>
+                <div className="flex-1">
+                  <div className="text-white font-medium">{item.title}</div>
+                  <div className="text-slate-400 text-sm">{item.description}</div>
+                </div>
+                <div className="text-xs text-slate-500">
+                  {new Date(item.timestamp).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Achievements */}
+      {achievements.length > 0 && (
+        <div className="card">
+          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <span>🏆</span>
+            <span>Achievements</span>
+            <span className="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-1 rounded-full">
+              {achievements.filter(a => a.unlocked).length} Unlocked
+            </span>
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {achievements.map((achievement) => (
+              <div 
+                key={achievement.id} 
+                className={`p-4 rounded-lg border ${
+                  achievement.unlocked 
+                    ? 'bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 border-yellow-700/30' 
+                    : 'bg-slate-700/30 border-slate-600/30'
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">{achievement.icon}</span>
+                  <div className="flex-1">
+                    <div className={`font-medium ${
+                      achievement.unlocked ? 'text-yellow-300' : 'text-slate-400'
+                    }`}>
+                      {achievement.title}
+                    </div>
+                  </div>
+                  {achievement.unlocked && (
+                    <span className="text-green-400 text-sm">✓</span>
+                  )}
+                </div>
+                <div className="text-sm text-slate-400">{achievement.description}</div>
+                {achievement.unlocked && achievement.unlockedAt && (
+                  <div className="text-xs text-yellow-400 mt-2">
+                    Unlocked: {new Date(achievement.unlockedAt).toLocaleDateString()}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-white mb-6">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+          <span>⚡</span>
+          <span>Quick Actions</span>
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <button 
             onClick={() => navigate('/my-plans')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4 relative"
           >
             <div className="text-2xl mb-2">📋</div>
             <div className="text-sm">My Plans</div>
+            {stats.totalPlans > 0 && (
+              <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                {stats.totalPlans}
+              </span>
+            )}
           </button>
           
           <button 
@@ -364,19 +680,47 @@ const ProfileAdvanced = () => {
           
           <button 
             onClick={() => navigate('/nutrition')}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4"
+            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 relative"
           >
             <div className="text-2xl mb-2">🍎</div>
             <div className="text-sm">Nutrition</div>
+            {stats.totalMeals > 0 && (
+              <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                {stats.totalMeals}
+              </span>
+            )}
           </button>
           
           <button 
-            onClick={() => navigate('/library')}
+            onClick={() => navigate('/start-workout')}
             className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4"
           >
-            <div className="text-2xl mb-2">📚</div>
-            <div className="text-sm">Exercises</div>
+            <div className="text-2xl mb-2">🏋️</div>
+            <div className="text-sm">Start Workout</div>
           </button>
+        </div>
+      </div>
+
+      {/* Professional Footer */}
+      <div className="card bg-gradient-to-r from-slate-800/60 to-slate-900/60">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-2xl">🏆</span>
+            <span className="text-lg font-semibold text-white">Professional Gym Tracker</span>
+            <span className="text-2xl">🏆</span>
+          </div>
+          <div className="text-sm text-slate-400 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-4">
+            <span>✅ Real-time MongoDB sync</span>
+            <span className="hidden sm:inline">•</span>
+            <span>💪 Professional-level tracking</span>
+            <span className="hidden sm:inline">•</span>
+            <span>📱 Cross-device availability</span>
+            <span className="hidden sm:inline">•</span>
+            <span>🔥 Gym-quality experience</span>
+          </div>
+          <div className="mt-2 text-xs text-slate-500">
+            Your progress is automatically saved and synced across all devices
+          </div>
         </div>
       </div>
     </div>

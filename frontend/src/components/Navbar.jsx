@@ -378,10 +378,21 @@ export default function Navbar() {
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   className="flex items-center space-x-2 p-2 rounded-xl hover:bg-slate-700/50 transition-all duration-200"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                    {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
-                  </div>
+                  {user?.profileImage ? (
+                    <img 
+                      src={user.profileImage} 
+                      alt="Profile" 
+                      className="w-8 h-8 rounded-full object-cover border-2 border-blue-500/30"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                      {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
+                    </div>
+                  )}
                   <span className="hidden sm:block text-white font-medium">{user?.name || 'User'}</span>
+                  <span className="hidden lg:block text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full">
+                    Online
+                  </span>
                 </motion.button>
 
                 <AnimatePresence>
@@ -462,14 +473,16 @@ export default function Navbar() {
               <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
                 <Link
                   to="/login"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 flex items-center justify-center"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 flex items-center justify-center shadow-lg"
                 >
+                  <User size={16} className="mr-1" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center shadow-lg"
                 >
+                  <Zap size={16} className="mr-1" />
                   Sign Up
                 </Link>
               </div>
@@ -677,15 +690,26 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Profile Section */}
-                {isAuthenticated() && user && (
+                {isAuthenticated() && user ? (
                   <div className="border-t pt-4 sm:pt-6" style={{ borderColor: 'var(--panel-border)' }}>
                     <div className="flex items-center space-x-3 mb-3 sm:mb-4">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm sm:text-base">
-                        {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
-                      </div>
+                      {user?.profileImage ? (
+                        <img 
+                          src={user.profileImage} 
+                          alt="Profile" 
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-blue-500/30"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm sm:text-base">
+                          {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate text-sm sm:text-base" style={{ color: 'var(--heading)' }}>{user?.name || 'User'}</div>
                         <div className="text-xs sm:text-sm truncate" style={{ color: 'var(--muted)' }}>{user?.email || ''}</div>
+                        <div className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full inline-block mt-1">
+                          🟢 Online
+                        </div>
                       </div>
                     </div>
                     
@@ -738,6 +762,27 @@ export default function Navbar() {
                         <LogOut size={18} />
                         <span className="text-sm sm:text-base">Logout</span>
                       </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border-t pt-4 sm:pt-6" style={{ borderColor: 'var(--panel-border)' }}>
+                    <div className="space-y-2">
+                      <Link
+                        to="/login"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-lg"
+                      >
+                        <User size={18} />
+                        <span className="font-medium">Login</span>
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg"
+                      >
+                        <Zap size={18} />
+                        <span className="font-medium">Sign Up</span>
+                      </Link>
                     </div>
                   </div>
                 )}

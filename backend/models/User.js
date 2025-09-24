@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  phone: {
+    type: String,
+    default: ''
+  },
+  location: {
+    type: String,
+    default: ''
+  },
   isActive: {
     type: Boolean,
     default: true
@@ -46,6 +54,107 @@ const userSchema = new mongoose.Schema({
     xp: {
       type: Number,
       default: 0
+    }
+  },
+  fitnessGoals: {
+    goal: {
+      type: String,
+      enum: ['lose', 'maintain', 'gain', 'muscle', 'strength'],
+      default: 'maintain'
+    },
+    activityLevel: {
+      type: String,
+      enum: ['sedentary', 'light', 'moderate', 'very', 'extra'],
+      default: 'moderate'
+    },
+    targetWeight: {
+      type: Number,
+      default: null
+    },
+    weeklyGoal: {
+      type: Number,
+      default: 3,
+      min: 1,
+      max: 7
+    }
+  },
+  notifications: {
+    emailNotifications: {
+      type: Boolean,
+      default: true
+    },
+    pushNotifications: {
+      type: Boolean,
+      default: true
+    },
+    workoutReminders: {
+      type: Boolean,
+      default: true
+    },
+    mealReminders: {
+      type: Boolean,
+      default: false
+    },
+    achievementAlerts: {
+      type: Boolean,
+      default: true
+    }
+  },
+  privacy: {
+    profileVisibility: {
+      type: String,
+      enum: ['public', 'friends', 'private'],
+      default: 'public'
+    },
+    dataSharing: {
+      type: Boolean,
+      default: false
+    },
+    analyticsOptOut: {
+      type: Boolean,
+      default: false
+    }
+  },
+  preferences: {
+    theme: {
+      type: String,
+      enum: ['dark', 'light', 'auto'],
+      default: 'dark'
+    },
+    language: {
+      type: String,
+      enum: ['en', 'es', 'fr', 'de'],
+      default: 'en'
+    },
+    units: {
+      type: String,
+      enum: ['metric', 'imperial'],
+      default: 'metric'
+    },
+    dateFormat: {
+      type: String,
+      enum: ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'],
+      default: 'MM/DD/YYYY'
+    },
+    timeFormat: {
+      type: String,
+      enum: ['12h', '24h'],
+      default: '12h'
+    }
+  },
+  dataSettings: {
+    autoBackup: {
+      type: Boolean,
+      default: true
+    },
+    syncAcrossDevices: {
+      type: Boolean,
+      default: true
+    },
+    dataRetention: {
+      type: String,
+      enum: ['6months', '1year', '2years', 'forever'],
+      default: '1year'
     }
   }
 }, {

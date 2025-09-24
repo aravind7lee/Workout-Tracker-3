@@ -1,51 +1,41 @@
-// Clean Main Entry Point
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import App from './App';
 import './index.css';
+import './utils/consoleFilter';
+import './utils/chromeErrorHandler'; // Initialize Chrome error handler
 
-// Prevent browser extension conflicts
+// Handle storage quota gracefully without interfering with React
 if (typeof window !== 'undefined') {
-  // Override problematic console methods that cause extension conflicts
-  const noop = () => {};
-  if (window.location.hostname !== 'localhost') {
-    console.log = noop;
-    console.warn = noop;
-    console.info = noop;
-  }
-  
-  // Handle storage quota gracefully
   const originalSetItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function(key, value) {
     try {
       originalSetItem.call(this, key, value);
     } catch (error) {
       if (error.name === 'QuotaExceededError') {
+        console.warn('Storage quota exceeded, skipping save');
         return;
       }
+      throw error;
     }
   };
-  
-  // Prevent extension message channel errors
-  window.addEventListener('error', (event) => {
-    if (event.error?.message?.includes('message channel closed') ||
-        event.error?.message?.includes('contentScript') ||
-        event.error?.message?.includes('extension')) {
-      event.preventDefault();
-      return false;
+
+  // Suppress Chrome extension errors globally
+  const originalConsoleError = console.error;
+  console.error = (...args) => {
+    const message = args.join(' ');
+    if (
+      message.includes('Extension context invalidated') ||
+      message.includes('message channel closed') ||
+      message.includes('listener indicated an asynchronous response') ||
+      message.includes('chrome-extension://')
+    ) {
+      return; // Suppress Chrome extension errors
     }
-  });
-  
-  window.addEventListener('unhandledrejection', (event) => {
-    if (event.reason?.message?.includes('message channel closed') ||
-        event.reason?.message?.includes('contentScript') ||
-        event.reason?.message?.includes('extension')) {
-      event.preventDefault();
-      return false;
-    }
-  });
+    originalConsoleError.apply(console, args);
+  };
 }
 
 // Render application
@@ -53,7 +43,12 @@ const root = document.getElementById('root');
 if (root) {
   createRoot(root).render(
     <React.StrictMode>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <AuthProvider>
           <App />
         </AuthProvider>

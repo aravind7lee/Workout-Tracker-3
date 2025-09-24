@@ -1,12 +1,16 @@
 // frontend/src/pages/PlansBuilder.jsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
+import { useAuth } from '../context/AuthContext';
+import { realTimePlanService } from '../services/realTimePlanService';
+import RealTimeDashboard from '../components/RealTimeDashboard';
 
 export default function PlansBuilder() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState('chest');
   const [plan, setPlan] = useState([]);
   const [planName, setPlanName] = useState('');
@@ -14,9 +18,150 @@ export default function PlansBuilder() {
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverArea, setDragOverArea] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [syncStatus, setSyncStatus] = useState('idle');
+  const [realTimeStats, setRealTimeStats] = useState({
+    totalPlans: 0,
+    totalWorkouts: 0,
+    lastSync: null
+  });
+  const [autoSave, setAutoSave] = useState(false);
+  const autoSaveTimer = useRef(null);
+  const syncInterval = useRef(null);
   
   const currentMuscleGroup = exerciseLibrary[selectedMuscleGroup];
   const exercises = currentMuscleGroup.exercises;
+
+  // Real-time sync and status monitoring
+  useEffect(() => {
+    const checkOnlineStatus = async () => {
+      const online = await onlineService.checkBackendStatus();
+      setIsOnline(online);
+      if (online) {
+        setSyncStatus('synced');
+        loadRealTimeStats();
+      } else {
+        setSyncStatus('offline');
+      }
+    };
+
+    checkOnlineStatus();
+    
+    // Set up real-time sync interval
+    syncInterval.current = setInterval(checkOnlineStatus, 30000);
+
+    // Network status listeners with proper cleanup
+    const handleOnline = () => {
+      setIsOnline(true);
+      setSyncStatus('syncing');
+      checkOnlineStatus();
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      setSyncStatus('offline');
+    };
+
+    // Store references for cleanup
+    const onlineRef = handleOnline;
+    const offlineRef = handleOffline;
+
+    window.addEventListener('online', onlineRef);
+    window.addEventListener('offline', offlineRef);
+
+    return () => {
+      if (syncInterval.current) clearInterval(syncInterval.current);
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+      window.removeEventListener('online', onlineRef);
+      window.removeEventListener('offline', offlineRef);
+      // Cleanup real-time service
+      realTimePlanService.cleanup();
+    };
+  }, []);
+
+  // Auto-save functionality
+  useEffect(() => {
+    if (autoSave && planName.trim() && plan.length > 0) {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+      autoSaveTimer.current = setTimeout(() => {
+        savePlanDraft();
+      }, 3000);
+    }
+  }, [planName, plan, autoSave]);
+
+  const loadRealTimeStats = async () => {
+    try {
+      // Use local data to avoid API errors
+      const localPlans = planService.getAllPlans();
+      setRealTimeStats({
+        totalPlans: localPlans.length,
+        totalWorkouts: 0, // Will be updated from backend when available
+        lastSync: new Date().toISOString()
+      });
+      
+      // Try to get backend data if online
+      if (isOnline) {
+        try {
+          const analytics = await onlineService.getPlanAnalytics();
+          if (analytics && !analytics.error) {
+            setRealTimeStats({
+              totalPlans: analytics.totalPlans || localPlans.length,
+              totalWorkouts: analytics.totalWorkouts || 0,
+              lastSync: new Date().toISOString()
+            });
+          }
+        } catch (error) {
+          // Silently fail and use local data
+          console.log('Backend analytics unavailable, using local data');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load real-time stats:', error);
+    }
+  };
+
+  const savePlanDraft = async () => {
+    if (!planName.trim() || plan.length === 0) return;
+    
+    try {
+      const draftData = {
+        name: planName.trim() + ' (Draft)',
+        exercises: plan.map(exercise => ({
+          name: exercise.name,
+          category: exercise.category,
+          sets: exercise.sets
+        })),
+        category: planCategory,
+        isDraft: true
+      };
+      
+      localStorage.setItem('planBuilderDraft', JSON.stringify(draftData));
+      setSyncStatus('draft-saved');
+      
+      setTimeout(() => setSyncStatus(isOnline ? 'synced' : 'offline'), 2000);
+    } catch (error) {
+      console.error('Failed to save draft:', error);
+    }
+  };
+
+  const loadDraft = () => {
+    try {
+      const draft = localStorage.getItem('planBuilderDraft');
+      if (draft) {
+        const draftData = JSON.parse(draft);
+        setPlanName(draftData.name.replace(' (Draft)', ''));
+        setPlanCategory(draftData.category);
+        setPlan(draftData.exercises.map((ex, index) => ({
+          ...ex,
+          planId: `plan-${Date.now()}-${index}`,
+          originalId: `draft-${index}`
+        })));
+        localStorage.removeItem('planBuilderDraft');
+      }
+    } catch (error) {
+      console.error('Failed to load draft:', error);
+    }
+  };
 
   const handleDragStart = useCallback((e, item, source) => {
     console.log('Drag started:', item.name, 'from', source);
@@ -151,90 +296,238 @@ export default function PlansBuilder() {
     }
     
     setSaving(true);
+    setSyncStatus('saving');
+    
     try {
       const planData = {
         name: planName.trim(),
         exercises: plan.map(exercise => ({
           name: exercise.name,
           category: exercise.category,
-          sets: exercise.sets
+          sets: exercise.sets,
+          muscle: exercise.muscle || exercise.category,
+          difficulty: exercise.difficulty || 'intermediate'
         })),
-        category: planCategory
+        category: planCategory,
+        description: `Custom ${planCategory} workout plan with ${plan.length} exercises`,
+        tags: [planCategory.toLowerCase(), 'custom', selectedMuscleGroup],
+        createdBy: user?.name || 'User',
+        userId: user?._id
       };
       
+      // Save locally first
       const savedPlan = planService.savePlan(planData);
-      console.log('Plan saved successfully:', savedPlan);
+      console.log('Plan saved locally:', savedPlan);
       
-      // Try to sync with backend
-      const isOnline = await onlineService.checkBackendStatus();
-      if (isOnline) {
+      // Use real-time plan service for professional-level sync
+      let syncSuccess = false;
+      if (user) {
         try {
-          await onlineService.saveWorkoutPlan(savedPlan);
-          alert(`🎉 Plan "${planName}" created & synced!\n\n☁️ Saved to MongoDB backend\n✅ Available across all devices!`);
+          setSyncStatus('syncing');
+          
+          const result = await realTimePlanService.createPlan({
+            ...planData,
+            localId: savedPlan.id
+          });
+          
+          if (result.success) {
+            syncSuccess = result.synced;
+            setSyncStatus(result.synced ? 'synced' : 'offline');
+            
+            // Update real-time stats
+            setRealTimeStats(prev => ({
+              ...prev,
+              totalPlans: prev.totalPlans + 1,
+              lastSync: new Date().toISOString()
+            }));
+            
+            // Update local state instead of dispatching events
+            console.log('Plan created successfully:', result.plan);
+            
+            if (result.synced) {
+              alert(`🎉 PLAN CREATED SUCCESSFULLY!\n\n✅ "${planName}" saved to MongoDB\n☁️ Real-time sync active\n📱 Available on all devices\n🏋️♂️ Professional gym-level tracking\n\n🔥 Ready to dominate your workouts!`);
+            } else {
+              alert(`🎉 PLAN CREATED!\n\n💾 "${planName}" saved locally\n🔄 Queued for real-time sync\n📱 Will sync automatically when online\n\n💪 Your gains won't wait!`);
+            }
+          }
         } catch (syncError) {
-          console.error('Backend sync failed:', syncError);
-          alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n⚠️ Will sync when online`);
+          console.error('Real-time sync failed:', syncError);
+          setSyncStatus('sync-failed');
+          
+          alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n⚠️ Sync will retry automatically\n🏋️ Ready to use offline!`);
         }
       } else {
-        alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n⚠️ Will sync when online`);
+        setSyncStatus('offline');
+        alert(`🎉 Plan "${planName}" created!\n\n💾 Saved locally\n🔐 Sign in for cloud sync\n💪 Ready for your workout!`);
       }
+      
+      // Clear draft
+      localStorage.removeItem('planBuilderDraft');
       
       // Reset form
       setPlanName('');
       setPlan([]);
       setPlanCategory('General');
       
-      
       // Navigate to My Plans page
-      navigate('/my-plans');
+      setTimeout(() => {
+        navigate('/my-plans');
+      }, syncSuccess ? 1500 : 500);
+      
     } catch (error) {
       console.error('Error saving plan:', error);
+      setSyncStatus('error');
       alert('Failed to save plan. Please try again.');
     } finally {
       setSaving(false);
+      setTimeout(() => {
+        if (syncStatus !== 'synced') {
+          setSyncStatus(isOnline ? 'idle' : 'offline');
+        }
+      }, 3000);
     }
   };
 
+  const getSyncStatusDisplay = () => {
+    switch (syncStatus) {
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
+      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-blue-400' };
+      case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
+      case 'offline': return { icon: '📱', text: 'Offline', color: 'text-orange-400' };
+      case 'sync-failed': return { icon: '⚠️', text: 'Sync Failed', color: 'text-red-400' };
+      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-purple-400' };
+      case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
+      default: return { icon: '⚡', text: 'Ready', color: 'text-slate-400' };
+    }
+  };
+
+  const statusDisplay = getSyncStatusDisplay();
+
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Workout Plan Builder</h2>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            value={planName}
-            onChange={(e) => setPlanName(e.target.value)}
-            placeholder="Enter plan name..."
-            className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base"
-          />
-          <select
-            value={planCategory}
-            onChange={(e) => setPlanCategory(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
-          >
-            <option value="General">General</option>
-            <option value="Strength">Strength</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Flexibility">Flexibility</option>
-            <option value="HIIT">HIIT</option>
-          </select>
-          <button
-            onClick={savePlan}
-            disabled={saving}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {saving ? 'Saving...' : 'Save Plan'}
-          </button>
+    <div className="space-y-3 sm:space-y-4 lg:space-y-6 px-2 sm:px-0">
+      {/* Real-Time Dashboard */}
+      <RealTimeDashboard className="mb-3 sm:mb-4" />
+      
+      {/* Quick Actions Bar */}
+      <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2">
+              <span className={`${statusDisplay.color} text-xs sm:text-sm font-medium`}>
+                {statusDisplay.icon} {statusDisplay.text}
+              </span>
+              {isOnline && (
+                <span className="text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded-full">
+                  🌐 Live
+                </span>
+              )}
+            </div>
+            <div className="text-xs text-slate-400 hidden sm:block">
+              ⚡ Professional Gym Tracker • Real-time MongoDB sync
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setAutoSave(!autoSave)}
+              className={`text-xs px-2 sm:px-3 py-1 rounded-full transition-colors ${
+                autoSave 
+                  ? 'bg-blue-900/30 text-blue-300 border border-blue-700' 
+                  : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+              }`}
+            >
+              <span className="sm:hidden">{autoSave ? '🔄 ON' : '💾 OFF'}</span>
+              <span className="hidden sm:inline">{autoSave ? '🔄 Auto-Save ON' : '💾 Auto-Save OFF'}</span>
+            </button>
+            <button
+              onClick={loadDraft}
+              className="text-xs px-2 sm:px-3 py-1 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700 hover:bg-purple-800/30"
+            >
+              <span className="sm:hidden">📝 Draft</span>
+              <span className="hidden sm:inline">📝 Load Draft</span>
+            </button>
+            <button
+              onClick={() => realTimePlanService.forceSync()}
+              className="text-xs px-2 sm:px-3 py-1 rounded-full bg-green-900/30 text-green-300 border border-green-700 hover:bg-green-800/30"
+            >
+              <span className="sm:hidden">☁️ Sync</span>
+              <span className="hidden sm:inline">☁️ Force Sync</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Muscle Group Info */}
-      <div className={`border rounded-lg p-3 sm:p-4 ${currentMuscleGroup.color}/20 border-${currentMuscleGroup.color.split('-')[1]}-500/30`}>
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-white">Workout Plan Builder</h2>
+            <span className="text-xl sm:text-2xl animate-pulse">🏋️</span>
+          </div>
+        </div>
+        
+        {/* Form Controls - Mobile First */}
+        <div className="flex flex-col gap-3">
+          <div className="relative">
+            <input
+              type="text"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+              placeholder="Enter plan name..."
+              className="w-full px-3 py-2 pr-8 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+            {planName && (
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-400 text-sm">
+                ✓
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <select
+              value={planCategory}
+              onChange={(e) => setPlanCategory(e.target.value)}
+              className="flex-1 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="General">🏋️ General</option>
+              <option value="Strength">💪 Strength</option>
+              <option value="Cardio">❤️ Cardio</option>
+              <option value="Flexibility">🧘 Flexibility</option>
+              <option value="HIIT">🔥 HIIT</option>
+              <option value="Powerlifting">🏋️♂️ Powerlifting</option>
+              <option value="Bodybuilding">💪 Bodybuilding</option>
+            </select>
+            <button
+              onClick={savePlan}
+              disabled={saving || !planName.trim() || plan.length === 0}
+              className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg rounded-lg font-medium"
+            >
+              {saving ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="animate-spin">🔄</span>
+                  <span className="hidden sm:inline">{syncStatus === 'saving' ? 'Saving...' : 'Syncing...'}</span>
+                  <span className="sm:hidden">Saving...</span>
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <span>💾</span>
+                  <span>Save Plan</span>
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Real-time Muscle Group Info & Progress */}
+      <div className={`border rounded-lg p-3 sm:p-4 ${currentMuscleGroup.color}/20 border-${currentMuscleGroup.color.split('-')[1]}-500/30 transition-all duration-300`}>
+        <div className="flex flex-col gap-3 sm:gap-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">{currentMuscleGroup.icon}</span>
-              <h4 className="text-lg font-semibold text-white">{currentMuscleGroup.name} Workout Tips</h4>
+            <div className="flex items-center gap-2 sm:gap-3 mb-3">
+              <span className="text-2xl sm:text-3xl animate-bounce">{currentMuscleGroup.icon}</span>
+              <div className="flex-1">
+                <h4 className="text-base sm:text-lg font-semibold text-white">{currentMuscleGroup.name} Workout Tips</h4>
+                <div className="text-xs text-slate-400">
+                  {exercises.length} exercises • Real-time guidance
+                </div>
+              </div>
             </div>
             <div className="text-sm text-slate-300 space-y-1">
               {selectedMuscleGroup === 'chest' && (
@@ -281,24 +574,60 @@ export default function PlansBuilder() {
               )}
             </div>
             {draggedItem && (
-              <div className="mt-3 text-green-300 text-sm animate-pulse">
-                🎯 Dragging: <strong>{draggedItem.item.name}</strong> - Drop in the plan area!
+              <div className="mt-3 p-2 bg-green-900/30 border border-green-700 rounded-lg">
+                <div className="text-green-300 text-sm animate-pulse flex items-center gap-2">
+                  <span className="animate-bounce">🎯</span>
+                  <span>Dragging: <strong>{draggedItem.item.name}</strong></span>
+                  <span className="text-green-400">→ Drop in plan area!</span>
+                </div>
+              </div>
+            )}
+            
+            {/* Real-time Plan Progress */}
+            {plan.length > 0 && (
+              <div className="mt-3 p-2 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+                <div className="text-blue-300 text-sm flex items-center gap-2">
+                  <span>📊</span>
+                  <span>Plan Progress: {plan.length} exercises added</span>
+                  <div className="flex-1 bg-slate-700 rounded-full h-2 ml-2">
+                    <div 
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min((plan.length / 8) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs">{Math.min(Math.round((plan.length / 8) * 100), 100)}%</span>
+                </div>
               </div>
             )}
           </div>
-          <button
-            onClick={() => navigate('/my-plans')}
-            className="btn-secondary text-sm whitespace-nowrap"
-          >
-            📋 View My Plans
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center sm:justify-end">
+            <button
+              onClick={() => navigate('/my-plans')}
+              className="w-full sm:w-auto px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-white rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>📋</span>
+              <span>View My Plans</span>
+              {realTimeStats.totalPlans > 0 && (
+                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                  {realTimeStats.totalPlans}
+                </span>
+              )}
+            </button>
+            
+            {isOnline && (
+              <div className="text-xs text-green-400 flex items-center justify-center sm:justify-start gap-1">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span>Real-time sync active</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         {/* Exercise Library */}
         <div 
-          className={`card min-h-[300px] sm:min-h-[500px] transition-all duration-200 ${
+          className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] transition-all duration-200 ${
             dragOverArea === 'library' ? 'bg-slate-700/50 border-slate-500 shadow-lg' : ''
           }`}
           onDragOver={handleDragOver}
@@ -307,17 +636,26 @@ export default function PlansBuilder() {
           onDrop={(e) => handleDrop(e, 'library')}
           data-drop-zone="library"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
-              <span>📚</span> Exercise Library
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-4">
+            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white flex items-center gap-2">
+              <span className="animate-pulse">📚</span> 
+              <span>Exercise Library</span>
+              <span className="text-xs sm:text-sm text-slate-400">({exercises.length})</span>
             </h3>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium text-white ${currentMuscleGroup.color}`}>
-              {currentMuscleGroup.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${currentMuscleGroup.color} shadow-lg`}>
+                {currentMuscleGroup.name}
+              </span>
+              {isOnline && (
+                <span className="px-2 py-1 rounded-full text-xs bg-green-900/30 text-green-300 border border-green-700">
+                  ☁️ Live
+                </span>
+              )}
+            </div>
           </div>
           
           {/* Muscle Group Tabs */}
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2 mb-4">
             {Object.entries(exerciseLibrary).map(([key, group]) => (
               <button
                 key={key}
@@ -328,61 +666,87 @@ export default function PlansBuilder() {
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
                 }`}
               >
-                <div className="text-lg sm:text-xl mb-1">{group.icon}</div>
-                <div className="truncate">{group.name}</div>
+                <div className="text-base sm:text-lg lg:text-xl mb-1">{group.icon}</div>
+                <div className="truncate text-xs sm:text-sm">{group.name}</div>
               </button>
             ))}
           </div>
           
           {/* Exercise List */}
-          <div className="space-y-2 sm:space-y-3 max-h-80 overflow-y-auto exercise-scroll">
-            {exercises.map((exercise) => (
-              <div 
-                key={exercise.id}
-                draggable={true}
-                onDragStart={(e) => handleDragStart(e, { ...exercise, category: currentMuscleGroup.name }, 'library')}
-                onDragEnd={handleDragEnd}
-                className="p-3 sm:p-4 rounded-lg bg-slate-800/60 border border-slate-700 cursor-grab active:cursor-grabbing transition-all duration-200 hover:bg-slate-700/60 hover:border-slate-600 hover:shadow-md select-none"
-                data-exercise-id={exercise.id}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="font-medium text-white text-sm sm:text-base">
-                      {exercise.name}
+          <div className="space-y-2 sm:space-y-3 max-h-60 sm:max-h-80 lg:max-h-96 overflow-y-auto exercise-scroll">
+            {exercises.map((exercise, index) => {
+              const isInPlan = plan.some(p => p.originalId === exercise.id);
+              return (
+                <div 
+                  key={exercise.id}
+                  draggable={true}
+                  onDragStart={(e) => handleDragStart(e, { ...exercise, category: currentMuscleGroup.name }, 'library')}
+                  onDragEnd={handleDragEnd}
+                  className={`p-3 sm:p-4 rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-200 select-none transform hover:scale-[1.02] ${
+                    isInPlan 
+                      ? 'bg-green-900/30 border-green-700 shadow-green-900/20 shadow-lg' 
+                      : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60 hover:border-slate-600 hover:shadow-md'
+                  }`}
+                  data-exercise-id={exercise.id}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="font-medium text-white text-sm sm:text-base">
+                          {exercise.name}
+                        </div>
+                        {isInPlan && (
+                          <span className="text-green-400 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700">
+                            ✓ Added
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2 mt-1">
+                        <span className="flex items-center gap-1">
+                          <span>🏋️</span>
+                          <span>{exercise.sets}</span>
+                        </span>
+                        <span className={`px-2 py-1 rounded text-xs border ${
+                          exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300 border-green-700' :
+                          exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300 border-yellow-700' :
+                          'bg-red-900/30 text-red-300 border-red-700'
+                        }`}>
+                          {exercise.difficulty}
+                        </span>
+                        <span className="text-slate-500 flex items-center gap-1">
+                          <span>🏅</span>
+                          <span>{exercise.type}</span>
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2">
-                      <span>{exercise.sets}</span>
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                        exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                        'bg-red-900/30 text-red-300'
-                      }`}>
-                        {exercise.difficulty}
-                      </span>
-                      <span className="text-slate-500">{exercise.type}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => addToPlan({ ...exercise, category: currentMuscleGroup.name })}
-                      className="text-blue-400 hover:text-blue-300 text-lg font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-blue-900/20 transition-colors"
-                      title="Add to plan"
-                    >
-                      +
-                    </button>
-                    <div className="text-slate-500 text-lg sm:text-xl ml-2">
-                      ⋮⋮
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => addToPlan({ ...exercise, category: currentMuscleGroup.name })}
+                        disabled={isInPlan}
+                        className={`text-lg font-bold w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 ${
+                          isInPlan 
+                            ? 'text-green-400 bg-green-900/30 border border-green-700 cursor-not-allowed' 
+                            : 'text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 border border-transparent hover:border-blue-700'
+                        }`}
+                        title={isInPlan ? 'Already in plan' : 'Add to plan'}
+                      >
+                        {isInPlan ? '✓' : '+'}
+                      </button>
+                      <div className="text-slate-500 text-lg sm:text-xl ml-1 cursor-grab">
+                        ⋮⋮
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Workout Plan */}
         <div 
-          className={`card min-h-[300px] sm:min-h-[400px] transition-all duration-200 ${
+          className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] transition-all duration-200 ${
             dragOverArea === 'plan' 
               ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50' 
               : ''
@@ -393,25 +757,41 @@ export default function PlansBuilder() {
           onDrop={(e) => handleDrop(e, 'plan')}
           data-drop-zone="plan"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
-              <span>🎯</span> Your Workout Plan
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-4">
+            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white flex items-center gap-2">
+              <span className="animate-pulse">🎯</span> 
+              <span>Your Workout Plan</span>
+              {plan.length > 0 && (
+                <span className="text-xs sm:text-sm text-green-400 hidden sm:inline">• Ready to save!</span>
+              )}
             </h3>
-            <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full">
-              {plan.length} {plan.length === 1 ? 'exercise' : 'exercises'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-2 sm:px-3 py-1 rounded-full border border-slate-600">
+                {plan.length} {plan.length === 1 ? 'exercise' : 'exercises'}
+              </span>
+              {plan.length > 0 && (
+                <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full border border-blue-700">
+                  🔥 Active
+                </span>
+              )}
+            </div>
           </div>
           
           {plan.length === 0 ? (
-            <div className="flex items-center justify-center h-32 sm:h-48 border-2 border-dashed border-slate-600 rounded-lg transition-colors hover:border-slate-500">
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl mb-3">🎯</div>
+            <div className="flex items-center justify-center h-32 sm:h-40 lg:h-48 border-2 border-dashed border-slate-600 rounded-lg transition-all duration-300 hover:border-slate-500 hover:bg-slate-800/30">
+              <div className="text-center px-4">
+                <div className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 animate-bounce">🎯</div>
                 <p className="text-slate-400 text-sm sm:text-base font-medium">
                   Drag exercises here or use + button
                 </p>
                 <p className="text-slate-500 text-xs sm:text-sm mt-1">
                   Build your custom workout plan
                 </p>
+                <div className="mt-2 sm:mt-3 flex items-center justify-center gap-1 sm:gap-2 text-xs text-slate-500">
+                  <span>💪</span>
+                  <span className="text-center">Professional gym-level planning</span>
+                  <span>💪</span>
+                </div>
               </div>
             </div>
           ) : (
@@ -422,20 +802,44 @@ export default function PlansBuilder() {
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, exercise, 'plan')}
                   onDragEnd={handleDragEnd}
-                  className="p-3 sm:p-4 rounded-lg bg-green-900/20 border border-green-700/50 cursor-grab active:cursor-grabbing transition-all duration-200 hover:bg-green-800/20 hover:border-green-600/50 hover:shadow-md select-none"
+                  className="p-3 sm:p-4 rounded-lg bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-700/50 cursor-grab active:cursor-grabbing transition-all duration-200 hover:from-green-800/30 hover:to-blue-800/30 hover:border-green-600/70 hover:shadow-lg hover:shadow-green-900/20 select-none transform hover:scale-[1.02]"
                   data-plan-id={exercise.planId}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
-                      <span className="text-green-400 font-bold text-sm sm:text-base bg-green-900/30 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs sm:text-sm">
+                      <span className="text-green-400 font-bold text-sm sm:text-base bg-gradient-to-r from-green-900/50 to-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm border border-green-700/50 shadow-lg">
                         {index + 1}
                       </span>
                       <div className="flex-1">
-                        <div className="font-medium text-white text-sm sm:text-base">
-                          {exercise.name}
+                        <div className="font-medium text-white text-sm sm:text-base flex items-center gap-2">
+                          <span>{exercise.name}</span>
+                          <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full border border-blue-700">
+                            ✓ Added
+                          </span>
                         </div>
-                        <div className="text-xs sm:text-sm text-slate-400">
-                          {exercise.category} • {exercise.sets}
+                        <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2 mt-1">
+                          <span className="flex items-center gap-1">
+                            <span>🏅</span>
+                            <span>{exercise.category}</span>
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <span>🏋️</span>
+                            <span>{exercise.sets}</span>
+                          </span>
+                          {exercise.difficulty && (
+                            <>
+                              <span>•</span>
+                              <span className={`px-2 py-1 rounded text-xs ${
+                                exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
+                                exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
+                                'bg-red-900/30 text-red-300'
+                              }`}>
+                                {exercise.difficulty}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -443,7 +847,7 @@ export default function PlansBuilder() {
                       <button
                         onClick={() => moveUp(index)}
                         disabled={index === 0}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700/50 transition-colors"
+                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600"
                         title="Move up"
                       >
                         ↑
@@ -451,29 +855,121 @@ export default function PlansBuilder() {
                       <button
                         onClick={() => moveDown(index)}
                         disabled={index === plan.length - 1}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700/50 transition-colors"
+                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600"
                         title="Move down"
                       >
                         ↓
                       </button>
                       <button
                         onClick={() => removeFromPlan(exercise.planId)}
-                        className="text-red-400 hover:text-red-300 text-lg font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-red-900/20 transition-colors ml-1"
+                        className="text-red-400 hover:text-red-300 text-lg font-bold w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-900/30 transition-all duration-200 ml-1 border border-transparent hover:border-red-700"
                         title="Remove from plan"
                       >
                         ×
                       </button>
-                      <div className="text-slate-500 text-lg sm:text-xl ml-2">
+                      <div className="text-slate-500 text-lg sm:text-xl ml-2 cursor-grab">
                         ⋮⋮
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
+              
+              {/* Plan Summary */}
+              {plan.length > 0 && (
+                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-lg">
+                  <div className="text-sm text-blue-300">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <span>📊</span>
+                        <span className="font-semibold text-sm sm:text-base">Professional Plan Summary</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <span className="text-xs text-green-300">Real-time</span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs">
+                      <div className="flex items-center gap-1">
+                        <span>🏋️</span>
+                        <span>{plan.length} exercises</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>🔥</span>
+                        <span>{planCategory}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>⏱️</span>
+                        <span>~{plan.length * 3}min</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>💪</span>
+                        <span>Pro Level</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 text-xs text-slate-400">
+                      💡 This plan will sync to MongoDB and be available across all your devices
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Real-time Sync Indicator */}
+              {plan.length > 0 && (
+                <div className="mt-3 sm:mt-4 p-3 bg-slate-800/40 border border-slate-600 rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <span>☁️</span>
+                      <span>Real-time MongoDB Integration</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isOnline ? (
+                        <>
+                          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                          <span className="text-green-300">Connected</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
+                          <span className="text-orange-300">Offline Mode</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
+        </div>
+      </div>
+      
+      {/* Professional Footer */}
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border border-slate-700 rounded-lg">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-xl sm:text-2xl">🏆</span>
+            <span className="text-base sm:text-lg font-semibold text-white">Professional Gym Tracker</span>
+            <span className="text-xl sm:text-2xl">🏆</span>
+          </div>
+          <div className="text-xs sm:text-sm text-slate-400 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-4">
+            <span>✅ Real-time MongoDB sync</span>
+            <span className="hidden sm:inline">•</span>
+            <span>💪 Professional-level tracking</span>
+            <span className="hidden sm:inline">•</span>
+            <span>📱 Cross-device availability</span>
+            <span className="hidden sm:inline">•</span>
+            <span>🔥 Gym-quality experience</span>
+          </div>
+          <div className="mt-2 text-xs text-slate-500">
+            Built for serious athletes and fitness enthusiasts
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+// Export with real-time service integration
+export { realTimePlanService };

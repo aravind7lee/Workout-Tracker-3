@@ -55,6 +55,16 @@ class OnlineService {
     }
   }
 
+  async getWorkoutPlan(planId) {
+    try {
+      const response = await api.get(`/plans/${planId}`);
+      return response.data.plan;
+    } catch (error) {
+      console.error('Failed to fetch workout plan:', error);
+      return null;
+    }
+  }
+
   async saveWorkoutPlan(planData) {
     try {
       if (!this.isOnline) return null;
@@ -64,6 +74,81 @@ class OnlineService {
     } catch (error) {
       console.error('Failed to save workout plan:', error);
       return null;
+    }
+  }
+
+  async updateWorkoutPlan(planId, planData) {
+    try {
+      if (!this.isOnline) return null;
+      
+      const response = await api.put(`/plans/${planId}`, planData);
+      return response.data.plan;
+    } catch (error) {
+      console.error('Failed to update workout plan:', error);
+      return null;
+    }
+  }
+
+  async deletePlan(planId) {
+    try {
+      if (!this.isOnline) return false;
+      
+      const response = await api.delete(`/plans/${planId}`);
+      return response.data.success;
+    } catch (error) {
+      console.error('Failed to delete workout plan:', error);
+      return false;
+    }
+  }
+
+  async duplicatePlan(planId) {
+    try {
+      if (!this.isOnline) return null;
+      
+      const response = await api.post(`/plans/${planId}/duplicate`);
+      return response.data.plan;
+    } catch (error) {
+      console.error('Failed to duplicate workout plan:', error);
+      return null;
+    }
+  }
+
+  async updatePlanStats(planId, stats) {
+    try {
+      if (!this.isOnline) return null;
+      
+      const response = await api.post(`/plans/${planId}/stats`, stats);
+      return response.data.plan;
+    } catch (error) {
+      console.error('Failed to update plan stats:', error);
+      return null;
+    }
+  }
+
+  async getPlanAnalytics() {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) {
+        return {
+          totalPlans: 0,
+          totalWorkouts: 0,
+          sync: { syncPercentage: 0, syncedPlans: 0, unsyncedPlans: 0 },
+          isRealTime: false
+        };
+      }
+      
+      const response = await api.get('/plans/analytics/overview');
+      return response.data.analytics || response.data;
+    } catch (error) {
+      console.error('Failed to fetch plan analytics:', error);
+      this.isOnline = false;
+      return {
+        totalPlans: 0,
+        totalWorkouts: 0,
+        sync: { syncPercentage: 0, syncedPlans: 0, unsyncedPlans: 0 },
+        isRealTime: false,
+        error: true
+      };
     }
   }
 
@@ -226,6 +311,8 @@ class OnlineService {
         workouts: offlineData.workouts || [],
         meals: offlineData.meals || [],
         exercises: offlineData.exercises || [],
+        plans: offlineData.plans || [],
+        planDeletes: offlineData.planDeletes || [],
         timestamp: new Date().toISOString()
       });
       
@@ -233,6 +320,66 @@ class OnlineService {
     } catch (error) {
       console.error('Failed to sync offline data:', error);
       return false;
+    }
+  }
+
+  async syncPlanData() {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return { success: false, error: 'Offline' };
+      
+      // Get local plans and pending operations
+      const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const pendingDeletes = JSON.parse(localStorage.getItem('pendingPlanDeletes') || '[]');
+      
+      // Process pending deletions
+      for (const deletion of pendingDeletes) {
+        try {
+          await this.deletePlan(deletion.planId);
+        } catch (error) {
+          console.error('Failed to sync plan deletion:', error);
+        }
+      }
+      
+      // Sync local plans to backend
+      const syncResults = [];
+      for (const plan of localPlans) {
+        if (!plan.synced && !plan.backendId) {
+          try {
+            const savedPlan = await this.saveWorkoutPlan({
+              name: plan.name,
+              exercises: plan.exercises,
+              category: plan.category,
+              description: plan.description
+            });
+            
+            if (savedPlan) {
+              syncResults.push({
+                localId: plan.id,
+                backendId: savedPlan._id,
+                success: true
+              });
+            }
+          } catch (error) {
+            console.error('Failed to sync plan:', error);
+            syncResults.push({
+              localId: plan.id,
+              success: false,
+              error: error.message
+            });
+          }
+        }
+      }
+      
+      // Clear pending operations if successful
+      if (syncResults.every(r => r.success)) {
+        localStorage.removeItem('pendingPlanDeletes');
+      }
+      
+      return { success: true, syncResults };
+    } catch (error) {
+      console.error('Failed to sync plan data:', error);
+      return { success: false, error: error.message };
     }
   }
 
@@ -266,6 +413,53 @@ class OnlineService {
 export const onlineService = new OnlineService();
 export default onlineService;
 
+// Real-time plan sync service
+export class PlanSyncService {
+  constructor() {
+    this.syncInterval = null;
+    this.isActive = false;
+  }
+
+  startRealTimeSync(intervalMs = 30000) {
+    if (this.isActive) return;
+    
+    this.isActive = true;
+    this.syncInterval = setInterval(async () => {
+      if (navigator.onLine) {
+        try {
+          await onlineService.syncPlanData();
+        } catch (error) {
+          console.error('Real-time sync failed:', error);
+        }
+      }
+    }, intervalMs);
+    
+    console.log('🔄 Real-time plan sync started');
+  }
+
+  stopRealTimeSync() {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+      this.syncInterval = null;
+      this.isActive = false;
+      console.log('⏹️ Real-time plan sync stopped');
+    }
+  }
+
+  async forceSync() {
+    try {
+      const result = await onlineService.syncPlanData();
+      console.log('🔄 Force sync completed:', result);
+      return result;
+    } catch (error) {
+      console.error('Force sync failed:', error);
+      return { success: false, error: error.message };
+    }
+  }
+}
+
+export const planSyncService = new PlanSyncService();
+
 // Auto-sync offline data when coming back online
 if (typeof window !== 'undefined') {
   window.addEventListener('online', async () => {
@@ -273,20 +467,38 @@ if (typeof window !== 'undefined') {
     
     // Check if we have offline data to sync
     const offlineData = JSON.parse(localStorage.getItem('gymTracker_offlineData') || '{}');
+    const pendingDeletes = JSON.parse(localStorage.getItem('pendingPlanDeletes') || '[]');
+    const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+    const unsyncedPlans = localPlans.filter(p => !p.synced && !p.backendId);
+    
     const hasOfflineData = (offlineData.workouts?.length > 0) || 
                           (offlineData.meals?.length > 0) || 
-                          (offlineData.exercises?.length > 0);
+                          (offlineData.exercises?.length > 0) ||
+                          (pendingDeletes.length > 0) ||
+                          (unsyncedPlans.length > 0);
     
     if (hasOfflineData) {
       try {
-        const synced = await onlineService.syncOfflineData(offlineData);
-        if (synced) {
+        // Sync general offline data
+        const synced = await onlineService.syncOfflineData({
+          ...offlineData,
+          plans: unsyncedPlans,
+          planDeletes: pendingDeletes
+        });
+        
+        // Sync plan-specific data
+        const planSyncResult = await onlineService.syncPlanData();
+        
+        if (synced && planSyncResult.success) {
           localStorage.removeItem('gymTracker_offlineData');
-          console.log('✅ Offline data synced successfully');
+          console.log('✅ All offline data synced successfully');
           
           // Trigger a custom event to notify components
           window.dispatchEvent(new CustomEvent('offlineDataSynced', {
-            detail: { syncedData: offlineData }
+            detail: { 
+              syncedData: offlineData,
+              planSyncResults: planSyncResult.syncResults
+            }
           }));
         }
       } catch (error) {

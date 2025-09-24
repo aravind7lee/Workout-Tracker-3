@@ -1,4 +1,3 @@
-// frontend/src/App.jsx - CLEAN VERSION WITHOUT CONSOLE WARNINGS
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
@@ -19,12 +18,14 @@ import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
+import ChromeErrorBoundary from './components/ChromeErrorBoundary';
 import DemoBanner from './components/DemoBanner';
 import DemoFloatingControls from './components/DemoFloatingControls';
 import DemoFeatureTracker from './components/DemoFeatureTracker';
 import { DemoProvider } from './context/DemoContext';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import chromeErrorHandler from './utils/chromeErrorHandler';
 
 // Inline components to avoid module loading errors
 const Search = () => {
@@ -342,41 +343,48 @@ const ExerciseDetail = () => {
 };
 
 export default function App() {
+  // Initialize Chrome error handler
+  useEffect(() => {
+    console.log('🛡️ Chrome error handler initialized');
+  }, []);
+
   return (
-    <ErrorBoundary>
-      <ThemeProvider>
-        <DemoProvider>
-          <div className="min-h-screen">
-            <Navbar />
-            <DemoBanner />
-            <DemoFloatingControls />
-            <DemoFeatureTracker />
-            <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/library" element={<LibrarySimple />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/nutrition" element={<Nutrition />} />
-              <Route path="/plans" element={<PlansBuilder />} />
-              <Route path="/my-plans" element={<MyPlans />} />
-              <Route path="/edit-plan/:planId" element={<EditPlan />} />
-              <Route path="/workout/:planId" element={<WorkoutSession />} />
-              <Route path="/achievements" element={<Achievements />} />
-              <Route path="/profile" element={<ProfileAdvanced />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/forum" element={<Forum />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/start-workout" element={<StartWorkout />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/exercises/:id" element={<ExerciseDetail />} />
-            </Routes>
-            </main>
-          </div>
-        </DemoProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+    <ChromeErrorBoundary>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <DemoProvider>
+            <div className="min-h-screen">
+              <Navbar />
+              <DemoBanner />
+              <DemoFloatingControls />
+              <DemoFeatureTracker />
+              <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/library" element={<LibrarySimple />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/nutrition" element={<Nutrition />} />
+                <Route path="/plans" element={<PlansBuilder />} />
+                <Route path="/my-plans" element={<MyPlans />} />
+                <Route path="/edit-plan/:planId" element={<EditPlan />} />
+                <Route path="/workout/:planId" element={<WorkoutSession />} />
+                <Route path="/achievements" element={<Achievements />} />
+                <Route path="/profile" element={<ProfileAdvanced />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/start-workout" element={<StartWorkout />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/exercises/:id" element={<ExerciseDetail />} />
+              </Routes>
+              </main>
+            </div>
+          </DemoProvider>
+        </ThemeProvider>
+      </ErrorBoundary>
+    </ChromeErrorBoundary>
   );
 }

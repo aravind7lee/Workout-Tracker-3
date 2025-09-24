@@ -1,4 +1,3 @@
-// Fixed AuthContext - No More Errors
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { setAuthToken } from '../utils/api';
 import { profileStorage } from '../utils/profileStorage';
@@ -117,7 +116,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = () => {
-    return !!(token && user && user.id);
+    return !!(token && user && (user.id || user._id));
   };
 
   const value = {

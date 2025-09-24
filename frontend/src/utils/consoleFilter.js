@@ -1,12 +1,20 @@
-// frontend/src/utils/consoleFilter.js - Filter console warnings
+// Console filter to suppress development warnings
 const originalWarn = console.warn;
 const originalLog = console.log;
+const originalError = console.error;
 
 console.warn = (...args) => {
   const message = args.join(' ');
   
   // Filter out React DevTools warning
   if (message.includes('Download the React DevTools')) {
+    return;
+  }
+  
+  // Filter out React Router future flag warnings
+  if (message.includes('React Router Future Flag Warning') ||
+      message.includes('v7_startTransition') ||
+      message.includes('v7_relativeSplatPath')) {
     return;
   }
   
@@ -22,6 +30,19 @@ console.log = (...args) => {
   }
   
   originalLog.apply(console, args);
+};
+
+console.error = (...args) => {
+  const message = args.join(' ');
+  
+  // Filter out React Router warnings that appear as errors
+  if (message.includes('React Router Future Flag Warning') ||
+      message.includes('v7_startTransition') ||
+      message.includes('v7_relativeSplatPath')) {
+    return;
+  }
+  
+  originalError.apply(console, args);
 };
 
 export default {};
