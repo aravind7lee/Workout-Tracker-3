@@ -2,24 +2,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
-import { useLocalNutrition } from '../hooks/useLocalNutrition';
+import { useRealTimeNutrition } from '../hooks/useRealTimeNutrition';
 import MealInput from '../components/MealInput';
 import NutritionPreviewModal from '../components/NutritionPreviewModal';
+import FoodCategories from '../components/FoodCategories';
+import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get('search') || '';
   
-  // Local nutrition data - no API calls
+  // Real-time nutrition data with Nutritionix API
   const {
     meals,
     totals,
     targets,
     isLoading,
     error,
+    lookupFood,
     addMeal,
-    deleteMeal
-  } = useLocalNutrition();
+    deleteMeal,
+    setError
+  } = useRealTimeNutrition();
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [nutritionItems, setNutritionItems] = useState([]);
@@ -36,26 +40,50 @@ export default function Nutrition() {
   }, [navbarSearch]);
 
   const handleLookup = async (query) => {
+    if (!query || typeof query !== 'string') {
+      setError('Please enter a valid food name');
+      return;
+    }
+
     try {
       setIsLookingUp(true);
+      setError(null);
       
-      // Simple local nutrition estimation
-      const nutritionItem = {
-        name: query,
-        parsedName: query,
-        calories: 200,
-        protein: 10,
-        carbs: 30,
-        fat: 8,
-        servingText: '100g serving',
-        servingGrams: 100,
-        mealType: 'snack'
+      console.log('🔍 Looking up nutrition for:', query);
+      
+      // Real-time Nutritionix API lookup
+      const nutritionItem = await lookupFood(query.trim());
+      
+      // Ensure we have valid nutrition data
+      if (!nutritionItem || typeof nutritionItem !== 'object') {
+        throw new Error('Invalid nutrition data received');
+      }
+      
+      // Add default meal type and ensure all required properties
+      const enrichedItem = {
+        name: nutritionItem.name || 'Unknown Food',
+        parsedName: nutritionItem.parsedName || nutritionItem.name || 'Unknown Food',
+        calories: nutritionItem.calories || 0,
+        protein: nutritionItem.protein || 0,
+        carbs: nutritionItem.carbs || 0,
+        fat: nutritionItem.fat || 0,
+        fiber: nutritionItem.fiber || 0,
+        sugar: nutritionItem.sugar || 0,
+        sodium: nutritionItem.sodium || 0,
+        servingText: nutritionItem.servingText || '1 serving',
+        servingGrams: nutritionItem.servingGrams || 100,
+        mealType: nutritionItem.mealType || 'snack',
+        source: nutritionItem.source || 'unknown',
+        ...nutritionItem
       };
       
-      setNutritionItems([nutritionItem]);
+      setNutritionItems([enrichedItem]);
       setShowPreviewModal(true);
+      
+      console.log('✅ Nutrition lookup successful:', enrichedItem);
     } catch (error) {
-      alert('Failed to lookup nutrition data. Please try again.');
+      console.error('❌ Nutrition lookup failed:', error);
+      setError(`Failed to lookup "${query}". Please try again.`);
     } finally {
       setIsLookingUp(false);
     }
@@ -76,10 +104,16 @@ export default function Nutrition() {
   };
 
   const handleDeleteMeal = async (mealId) => {
+    if (!mealId) {
+      alert('Cannot delete meal: Invalid meal ID');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this meal?')) {
       try {
-        deleteMeal(mealId);
+        await deleteMeal(mealId);
       } catch (error) {
+        console.error('Delete meal error:', error);
         alert('Failed to delete meal: ' + error.message);
       }
     }
@@ -131,12 +165,13 @@ export default function Nutrition() {
   };
 
   return (
-    <div className="space-y-6">
+    <NutritionErrorBoundary>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className="text-2xl lg:text-3xl font-semibold text-white">Nutrition Tracker</h2>
         <div className="text-sm text-slate-400">
-          Real-time macro tracking • Goal: {targets.goalType || 'maintain'}
+          Real-time Nutritionix API • Goal: {targets.goalType || 'maintain'} • {meals.length} meals today
         </div>
       </div>
 
@@ -145,6 +180,12 @@ export default function Nutrition() {
         onLookup={handleLookup}
         isLookingUp={isLookingUp}
         error={error}
+      />
+
+      {/* Pre-populated Food Categories */}
+      <FoodCategories 
+        onFoodSelect={handleLookup}
+        isLoading={isLookingUp}
       />
 
       {/* Today's Progress */}
@@ -266,7 +307,7 @@ export default function Nutrition() {
             <AnimatePresence>
               {meals.map((meal) => (
                 <motion.div
-                  key={meal.id}
+                  key={meal._id || meal.id || `meal-${Math.random()}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
@@ -290,8 +331,12 @@ export default function Nutrition() {
                       <span>{new Date(meal.consumedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       <span className="capitalize">{meal.mealType || 'snack'}</span>
                       {meal.source && (
-                        <span className="bg-slate-600/50 px-1 rounded text-xs">
-                          {meal.source}
+                        <span className={`px-1 rounded text-xs ${
+                          meal.source === 'nutritionix' ? 'bg-green-500/20 text-green-400' :
+                          meal.source === 'fallback' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-slate-600/50 text-slate-400'
+                        }`}>
+                          {meal.source === 'nutritionix' ? '🔥 Live' : meal.source}
                         </span>
                       )}
                     </div>
@@ -316,9 +361,10 @@ export default function Nutrition() {
                     </div>
                     
                     <button
-                      onClick={() => handleDeleteMeal(meal.id)}
+                      onClick={() => handleDeleteMeal(meal._id || meal.id)}
                       className="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 rounded-lg transition-colors ml-2 border border-red-400/30 hover:border-red-400/60"
                       title="Delete meal"
+                      disabled={!meal._id && !meal.id}
                     >
                       <span className="text-sm">🗑️ Remove</span>
                     </button>
@@ -330,14 +376,15 @@ export default function Nutrition() {
         )}
       </div>
 
-      {/* Nutrition Preview Modal */}
-      <NutritionPreviewModal
-        isOpen={showPreviewModal}
-        onClose={() => setShowPreviewModal(false)}
-        nutritionItems={nutritionItems}
-        onConfirm={handleConfirmMeal}
-        isAdding={isAddingMeal}
-      />
-    </div>
+        {/* Nutrition Preview Modal */}
+        <NutritionPreviewModal
+          isOpen={showPreviewModal}
+          onClose={() => setShowPreviewModal(false)}
+          nutritionItems={nutritionItems}
+          onConfirm={handleConfirmMeal}
+          isAdding={isAddingMeal}
+        />
+      </div>
+    </NutritionErrorBoundary>
   );
 }

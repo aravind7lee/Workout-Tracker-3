@@ -17,22 +17,44 @@ export default function NutritionPreviewModal({
     return null;
   }
 
-  const currentItem = nutritionItems[selectedItem];
+  // Ensure we have a valid current item with all required properties
+  const currentItem = nutritionItems[selectedItem] || nutritionItems[0];
+  if (!currentItem) {
+    return null;
+  }
+
+  // Ensure all required properties exist with defaults
+  const safeCurrentItem = {
+    name: currentItem.name || 'Unknown Food',
+    parsedName: currentItem.parsedName || currentItem.name || 'Unknown Food',
+    calories: currentItem.calories || 0,
+    protein: currentItem.protein || 0,
+    carbs: currentItem.carbs || 0,
+    fat: currentItem.fat || 0,
+    fiber: currentItem.fiber || 0,
+    sugar: currentItem.sugar || 0,
+    sodium: currentItem.sodium || 0,
+    servingText: currentItem.servingText || '1 serving',
+    servingGrams: currentItem.servingGrams || 100,
+    ...currentItem
+  };
+
   const displayItem = customGrams ? 
-    scaleNutrition(currentItem, parseFloat(customGrams)) : 
-    currentItem;
+    scaleNutrition(safeCurrentItem, parseFloat(customGrams)) : 
+    safeCurrentItem;
 
   function scaleNutrition(item, targetGrams) {
-    const scale = targetGrams / item.servingGrams;
+    const baseGrams = item.servingGrams || 100;
+    const scale = targetGrams / baseGrams;
     return {
       ...item,
       servingText: `${targetGrams} g`,
       servingGrams: targetGrams,
       multiplier: scale,
-      calories: Math.round(item.calories * scale),
-      protein: Math.round(item.protein * scale * 10) / 10,
-      carbs: Math.round(item.carbs * scale * 10) / 10,
-      fat: Math.round(item.fat * scale * 10) / 10,
+      calories: Math.round((item.calories || 0) * scale),
+      protein: Math.round((item.protein || 0) * scale * 10) / 10,
+      carbs: Math.round((item.carbs || 0) * scale * 10) / 10,
+      fat: Math.round((item.fat || 0) * scale * 10) / 10,
       fiber: Math.round((item.fiber || 0) * scale * 10) / 10,
       sugar: Math.round((item.sugar || 0) * scale * 10) / 10,
       sodium: Math.round((item.sodium || 0) * scale * 10) / 10
@@ -43,7 +65,7 @@ export default function NutritionPreviewModal({
     const finalItem = {
       ...displayItem,
       mealType,
-      rawQuery: currentItem.meta?.originalQuery || currentItem.parsedName
+      rawQuery: safeCurrentItem.meta?.originalQuery || safeCurrentItem.parsedName || safeCurrentItem.name
     };
     
     onConfirm(finalItem);
@@ -99,7 +121,7 @@ export default function NutritionPreviewModal({
                   >
                     {nutritionItems.map((item, index) => (
                       <option key={index} value={index}>
-                        {item.parsedName} ({item.servingText})
+                        {item.parsedName || item.name || 'Unknown Food'} ({item.servingText || '1 serving'})
                       </option>
                     ))}
                   </select>
@@ -109,28 +131,28 @@ export default function NutritionPreviewModal({
               {/* Food info */}
               <div className="nutrition-info-card rounded-lg p-3">
                 <h4 className="font-medium nutrition-modal-title capitalize mb-2">
-                  {displayItem.parsedName}
+                  {displayItem.parsedName || displayItem.name || 'Unknown Food'}
                 </h4>
                 <p className="text-sm nutrition-modal-muted mb-3">
-                  Serving: {displayItem.servingText}
+                  Serving: {displayItem.servingText || '1 serving'}
                 </p>
                 
                 {/* Nutrition grid */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="text-center">
-                    <div className="nutrition-modal-title font-medium text-lg">{displayItem.calories}</div>
+                    <div className="nutrition-modal-title font-medium text-lg">{Math.round(displayItem.calories || 0)}</div>
                     <div className="nutrition-modal-muted">calories</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-blue-400 font-medium preserve-color">{displayItem.protein}g</div>
+                    <div className="text-blue-400 font-medium preserve-color">{Math.round((displayItem.protein || 0) * 10) / 10}g</div>
                     <div className="nutrition-modal-muted">protein</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-green-400 font-medium preserve-color">{displayItem.carbs}g</div>
+                    <div className="text-green-400 font-medium preserve-color">{Math.round((displayItem.carbs || 0) * 10) / 10}g</div>
                     <div className="nutrition-modal-muted">carbs</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-yellow-400 font-medium preserve-color">{displayItem.fat}g</div>
+                    <div className="text-yellow-400 font-medium preserve-color">{Math.round((displayItem.fat || 0) * 10) / 10}g</div>
                     <div className="nutrition-modal-muted">fat</div>
                   </div>
                 </div>
@@ -145,7 +167,7 @@ export default function NutritionPreviewModal({
                   type="number"
                   value={customGrams}
                   onChange={(e) => setCustomGrams(e.target.value)}
-                  placeholder={currentItem.servingGrams.toString()}
+                  placeholder={(safeCurrentItem.servingGrams || 100).toString()}
                   min="1"
                   max="2000"
                   className="w-full p-2 rounded-lg nutrition-modal-input focus:outline-none"
