@@ -1,4 +1,4 @@
-// Enhanced API Configuration with Better Error Handling
+// Enhanced API Configuration with Silent Error Handling
 import axios from 'axios';
 
 // Determine the correct API base URL
@@ -13,7 +13,7 @@ const getApiBaseUrl = () => {
 
 const api = axios.create({
   baseURL: getApiBaseUrl(),
-  timeout: 10000,
+  timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -32,24 +32,25 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor with better error handling
+// Response interceptor with silent error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Prevent browser extension conflicts
+    // Silently handle browser extension conflicts
     if (error.message?.includes('contentScript') || error.message?.includes('extension')) {
       return Promise.resolve({ data: null, status: 200 });
     }
     
-    // Handle network errors
-    if (!error.response) {
-      error.code = 'ERR_NETWORK';
-      error.message = 'Network error - please check your connection';
+    // Silently handle connection refused errors
+    if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
+      console.warn('Backend offline - using local mode');
+      return Promise.reject({ ...error, silent: true });
     }
     
-    // Handle timeout errors
+    // Handle timeout errors silently
     if (error.code === 'ECONNABORTED') {
-      error.message = 'Request timeout - server may be slow';
+      console.warn('Request timeout - backend may be slow');
+      return Promise.reject({ ...error, silent: true });
     }
     
     // Handle authentication errors
@@ -59,11 +60,6 @@ api.interceptors.response.use(
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
       }
-    }
-    
-    // Handle server errors
-    if (error.response?.status >= 500) {
-      error.message = 'Server error - please try again later';
     }
     
     return Promise.reject(error);
@@ -78,33 +74,19 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Test backend connectivity with fallback
+// Test backend connectivity with silent fallback
 export const testConnection = async () => {
-  const urls = [
-    'http://localhost:5000/api',
-    'https://workout-tracker-backend-wga7.onrender.com/api'
-  ];
-  
-  for (const baseURL of urls) {
-    try {
-      const testApi = axios.create({ 
-        baseURL, 
-        timeout: 3000,
-        validateStatus: (status) => status < 500
-      });
-      const response = await testApi.get('/health');
-      
-      if (response.status === 200) {
-        api.defaults.baseURL = baseURL;
-        return { success: true, data: response.data, url: baseURL };
-      }
-    } catch (error) {
-      // Silently continue to next URL
-      continue;
+  try {
+    const response = await api.get('/health');
+    if (response.status === 200) {
+      return { success: true, data: response.data };
     }
+  } catch (error) {
+    // Silent failure - no console errors
+    return { success: false, error: 'Backend offline' };
   }
   
-  return { success: false, error: 'No backend servers available' };
+  return { success: false, error: 'Backend unavailable' };
 };
 
 export default api;

@@ -1,4 +1,4 @@
-// Online Service for Backend Integration
+// Online Service for Backend Integration - Silent Error Handling
 import api, { testConnection } from '../utils/api';
 
 class OnlineService {
@@ -39,7 +39,6 @@ class OnlineService {
       const response = await api.put('/users/profile', userData);
       return response.data;
     } catch (error) {
-      console.error('Failed to sync user data:', error);
       return false;
     }
   }
@@ -49,7 +48,6 @@ class OnlineService {
       const response = await api.get('/plans');
       return response.data.plans || [];
     } catch (error) {
-      console.error('Failed to fetch workout plans:', error);
       this.isOnline = false;
       return [];
     }
@@ -60,7 +58,6 @@ class OnlineService {
       const response = await api.get(`/plans/${planId}`);
       return response.data.plan;
     } catch (error) {
-      console.error('Failed to fetch workout plan:', error);
       return null;
     }
   }
@@ -72,7 +69,6 @@ class OnlineService {
       const response = await api.post('/plans', planData);
       return response.data.plan;
     } catch (error) {
-      console.error('Failed to save workout plan:', error);
       return null;
     }
   }
@@ -84,7 +80,6 @@ class OnlineService {
       const response = await api.put(`/plans/${planId}`, planData);
       return response.data.plan;
     } catch (error) {
-      console.error('Failed to update workout plan:', error);
       return null;
     }
   }
@@ -96,7 +91,6 @@ class OnlineService {
       const response = await api.delete(`/plans/${planId}`);
       return response.data.success;
     } catch (error) {
-      console.error('Failed to delete workout plan:', error);
       return false;
     }
   }
@@ -108,7 +102,6 @@ class OnlineService {
       const response = await api.post(`/plans/${planId}/duplicate`);
       return response.data.plan;
     } catch (error) {
-      console.error('Failed to duplicate workout plan:', error);
       return null;
     }
   }
@@ -120,7 +113,6 @@ class OnlineService {
       const response = await api.post(`/plans/${planId}/stats`, stats);
       return response.data.plan;
     } catch (error) {
-      console.error('Failed to update plan stats:', error);
       return null;
     }
   }
@@ -140,7 +132,6 @@ class OnlineService {
       const response = await api.get('/plans/analytics/overview');
       return response.data.analytics || response.data;
     } catch (error) {
-      console.error('Failed to fetch plan analytics:', error);
       this.isOnline = false;
       return {
         totalPlans: 0,
@@ -157,7 +148,6 @@ class OnlineService {
       const response = await api.get('/workouts');
       return response.data.workouts || [];
     } catch (error) {
-      console.error('Failed to fetch workout history:', error);
       this.isOnline = false;
       return [];
     }
@@ -200,7 +190,6 @@ class OnlineService {
       const response = await api.get('/nutrition');
       return response.data.meals || [];
     } catch (error) {
-      console.error('Failed to fetch nutrition data:', error);
       return [];
     }
   }
@@ -212,18 +201,15 @@ class OnlineService {
       const response = await api.post('/nutrition', mealData);
       return response.data.meal;
     } catch (error) {
-      console.error('Failed to save meal:', error);
       return null;
     }
   }
 
   async getAnalytics() {
     try {
-      // Get hero stats which contains the main analytics data
       const response = await api.get('/analytics/hero-stats');
       return response.data?.data || response.data;
     } catch (error) {
-      console.error('Failed to fetch analytics:', error);
       this.isOnline = false;
       return null;
     }
@@ -249,7 +235,6 @@ class OnlineService {
         achievements: achievements.data?.data
       };
     } catch (error) {
-      console.error('Failed to fetch detailed analytics:', error);
       return null;
     }
   }
@@ -265,7 +250,6 @@ class OnlineService {
       const response = await api.get(`/exercises?${params.toString()}`);
       return response.data.exercises || response.data || [];
     } catch (error) {
-      console.error('Failed to fetch exercises:', error);
       this.isOnline = false;
       return [];
     }
@@ -283,7 +267,6 @@ class OnlineService {
       });
       return response.data;
     } catch (error) {
-      console.error('Failed to track exercise interaction:', error);
       return null;
     }
   }
@@ -296,7 +279,6 @@ class OnlineService {
       const response = await api.get('/analytics/exercise-stats');
       return response.data?.data || {};
     } catch (error) {
-      console.error('Failed to fetch exercise stats:', error);
       this.isOnline = false;
       return {};
     }
@@ -318,7 +300,6 @@ class OnlineService {
       
       return response.data.success;
     } catch (error) {
-      console.error('Failed to sync offline data:', error);
       return false;
     }
   }
@@ -328,20 +309,17 @@ class OnlineService {
       const online = await this.checkBackendStatus();
       if (!online) return { success: false, error: 'Offline' };
       
-      // Get local plans and pending operations
       const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const pendingDeletes = JSON.parse(localStorage.getItem('pendingPlanDeletes') || '[]');
       
-      // Process pending deletions
       for (const deletion of pendingDeletes) {
         try {
           await this.deletePlan(deletion.planId);
         } catch (error) {
-          console.error('Failed to sync plan deletion:', error);
+          // Silent error handling
         }
       }
       
-      // Sync local plans to backend
       const syncResults = [];
       for (const plan of localPlans) {
         if (!plan.synced && !plan.backendId) {
@@ -361,7 +339,6 @@ class OnlineService {
               });
             }
           } catch (error) {
-            console.error('Failed to sync plan:', error);
             syncResults.push({
               localId: plan.id,
               success: false,
@@ -371,14 +348,12 @@ class OnlineService {
         }
       }
       
-      // Clear pending operations if successful
       if (syncResults.every(r => r.success)) {
         localStorage.removeItem('pendingPlanDeletes');
       }
       
       return { success: true, syncResults };
     } catch (error) {
-      console.error('Failed to sync plan data:', error);
       return { success: false, error: error.message };
     }
   }
@@ -391,7 +366,6 @@ class OnlineService {
       const response = await api.get('/sync/status');
       return response.data?.data;
     } catch (error) {
-      console.error('Failed to get sync status:', error);
       return null;
     }
   }
@@ -404,7 +378,6 @@ class OnlineService {
       const response = await api.post('/sync/refresh');
       return response.data?.data;
     } catch (error) {
-      console.error('Failed to refresh data:', error);
       return null;
     }
   }
@@ -413,14 +386,13 @@ class OnlineService {
 export const onlineService = new OnlineService();
 export default onlineService;
 
-// Real-time plan sync service
 export class PlanSyncService {
   constructor() {
     this.syncInterval = null;
     this.isActive = false;
   }
 
-  startRealTimeSync(intervalMs = 30000) {
+  startRealTimeSync(intervalMs = 60000) {
     if (this.isActive) return;
     
     this.isActive = true;
@@ -429,12 +401,10 @@ export class PlanSyncService {
         try {
           await onlineService.syncPlanData();
         } catch (error) {
-          console.error('Real-time sync failed:', error);
+          // Silent error handling
         }
       }
     }, intervalMs);
-    
-    console.log('🔄 Real-time plan sync started');
   }
 
   stopRealTimeSync() {
@@ -442,75 +412,17 @@ export class PlanSyncService {
       clearInterval(this.syncInterval);
       this.syncInterval = null;
       this.isActive = false;
-      console.log('⏹️ Real-time plan sync stopped');
     }
   }
 
   async forceSync() {
     try {
       const result = await onlineService.syncPlanData();
-      console.log('🔄 Force sync completed:', result);
       return result;
     } catch (error) {
-      console.error('Force sync failed:', error);
       return { success: false, error: error.message };
     }
   }
 }
 
 export const planSyncService = new PlanSyncService();
-
-// Auto-sync offline data when coming back online
-if (typeof window !== 'undefined') {
-  window.addEventListener('online', async () => {
-    console.log('🌐 Back online - syncing data...');
-    
-    // Check if we have offline data to sync
-    const offlineData = JSON.parse(localStorage.getItem('gymTracker_offlineData') || '{}');
-    const pendingDeletes = JSON.parse(localStorage.getItem('pendingPlanDeletes') || '[]');
-    const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-    const unsyncedPlans = localPlans.filter(p => !p.synced && !p.backendId);
-    
-    const hasOfflineData = (offlineData.workouts?.length > 0) || 
-                          (offlineData.meals?.length > 0) || 
-                          (offlineData.exercises?.length > 0) ||
-                          (pendingDeletes.length > 0) ||
-                          (unsyncedPlans.length > 0);
-    
-    if (hasOfflineData) {
-      try {
-        // Sync general offline data
-        const synced = await onlineService.syncOfflineData({
-          ...offlineData,
-          plans: unsyncedPlans,
-          planDeletes: pendingDeletes
-        });
-        
-        // Sync plan-specific data
-        const planSyncResult = await onlineService.syncPlanData();
-        
-        if (synced && planSyncResult.success) {
-          localStorage.removeItem('gymTracker_offlineData');
-          console.log('✅ All offline data synced successfully');
-          
-          // Trigger a custom event to notify components
-          window.dispatchEvent(new CustomEvent('offlineDataSynced', {
-            detail: { 
-              syncedData: offlineData,
-              planSyncResults: planSyncResult.syncResults
-            }
-          }));
-        }
-      } catch (error) {
-        console.error('❌ Failed to sync offline data:', error);
-      }
-    }
-  });
-  
-  window.addEventListener('offline', () => {
-    console.log('📱 Going offline - enabling offline mode...');
-    window.dispatchEvent(new CustomEvent('networkStatusChanged', {
-      detail: { isOnline: false }
-    }));
-  });
-}
