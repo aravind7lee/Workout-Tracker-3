@@ -28,6 +28,28 @@ const Profile = () => {
       navigate('/login');
       return;
     }
+    
+    // Real-time event listeners for instant updates
+    const handleWorkoutComplete = () => {
+      console.log('🏋️ Workout completed - updating profile stats');
+      // Trigger stats refresh
+      window.location.reload();
+    };
+    
+    const handleMealAdded = () => {
+      console.log('🍽️ Meal added - updating profile stats');
+      // Trigger stats refresh
+      window.location.reload();
+    };
+    
+    // Listen for custom events
+    window.addEventListener('workoutCompleted', handleWorkoutComplete);
+    window.addEventListener('mealAdded', handleMealAdded);
+    
+    return () => {
+      window.removeEventListener('workoutCompleted', handleWorkoutComplete);
+      window.removeEventListener('mealAdded', handleMealAdded);
+    };
   }, [navigate]);
 
   useEffect(() => {
@@ -129,14 +151,22 @@ const Profile = () => {
       <div className="card">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-white">My Profile</h1>
-            <p className="text-slate-400 mt-1">Manage your account settings and preferences</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2">
+              💼 My Profile
+              <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full border border-blue-500/30">
+                REAL-TIME
+              </span>
+            </h1>
+            <p className="text-slate-400 mt-1 flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Professional Gym Tracker • MongoDB Sync • Cloudinary Storage
+            </p>
           </div>
           <button
             onClick={handleLogout}
             className="btn bg-red-600 hover:bg-red-700 text-white"
           >
-            Logout
+            🚪 Logout
           </button>
         </div>
       </div>
@@ -262,35 +292,72 @@ const Profile = () => {
 
       {/* Your Progress - Real-time Stats */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-white mb-6">Your Progress</h2>
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="text-center p-4 bg-slate-700/30 rounded-lg">
-                <div className="animate-pulse">
-                  <div className="h-8 bg-slate-600 rounded mb-2"></div>
-                  <div className="h-4 bg-slate-600 rounded"></div>
-                </div>
-              </div>
-            ))}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+            📊 Your Progress
+            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+              LIVE
+            </span>
+          </h2>
+          <span className="text-xs text-slate-500">
+            Last updated: {new Date().toLocaleTimeString()}
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 rounded-lg">
+            <div className="text-2xl font-bold text-blue-400">{stats?.totalWorkouts || 0}</div>
+            <div className="text-sm text-slate-400">Total Workouts</div>
+            {stats?.totalWorkouts > 0 && (
+              <div className="text-xs text-blue-300 mt-1">+{stats?.recentWorkouts || 0} this week</div>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-blue-400">{stats?.totalWorkouts || 0}</div>
-              <div className="text-sm text-slate-400">Total Workouts</div>
-            </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-green-400">{stats?.totalMeals || 0}</div>
-              <div className="text-sm text-slate-400">Meals Logged</div>
-            </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-purple-400">{stats?.xpPoints || 0}</div>
-              <div className="text-sm text-slate-400">XP Points</div>
-            </div>
-            <div className="text-center p-4 bg-slate-700/30 rounded-lg">
-              <div className="text-2xl font-bold text-orange-400">{stats?.currentStreak || 0}</div>
-              <div className="text-sm text-slate-400">Day Streak</div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-500/30 rounded-lg">
+            <div className="text-2xl font-bold text-green-400">{stats?.totalMeals || 0}</div>
+            <div className="text-sm text-slate-400">Meals Logged</div>
+            {stats?.totalMeals > 0 && (
+              <div className="text-xs text-green-300 mt-1">+{stats?.recentMeals || 0} this week</div>
+            )}
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-500/30 rounded-lg">
+            <div className="text-2xl font-bold text-purple-400">{stats?.xpPoints || 0}</div>
+            <div className="text-sm text-slate-400">XP Points</div>
+            {stats?.xpPoints > 0 && (
+              <div className="text-xs text-purple-300 mt-1">Level {Math.floor((stats?.xpPoints || 0) / 1000) + 1}</div>
+            )}
+          </div>
+          
+          <div className="text-center p-4 bg-gradient-to-br from-orange-600/20 to-orange-800/20 border border-orange-500/30 rounded-lg">
+            <div className="text-2xl font-bold text-orange-400">{stats?.currentStreak || 0}</div>
+            <div className="text-sm text-slate-400">Day Streak</div>
+            {stats?.currentStreak > 0 && (
+              <div className="text-xs text-orange-300 mt-1">
+                {stats?.currentStreak >= 7 ? '🔥 On Fire!' : '💪 Keep Going!'}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {(!stats?.totalWorkouts && !stats?.totalMeals) && (
+          <div className="text-center py-8 border-2 border-dashed border-slate-600 rounded-lg mt-4">
+            <div className="text-4xl mb-3">🚀</div>
+            <h3 className="text-lg font-semibold text-white mb-2">Start Your Fitness Journey!</h3>
+            <p className="text-slate-400 mb-4">Complete your first workout or log a meal to see your progress here.</p>
+            <div className="flex gap-2 justify-center">
+              <button 
+                onClick={() => navigate('/library')}
+                className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+              >
+                Start Workout
+              </button>
+              <button 
+                onClick={() => navigate('/nutrition')}
+                className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
+              >
+                Log Meal
+              </button>
             </div>
           </div>
         )}

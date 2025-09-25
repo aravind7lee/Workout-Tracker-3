@@ -1,0 +1,249 @@
+/* Analytics Hero - Production-grade Performance & Accessibility */
+
+.analytics-hero {
+  /* Full viewport height for maximum impact */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  contain: layout style paint;
+  will-change: transform, opacity;
+}
+
+/* Image optimization */
+.analytics-hero-image {
+  object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden;
+}
+
+/* Mobile portrait positioning - show woman clearly */
+@media (max-width: 767px) {
+  .analytics-hero-image {
+    object-position: center top !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Desktop landscape positioning */
+@media (min-width: 768px) {
+  .analytics-hero-image {
+    object-position: center center !important;
+    object-fit: cover !important;
+  }
+}
+
+/* LQIP skeleton with shimmer */
+.analytics-hero-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(71, 85, 105, 0.1) 0%,
+    rgba(71, 85, 105, 0.2) 50%,
+    rgba(71, 85, 105, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer-loading {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Premium theme-aware overlays for high contrast */
+.analytics-hero-overlay-dark {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.analytics-hero-overlay-light {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+/* Premium button styles */
+.analytics-hero-cta {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.analytics-hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced text contrast for accessibility */
+.analytics-hero-title {
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  text-rendering: optimizeLegibility;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.analytics-hero-subtitle {
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Dark mode text shadows */
+.dark .analytics-hero-title {
+  text-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.dark .analytics-hero-subtitle {
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Light mode text shadows */
+.light .analytics-hero-title {
+  text-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.9),
+    0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.light .analytics-hero-subtitle {
+  text-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Particle system optimization */
+.analytics-hero-particles {
+  pointer-events: none;
+  contain: strict;
+  will-change: opacity;
+}
+
+.analytics-hero-particle {
+  border-radius: 50%;
+  will-change: transform, opacity;
+  contain: layout style paint;
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  .analytics-hero-title {
+    font-size: 1.875rem; /* 30px */
+    line-height: 2.25rem; /* 36px */
+  }
+  
+  .analytics-hero-subtitle {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .analytics-hero-title {
+    font-size: 2.25rem; /* 36px */
+    line-height: 2.5rem; /* 40px */
+  }
+  
+  .analytics-hero-subtitle {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
+  }
+}
+
+@media (min-width: 769px) {
+  .analytics-hero-title {
+    font-size: 3rem; /* 48px */
+    line-height: 1;
+  }
+  
+  .analytics-hero-subtitle {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.75rem; /* 28px */
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .analytics-hero-overlay-dark {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+  
+  .analytics-hero-title,
+  .analytics-hero-subtitle {
+    text-shadow: 
+      0 0 4px rgba(0, 0, 0, 1),
+      0 2px 8px rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .analytics-hero-skeleton {
+    animation: none;
+    background: rgba(71, 85, 105, 0.15);
+  }
+  
+  .analytics-hero-particle {
+    animation: none !important;
+    opacity: 0.3 !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .analytics-hero {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .analytics-hero-particles {
+    display: none;
+  }
+}
+
+/* Focus management for accessibility */
+.analytics-hero:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading state optimization */
+.analytics-hero-loading {
+  background-color: rgba(71, 85, 105, 0.1);
+  min-height: 14rem; /* h-56 equivalent */
+}
+
+@media (min-width: 768px) {
+  .analytics-hero-loading {
+    min-height: 24rem; /* md:h-96 equivalent */
+  }
+}
+
+@media (min-width: 1024px) {
+  .analytics-hero-loading {
+    min-height: 30rem; /* lg:h-[480px] equivalent */
+  }
+}
+
+/* Performance hints */
+.analytics-hero-image-container {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Critical resource hints */
+.analytics-hero-preload {
+  content-visibility: auto;
+  contain-intrinsic-size: 1440px 480px;
+}

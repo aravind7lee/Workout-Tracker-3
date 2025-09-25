@@ -1,12 +1,14 @@
 // Simple Exercise Library - Fallback Version
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
 import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import WorkoutSuccessNotification from '../components/WorkoutSuccessNotification';
+import LibraryHeaderImg from '../assets/Libraryheader.jpg';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -28,6 +30,46 @@ export default function LibrarySimple() {
   const [lastSync, setLastSync] = useState(null);
   const [showSuccessNotification, setShowSuccessNotification] = useState(null);
   
+  // Hero image states
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  // LQIP (Low Quality Image Placeholder)
+  const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+  
+  // Framer Motion variants for text animation
+  const textVariants = {
+    hidden: {
+      opacity: 0,
+      y: 12
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        staggerChildren: 0.06,
+        delayChildren: 0.1
+      }
+    }
+  };
+  
+  const childVariants = {
+    hidden: {
+      opacity: 0,
+      y: 12
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.42,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+  
   // Update search when navbar search parameter changes
   useEffect(() => {
     if (navbarSearch && navbarSearch !== searchQuery) {
@@ -38,6 +80,42 @@ export default function LibrarySimple() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showQuickPlan, setShowQuickPlan] = useState(null);
   const [showAddToExisting, setShowAddToExisting] = useState(null);
+  
+  // Preload hero image with optimization and performance monitoring
+  useEffect(() => {
+    const startTime = performance.now();
+    const img = new Image();
+    
+    img.onload = () => {
+      const loadTime = performance.now() - startTime;
+      console.log(`🖼️ Library hero image loaded in ${loadTime.toFixed(2)}ms`);
+      
+      setImageLoaded(true);
+      
+      // Remove will-change properties after all animations complete
+      setTimeout(() => {
+        const heroContainer = document.querySelector('.hero-image-container');
+        if (heroContainer) {
+          heroContainer.classList.add('hero-animation-complete');
+        }
+      }, 1200);
+    };
+    
+    img.onerror = (error) => {
+      console.error('❌ Library hero image failed to load:', error);
+      setImageError(true);
+    };
+    
+    img.src = LibraryHeaderImg;
+    img.loading = 'eager';
+    img.fetchPriority = 'high';
+    
+    // Cleanup function
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, []);
   
   // Simple data fetching
   useEffect(() => {
@@ -146,11 +224,196 @@ export default function LibrarySimple() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6 text-white">Exercise Library</h2>
-      
-      {/* Status Bar */}
-      <div className="mb-6">
+    <div className="min-h-screen bg-slate-900">
+      {/* Premium Exercise Library Hero Section - Full Viewport */}
+      <motion.div 
+        className="relative w-full h-screen min-h-screen overflow-hidden hero-image-container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        role="banner"
+        aria-label="Exercise Library Hero Section"
+      >
+        {!imageLoaded && !imageError ? (
+          // Skeleton placeholder with shimmer - no text animation during loading
+          <motion.div 
+            className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+            {/* Mobile loading indicator */}
+            <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white/70 text-sm">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin"></div>
+              <span className="hidden sm:inline">Loading...</span>
+            </div>
+          </motion.div>
+        ) : imageError ? (
+          // Fallback content if image fails to load
+          <motion.div 
+            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center text-white px-4">
+              <motion.div 
+                className="text-6xl mb-4"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                🏋️
+              </motion.div>
+              <motion.h1 
+                className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                Exercise Library
+              </motion.h1>
+              <motion.p 
+                className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto drop-shadow-lg"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                Browse, track, and customize your exercises with ease.
+              </motion.p>
+            </div>
+          </motion.div>
+        ) : (
+          <>
+            {/* LQIP Placeholder - shows instantly */}
+            <img
+              src={LIBRARY_LQIP}
+              alt=""
+              className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+              style={{ opacity: imageLoaded ? 0 : 1 }}
+            />
+            
+            {/* Main optimized image with mobile-responsive positioning */}
+            <motion.img
+              src={LibraryHeaderImg}
+              srcSet={`
+                ${LibraryHeaderImg} 1440w,
+                ${LibraryHeaderImg} 1024w,
+                ${LibraryHeaderImg} 768w,
+                ${LibraryHeaderImg} 480w
+              `}
+              sizes="
+                (max-width: 480px) 480px,
+                (max-width: 768px) 768px,
+                (max-width: 1024px) 1024px,
+                1440px
+              "
+              alt="Exercise Library header – gym workout background"
+              className="w-full h-full object-cover object-right sm:object-center absolute inset-0"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              width="1440"
+              height="480"
+              initial={{ opacity: 0, scale: 0.995 }}
+              animate={{ 
+                opacity: imageLoaded ? 1 : 0, 
+                scale: imageLoaded ? 1 : 0.995 
+              }}
+              transition={{ 
+                duration: 0.4, 
+                ease: "easeOut"
+              }}
+            />
+            
+            {/* Adaptive gradient overlay for WCAG contrast compliance */}
+            <div className="absolute inset-0 hero-overlay-dark dark:hero-overlay-dark light:hero-overlay-light" />
+            
+            {/* Hero content with precise Framer Motion sequencing */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div 
+                className="text-center text-white px-4 sm:px-6 max-w-4xl mx-auto"
+                initial="hidden"
+                animate={imageLoaded ? "visible" : "hidden"}
+                variants={textVariants}
+              >
+                <motion.h1 
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 hero-text-contrast leading-tight"
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    visible: { 
+                      opacity: 1, 
+                      y: 0,
+                      transition: {
+                        duration: 0.6,
+                        ease: [0.22, 1, 0.36, 1]
+                      }
+                    }
+                  }}
+                  role="banner"
+                  aria-label="Exercise Library - Main heading"
+                >
+                  Exercise Library
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-sm sm:text-base md:text-lg lg:text-xl hero-text-contrast max-w-2xl mx-auto font-medium leading-relaxed px-2"
+                  variants={childVariants}
+                  aria-describedby="library-description"
+                >
+                  Browse, track, and customize your exercises with ease.
+                </motion.p>
+                
+                {/* Mobile-friendly CTA buttons with stagger */}
+                <motion.div
+                  className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"
+                  variants={childVariants}
+                >
+                  <motion.button 
+                    onClick={() => {
+                      const exerciseGrid = document.getElementById('exercise-grid');
+                      if (exerciseGrid) {
+                        exerciseGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}
+                    className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 text-base sm:text-lg cta-button border-2 border-blue-500"
+                    aria-label="Scroll to exercise library"
+                    variants={childVariants}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    💪 EXPLORE EXERCISES
+                  </motion.button>
+                  <motion.button 
+                    onClick={() => {
+                      const searchFilters = document.getElementById('search-filters');
+                      if (searchFilters) {
+                        searchFilters.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}
+                    className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 text-base sm:text-lg cta-button border-2 border-orange-500"
+                    aria-label="Scroll to search and filters"
+                    variants={childVariants}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🔥 START TRAINING
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+            </div>
+            
+
+          </>
+        )}
+      </motion.div>
+
+      {/* Main Content Area */}
+      <div className="relative bg-slate-900 pt-12 pb-12">
+        <div className="container mx-auto px-4 max-w-7xl space-y-6 sm:space-y-8">
+      {/* Status Bar - positioned below hero */}
+      <div className="mb-8">
         <div className="card p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -192,7 +455,7 @@ export default function LibrarySimple() {
       </div>
       
       {/* Search and Filters */}
-      <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+      <div id="search-filters" className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
         <div className="relative">
           <input 
             value={searchQuery} 
@@ -278,7 +541,7 @@ export default function LibrarySimple() {
       </div>
 
       {/* Exercise Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div id="exercise-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredExercises.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
@@ -495,6 +758,16 @@ export default function LibrarySimple() {
           onClose={() => setShowSuccessNotification(null)}
         />
       )}
+        </div>
+      </div>
+      
+      {/* Preload next critical images */}
+      <div className="hero-image-preload">
+        <img src={LibraryHeaderImg} alt="" aria-hidden="true" />
+      </div>
+      
+      {/* Preload link for main breakpoint */}
+      <link rel="preload" as="image" href={LibraryHeaderImg} fetchPriority="high" />
     </div>
   );
 }

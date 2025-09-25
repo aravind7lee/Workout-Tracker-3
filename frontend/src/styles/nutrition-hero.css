@@ -1,10 +1,15 @@
-/* Nutrition Hero Styles */
+/* Nutrition Hero Styles - Full Viewport Professional Design */
 .nutrition-hero-image {
   /* Image optimization for better performance */
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   backface-visibility: hidden;
   transform: translateZ(0);
+  /* Full viewport coverage */
+  min-height: 100vh;
+  object-position: center center;
+  /* Professional gym aesthetic */
+  filter: contrast(1.1) saturate(1.2) brightness(0.95);
 }
 
 /* Enhanced contrast overlays for accessibility */
@@ -28,26 +33,72 @@
   );
 }
 
-/* Responsive aspect ratios */
+/* Full Viewport Height - Professional Gym Website Design */
 @media (max-width: 640px) {
   .nutrition-hero-container {
-    aspect-ratio: 16/10;
-    min-height: 350px;
+    height: 100vh;
+    min-height: 100vh;
+  }
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.1);
   }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .nutrition-hero-container {
-    aspect-ratio: 16/9;
-    min-height: 400px;
+    height: 100vh;
+    min-height: 100vh;
+  }
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.05);
   }
 }
 
 @media (min-width: 1025px) {
   .nutrition-hero-container {
-    aspect-ratio: 21/9;
-    min-height: 450px;
-    max-height: 600px;
+    height: 100vh;
+    min-height: 100vh;
+  }
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.02);
+  }
+}
+
+/* Mobile Portrait Optimization - Perfect Image Display */
+@media (max-width: 480px) and (orientation: portrait) {
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.15);
+    filter: contrast(1.1) saturate(1.2) brightness(0.95);
+  }
+}
+
+/* Mobile Landscape Optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .nutrition-hero-container {
+    height: 100vh;
+    min-height: 100vh;
+  }
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.1);
+  }
+}
+
+/* Extra Small Mobile Screens */
+@media (max-width: 375px) {
+  .nutrition-hero-image {
+    object-position: center center;
+    object-fit: cover;
+    transform: scale(1.2);
   }
 }
 
@@ -70,6 +121,41 @@
       rgba(0, 0, 0, 0.70) 100%
     );
   }
+}
+
+/* Professional Gym Website Enhancements */
+.nutrition-hero-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.nutrition-hero-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.1) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Enhanced text shadows for better readability */
+.nutrition-hero-text {
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Professional button hover effects */
+.nutrition-hero-button {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.nutrition-hero-button:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  transform: translateY(-2px) scale(1.05);
 }
 
 /* Reduced motion support */

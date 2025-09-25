@@ -212,26 +212,28 @@
   transition: opacity 0.3s ease;
 }
 
-/* Responsive Hero Heights - Increased mobile height */
+/* Full Viewport Hero - Professional Gym Website */
 .hero-container {
-  height: 16rem; /* h-64 - Mobile */
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
 }
 
-@media (min-width: 640px) {
+/* Mobile viewport height optimization */
+@media (max-width: 768px) {
   .hero-container {
-    height: 20rem; /* sm:h-80 - Small screens */
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
 
-@media (min-width: 768px) {
+/* Ensure proper mobile browser compatibility */
+@supports (-webkit-touch-callout: none) {
   .hero-container {
-    height: 24rem; /* md:h-96 - Tablet */
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero-container {
-    height: 30rem; /* lg:h-[480px] - Desktop */
+    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
   }
 }
 

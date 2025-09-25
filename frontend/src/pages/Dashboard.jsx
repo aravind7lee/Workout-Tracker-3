@@ -211,9 +211,12 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Dashboard Hero Section */}
+    <div>
+      {/* Dashboard Hero Section - Full Viewport */}
       <DashboardHero />
+      
+      {/* Dashboard Content */}
+      <div className="space-y-4 sm:space-y-6 px-4 py-8">
       
       {/* Workout Completion Notification */}
       {showCompletionMessage && completionData && (
@@ -477,6 +480,7 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

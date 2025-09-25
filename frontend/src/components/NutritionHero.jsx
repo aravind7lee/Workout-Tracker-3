@@ -29,14 +29,14 @@ export default function NutritionHero() {
     img.loading = 'eager';
   }, []);
 
-  // Lighter overlay to show image more clearly
+  // Professional overlay for maximum visual impact
   const overlayClasses = theme === 'dark' 
-    ? 'bg-gradient-to-t from-black/70 via-black/40 to-black/20'
-    : 'bg-gradient-to-t from-black/60 via-black/30 to-black/10';
+    ? 'bg-gradient-to-t from-black/80 via-black/50 to-black/30'
+    : 'bg-gradient-to-t from-black/70 via-black/40 to-black/20';
 
   return (
     <motion.div 
-      className="relative h-64 sm:h-80 md:h-96 lg:h-[480px] w-full overflow-hidden rounded-xl sm:rounded-2xl mb-6 sm:mb-8 shadow-xl sm:shadow-2xl"
+      className="nutrition-hero-container relative h-screen w-full overflow-hidden mb-6 sm:mb-8 shadow-xl sm:shadow-2xl"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -60,11 +60,11 @@ export default function NutritionHero() {
           className="nutrition-hero-image w-full h-full object-cover absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: imageLoaded ? 1 : 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           loading="eager"
           decoding="async"
           fetchPriority="high"
-          sizes="(max-width: 640px) 100vw, 100vw"
+          sizes="100vw"
         />
         
         {imageError && (
@@ -86,7 +86,7 @@ export default function NutritionHero() {
 
       {/* Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center px-4 sm:px-6 max-w-5xl mx-auto">
+        <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
           <motion.h1 
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-lg"
             initial={{ opacity: 0, y: 50 }}
@@ -149,7 +149,7 @@ export default function NutritionHero() {
       </div>
 
       {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 bg-gradient-to-t from-light-bg-primary dark:from-dark-bg-primary to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-24 lg:h-32 bg-gradient-to-t from-light-bg-primary dark:from-dark-bg-primary to-transparent" />
     </motion.div>
   );
 }

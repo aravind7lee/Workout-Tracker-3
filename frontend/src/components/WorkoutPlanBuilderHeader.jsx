@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import PlanBuilderHeaderImg from '../assets/PlanBuilderheader.jpg';
+import MyPlansHeaderImg from '../assets/Myplansheader.jpg';
 import { preloadImage } from '../utils/imageOptimization';
 
 export default function WorkoutPlanBuilderHeader() {
@@ -16,12 +16,12 @@ export default function WorkoutPlanBuilderHeader() {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
-    img.src = PlanBuilderHeaderImg;
+    img.src = MyPlansHeaderImg;
     img.loading = 'eager';
   }, []);
 
   return (
-    <section className="workout-builder-header relative min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] overflow-hidden rounded-2xl mb-8" role="banner" aria-label="Workout Plan Builder Section">
+    <section className="workout-builder-header relative h-screen w-full overflow-hidden" role="banner" aria-label="My Plans Hero Section">
       {/* Background Image */}
       <div className="absolute inset-0">
         {/* LQIP Placeholder */}
@@ -35,8 +35,8 @@ export default function WorkoutPlanBuilderHeader() {
         {/* Main Image */}
         {!imageError && (
           <img
-            src={PlanBuilderHeaderImg}
-            alt="Workout plans header – athlete training background"
+            src={MyPlansHeaderImg}
+            alt="My Plans – Professional gym workout plans background"
             className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
             loading="eager"
             decoding="async"
@@ -49,75 +49,92 @@ export default function WorkoutPlanBuilderHeader() {
         {imageError && (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 absolute inset-0"></div>
         )}
-        {/* Gradient Overlay - Subtle vertical gradient */}
-        <div className="gradient-overlay absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 light-theme:from-black/30 light-theme:to-black/70"></div>
+        {/* Enhanced Gradient Overlay - Professional Gym Style */}
+        <div className="gradient-overlay absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80"></div>
         
-        {/* 8 Floating Particles */}
-        <div className="absolute inset-0 opacity-40">
-          <div className="particles-container">
-            <div className="particle p1"></div>
-            <div className="particle p2"></div>
-            <div className="particle p3"></div>
-            <div className="particle p4"></div>
-            <div className="particle p5"></div>
-            <div className="particle p6"></div>
-            <div className="particle p7"></div>
-            <div className="particle p8"></div>
-          </div>
+        {/* Professional Particle Background Accent */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-20 right-20 w-1 h-1 bg-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
+          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-indigo-400 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+          <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
         </div>
       </div>
 
-      {/* Content Container - Only show after image loads */}
+      {/* Content Container - Full Viewport Height Professional Layout */}
       {imageLoaded && (
-        <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex flex-col items-center"
-          >
-            {/* Professional Badge */}
-            <div className="mb-4">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-200 border border-blue-400/30 backdrop-blur-sm">
-                Professional Gym Tracker
-              </span>
-            </div>
-
-            {/* Main Heading */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4 drop-shadow-2xl">
-              My Workout Builder
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-sm sm:text-base lg:text-lg text-white/95 max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute inset-0 flex items-center justify-center text-center px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-4xl mx-auto">
+            {/* Main Heading - Professional Style */}
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 drop-shadow-2xl"
+            >
+              My Workout Plans
+            </motion.h1>
+            
+            {/* Subtitle - Clean and Professional */}
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="text-sm sm:text-base md:text-lg text-white/95 max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
+            >
               Track, customize, and follow your training programs effortlessly.
-            </p>
-
-            {/* Premium Gradient Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm sm:max-w-md">
-              <button
+            </motion.p>
+            
+            {/* Action Buttons */}
+            <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-6"
+            >
+              <button 
                 onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
-                className="premium-btn primary flex-1 font-semibold py-3 px-6 rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 bg-blue-600 hover:bg-blue-700 text-white"
-                aria-label="Build new workout plan"
+                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                aria-label="View your workout plans"
               >
-                Build New Plan
+                View My Plans
               </button>
               <Link
-                to="/library"
-                className="premium-btn secondary flex-1 font-semibold py-3 px-6 rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 border-2 border-white/60 text-white hover:bg-white/10"
-                aria-label="Browse exercise templates"
+                to="/plans"
+                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 border-white/60 text-white hover:bg-white/10"
+                aria-label="Create new workout plan"
               >
-                Browse Templates
+                Build New Plan
               </Link>
-            </div>
-
-
-          </motion.div>
-        </div>
+            </motion.div>
+            
+            {/* Professional Badge */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+              className="flex justify-center"
+            >
+              <div className="bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-full px-3 py-1 text-xs text-blue-200">
+                <span className="flex items-center gap-1">
+                  <span>Professional Gym Tracker</span>
+                </span>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
       )}
 
-      {/* Subtle Curve Decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>
+
     </section>
   );
 }

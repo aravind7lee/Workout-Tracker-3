@@ -1,0 +1,95 @@
+/* Dashboard Hero Full Viewport - Professional Gym Website */
+.dashboard-hero {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+}
+
+/* Mobile viewport height optimization */
+@media (max-width: 768px) {
+  .dashboard-hero {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Ensure proper mobile browser compatibility */
+@supports (-webkit-touch-callout: none) {
+  .dashboard-hero {
+    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Dashboard Hero Image Optimization */
+.dashboard-hero img {
+  object-fit: cover;
+  object-position: center center;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+/* Mobile-optimized positioning for woman visibility */
+@media (max-width: 768px) {
+  .dashboard-hero img {
+    object-position: 60% 25%; /* Show woman on right side, upper portion */
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-hero img {
+    object-position: 65% 20%; /* Focus on woman's position */
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-hero img {
+    object-position: 70% 15%; /* Ensure woman is visible */
+  }
+}
+
+@media (max-width: 375px) {
+  .dashboard-hero img {
+    object-position: 75% 10%; /* Tight focus on woman */
+  }
+}
+
+/* Premium Gradient Overlays for Dashboard */
+.dashboard-hero .hero-gradient-overlay {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+}
+
+/* Light theme adjustments for Dashboard */
+.light-theme .dashboard-hero .hero-gradient-overlay,
+[data-theme="light"] .dashboard-hero .hero-gradient-overlay {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.4));
+}
+
+/* Dashboard text contrast */
+.dashboard-hero .hero-text-contrast {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.light-theme .dashboard-hero .hero-text-contrast,
+[data-theme="light"] .dashboard-hero .hero-text-contrast {
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: #1e293b;
+}
+
+/* Performance optimizations for Dashboard */
+.dashboard-hero {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-hero * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

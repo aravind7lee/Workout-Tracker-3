@@ -22,7 +22,7 @@ const DashboardHero = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="dashboard-hero relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden rounded-lg mb-6"
+      className="dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0"
       role="banner"
       aria-label="Dashboard header section"
     >
@@ -42,7 +42,7 @@ const DashboardHero = () => {
           transition={{ duration: 0.3, ease: "easeOut" }}
           src={dashboardHeaderImg}
           alt="Dashboard header – fitness progress background"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center sm:object-center md:object-center"
           loading="eager"
           decoding="async"
           fetchPriority="high"

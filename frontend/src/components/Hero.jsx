@@ -105,7 +105,7 @@ export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden mb-0">
       {/* Hero Container with Responsive Heights */}
-      <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[480px]">
+      <div className="relative w-full h-screen min-h-[100vh] max-h-screen">
         {/* Skeleton Loader */}
         {!imageLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 animate-pulse">
