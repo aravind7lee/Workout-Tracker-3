@@ -67,12 +67,14 @@ router.post("/register", async (req, res) => {
         id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
-        profileImage: savedUser.profileImage,
+        profileImage: savedUser.profileImage || null, // Explicitly ensure profileImage is included
         bio: savedUser.bio,
         registrationDate: savedUser.registrationDate,
         createdAt: savedUser.createdAt
       }
     });
+    
+    console.log(`📸 New User Profile Image: ${savedUser.profileImage ? 'SET' : 'DEFAULT'}`);
   } catch (error) {
     console.error('❌ MongoDB Atlas Registration Error:', error);
     res.status(500).json({ message: "Failed to save user to MongoDB Atlas", error: error.message });
@@ -90,11 +92,13 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    // Find user in MongoDB Atlas
-    const user = await User.findOne({ email: email.toLowerCase() });
+    // Find user in MongoDB Atlas with profileImage
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+profileImage');
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
+    
+    console.log(`🔍 Found user with profileImage: ${user.profileImage ? 'YES' : 'NO'}`);
 
     // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -113,7 +117,7 @@ router.post("/login", async (req, res) => {
         lastUserAgent: req.get('User-Agent')
       },
       { new: true }
-    );
+    ).select('+profileImage'); // Ensure profileImage is included in response
 
     console.log(`✅ USER LOGIN TRACKED IN MONGODB ATLAS:`);
     console.log(`   User: ${updatedUser.name} (${updatedUser.email})`);
@@ -136,13 +140,16 @@ router.post("/login", async (req, res) => {
         id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        profileImage: updatedUser.profileImage,
+        profileImage: updatedUser.profileImage || null, // Explicitly ensure profileImage is included
         bio: updatedUser.bio,
         stats: updatedUser.stats,
         lastLogin: updatedUser.lastLogin,
-        loginCount: updatedUser.loginCount
+        loginCount: updatedUser.loginCount,
+        createdAt: updatedUser.createdAt
       }
     });
+    
+    console.log(`📸 Profile Image Status: ${updatedUser.profileImage ? 'PRESENT - Will sync across devices' : 'NONE - Default will be used'}`);
   } catch (error) {
     console.error('❌ MongoDB Atlas Login Error:', error);
     res.status(500).json({ message: "Failed to track login in MongoDB Atlas", error: error.message });

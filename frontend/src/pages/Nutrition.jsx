@@ -8,6 +8,7 @@ import NutritionPreviewModal from '../components/NutritionPreviewModal';
 import FoodCategories from '../components/FoodCategories';
 import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
 import NutritionHero from '../components/NutritionHero';
+import realTimeEvents from '../utils/realTimeEvents';
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
@@ -93,12 +94,63 @@ export default function Nutrition() {
   const handleConfirmMeal = async (mealData) => {
     try {
       setIsAddingMeal(true);
+      
+      // Add meal to database/storage
       await addMeal(mealData);
+      
+      // Dispatch real-time event for instant profile update
+      realTimeEvents.dispatchMealAdded({
+        ...mealData,
+        addedAt: new Date().toISOString(),
+        calories: mealData.calories || 0,
+        protein: mealData.protein || 0,
+        carbs: mealData.carbs || 0,
+        fat: mealData.fat || 0
+      });
+      
       setShowPreviewModal(false);
       setNutritionItems([]);
+      
+      // Show success notification
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+      successMsg.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="text-xl">🍽️</div>
+          <div>
+            <div class="font-medium">Meal Added!</div>
+            <div class="text-sm opacity-90">${mealData.parsedName || mealData.name} • ${Math.round(mealData.calories || 0)} cal</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(successMsg);
+      setTimeout(() => {
+        if (document.body.contains(successMsg)) {
+          document.body.removeChild(successMsg);
+        }
+      }, 3000);
+      
     } catch (error) {
       console.error('Failed to add meal:', error);
-      alert('Failed to add meal: ' + error.message);
+      
+      // Show error notification
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+      errorMsg.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="text-xl">❌</div>
+          <div>
+            <div class="font-medium">Failed to Add Meal</div>
+            <div class="text-sm opacity-90">${error.message}</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(errorMsg);
+      setTimeout(() => {
+        if (document.body.contains(errorMsg)) {
+          document.body.removeChild(errorMsg);
+        }
+      }, 4000);
     } finally {
       setIsAddingMeal(false);
     }
@@ -106,16 +158,62 @@ export default function Nutrition() {
 
   const handleDeleteMeal = async (mealId) => {
     if (!mealId) {
-      alert('Cannot delete meal: Invalid meal ID');
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50';
+      errorMsg.textContent = 'Cannot delete meal: Invalid meal ID';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => {
+        if (document.body.contains(errorMsg)) {
+          document.body.removeChild(errorMsg);
+        }
+      }, 3000);
       return;
     }
     
     if (window.confirm('Are you sure you want to delete this meal?')) {
       try {
         await deleteMeal(mealId);
+        
+        // Trigger profile refresh after meal deletion
+        realTimeEvents.triggerProfileRefresh();
+        
+        // Show success notification
+        const successMsg = document.createElement('div');
+        successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg z-50';
+        successMsg.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-xl">✅</div>
+            <div class="font-medium">Meal Deleted</div>
+          </div>
+        `;
+        document.body.appendChild(successMsg);
+        setTimeout(() => {
+          if (document.body.contains(successMsg)) {
+            document.body.removeChild(successMsg);
+          }
+        }, 2000);
+        
       } catch (error) {
         console.error('Delete meal error:', error);
-        alert('Failed to delete meal: ' + error.message);
+        
+        // Show error notification
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50';
+        errorMsg.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-xl">❌</div>
+            <div>
+              <div class="font-medium">Delete Failed</div>
+              <div class="text-sm opacity-90">${error.message}</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(errorMsg);
+        setTimeout(() => {
+          if (document.body.contains(errorMsg)) {
+            document.body.removeChild(errorMsg);
+          }
+        }, 4000);
       }
     }
   };

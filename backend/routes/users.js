@@ -8,37 +8,67 @@ import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
-// Get user profile
+// Get user profile with guaranteed profileImage persistence
 router.get('/profile', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Ensure profileImage is always included in response
+    const profileData = {
+      ...user.toObject(),
+      profileImage: user.profileImage || null // Explicitly include profileImage
+    };
+    
+    console.log(`✅ Profile fetched for user ${user._id} - ProfileImage: ${user.profileImage ? 'Present' : 'None'}`);
+    res.json(profileData);
   } catch (error) {
+    console.error('Profile fetch error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Update user profile
+// Update user profile with real-time sync
 router.put('/profile', auth, async (req, res) => {
   try {
     const { name, email, profileImage } = req.body;
-    const updateData = { name, email };
+    const updateData = { 
+      updatedAt: new Date()
+    };
     
-    // Only update profileImage if provided
-    if (profileImage !== undefined) {
-      updateData.profileImage = profileImage;
-    }
+    // Update fields only if provided
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (profileImage !== undefined) updateData.profileImage = profileImage;
     
     const user = await User.findByIdAndUpdate(
       req.user.id,
       updateData,
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-password');
     
-    res.json({ success: true, user });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    
+    // Log the update for real-time tracking
+    console.log(`✅ Profile updated for user ${user._id}: ${Object.keys(updateData).join(', ')}`);
+    
+    res.json({ 
+      success: true, 
+      user,
+      message: 'Profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     console.error('Profile update error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to update profile',
+      error: error.message 
+    });
   }
 });
 

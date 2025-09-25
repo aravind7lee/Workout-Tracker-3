@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
 import { onlineService } from '../services/onlineService';
+import realTimeEvents from '../utils/realTimeEvents';
 
 export default function WorkoutSession() {
   const { planId } = useParams();
@@ -50,6 +51,12 @@ export default function WorkoutSession() {
 
   const finishWorkout = async () => {
     const duration = Math.floor(elapsedTime / 60);
+    const completedCount = completedExercises.size;
+    const totalExercises = plan.exercises.length;
+    const completionRate = (completedCount / totalExercises) * 100;
+    
+    // Calculate estimated calories burned (rough estimate)
+    const estimatedCalories = Math.round(duration * 8 + completedCount * 15);
     
     // Save workout to recent workouts
     const workoutData = {
@@ -61,32 +68,122 @@ export default function WorkoutSession() {
         sets: ex.sets,
         completed: completedExercises.has(index)
       })),
-      duration: duration
+      duration: duration,
+      completedExercises: completedCount,
+      totalExercises: totalExercises,
+      completionRate: completionRate,
+      caloriesBurned: estimatedCalories,
+      completed: true,
+      completedAt: new Date().toISOString()
     };
     
     try {
       // Save locally first
       workoutService.saveWorkout(workoutData);
       
+      // Dispatch real-time event for instant profile update
+      realTimeEvents.dispatchWorkoutCompleted(workoutData);
+      
       // Try to sync with backend
       const isOnline = await onlineService.checkBackendStatus();
       if (isOnline) {
         try {
           await onlineService.saveWorkout(workoutData);
-          alert(`🎉 Workout Completed & Synced!\n\nDuration: ${duration} minutes\n☁️ Saved to MongoDB backend\n✅ Available across all devices!`);
+          
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
+          successMsg.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">🎉</div>
+              <div>
+                <div class="font-bold">Workout Completed!</div>
+                <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
+                <div class="text-xs opacity-75 mt-1">✅ Synced to MongoDB</div>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(successMsg);
+          setTimeout(() => {
+            if (document.body.contains(successMsg)) {
+              document.body.removeChild(successMsg);
+            }
+          }, 5000);
+          
         } catch (syncError) {
           console.error('Backend sync failed:', syncError);
-          alert(`🎉 Workout Completed!\n\nDuration: ${duration} minutes\n💾 Saved locally\n⚠️ Will sync when online`);
+          
+          // Show offline success message
+          const offlineMsg = document.createElement('div');
+          offlineMsg.className = 'fixed top-4 right-4 bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
+          offlineMsg.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">🎉</div>
+              <div>
+                <div class="font-bold">Workout Completed!</div>
+                <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
+                <div class="text-xs opacity-75 mt-1">⚠️ Will sync when online</div>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(offlineMsg);
+          setTimeout(() => {
+            if (document.body.contains(offlineMsg)) {
+              document.body.removeChild(offlineMsg);
+            }
+          }, 5000);
         }
       } else {
-        alert(`🎉 Workout Completed!\n\nDuration: ${duration} minutes\n💾 Saved locally\n⚠️ Will sync when online`);
+        // Show offline message
+        const offlineMsg = document.createElement('div');
+        offlineMsg.className = 'fixed top-4 right-4 bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
+        offlineMsg.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-2xl">🎉</div>
+            <div>
+              <div class="font-bold">Workout Completed!</div>
+              <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
+              <div class="text-xs opacity-75 mt-1">📴 Offline mode - will sync later</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(offlineMsg);
+        setTimeout(() => {
+          if (document.body.contains(offlineMsg)) {
+            document.body.removeChild(offlineMsg);
+          }
+        }, 5000);
       }
     } catch (error) {
       console.error('Error saving workout:', error);
-      alert(`Workout completed! Duration: ${duration} minutes`);
+      
+      // Still dispatch the event for local updates
+      realTimeEvents.dispatchWorkoutCompleted(workoutData);
+      
+      // Show basic success message
+      const basicMsg = document.createElement('div');
+      basicMsg.className = 'fixed top-4 right-4 bg-blue-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
+      basicMsg.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">🎉</div>
+          <div>
+            <div class="font-bold">Workout Completed!</div>
+            <div class="text-sm opacity-90">${duration}min • ${completedCount}/${totalExercises} exercises</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(basicMsg);
+      setTimeout(() => {
+        if (document.body.contains(basicMsg)) {
+          document.body.removeChild(basicMsg);
+        }
+      }, 4000);
     }
     
-    navigate('/dashboard');
+    // Navigate back to dashboard after a short delay
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 1500);
   };
 
   const formatTime = (seconds) => {
