@@ -7,6 +7,7 @@ import MealInput from '../components/MealInput';
 import NutritionPreviewModal from '../components/NutritionPreviewModal';
 import FoodCategories from '../components/FoodCategories';
 import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
+import NutritionHero from '../components/NutritionHero';
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
@@ -167,20 +168,29 @@ export default function Nutrition() {
   return (
     <NutritionErrorBoundary>
       <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-2xl lg:text-3xl font-semibold text-white">Nutrition Tracker</h2>
-        <div className="text-sm text-slate-400">
-          Real-time Nutritionix API • Goal: {targets.goalType || 'maintain'} • {meals.length} meals today
+        {/* Hero Header */}
+        <NutritionHero />
+        
+        {/* Status Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4">
+          <div className="text-sm text-light-text-muted dark:text-dark-text-muted flex items-center gap-2">
+            <span className="inline-flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              Real-time Nutritionix API
+            </span>
+            <span>•</span>
+            <span>Goal: <span className="capitalize font-medium">{targets.goalType || 'maintain'}</span></span>
+            <span>•</span>
+            <span>{meals.length} meals today</span>
+          </div>
         </div>
-      </div>
 
-      {/* Add Food Input */}
-      <MealInput 
-        onLookup={handleLookup}
-        isLookingUp={isLookingUp}
-        error={error}
-      />
+        {/* Add Food Input */}
+        <MealInput 
+          onLookup={handleLookup}
+          isLookingUp={isLookingUp}
+          error={error}
+        />
 
       {/* Pre-populated Food Categories */}
       <FoodCategories 
@@ -189,23 +199,26 @@ export default function Nutrition() {
       />
 
       {/* Today's Progress */}
-      <div className="card">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+      <div 
+        data-progress-section
+        className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow"
+      >
+        <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
           <span>📊</span> Today's Progress
         </h3>
         
         {/* Calorie Target Selector */}
-        <div className="mb-4 p-3 bg-slate-700/30 rounded-lg">
+        <div className="mb-4 p-3 bg-gray-50 dark:bg-dark-bg-tertiary/50 backdrop-blur-xs rounded-lg border border-gray-200 dark:border-dark-border">
           <div className="flex items-center justify-between gap-4">
-            <div className={`text-sm font-medium ${guidance.color}`}>
+            <div className={`text-sm font-medium ${guidance.color.replace('text-', 'text-').replace('-400', '-600 dark:text-').replace('-600', '-400')}`}>
               {guidance.text}
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-xs text-slate-400">Daily Target:</label>
+              <label className="text-xs text-light-text-muted dark:text-dark-text-muted">Daily Target:</label>
               <select
                 value={customCalorieTarget || targets.calories || 2000}
                 onChange={(e) => setCustomCalorieTarget(parseInt(e.target.value))}
-                className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 focus:outline-none"
+                className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-blue-500 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-dark-accent/20 transition-all"
               >
                 <option value={2000}>2000 cal</option>
                 <option value={2300}>2300 cal</option>
@@ -221,10 +234,10 @@ export default function Nutrition() {
           {/* Calories */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Calories</span>
-              <span className="text-white">{Math.round(totals.calories || 0)} / {currentCalorieTarget}</span>
+              <span className="text-light-text-muted dark:text-dark-text-muted">Calories</span>
+              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round(totals.calories || 0)} / {currentCalorieTarget}</span>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
               <motion.div 
                 className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.calories || 0, currentCalorieTarget)}`}
                 initial={{ width: 0 }}
@@ -237,10 +250,10 @@ export default function Nutrition() {
           {/* Protein */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Protein</span>
-              <span className="text-white">{Math.round((totals.protein || 0) * 10) / 10}g / {targets.protein || 150}g</span>
+              <span className="text-light-text-muted dark:text-dark-text-muted">Protein</span>
+              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.protein || 0) * 10) / 10}g / {targets.protein || 150}g</span>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
               <motion.div 
                 className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.protein || 0, targets.protein || 150)}`}
                 initial={{ width: 0 }}
@@ -253,10 +266,10 @@ export default function Nutrition() {
           {/* Carbs */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Carbs</span>
-              <span className="text-white">{Math.round((totals.carbs || 0) * 10) / 10}g / {targets.carbs || 250}g</span>
+              <span className="text-light-text-muted dark:text-dark-text-muted">Carbs</span>
+              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.carbs || 0) * 10) / 10}g / {targets.carbs || 250}g</span>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
               <motion.div 
                 className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.carbs || 0, targets.carbs || 250)}`}
                 initial={{ width: 0 }}
@@ -269,10 +282,10 @@ export default function Nutrition() {
           {/* Fat */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Fat</span>
-              <span className="text-white">{Math.round((totals.fat || 0) * 10) / 10}g / {targets.fat || 67}g</span>
+              <span className="text-light-text-muted dark:text-dark-text-muted">Fat</span>
+              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.fat || 0) * 10) / 10}g / {targets.fat || 67}g</span>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
               <motion.div 
                 className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.fat || 0, targets.fat || 67)}`}
                 initial={{ width: 0 }}
@@ -285,22 +298,22 @@ export default function Nutrition() {
       </div>
 
       {/* Meals List */}
-      <div className="card">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow">
+        <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
           <span>🍽️</span> Today's Meals ({meals.length})
         </h3>
         
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse bg-slate-700/30 h-16 rounded-lg" />
+              <div key={i} className="animate-pulse bg-gray-200 dark:bg-dark-bg-tertiary/50 h-16 rounded-lg" />
             ))}
           </div>
         ) : meals.length === 0 ? (
           <div className="text-center py-8">
             <div className="text-4xl mb-3">🍽️</div>
-            <p className="text-slate-400 mb-4">No meals logged today</p>
-            <p className="text-sm text-slate-500">Add your first meal above to start tracking!</p>
+            <p className="text-light-text-muted dark:text-dark-text-muted mb-4">No meals logged today</p>
+            <p className="text-sm text-light-text-muted/80 dark:text-dark-text-muted/80">Add your first meal above to start tracking!</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -311,23 +324,23 @@ export default function Nutrition() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
+                  className={`flex items-center justify-between p-4 rounded-lg transition-all duration-200 ${
                     meal.synced === false 
-                      ? 'bg-blue-500/10 border border-blue-500/30' 
-                      : 'bg-slate-700/30 hover:bg-slate-700/50'
+                      ? 'bg-blue-500/10 dark:bg-blue-500/10 border border-blue-500/30 dark:border-blue-400/30' 
+                      : 'bg-gray-50 dark:bg-dark-bg-secondary/60 hover:bg-gray-100 dark:hover:bg-dark-bg-secondary/80 border border-gray-200 dark:border-dark-border backdrop-blur-xs'
                   }`}
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <div className="font-medium text-white capitalize">{meal.parsedName || meal.name || 'Unknown Food'}</div>
+                      <div className="font-medium text-light-text-primary dark:text-dark-text-primary capitalize">{meal.parsedName || meal.name || 'Unknown Food'}</div>
                       {meal.synced === false && (
                         <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
                           Syncing...
                         </div>
                       )}
                     </div>
-                    <div className="text-sm text-slate-400">{meal.servingText || 'Standard serving'}</div>
-                    <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                    <div className="text-sm text-light-text-muted dark:text-dark-text-muted">{meal.servingText || 'Standard serving'}</div>
+                    <div className="text-xs text-light-text-muted/80 dark:text-dark-text-muted/80 mt-1 flex items-center gap-2">
                       <span>{new Date(meal.consumedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       <span className="capitalize">{meal.mealType || 'snack'}</span>
                       {meal.source && (
@@ -344,25 +357,25 @@ export default function Nutrition() {
                   
                   <div className="flex items-center gap-4 text-sm">
                     <div className="text-center">
-                      <div className="text-white font-medium">{Math.round(meal.calories || 0)}</div>
-                      <div className="text-slate-400 text-xs">cal</div>
+                      <div className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round(meal.calories || 0)}</div>
+                      <div className="text-light-text-muted dark:text-dark-text-muted text-xs">cal</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-blue-400 font-medium">{Math.round((meal.protein || 0) * 10) / 10}g</div>
-                      <div className="text-slate-400 text-xs">protein</div>
+                      <div className="text-blue-600 dark:text-blue-400 font-medium">{Math.round((meal.protein || 0) * 10) / 10}g</div>
+                      <div className="text-light-text-muted dark:text-dark-text-muted text-xs">protein</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-green-400 font-medium">{Math.round((meal.carbs || 0) * 10) / 10}g</div>
-                      <div className="text-slate-400 text-xs">carbs</div>
+                      <div className="text-green-600 dark:text-green-400 font-medium">{Math.round((meal.carbs || 0) * 10) / 10}g</div>
+                      <div className="text-light-text-muted dark:text-dark-text-muted text-xs">carbs</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-yellow-400 font-medium">{Math.round((meal.fat || 0) * 10) / 10}g</div>
-                      <div className="text-slate-400 text-xs">fat</div>
+                      <div className="text-yellow-600 dark:text-yellow-400 font-medium">{Math.round((meal.fat || 0) * 10) / 10}g</div>
+                      <div className="text-light-text-muted dark:text-dark-text-muted text-xs">fat</div>
                     </div>
                     
                     <button
                       onClick={() => handleDeleteMeal(meal._id || meal.id)}
-                      className="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 rounded-lg transition-colors ml-2 border border-red-400/30 hover:border-red-400/60"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-500/20 dark:hover:bg-red-500/30 p-2 rounded-lg transition-all ml-2 border border-red-400/30 hover:border-red-400/60 dark:hover:shadow-red-500/20 dark:hover:shadow-lg backdrop-blur-xs"
                       title="Delete meal"
                       disabled={!meal._id && !meal.id}
                     >

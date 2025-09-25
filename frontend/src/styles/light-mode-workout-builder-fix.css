@@ -1,0 +1,417 @@
+/* ===== WORKOUT PLAN BUILDER LIGHT MODE FIXES ===== */
+/* Comprehensive light mode text visibility and color fixes */
+
+/* Global light mode text enforcement */
+.light-theme,
+[data-theme="light"] {
+  /* Ensure all text is dark and readable */
+  color: #0f172a !important;
+}
+
+/* Workout Plan Builder Header - Preserve white text on image */
+.light-theme .workout-builder-header *,
+[data-theme="light"] .workout-builder-header * {
+  color: white !important;
+}
+
+/* Workout Plan Builder Section Specific Fixes */
+.light-theme .workout-builder-section h1,
+.light-theme .workout-builder-section h2,
+.light-theme .workout-builder-section h3,
+[data-theme="light"] .workout-builder-section h1,
+[data-theme="light"] .workout-builder-section h2,
+[data-theme="light"] .workout-builder-section h3 {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+/* Plan Cards Light Mode */
+.light-theme .plan-card,
+[data-theme="light"] .plan-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.light-theme .plan-card h3,
+[data-theme="light"] .plan-card h3 {
+  color: #020617 !important;
+}
+
+.light-theme .plan-card .exercise-name,
+[data-theme="light"] .plan-card .exercise-name {
+  color: #0f172a !important;
+}
+
+/* Search Input Light Mode */
+.light-theme input[type="text"],
+.light-theme input[type="search"],
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="search"] {
+  background: white !important;
+  border: 1px solid #d1d5db !important;
+  color: #0f172a !important;
+}
+
+.light-theme input::placeholder,
+[data-theme="light"] input::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Button Light Mode Fixes */
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  background: transparent !important;
+  border: 2px solid #1d4ed8 !important;
+  color: #1d4ed8 !important;
+}
+
+.light-theme .btn-secondary:hover,
+[data-theme="light"] .btn-secondary:hover {
+  background: #1d4ed8 !important;
+  color: white !important;
+}
+
+/* Status Indicators Light Mode */
+.light-theme .status-online,
+[data-theme="light"] .status-online {
+  color: #059669 !important;
+}
+
+.light-theme .status-offline,
+[data-theme="light"] .status-offline {
+  color: #dc2626 !important;
+}
+
+.light-theme .status-syncing,
+[data-theme="light"] .status-syncing {
+  color: #1d4ed8 !important;
+}
+
+/* Sync Status Badges Light Mode */
+.light-theme .sync-badge-synced,
+[data-theme="light"] .sync-badge-synced {
+  background: rgba(5, 150, 105, 0.1) !important;
+  color: #059669 !important;
+  border: 1px solid rgba(5, 150, 105, 0.2) !important;
+}
+
+.light-theme .sync-badge-local,
+[data-theme="light"] .sync-badge-local {
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #d97706 !important;
+  border: 1px solid rgba(217, 119, 6, 0.2) !important;
+}
+
+/* Exercise List Light Mode */
+.light-theme .exercise-list-item,
+[data-theme="light"] .exercise-list-item {
+  color: #0f172a !important;
+}
+
+.light-theme .exercise-number,
+[data-theme="light"] .exercise-number {
+  color: #1d4ed8 !important;
+}
+
+.light-theme .exercise-sets,
+[data-theme="light"] .exercise-sets {
+  color: #6b7280 !important;
+}
+
+/* Category Badge Light Mode */
+.light-theme .category-badge,
+[data-theme="light"] .category-badge {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Modal Light Mode */
+.light-theme .modal,
+[data-theme="light"] .modal {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  color: #0f172a !important;
+}
+
+.light-theme .modal h1,
+.light-theme .modal h2,
+.light-theme .modal h3,
+[data-theme="light"] .modal h1,
+[data-theme="light"] .modal h2,
+[data-theme="light"] .modal h3 {
+  color: #020617 !important;
+}
+
+/* Real-time Features Box Light Mode */
+.light-theme .features-box,
+[data-theme="light"] .features-box {
+  background: rgba(29, 78, 216, 0.05) !important;
+  border: 1px solid rgba(29, 78, 216, 0.2) !important;
+}
+
+.light-theme .features-box h4,
+[data-theme="light"] .features-box h4 {
+  color: #1d4ed8 !important;
+}
+
+.light-theme .features-box ul,
+.light-theme .features-box li,
+[data-theme="light"] .features-box ul,
+[data-theme="light"] .features-box li {
+  color: #1e40af !important;
+}
+
+/* Loading States Light Mode */
+.light-theme .loading-text,
+[data-theme="light"] .loading-text {
+  color: #6b7280 !important;
+}
+
+/* Empty State Light Mode */
+.light-theme .empty-state h3,
+[data-theme="light"] .empty-state h3 {
+  color: #020617 !important;
+}
+
+.light-theme .empty-state p,
+[data-theme="light"] .empty-state p {
+  color: #6b7280 !important;
+}
+
+/* Action Buttons Light Mode */
+.light-theme .action-button-delete,
+[data-theme="light"] .action-button-delete {
+  color: #dc2626 !important;
+}
+
+.light-theme .action-button-duplicate,
+[data-theme="light"] .action-button-duplicate {
+  color: #1d4ed8 !important;
+}
+
+/* Hover States Light Mode */
+.light-theme .action-button-delete:hover,
+[data-theme="light"] .action-button-delete:hover {
+  background: rgba(220, 38, 38, 0.1) !important;
+}
+
+.light-theme .action-button-duplicate:hover,
+[data-theme="light"] .action-button-duplicate:hover {
+  background: rgba(29, 78, 216, 0.1) !important;
+}
+
+/* Search Results Light Mode */
+.light-theme .search-results-text,
+[data-theme="light"] .search-results-text {
+  color: #6b7280 !important;
+}
+
+/* Workout Plan Builder Header - Subtle Vertical Gradient */
+.workout-builder-header .gradient-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.6)
+  );
+}
+
+.light-theme .workout-builder-header .gradient-overlay,
+[data-theme="light"] .workout-builder-header .gradient-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.7)
+  );
+}
+
+/* Particle Background Effects */
+.workout-builder-header .particle-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.workout-builder-header .particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.workout-builder-header .particle-1 {
+  width: 4px;
+  height: 4px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.workout-builder-header .particle-2 {
+  width: 6px;
+  height: 6px;
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.workout-builder-header .particle-3 {
+  width: 3px;
+  height: 3px;
+  top: 40%;
+  left: 80%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
+  33% { transform: translateY(-10px) translateX(5px); opacity: 0.6; }
+  66% { transform: translateY(5px) translateX(-3px); opacity: 0.4; }
+}
+
+/* Skeleton loader styles */
+.workout-builder-header .skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    rgba(156, 163, 175, 0.3) 25%,
+    rgba(156, 163, 175, 0.5) 50%,
+    rgba(156, 163, 175, 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .workout-builder-header .skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    rgba(75, 85, 99, 0.3) 25%,
+    rgba(75, 85, 99, 0.5) 50%,
+    rgba(75, 85, 99, 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Premium Typography with Enhanced Contrast */
+.workout-builder-header h1 {
+  color: white !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+.workout-builder-header p {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 500 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+}
+
+.workout-builder-header button,
+.workout-builder-header a {
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Button specific overrides for header */
+.workout-builder-header .btn-primary {
+  background: #2563eb !important;
+  color: white !important;
+  border: none !important;
+}
+
+.workout-builder-header .btn-secondary {
+  background: transparent !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  color: white !important;
+}
+
+.workout-builder-header .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: white !important;
+}
+
+/* Mobile Responsive - Compact Design */
+@media (max-width: 640px) {
+  .workout-builder-header h1 {
+    font-size: 1.875rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .workout-builder-header p {
+    font-size: 0.875rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 1.5rem !important;
+    max-width: 280px !important;
+  }
+  
+  .workout-builder-header .btn-primary,
+  .workout-builder-header .btn-secondary {
+    font-size: 0.75rem !important;
+    padding: 0.625rem 1.25rem !important;
+    font-weight: 600 !important;
+  }
+  
+  .workout-builder-header .particle {
+    display: none;
+  }
+}
+
+/* Tablet Responsive - Balanced Design */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .workout-builder-header h1 {
+    font-size: 2.75rem !important;
+    line-height: 1.0 !important;
+  }
+  
+  .workout-builder-header p {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    max-width: 400px !important;
+  }
+  
+  .workout-builder-header .btn-primary,
+  .workout-builder-header .btn-secondary {
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1.5rem !important;
+  }
+}
+
+/* Desktop Responsive - Premium Typography */
+@media (min-width: 1025px) {
+  .workout-builder-header h1 {
+    font-size: 3.75rem !important;
+    line-height: 0.9 !important;
+  }
+  
+  .workout-builder-header p {
+    font-size: 1.125rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .workout-builder-header .particle {
+    opacity: 0.4;
+  }
+  
+  .workout-builder-header .particle-1 {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .workout-builder-header .particle-2 {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .workout-builder-header .particle-3 {
+    width: 5px;
+    height: 5px;
+  }
+}

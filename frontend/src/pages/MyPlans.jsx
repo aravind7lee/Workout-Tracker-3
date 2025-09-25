@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import PlanDetailsModal from '../components/PlanDetailsModal';
+import WorkoutPlanBuilderHeader from '../components/WorkoutPlanBuilderHeader';
 import { onlineService } from '../services/onlineService';
 import { planService } from '../services/planService';
 import { useAuth } from '../context/AuthContext';
@@ -247,24 +248,27 @@ export default function MyPlans() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading your plans...</p>
+          <p className="loading-text muted-text">Loading your plans...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="workout-builder-section space-y-6">
+      {/* Workout Plan Builder Header */}
+      <WorkoutPlanBuilderHeader />
+      
+      <div id="plans-content" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl lg:text-3xl font-semibold text-white">My Workout Plans</h2>
+          <h2 className="text-2xl lg:text-3xl font-semibold heading-text text-gray-900 dark:text-white">My Workout Plans</h2>
           
           {/* Real-time Status Indicator */}
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${
               isOnline ? 'bg-green-500' : 'bg-red-500'
             }`}></div>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs muted-text">
               {isOnline ? 'Online' : 'Offline'}
             </span>
             
@@ -274,19 +278,19 @@ export default function MyPlans() {
                 {syncStatus === 'syncing' && (
                   <>
                     <div className="animate-spin w-3 h-3 border border-blue-500 border-t-transparent rounded-full"></div>
-                    <span className="text-blue-400">Syncing...</span>
+                    <span className="text-blue-500 dark:text-blue-400">Syncing...</span>
                   </>
                 )}
                 {syncStatus === 'synced' && (
                   <>
-                    <span className="text-green-400">✓</span>
-                    <span className="text-green-400">Synced</span>
+                    <span className="text-green-600 dark:text-green-400">✓</span>
+                    <span className="text-green-600 dark:text-green-400">Synced</span>
                   </>
                 )}
                 {syncStatus === 'error' && (
                   <>
-                    <span className="text-red-400">⚠</span>
-                    <span className="text-red-400">Sync Failed</span>
+                    <span className="text-red-600 dark:text-red-400">⚠</span>
+                    <span className="text-red-600 dark:text-red-400">Sync Failed</span>
                   </>
                 )}
               </div>
@@ -322,16 +326,16 @@ export default function MyPlans() {
           <input 
             value={searchQuery} 
             onChange={e => setSearchQuery(e.target.value)} 
-            className="w-full p-3 pl-10 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400" 
+            className="w-full p-3 pl-10 rounded-lg bg-slate-800/60 dark:bg-slate-800/60 light-theme:bg-white light-theme:border-gray-300 border border-slate-700 dark:border-slate-700 light-theme:text-gray-900 text-white placeholder-slate-400 dark:placeholder-slate-400 light-theme:placeholder-gray-500" 
             placeholder="Search your plans..." 
           />
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 muted-text">
             🔍
           </div>
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 muted-text hover:text-gray-900 dark:hover:text-white"
             >
               ✕
             </button>
@@ -340,10 +344,10 @@ export default function MyPlans() {
       )}
 
       {searchQuery && filteredPlans.length === 0 && savedPlans.length > 0 ? (
-        <div className="card text-center py-12">
+        <div className="empty-state card text-center py-12">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-semibold text-white mb-2">No Plans Found</h3>
-          <p className="text-slate-400 mb-6">
+          <h3 className="text-xl font-semibold heading-text mb-2">No Plans Found</h3>
+          <p className="muted-text mb-6">
             No plans match "{searchQuery}". Try a different search term.
           </p>
           <button
@@ -354,10 +358,10 @@ export default function MyPlans() {
           </button>
         </div>
       ) : savedPlans.length === 0 ? (
-        <div className="card text-center py-12">
+        <div className="empty-state card text-center py-12">
           <div className="text-6xl mb-4">📋</div>
-          <h3 className="text-xl font-semibold text-white mb-2">No Plans Yet</h3>
-          <p className="text-slate-400 mb-6">
+          <h3 className="text-xl font-semibold heading-text mb-2">No Plans Yet</h3>
+          <p className="muted-text mb-6">
             You haven't created any workout plans yet. Start building your first plan!
           </p>
           <Link
@@ -371,25 +375,25 @@ export default function MyPlans() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {searchQuery && (
             <div className="col-span-full mb-4">
-              <p className="text-slate-400 text-sm">
+              <p className="search-results-text muted-text text-sm">
                 Showing {filteredPlans.length} of {savedPlans.length} plans for "{searchQuery}"
               </p>
             </div>
           )}
           {filteredPlans.map((plan) => (
-            <div key={plan.id} className={`card hover:bg-slate-800/60 transition-all duration-500 relative ${
-              highlightPlan === plan.id ? 'ring-2 ring-blue-500 bg-blue-900/20 shadow-lg shadow-blue-500/20 scale-105' : ''
+            <div key={plan.id} className={`plan-card card hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light-theme:hover:bg-gray-50 transition-all duration-500 relative ${
+              highlightPlan === plan.id ? 'ring-2 ring-blue-500 bg-blue-900/20 dark:bg-blue-900/20 light-theme:bg-blue-50 shadow-lg shadow-blue-500/20 scale-105' : ''
             }`}>
               {/* Sync Status Badge */}
               <div className="absolute top-2 right-2 flex items-center gap-1">
                 {plan.synced ? (
-                  <div className="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                  <div className="sync-badge-synced bg-green-500/20 dark:bg-green-500/20 light-theme:bg-green-100 text-green-400 dark:text-green-400 light-theme:text-green-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-green-400 dark:bg-green-400 light-theme:bg-green-600 rounded-full"></span>
                     Synced
                   </div>
                 ) : (
-                  <div className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>
+                  <div className="sync-badge-local bg-yellow-500/20 dark:bg-yellow-500/20 light-theme:bg-yellow-100 text-yellow-400 dark:text-yellow-400 light-theme:text-yellow-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-yellow-400 dark:bg-yellow-400 light-theme:bg-yellow-600 rounded-full"></span>
                     Local
                   </div>
                 )}
@@ -397,22 +401,22 @@ export default function MyPlans() {
               
               <div className="flex items-start justify-between mb-4 mt-8">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-1">{plan.name}</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="text-lg font-semibold heading-text mb-1">{plan.name}</h3>
+                  <p className="text-sm muted-text">
                     {plan.exercises.length} {plan.exercises.length === 1 ? 'exercise' : 'exercises'}
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => duplicatePlan(plan)}
-                    className="text-blue-400 hover:text-blue-300 p-1 rounded hover:bg-blue-900/20 transition-colors"
+                    className="action-button-duplicate text-blue-400 dark:text-blue-400 light-theme:text-blue-600 hover:text-blue-300 dark:hover:text-blue-300 light-theme:hover:text-blue-700 p-1 rounded hover:bg-blue-900/20 dark:hover:bg-blue-900/20 light-theme:hover:bg-blue-100 transition-colors"
                     title="Duplicate plan"
                   >
                     📋
                   </button>
                   <button
                     onClick={() => deletePlan(plan.id)}
-                    className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-900/20 transition-colors"
+                    className="action-button-delete text-red-400 dark:text-red-400 light-theme:text-red-600 hover:text-red-300 dark:hover:text-red-300 light-theme:hover:text-red-700 p-1 rounded hover:bg-red-900/20 dark:hover:bg-red-900/20 light-theme:hover:bg-red-100 transition-colors"
                     title="Delete plan"
                   >
                     🗑️
@@ -422,30 +426,30 @@ export default function MyPlans() {
 
               <div className="space-y-2 mb-4">
                 {plan.exercises.slice(0, 3).map((exercise, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm">
-                    <span className="text-blue-400 font-medium">{index + 1}.</span>
-                    <span className="text-white">{exercise.name}</span>
-                    <span className="text-slate-400">• {exercise.sets}</span>
+                  <div key={index} className="exercise-list-item flex items-center gap-2 text-sm">
+                    <span className="exercise-number text-blue-600 dark:text-blue-400 font-medium">{index + 1}.</span>
+                    <span className="exercise-name heading-text">{exercise.name}</span>
+                    <span className="exercise-sets muted-text">• {exercise.sets}</span>
                   </div>
                 ))}
                 {plan.exercises.length > 3 && (
                   <button
                     onClick={() => setSelectedPlan(plan)}
-                    className="text-sm text-blue-400 hover:text-blue-300 cursor-pointer transition-colors"
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer transition-colors"
                   >
                     +{plan.exercises.length - 3} more exercises
                   </button>
                 )}
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-4">
+              <div className="flex items-center justify-between text-xs muted-text mb-4">
                 <div className="flex flex-col gap-1">
                   <span>Created: {new Date(plan.createdAt).toLocaleDateString()}</span>
                   {lastSync && (
-                    <span className="text-slate-600">Last sync: {lastSync.toLocaleTimeString()}</span>
+                    <span className="text-gray-500 dark:text-slate-600">Last sync: {lastSync.toLocaleTimeString()}</span>
                   )}
                 </div>
-                <span className="bg-slate-700/50 px-2 py-1 rounded">{plan.category || 'General'}</span>
+                <span className="bg-gray-200 dark:bg-slate-700/50 text-gray-800 dark:text-gray-200 px-2 py-1 rounded">{plan.category || 'General'}</span>
               </div>
 
               <div className="flex gap-2">
@@ -468,9 +472,9 @@ export default function MyPlans() {
       )}
 
       {savedPlans.length > 0 && (
-        <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
-          <h4 className="text-blue-300 font-medium mb-2">💡 Real-time Features:</h4>
-          <ul className="text-blue-200 text-sm space-y-1">
+        <div className="features-box bg-blue-900/20 dark:bg-blue-900/20 light-theme:bg-blue-50 border border-blue-500/30 dark:border-blue-500/30 light-theme:border-blue-200 rounded-lg p-4">
+          <h4 className="text-blue-700 dark:text-blue-300 font-medium mb-2">💡 Real-time Features:</h4>
+          <ul className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
             <li>• {isOnline ? '🌐 Real-time sync with MongoDB database' : '📱 Offline mode - data saved locally'}</li>
             <li>• 🔄 Auto-sync every 30 seconds when online</li>
             <li>• 💾 All workout data persists across sessions</li>

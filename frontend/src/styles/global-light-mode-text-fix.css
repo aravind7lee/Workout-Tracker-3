@@ -1,0 +1,430 @@
+/* ===== GLOBAL LIGHT MODE TEXT VISIBILITY FIXES ===== */
+/* Comprehensive solution for all text visibility issues in light mode */
+
+/* Global light mode text enforcement - highest priority */
+.light-theme *:not(svg):not(path):not(.preserve-color):not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500),
+[data-theme="light"] *:not(svg):not(path):not(.preserve-color):not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500) {
+  color: #0f172a !important;
+}
+
+/* Headings - Maximum contrast */
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+/* Semantic color classes for consistent theming */
+.light-theme .heading-text,
+[data-theme="light"] .heading-text {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .muted-text,
+[data-theme="light"] .muted-text {
+  color: #6b7280 !important;
+}
+
+.light-theme .link-text,
+[data-theme="light"] .link-text {
+  color: #1d4ed8 !important;
+}
+
+/* Override problematic Tailwind classes */
+.light-theme .text-white, .light-theme .text-slate-100, .light-theme .text-slate-200, .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
+[data-theme="light"] .text-white, [data-theme="light"] .text-slate-100, [data-theme="light"] .text-slate-200, [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
+  color: #0f172a !important;
+}
+
+.light-theme .text-gray-100, .light-theme .text-gray-200, .light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
+[data-theme="light"] .text-gray-100, [data-theme="light"] .text-gray-200, [data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
+  color: #0f172a !important;
+}
+
+/* Preserve colored elements with proper light mode colors */
+.light-theme .text-blue-400, .light-theme .text-blue-500,
+[data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
+  color: #1d4ed8 !important;
+}
+
+.light-theme .text-green-400, .light-theme .text-green-500,
+[data-theme="light"] .text-green-400, [data-theme="light"] .text-green-500 {
+  color: #059669 !important;
+}
+
+.light-theme .text-purple-400, .light-theme .text-purple-500,
+[data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
+  color: #7c3aed !important;
+}
+
+.light-theme .text-orange-400, .light-theme .text-orange-500,
+[data-theme="light"] .text-orange-400, [data-theme="light"] .text-orange-500 {
+  color: #d97706 !important;
+}
+
+.light-theme .text-red-400, .light-theme .text-red-500,
+[data-theme="light"] .text-red-400, [data-theme="light"] .text-red-500 {
+  color: #dc2626 !important;
+}
+
+.light-theme .text-yellow-400, .light-theme .text-yellow-500,
+[data-theme="light"] .text-yellow-400, [data-theme="light"] .text-yellow-500 {
+  color: #d97706 !important;
+}
+
+/* Button text overrides */
+.light-theme .btn-primary,
+[data-theme="light"] .btn-primary {
+  background: #1d4ed8 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.light-theme .btn-secondary,
+[data-theme="light"] .btn-secondary {
+  background: transparent !important;
+  color: #1d4ed8 !important;
+  border: 2px solid #1d4ed8 !important;
+}
+
+.light-theme .btn-secondary:hover,
+[data-theme="light"] .btn-secondary:hover {
+  background: #1d4ed8 !important;
+  color: white !important;
+}
+
+/* Form elements */
+.light-theme input, .light-theme textarea, .light-theme select,
+[data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+  background: white !important;
+  border: 1px solid #d1d5db !important;
+  color: #0f172a !important;
+}
+
+.light-theme input::placeholder, .light-theme textarea::placeholder,
+[data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Labels */
+.light-theme label,
+[data-theme="light"] label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+/* Cards and panels */
+.light-theme .card,
+[data-theme="light"] .card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+/* Navigation */
+.light-theme nav *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] nav *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme nav h1, .light-theme nav h2, .light-theme nav h3,
+[data-theme="light"] nav h1, [data-theme="light"] nav h2, [data-theme="light"] nav h3 {
+  color: #020617 !important;
+}
+
+/* Links */
+.light-theme a:not(.btn):not(.btn-primary):not(.btn-secondary),
+[data-theme="light"] a:not(.btn):not(.btn-primary):not(.btn-secondary) {
+  color: #1d4ed8 !important;
+}
+
+.light-theme a:not(.btn):not(.btn-primary):not(.btn-secondary):hover,
+[data-theme="light"] a:not(.btn):not(.btn-primary):not(.btn-secondary):hover {
+  color: #1e40af !important;
+  text-decoration: underline !important;
+}
+
+/* Modal and overlay text */
+.light-theme .modal *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] .modal *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme .modal h1, .light-theme .modal h2, .light-theme .modal h3,
+[data-theme="light"] .modal h1, [data-theme="light"] .modal h2, [data-theme="light"] .modal h3 {
+  color: #020617 !important;
+}
+
+/* Footer */
+.light-theme footer *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] footer *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme footer h3, .light-theme footer h4,
+[data-theme="light"] footer h3, [data-theme="light"] footer h4 {
+  color: #020617 !important;
+}
+
+/* Specific component overrides */
+.light-theme .workout-card *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] .workout-card *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme .exercise-card *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] .exercise-card *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+.light-theme .plan-card *:not(svg):not(path):not(.preserve-color),
+[data-theme="light"] .plan-card *:not(svg):not(path):not(.preserve-color) {
+  color: #0f172a !important;
+}
+
+/* Status indicators */
+.light-theme .status-online,
+[data-theme="light"] .status-online {
+  color: #059669 !important;
+}
+
+.light-theme .status-offline,
+[data-theme="light"] .status-offline {
+  color: #dc2626 !important;
+}
+
+.light-theme .status-syncing,
+[data-theme="light"] .status-syncing {
+  color: #1d4ed8 !important;
+}
+
+/* Loading states */
+.light-theme .loading-text,
+[data-theme="light"] .loading-text {
+  color: #6b7280 !important;
+}
+
+/* Empty states */
+.light-theme .empty-state h3,
+[data-theme="light"] .empty-state h3 {
+  color: #020617 !important;
+}
+
+.light-theme .empty-state p,
+[data-theme="light"] .empty-state p {
+  color: #6b7280 !important;
+}
+
+/* Search results */
+.light-theme .search-results-text,
+[data-theme="light"] .search-results-text {
+  color: #6b7280 !important;
+}
+
+/* Badges and chips */
+.light-theme .badge, .light-theme .chip,
+[data-theme="light"] .badge, [data-theme="light"] .chip {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Tooltips */
+.light-theme .tooltip,
+[data-theme="light"] .tooltip {
+  background: white !important;
+  color: #0f172a !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Dropdown menus */
+.light-theme .dropdown-menu,
+[data-theme="light"] .dropdown-menu {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  color: #0f172a !important;
+}
+
+.light-theme .dropdown-item,
+[data-theme="light"] .dropdown-item {
+  color: #0f172a !important;
+}
+
+.light-theme .dropdown-item:hover,
+[data-theme="light"] .dropdown-item:hover {
+  background: #f3f4f6 !important;
+  color: #0f172a !important;
+}
+
+/* Table elements */
+.light-theme table, .light-theme th, .light-theme td,
+[data-theme="light"] table, [data-theme="light"] th, [data-theme="light"] td {
+  color: #0f172a !important;
+  border-color: #e5e7eb !important;
+}
+
+.light-theme th,
+[data-theme="light"] th {
+  background: #f9fafb !important;
+  color: #020617 !important;
+  font-weight: 600 !important;
+}
+
+/* List elements */
+.light-theme ul, .light-theme ol, .light-theme li,
+[data-theme="light"] ul, [data-theme="light"] ol, [data-theme="light"] li {
+  color: #0f172a !important;
+}
+
+/* Code elements */
+.light-theme code, .light-theme pre,
+[data-theme="light"] code, [data-theme="light"] pre {
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Blockquote */
+.light-theme blockquote,
+[data-theme="light"] blockquote {
+  color: #6b7280 !important;
+  border-left: 4px solid #d1d5db !important;
+}
+
+/* Progress bars */
+.light-theme .progress-bar,
+[data-theme="light"] .progress-bar {
+  background: #e5e7eb !important;
+}
+
+.light-theme .progress-fill,
+[data-theme="light"] .progress-fill {
+  background: #1d4ed8 !important;
+}
+
+/* Tabs */
+.light-theme .tab-active,
+[data-theme="light"] .tab-active {
+  background: white !important;
+  color: #1d4ed8 !important;
+  border-bottom: 2px solid #1d4ed8 !important;
+}
+
+.light-theme .tab-inactive,
+[data-theme="light"] .tab-inactive {
+  color: #6b7280 !important;
+}
+
+.light-theme .tab-inactive:hover,
+[data-theme="light"] .tab-inactive:hover {
+  color: #1d4ed8 !important;
+}
+
+/* Accordion */
+.light-theme .accordion-header,
+[data-theme="light"] .accordion-header {
+  background: #f9fafb !important;
+  color: #020617 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.light-theme .accordion-content,
+[data-theme="light"] .accordion-content {
+  background: white !important;
+  color: #0f172a !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Alert components */
+.light-theme .alert-info,
+[data-theme="light"] .alert-info {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #93c5fd !important;
+}
+
+.light-theme .alert-success,
+[data-theme="light"] .alert-success {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1px solid #86efac !important;
+}
+
+.light-theme .alert-warning,
+[data-theme="light"] .alert-warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fcd34d !important;
+}
+
+.light-theme .alert-error,
+[data-theme="light"] .alert-error {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+/* Ensure workout builder header text remains white */
+.light-theme .workout-builder-header *,
+[data-theme="light"] .workout-builder-header * {
+  color: white !important;
+}
+
+.light-theme .workout-builder-header h1,
+.light-theme .workout-builder-header h2,
+.light-theme .workout-builder-header h3,
+.light-theme .workout-builder-header p,
+[data-theme="light"] .workout-builder-header h1,
+[data-theme="light"] .workout-builder-header h2,
+[data-theme="light"] .workout-builder-header h3,
+[data-theme="light"] .workout-builder-header p {
+  color: white !important;
+}
+
+/* Ensure buttons in header remain properly styled */
+.light-theme .workout-builder-header .btn-primary,
+[data-theme="light"] .workout-builder-header .btn-primary {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+.light-theme .workout-builder-header .btn-secondary,
+[data-theme="light"] .workout-builder-header .btn-secondary {
+  background: transparent !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  color: white !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .light-theme .mobile-text,
+  [data-theme="light"] .mobile-text {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  .light-theme .mobile-heading,
+  [data-theme="light"] .mobile-heading {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .light-theme *:not(svg):not(path):not(.preserve-color),
+  [data-theme="light"] *:not(svg):not(path):not(.preserve-color) {
+    color: #000000 !important;
+  }
+  
+  .light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
+  [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+    color: #000000 !important;
+  }
+  
+  .light-theme .card,
+  [data-theme="light"] .card {
+    border: 2px solid #000000 !important;
+  }
+}

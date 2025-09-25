@@ -5,6 +5,7 @@ import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
+import DashboardHero from '../components/DashboardHero';
 
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated } = useAuth();
@@ -211,6 +212,9 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Dashboard Hero Section */}
+      <DashboardHero />
+      
       {/* Workout Completion Notification */}
       {showCompletionMessage && completionData && (
         <div className="fixed top-20 right-4 z-50 bg-green-600 text-white p-4 rounded-lg shadow-lg border border-green-500 animate-pulse">

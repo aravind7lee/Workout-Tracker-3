@@ -1,12 +1,24 @@
 // frontend/src/pages/PlansBuilder.jsx
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { planService } from '../services/planService';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import { realTimePlanService } from '../services/realTimePlanService';
 import RealTimeDashboard from '../components/RealTimeDashboard';
+import SkeletonLoader from '../components/SkeletonLoader';
+import MyPlansHeader from '../assets/Myplansheader.jpg';
+import '../styles/my-plans-hero.css';
+
+// Theme context with fallback
+let useTheme;
+try {
+  useTheme = require('../context/ThemeContext').useTheme;
+} catch (error) {
+  useTheme = () => ({ theme: 'dark' });
+}
 
 export default function PlansBuilder() {
   const navigate = useNavigate();
@@ -26,8 +38,18 @@ export default function PlansBuilder() {
     lastSync: null
   });
   const [autoSave, setAutoSave] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const autoSaveTimer = useRef(null);
   const syncInterval = useRef(null);
+  
+  // Get theme with fallback
+  let theme = 'dark';
+  try {
+    const themeContext = useTheme();
+    theme = themeContext?.theme || 'dark';
+  } catch (error) {
+    console.log('Theme context not available, using dark theme');
+  }
   
   const currentMuscleGroup = exerciseLibrary[selectedMuscleGroup];
   const exercises = currentMuscleGroup.exercises;
@@ -404,7 +426,136 @@ export default function PlansBuilder() {
   const statusDisplay = getSyncStatusDisplay();
 
   return (
-    <div className="space-y-3 sm:space-y-4 lg:space-y-6 px-2 sm:px-0">
+    <div className="space-y-0">
+      {/* Hero Header Section */}
+      <div className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden">
+        {/* Skeleton Loader */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 w-full h-full skeleton-shimmer bg-slate-700/40" />
+        )}
+        
+        {/* Hero Image */}
+        <img
+          src={MyPlansHeader}
+          alt="Workout plans header - athlete training background"
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          onLoad={() => setImageLoaded(true)}
+        />
+        
+        {/* Enhanced Gradient Overlay - Theme Aware */}
+        <div className={`absolute inset-0 ${
+          theme === 'dark' 
+            ? 'bg-gradient-to-b from-black/10 via-black/30 to-black/50'
+            : 'bg-gradient-to-b from-white/5 via-black/20 to-black/60'
+        }`} />
+        
+        {/* Subtle Particle Background Accent */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full particle-accent" />
+          <div className="absolute top-20 right-20 w-1 h-1 bg-purple-400 rounded-full particle-accent" />
+          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-green-400 rounded-full particle-accent" />
+          <div className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full particle-accent" />
+          <div className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full particle-accent" />
+          <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full particle-accent" />
+          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-indigo-400 rounded-full particle-accent" />
+          <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-emerald-400 rounded-full particle-accent" />
+        </div>
+        
+        {/* Overlay Content */}
+        <motion.div 
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="absolute inset-0 flex items-center justify-center text-center px-4"
+        >
+          <div className="max-w-4xl mx-auto">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white drop-shadow-lg mb-2"
+              style={{
+                textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 4px 16px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.6)',
+                WebkitTextStroke: '1px rgba(0,0,0,0.3)'
+              }}
+            >
+              My Workout Plans
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-1 text-xs md:text-sm lg:text-base text-neutral-100 max-w-2xl mx-auto leading-relaxed"
+              style={{
+                textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 4px 16px rgba(0,0,0,0.7)',
+                WebkitTextStroke: '0.5px rgba(0,0,0,0.3)'
+              }}
+            >
+              Track, customize, and follow your training programs effortlessly.
+            </motion.p>
+            
+            {/* Compact CTA Buttons */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center items-center"
+            >
+              <button 
+                onClick={() => navigate('/my-plans')}
+                className={`px-4 py-2 sm:px-6 sm:py-3 font-medium rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 ${
+                  theme === 'dark' 
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-900/30'
+                    : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                }`}
+                aria-label="View existing workout plans"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-sm sm:text-base">📋</span>
+                  <span>View Plans</span>
+                </span>
+              </button>
+              <button 
+                onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
+                className={`px-4 py-2 sm:px-6 sm:py-3 font-medium rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/80 hover:bg-slate-700/90 text-white border-slate-600 hover:border-slate-500 shadow-lg shadow-slate-900/30'
+                    : 'bg-white/90 hover:bg-white text-slate-800 border-slate-300 hover:border-slate-400 shadow-lg shadow-slate-900/10'
+                }`}
+                aria-label="Create a new workout plan"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-sm sm:text-base">🏋️</span>
+                  <span>Build Plan</span>
+                </span>
+              </button>
+            </motion.div>
+            
+            {/* Compact Professional Badge */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+              className="mt-3 flex justify-center"
+            >
+              <div className="bg-white/15 backdrop-blur-md border border-white/30 rounded-full px-3 py-1 text-xs sm:text-sm text-white/90">
+                <span className="flex items-center gap-1 sm:gap-2">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="hidden sm:inline">Professional Gym Tracker</span>
+                  <span className="sm:hidden">Pro Tracker</span>
+                  <span className="text-yellow-400">✨</span>
+                </span>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+      
+      {/* Main Content */}
+      <div id="plan-builder" className="space-y-3 sm:space-y-4 lg:space-y-6 px-2 sm:px-0 pt-8">
       {/* Real-Time Dashboard */}
       <RealTimeDashboard className="mb-3 sm:mb-4" />
       
@@ -459,7 +610,7 @@ export default function PlansBuilder() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2 sm:gap-3">
-            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-white">Workout Plan Builder</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900 dark:text-white">Workout Plan Builder</h2>
             <span className="text-xl sm:text-2xl animate-pulse">🏋️</span>
           </div>
         </div>
@@ -966,6 +1117,7 @@ export default function PlansBuilder() {
             Built for serious athletes and fitness enthusiasts
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

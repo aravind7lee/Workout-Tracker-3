@@ -318,3 +318,28 @@
 [data-theme="light"] .min-h-screen {
   background: #ffffff !important;
 }
+
+/* ===== SPECIFIC HEADER SECTION FIXES ===== */
+.light-theme .space-y-3 h2, .light-theme .space-y-4 h2, .light-theme .space-y-6 h2,
+[data-theme="light"] .space-y-3 h2, [data-theme="light"] .space-y-4 h2, [data-theme="light"] .space-y-6 h2 {
+  color: #020617 !important;
+  font-weight: 800 !important;
+}
+
+.light-theme .flex.items-center h2,
+[data-theme="light"] .flex.items-center h2 {
+  color: #020617 !important;
+  font-weight: 800 !important;
+}
+
+/* ===== CARD HEADER FIXES ===== */
+.light-theme .bg-slate-800\/60 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
+[data-theme="light"] .bg-slate-800\/60 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
+  color: #0f172a !important;
+}
+
+.light-theme .bg-slate-800\/60,
+[data-theme="light"] .bg-slate-800\/60 {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}

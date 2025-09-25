@@ -1,6 +1,7 @@
 // Real-time Exercise Library with User Progress Tracking
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
@@ -10,6 +11,8 @@ import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import SuccessNotification from '../components/SuccessNotification';
 import WorkoutSetupModal from '../components/WorkoutSetupModal';
+import SkeletonLoader from '../components/SkeletonLoader';
+import LibraryHeaderImg from '../assets/Libraryheader.jpg';
 
 export default function Library() {
   const navigate = useNavigate();
@@ -76,6 +79,33 @@ export default function Library() {
   const [showAddToExisting, setShowAddToExisting] = useState(null);
   const [showSuccessNotification, setShowSuccessNotification] = useState(null);
   const [showWorkoutSetup, setShowWorkoutSetup] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  // Load header image
+  useEffect(() => {
+    console.log('🖼️ Attempting to load image:', LibraryHeaderImg);
+    const img = new Image();
+    img.onload = () => {
+      setImageLoaded(true);
+      console.log('✅ Library header image loaded successfully');
+    };
+    img.onerror = (e) => {
+      setImageError(true);
+      console.error('❌ Failed to load library header image:', LibraryHeaderImg, e);
+    };
+    img.src = LibraryHeaderImg;
+    
+    // Fallback: set loaded to true after 2 seconds regardless
+    const fallbackTimer = setTimeout(() => {
+      if (!imageLoaded && !imageError) {
+        console.log('⏰ Image loading timeout, showing anyway');
+        setImageLoaded(true);
+      }
+    }, 2000);
+    
+    return () => clearTimeout(fallbackTimer);
+  }, []);
   
   // Real-time data fetching with sync service
   useEffect(() => {
@@ -284,6 +314,7 @@ export default function Library() {
   // Show workout setup modal - this opens the modal on the same page
   const handleStartWorkout = (exercise) => {
     console.log('🎯 Opening workout setup modal for:', exercise.name);
+    console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
     setShowWorkoutSetup(exercise);
   };
   
@@ -336,280 +367,377 @@ export default function Library() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6 text-white">Exercise Library</h2>
-      
-      {/* Real-time Status Bar */}
-      <div className="mb-6">
-        <div className="card p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
-              <span className="text-white font-medium">
-                {isOnline ? '🟢 Live Mode - Real-time Progress Tracking' : '🟡 Offline Mode - Limited Features'}
-              </span>
+    <div className="min-h-screen bg-slate-900">
+      {/* Premium Exercise Library Hero Section */}
+      <motion.div 
+        className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        {!imageLoaded && !imageError ? (
+          <SkeletonLoader className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50" />
+        ) : imageError ? (
+          <motion.div 
+            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center text-white px-4">
+              <motion.div 
+                className="text-6xl mb-4"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                🏋️
+              </motion.div>
+              <motion.h1 
+                className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                Exercise Library
+              </motion.h1>
+              <motion.p 
+                className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto drop-shadow-lg"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                Browse, track, and customize your exercises with ease.
+              </motion.p>
             </div>
-            {lastSync && (
-              <div className="text-xs text-slate-400 flex items-center gap-2">
-                <span>Last sync: {lastSync.toLocaleTimeString()}</span>
-                {(() => {
-                  try {
-                    const syncStatus = realTimeSyncService.getSyncStatus();
-                    return syncStatus && syncStatus.pendingOfflineItems > 0 && (
-                      <span className="bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded text-xs">
-                        {syncStatus.pendingOfflineItems} pending
-                      </span>
-                    );
-                  } catch (error) {
-                    return null;
-                  }
-                })()}
+          </motion.div>
+        ) : (
+          <>
+            <img
+              src={LibraryHeaderImg}
+              alt="Exercise Library header – gym workout background"
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+              onLoad={() => {
+                setImageLoaded(true);
+                console.log('🖼️ Library header image loaded successfully');
+              }}
+              onError={() => {
+                setImageError(true);
+                console.error('🚫 Library header image failed to load');
+              }}
+            />
+            {/* Premium gradient overlay for optimal text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
+            
+            {/* Hero content with animations */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-white px-4 max-w-4xl mx-auto">
+                <motion.h1 
+                  className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-2xl leading-tight"
+                  initial={{ y: 12, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  Exercise Library
+                </motion.h1>
+                <motion.p 
+                  className="text-lg md:text-xl lg:text-2xl opacity-95 max-w-2xl mx-auto drop-shadow-lg font-medium leading-relaxed"
+                  initial={{ y: 12, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+                >
+                  Browse, track, and customize your exercises with ease.
+                </motion.p>
+              </div>
+            </div>
+          </>
+        )}
+      </motion.div>
+
+      {/* Main Content Area */}
+      <div className="relative bg-slate-900 pt-8 pb-12">
+        {/* Stats Panel - Now properly positioned below the header */}
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="card p-6 mb-8 relative z-10 transform -translate-y-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'}`}></div>
+                <span className="text-white font-medium text-sm sm:text-base">
+                  {isOnline ? '🟢 Online Mode - Real-time Progress Tracking' : '🟡 Offline Mode - Limited Features'}
+                </span>
+              </div>
+              {lastSync && (
+                <div className="text-xs text-slate-400 flex items-center gap-2">
+                  <span>Last sync: {lastSync.toLocaleTimeString()}</span>
+                  {(() => {
+                    try {
+                      const syncStatus = realTimeSyncService.getSyncStatus();
+                      return syncStatus && syncStatus.pendingOfflineItems > 0 && (
+                        <span className="bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded text-xs">
+                          {syncStatus.pendingOfflineItems} pending
+                        </span>
+                      );
+                    } catch (error) {
+                      return null;
+                    }
+                  })()}
+                </div>
+              )}
+            </div>
+            
+            {user && userProgress ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-400">{userProgress.workouts || 0}</div>
+                  <div className="text-xs sm:text-sm text-slate-400">Total Workouts</div>
+                </div>
+                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-green-400">{userProgress.streak || 0}</div>
+                  <div className="text-xs sm:text-sm text-slate-400">Day Streak</div>
+                </div>
+                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-purple-400">{userProgress.xpPoints || 0}</div>
+                  <div className="text-xs sm:text-sm text-slate-400">XP Points</div>
+                </div>
+                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-orange-400">
+                    {userProgress.weeklyGoal?.completed || 0}/{userProgress.weeklyGoal?.target || 4}
+                  </div>
+                  <div className="text-xs sm:text-sm text-slate-400">Weekly Goal</div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <div className="text-slate-400 text-sm">
+                  {user ? 'Loading your progress...' : 'Sign in to track your progress'}
+                </div>
               </div>
             )}
           </div>
-          
-          {user && userProgress && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-xl font-bold text-blue-400">{userProgress.workouts || 0}</div>
-                <div className="text-xs text-slate-400">Total Workouts</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-green-400">{userProgress.streak || 0}</div>
-                <div className="text-xs text-slate-400">Day Streak</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-purple-400">{userProgress.xpPoints || 0}</div>
-                <div className="text-xs text-slate-400">XP Points</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-orange-400">
-                  {userProgress.weeklyGoal?.completed || 0}/{userProgress.weeklyGoal?.target || 4}
+
+          {/* Search and Filters Section */}
+          <div className="space-y-6 mb-8">
+            {/* Search and Filters */}
+            <div id="search-filters" className="space-y-4">
+              <div className="relative">
+                <input 
+                  value={searchQuery} 
+                  onChange={e => setSearchQuery(e.target.value)} 
+                  className="w-full p-4 pl-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                  placeholder="Search exercises by name, type, or muscle group..." 
+                />
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg">
+                  🔍
                 </div>
-                <div className="text-xs text-slate-400">Weekly Goal</div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <select 
+                  value={filters.category} 
+                  onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                
+                <select 
+                  value={filters.difficulty} 
+                  onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
+                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">All Difficulties</option>
+                  {difficulties.map(diff => (
+                    <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
+                  ))}
+                </select>
+                
+                <select 
+                  value={filters.muscle} 
+                  onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
+                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">All Muscles</option>
+                  {muscles.map(muscle => (
+                    <option key={muscle} value={muscle}>{muscle}</option>
+                  ))}
+                </select>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Search and Filters */}
-      <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
-        <div className="relative">
-          <input 
-            value={searchQuery} 
-            onChange={e => setSearchQuery(e.target.value)} 
-            className="w-full p-3 sm:p-4 pl-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base" 
-            placeholder="Search exercises by name, type, or muscle group..." 
-          />
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400">
-            🔍
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          <select 
-            value={filters.category} 
-            onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
-          >
-            <option value="">All Categories</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          
-          <select 
-            value={filters.difficulty} 
-            onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
-          >
-            <option value="">All Difficulties</option>
-            {difficulties.map(diff => (
-              <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
-            ))}
-          </select>
-          
-          <select 
-            value={filters.muscle} 
-            onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base sm:col-span-2 lg:col-span-1"
-          >
-            <option value="">All Muscles</option>
-            {muscles.map(muscle => (
-              <option key={muscle} value={muscle}>{muscle}</option>
-            ))}
-          </select>
-        </div>
-      </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="card text-center py-4">
-          <div className="text-2xl font-bold text-blue-400">{allExercises.length}</div>
-          <div className="text-sm text-slate-400">Total Exercises</div>
-        </div>
-        <div className="card text-center py-4">
-          <div className="text-2xl font-bold text-green-400">{categories.length}</div>
-          <div className="text-sm text-slate-400">Muscle Groups</div>
-        </div>
-        <div className="card text-center py-4">
-          <div className="text-2xl font-bold text-purple-400">{filteredExercises.length}</div>
-          <div className="text-sm text-slate-400">Filtered Results</div>
-        </div>
-        <div className="card text-center py-4">
-          <div className="text-2xl font-bold text-orange-400">
-            {allExercises.filter(ex => ex.hasProgress).length}
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="card text-center py-4 bg-blue-900/20 border border-blue-800/30">
+                <div className="text-2xl font-bold text-blue-400">{allExercises.length}</div>
+                <div className="text-sm text-slate-400">Total Exercises</div>
+              </div>
+              <div className="card text-center py-4 bg-green-900/20 border border-green-800/30">
+                <div className="text-2xl font-bold text-green-400">{categories.length}</div>
+                <div className="text-sm text-slate-400">Muscle Groups</div>
+              </div>
+              <div className="card text-center py-4 bg-purple-900/20 border border-purple-800/30">
+                <div className="text-2xl font-bold text-purple-400">{filteredExercises.length}</div>
+                <div className="text-sm text-slate-400">Filtered Results</div>
+              </div>
+              <div className="card text-center py-4 bg-orange-900/20 border border-orange-800/30">
+                <div className="text-2xl font-bold text-orange-400">
+                  {allExercises.filter(ex => ex.hasProgress).length}
+                </div>
+                <div className="text-sm text-slate-400">Exercises Done</div>
+              </div>
+            </div>
           </div>
-          <div className="text-sm text-slate-400">Exercises Done</div>
-        </div>
-      </div>
-      
-      {/* Results Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-slate-400 text-sm sm:text-base">
-          Showing {filteredExercises.length} of {allExercises.length} exercises
-        </div>
-        <button
-          onClick={() => {
-            setSearchQuery('');
-            setFilters({ category: '', difficulty: '', muscle: '' });
-          }}
-          className="btn-secondary text-sm"
-        >
-          Clear Filters
-        </button>
-      </div>
 
-      {/* Exercise Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {filteredExercises.length === 0 ? (
-          <div className="col-span-full text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <div className="text-xl font-semibold text-white mb-2">No exercises found</div>
-            <div className="text-slate-400 mb-6">Try adjusting your search or filters</div>
+          {/* Results Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+            <div className="text-slate-400 text-base">
+              Showing {filteredExercises.length} of {allExercises.length} exercises
+            </div>
             <button
               onClick={() => {
                 setSearchQuery('');
                 setFilters({ category: '', difficulty: '', muscle: '' });
               }}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white"
+              className="btn-secondary text-sm px-4 py-2"
             >
               Clear All Filters
             </button>
           </div>
-        ) : (
-          filteredExercises.map(exercise => (
-            <div key={exercise.id} className={`card hover:scale-105 transition-all duration-200 plan-card ${
-              exercise.hasProgress ? 'ring-2 ring-green-500/30' : ''
-            }`}>
-              <div className="flex items-start gap-3 mb-4">
-                <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0 relative`}>
-                  <span className="text-2xl">{exercise.icon}</span>
-                  {exercise.hasProgress && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-white">✓</span>
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-white text-base mb-1">{exercise.name}</div>
-                  <div className="text-sm text-slate-400">{exercise.category}</div>
-                  {exercise.hasProgress && (
-                    <div className="text-xs text-green-400 mt-1">
-                      {exercise.totalSessions} sessions • Best: {exercise.personalBest}kg
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Sets/Reps:</span>
-                  <span className="text-sm font-medium text-white">{exercise.sets}</span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Type:</span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    exercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
-                    exercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
-                    'bg-green-900/30 text-green-300'
-                  }`}>
-                    {exercise.type}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Difficulty:</span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                    exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                    'bg-red-900/30 text-red-300'
-                  }`}>
-                    {exercise.difficulty}
-                  </span>
-                </div>
-                
-                {exercise.hasProgress && (
-                  <div className="bg-slate-800/50 rounded p-2 space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-400">Last performed:</span>
-                      <span className="text-green-400">
-                        {exercise.lastPerformed ? 
-                          new Date(exercise.lastPerformed).toLocaleDateString() : 'Never'
-                        }
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-400">Total sets:</span>
-                      <span className="text-blue-400">{exercise.userStats.totalSets || 0}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedExercise(exercise)}
-                  className="btn-secondary w-full text-sm"
-                >
-                  {exercise.hasProgress ? '📊 View Progress' : 'View Details'}
-                </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleQuickPlan(exercise)}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-sm"
-                  >
-                    + New Plan
-                  </button>
-                  <button
-                    onClick={() => handleAddToExisting(exercise)}
-                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm"
-                  >
-                    + Add to Plan
-                  </button>
-                </div>
+
+          {/* Exercise Grid */}
+          <div id="exercise-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredExercises.length === 0 ? (
+              <div className="col-span-full text-center py-16">
+                <div className="text-6xl mb-4">🔍</div>
+                <div className="text-xl font-semibold text-white mb-2">No exercises found</div>
+                <div className="text-slate-400 mb-6">Try adjusting your search or filters</div>
                 <button
                   onClick={() => {
-                    console.log('💆 Start Workout button clicked for:', exercise.name);
-                    console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
-                    handleStartWorkout(exercise);
+                    setSearchQuery('');
+                    setFilters({ category: '', difficulty: '', muscle: '' });
                   }}
-                  className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full text-sm`}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
                 >
-                  🎯 {isOnline ? 'Start Workout' : 'Start Workout (Offline)'}
+                  Clear All Filters
                 </button>
               </div>
-            </div>
-          ))
-        )}
+            ) : (
+              filteredExercises.map(exercise => (
+                <div key={exercise.id} className={`card hover:scale-105 transition-all duration-300 plan-card ${
+                  exercise.hasProgress ? 'ring-2 ring-green-500/30' : 'hover:ring-2 hover:ring-blue-500/30'
+                }`}>
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0 relative`}>
+                      <span className="text-2xl">{exercise.icon}</span>
+                      {exercise.hasProgress && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-xs text-white">✓</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-white text-base mb-1 truncate">{exercise.name}</div>
+                      <div className="text-sm text-slate-400">{exercise.category}</div>
+                      {exercise.hasProgress && (
+                        <div className="text-xs text-green-400 mt-1">
+                          {exercise.totalSessions} sessions • Best: {exercise.personalBest}kg
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-300">Sets/Reps:</span>
+                      <span className="text-sm font-medium text-white">{exercise.sets}</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-300">Type:</span>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        exercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
+                        exercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
+                        'bg-green-900/30 text-green-300'
+                      }`}>
+                        {exercise.type}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-300">Difficulty:</span>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
+                        exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
+                        'bg-red-900/30 text-red-300'
+                      }`}>
+                        {exercise.difficulty}
+                      </span>
+                    </div>
+                    
+                    {exercise.hasProgress && (
+                      <div className="bg-slate-800/50 rounded p-2 space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-400">Last performed:</span>
+                          <span className="text-green-400">
+                            {exercise.lastPerformed ? 
+                              new Date(exercise.lastPerformed).toLocaleDateString() : 'Never'
+                            }
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-400">Total sets:</span>
+                          <span className="text-blue-400">{exercise.userStats.totalSets || 0}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setSelectedExercise(exercise)}
+                      className="btn-secondary w-full text-sm"
+                    >
+                      {exercise.hasProgress ? '📊 View Progress' : 'View Details'}
+                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleQuickPlan(exercise)}
+                        className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-sm"
+                      >
+                        + New Plan
+                      </button>
+                      <button
+                        onClick={() => handleAddToExisting(exercise)}
+                        className="btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm"
+                      >
+                        + Add to Plan
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => {
+                        console.log('💆 Start Workout button clicked for:', exercise.name);
+                        console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
+                        handleStartWorkout(exercise);
+                      }}
+                      className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full text-sm`}
+                    >
+                      🎯 {isOnline ? 'Start Workout' : 'Start Workout (Offline)'}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
       
       {/* Exercise Detail Modal */}
       {selectedExercise && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-md w-full" onClick={e => e.stopPropagation()}>
+          <div className="card max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
               <button

@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import foodDatabase from './foodDatabase.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -157,7 +158,30 @@ class NutritionService {
     const normalized = this.normalizeQuery(query);
     const results = [];
     
-    // Direct match first
+    // Try food database first
+    const dbResults = foodDatabase.searchFood(normalized);
+    if (dbResults.length > 0) {
+      for (const food of dbResults) {
+        results.push({
+          parsedName: food.name,
+          servingText: food.serving,
+          servingGrams: this.getServingGrams(food.serving),
+          calories: food.calories,
+          protein: food.protein,
+          carbs: food.carbs,
+          fat: food.fat,
+          fiber: food.fiber,
+          sugar: 0,
+          sodium: 0,
+          source: 'database',
+          multiplier: 1,
+          category: food.category
+        });
+      }
+      return results.slice(0, 3);
+    }
+    
+    // Fallback to original data
     if (this.fallbackData[normalized]) {
       results.push({
         ...this.fallbackData[normalized],
@@ -166,7 +190,7 @@ class NutritionService {
       });
     }
     
-    // Partial matches
+    // Partial matches in fallback data
     for (const [key, nutrition] of Object.entries(this.fallbackData)) {
       if (key !== normalized && (normalized.includes(key) || key.includes(normalized))) {
         results.push({
@@ -195,7 +219,21 @@ class NutritionService {
       });
     }
     
-    return results.slice(0, 3); // Return max 3 results
+    return results.slice(0, 3);
+  }
+
+  getServingGrams(servingText) {
+    const serving = servingText.toLowerCase();
+    if (serving.includes('100g')) return 100;
+    if (serving.includes('1 cup')) return 200;
+    if (serving.includes('1 large')) return 50;
+    if (serving.includes('1 medium')) return 150;
+    if (serving.includes('1 slice')) return 30;
+    if (serving.includes('1 piece')) return 40;
+    if (serving.includes('1 oz')) return 28;
+    if (serving.includes('2 tbsp')) return 30;
+    if (serving.includes('1 scoop')) return 30;
+    return 100;
   }
 
   scaleNutrition(nutrition, targetGrams) {

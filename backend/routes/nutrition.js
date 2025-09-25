@@ -1,8 +1,10 @@
 import express from 'express';
 import Meal from '../models/Meal.js';
 import User from '../models/User.js';
+import Food from '../models/Food.js';
 import auth from '../middleware/auth.js';
 import fetch from 'node-fetch';
+import foodDatabase from '../services/foodDatabase.js';
 
 const router = express.Router();
 
@@ -149,6 +151,158 @@ router.delete('/meals/:id', auth, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid meal ID format' });
     }
     
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get food categories with comprehensive database
+router.get('/food-categories', async (req, res) => {
+  try {
+    // Try MongoDB first, fallback to static database
+    let categories;
+    
+    try {
+      const [animalProteins, plantProteins, carbs, dairy, vegetables, fruits, nuts, snacks, beverages] = await Promise.all([
+        Food.getFoodsByCategory('animal_protein').limit(12),
+        Food.getFoodsByCategory('plant_protein').limit(10),
+        Food.getFoodsByCategory('carbohydrates').limit(14),
+        Food.getFoodsByCategory('dairy').limit(8),
+        Food.getFoodsByCategory('vegetables').limit(10),
+        Food.getFoodsByCategory('fruits').limit(10),
+        Food.getFoodsByCategory('nuts_seeds').limit(8),
+        Food.getFoodsByCategory('snacks').limit(8),
+        Food.getFoodsByCategory('beverages').limit(6)
+      ]);
+      
+      categories = {
+        animalProteins: {
+          icon: '🥩',
+          title: 'Animal Proteins',
+          foods: animalProteins
+        },
+        plantProteins: {
+          icon: '🌱',
+          title: 'Plant Proteins',
+          foods: plantProteins
+        },
+        dairy: {
+          icon: '🥛',
+          title: 'Dairy & Alternatives',
+          foods: dairy
+        },
+        vegetables: {
+          icon: '🥦',
+          title: 'Vegetables',
+          foods: vegetables
+        },
+        fruits: {
+          icon: '🍎',
+          title: 'Fruits',
+          foods: fruits
+        },
+        carbs: {
+          icon: '🍚',
+          title: 'Carbohydrates (Fuel Sources)',
+          foods: carbs
+        },
+        nuts: {
+          icon: '🥜',
+          title: 'Nuts & Seeds',
+          foods: nuts
+        },
+        snacks: {
+          icon: '🍫',
+          title: 'Snacks & Condiments',
+          foods: snacks
+        },
+        beverages: {
+          icon: '🥤',
+          title: 'Beverages',
+          foods: beverages
+        }
+      };
+    } catch (dbError) {
+      console.log('MongoDB unavailable, using static database:', dbError.message);
+      
+      // Fallback to static database
+      categories = {
+        animalProteins: {
+          icon: '🥩',
+          title: 'Animal Proteins',
+          foods: foodDatabase.getFoodsByCategory('animal_protein')
+        },
+        plantProteins: {
+          icon: '🌱',
+          title: 'Plant Proteins', 
+          foods: foodDatabase.getFoodsByCategory('plant_protein')
+        },
+        dairy: {
+          icon: '🥛',
+          title: 'Dairy & Alternatives',
+          foods: foodDatabase.getFoodsByCategory('dairy')
+        },
+        vegetables: {
+          icon: '🥦',
+          title: 'Vegetables',
+          foods: foodDatabase.getFoodsByCategory('vegetables')
+        },
+        fruits: {
+          icon: '🍎',
+          title: 'Fruits',
+          foods: foodDatabase.getFoodsByCategory('fruits')
+        },
+        carbs: {
+          icon: '🍚',
+          title: 'Carbohydrates (Fuel Sources)',
+          foods: foodDatabase.getFoodsByCategory('carbohydrates')
+        },
+        nuts: {
+          icon: '🥜',
+          title: 'Nuts & Seeds',
+          foods: foodDatabase.getFoodsByCategory('nuts_seeds')
+        },
+        snacks: {
+          icon: '🍫',
+          title: 'Snacks & Condiments',
+          foods: foodDatabase.getFoodsByCategory('snacks')
+        },
+        beverages: {
+          icon: '🥤',
+          title: 'Beverages',
+          foods: foodDatabase.getFoodsByCategory('beverages')
+        }
+      };
+    }
+    
+    res.json({ success: true, data: categories });
+  } catch (error) {
+    console.error('Food categories error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Search foods in database
+router.get('/foods/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) {
+      return res.status(400).json({ success: false, message: 'Search query required' });
+    }
+    
+    let results;
+    
+    try {
+      // Try MongoDB first
+      results = await Food.searchFoods(q, 10);
+    } catch (dbError) {
+      console.log('MongoDB search failed, using static database:', dbError.message);
+      // Fallback to static database
+      results = foodDatabase.searchFood(q);
+    }
+    
+    res.json({ success: true, data: results });
+  } catch (error) {
+    console.error('Food search error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

@@ -1,0 +1,210 @@
+/* ===== LIGHT MODE HEADER TEXT VISIBILITY FIX ===== */
+/* Comprehensive fix for Dashboard, My Plans, and Plan Builder header sections */
+
+/* ===== DASHBOARD HERO SECTION FIXES ===== */
+.light-theme .dashboard-hero h1,
+[data-theme="light"] .dashboard-hero h1,
+.light-theme [role="banner"] h1,
+[data-theme="light"] [role="banner"] h1 {
+  color: #ffffff !important;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 8px rgba(0, 0, 0, 0.8),
+    0 8px 16px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(0, 0, 0, 1) !important;
+  font-weight: 800 !important;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .dashboard-hero p,
+[data-theme="light"] .dashboard-hero p,
+.light-theme [role="banner"] p,
+[data-theme="light"] [role="banner"] p {
+  color: #ffffff !important;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 8px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(0, 0, 0, 0.8) !important;
+  font-weight: 600 !important;
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard Hero gradient overlay enhancement for light mode */
+.light-theme .dashboard-hero .bg-gradient-to-b,
+[data-theme="light"] .dashboard-hero .bg-gradient-to-b {
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(0, 0, 0, 0.6) 50%, 
+    rgba(0, 0, 0, 0.8) 100%) !important;
+}
+
+/* ===== MY PLANS HEADER FIXES ===== */
+.light-theme .workout-builder-section h2,
+[data-theme="light"] .workout-builder-section h2,
+.light-theme .workout-builder-section h1,
+[data-theme="light"] .workout-builder-section h1 {
+  color: #020617 !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+.light-theme .workout-builder-section .heading-text,
+[data-theme="light"] .workout-builder-section .heading-text {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .workout-builder-section .muted-text,
+[data-theme="light"] .workout-builder-section .muted-text {
+  color: #475569 !important;
+}
+
+/* ===== PLAN BUILDER HEADER FIXES ===== */
+.light-theme .workout-builder-header h1,
+[data-theme="light"] .workout-builder-header h1 {
+  color: #ffffff !important;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 8px rgba(0, 0, 0, 0.8),
+    0 8px 16px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(0, 0, 0, 1) !important;
+  font-weight: 800 !important;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .workout-builder-header p,
+[data-theme="light"] .workout-builder-header p {
+  color: #ffffff !important;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 8px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(0, 0, 0, 0.8) !important;
+  font-weight: 600 !important;
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* Plan Builder gradient overlay enhancement for light mode */
+.light-theme .workout-builder-header .gradient-overlay,
+[data-theme="light"] .workout-builder-header .gradient-overlay {
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.5) 0%, 
+    rgba(0, 0, 0, 0.8) 100%) !important;
+}
+
+/* ===== HERO SECTION BADGE FIXES ===== */
+.light-theme .workout-builder-header .bg-blue-500\\/20,
+[data-theme="light"] .workout-builder-header .bg-blue-500\\/20,
+.light-theme .dashboard-hero .bg-white\\/10,
+[data-theme="light"] .dashboard-hero .bg-white\\/10 {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.light-theme .workout-builder-header .text-blue-200,
+[data-theme="light"] .workout-builder-header .text-blue-200,
+.light-theme .dashboard-hero .text-white\\/80,
+[data-theme="light"] .dashboard-hero .text-white\\/80 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: 600 !important;
+}
+
+/* ===== BUTTON FIXES IN HERO SECTIONS ===== */
+.light-theme .workout-builder-header .premium-btn,
+[data-theme="light"] .workout-builder-header .premium-btn {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .workout-builder-header .premium-btn.primary,
+[data-theme="light"] .workout-builder-header .premium-btn.primary {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.light-theme .workout-builder-header .premium-btn.secondary,
+[data-theme="light"] .workout-builder-header .premium-btn.secondary {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ===== PARTICLE EFFECTS VISIBILITY ===== */
+.light-theme .dashboard-hero .particle,
+[data-theme="light"] .dashboard-hero .particle,
+.light-theme .workout-builder-header .particle,
+[data-theme="light"] .workout-builder-header .particle {
+  background: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ===== MOTION ELEMENTS ===== */
+.light-theme .dashboard-hero .w-2.h-2.bg-white\\/20,
+[data-theme="light"] .dashboard-hero .w-2.h-2.bg-white\\/20 {
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ===== STATUS INDICATORS ===== */
+.light-theme .dashboard-hero .bg-green-400,
+[data-theme="light"] .dashboard-hero .bg-green-400,
+.light-theme .workout-builder-header .bg-green-400,
+[data-theme="light"] .workout-builder-header .bg-green-400 {
+  background: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 640px) {
+  .light-theme .dashboard-hero h1,
+  [data-theme="light"] .dashboard-hero h1,
+  .light-theme .workout-builder-header h1,
+  [data-theme="light"] .workout-builder-header h1 {
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.95),
+      0 4px 8px rgba(0, 0, 0, 0.85),
+      0 1px 0 rgba(0, 0, 0, 1) !important;
+    -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.4);
+  }
+  
+  .light-theme .dashboard-hero p,
+  [data-theme="light"] .dashboard-hero p,
+  .light-theme .workout-builder-header p,
+  [data-theme="light"] .workout-builder-header p {
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.95),
+      0 1px 0 rgba(0, 0, 0, 0.9) !important;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+@media (prefers-contrast: high) {
+  .light-theme .dashboard-hero h1,
+  [data-theme="light"] .dashboard-hero h1,
+  .light-theme .workout-builder-header h1,
+  [data-theme="light"] .workout-builder-header h1 {
+    -webkit-text-stroke: 2px rgba(0, 0, 0, 0.8) !important;
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 1),
+      0 4px 8px rgba(0, 0, 0, 0.9),
+      0 8px 16px rgba(0, 0, 0, 0.8) !important;
+  }
+}
+
+/* ===== FALLBACK FOR OLDER BROWSERS ===== */
+@supports not (-webkit-text-stroke: 1px rgba(0, 0, 0, 0.3)) {
+  .light-theme .dashboard-hero h1,
+  [data-theme="light"] .dashboard-hero h1,
+  .light-theme .workout-builder-header h1,
+  [data-theme="light"] .workout-builder-header h1 {
+    text-shadow: 
+      0 0 2px rgba(0, 0, 0, 1),
+      0 2px 4px rgba(0, 0, 0, 0.9),
+      0 4px 8px rgba(0, 0, 0, 0.8),
+      0 8px 16px rgba(0, 0, 0, 0.7) !important;
+  }
+}

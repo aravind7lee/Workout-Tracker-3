@@ -18,9 +18,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Hero Section - Full Width at Top */}
+      <Hero />
+      
       <div className="container mx-auto px-4 py-8">
-        {/* Hero Section with Image */}
-        <Hero />
 
         {/* Features */}
         <div className="features grid md:grid-cols-3 gap-8 mb-16">

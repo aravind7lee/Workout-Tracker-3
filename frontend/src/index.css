@@ -1,10 +1,17 @@
 @import './styles/themes.css';
+@import './styles/dark-mode-premium.css';
+@import './styles/nutrition-theme-complete.css';
 @import './styles/light-mode-fix.css';
 @import './styles/light-mode-global-fix.css';
 @import './styles/light-mode-complete-fix.css';
 @import './styles/light-mode-final-override.css';
 @import './styles/hero-nutrition-light-fix.css';
 @import './styles/hero-styles.css';
+@import './styles/nutrition-hero.css';
+@import './styles/light-mode-workout-builder-fix.css';
+@import './styles/global-light-mode-text-fix.css';
+@import './styles/my-plans-hero.css';
+@import './styles/light-mode-header-fix.css';
 
 @tailwind base;
 @tailwind components;
@@ -52,15 +59,30 @@ body {
   }
 }
 
-/* Mobile-first card component */
+/* Mobile-first card component with enhanced dark mode */
 .card {
   background: var(--bg-soft);
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: var(--shadow-soft);
-  border: 2px solid var(--panel-border);
-  padding: 1rem;
+  border: 1px solid var(--panel-border);
+  padding: 1.5rem;
   color: var(--text);
   transition: all 300ms ease;
+  backdrop-filter: blur(12px);
+}
+
+/* Dark mode card enhancements */
+.dark .card {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(71, 85, 105, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Light mode card */
+.light-theme .card {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 @media (min-width: 640px) {
@@ -75,16 +97,22 @@ body {
   transform: translateY(-2px);
 }
 
-/* Dark mode card hover */
-:root .card:hover {
-  box-shadow: 0 8px 30px rgba(0,212,255,0.2);
+/* Enhanced dark mode hover */
+.dark .card:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #00d4ff;
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
-/* Light mode card hover */
-.light-theme .card:hover,
-[data-theme="light"] .card:hover {
-  box-shadow: 0 8px 30px rgba(0,123,255,0.15);
+/* Light mode hover */
+.light-theme .card:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #1d4ed8;
+  box-shadow: 0 8px 30px rgba(29, 78, 216, 0.15);
 }
+
+
 
 .neon {
   box-shadow: 0 0 15px var(--accent), 0 4px 20px rgba(0,212,255,0.3);
@@ -732,6 +760,28 @@ body {
 @keyframes shimmer {
   0%, 100% { background-position: 200% 0; }
   50% { background-position: -200% 0; }
+}
+
+/* Dashboard Hero Shimmer Animation */
+@keyframes shimmerEffect {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmerEffect 2s infinite;
 }
 
 .active-tab-indicator {

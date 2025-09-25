@@ -19,6 +19,7 @@ import StartWorkout from './pages/StartWorkout';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 import ChromeErrorBoundary from './components/ChromeErrorBoundary';
+import ThemeErrorBoundary from './components/ThemeErrorBoundary';
 import DemoBanner from './components/DemoBanner';
 import DemoFloatingControls from './components/DemoFloatingControls';
 import DemoFeatureTracker from './components/DemoFeatureTracker';
@@ -351,7 +352,8 @@ export default function App() {
   return (
     <ChromeErrorBoundary>
       <ErrorBoundary>
-        <ThemeProvider>
+        <ThemeErrorBoundary>
+          <ThemeProvider>
           <DemoProvider>
             <div className="min-h-screen">
               <Navbar />
@@ -383,7 +385,8 @@ export default function App() {
               </main>
             </div>
           </DemoProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </ThemeErrorBoundary>
       </ErrorBoundary>
     </ChromeErrorBoundary>
   );

@@ -1,16 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const ThemeContext = createContext();
+// Create the theme context
+const ThemeContext = createContext(null);
 
-export const useTheme = () => {
+// Custom hook to use theme
+export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
-};
+}
 
-export const ThemeProvider = ({ children }) => {
+// Theme provider component
+export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
@@ -22,8 +25,14 @@ export const ThemeProvider = ({ children }) => {
   }, []);
 
   const applyTheme = (newTheme) => {
-    // Apply theme to document body
-    document.body.className = newTheme === 'light' ? 'light-theme' : 'dark-theme';
+    // Apply theme using Tailwind's dark class system
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.body.className = 'dark-theme';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.className = 'light-theme';
+    }
     document.documentElement.setAttribute('data-theme', newTheme);
   };
 
@@ -43,9 +52,16 @@ export const ThemeProvider = ({ children }) => {
     }, 230);
   };
 
+  const contextValue = {
+    theme,
+    toggleTheme
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
-};
+}
+
+export default ThemeProvider;
