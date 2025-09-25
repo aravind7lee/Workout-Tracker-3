@@ -221,6 +221,12 @@ function AnalyticsHero() {
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const analyticsSection = document.getElementById('analytics-charts');
+                if (analyticsSection) {
+                  analyticsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className={`px-8 py-4 rounded-xl font-semibold text-white shadow-2xl transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
@@ -236,6 +242,12 @@ function AnalyticsHero() {
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const statsSection = document.getElementById('real-time-stats');
+                if (statsSection) {
+                  statsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className={`px-8 py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-sm ${
                 theme === 'dark'
                   ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
@@ -607,10 +619,12 @@ export default function Analytics() {
       </div>
       
       {/* Real-Time Stats Overview */}
-      <RealTimeStats />
+      <div id="real-time-stats">
+        <RealTimeStats />
+      </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div id="analytics-charts" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div className="card">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Calories</h3>
           <div className="h-48 sm:h-64">

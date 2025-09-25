@@ -761,13 +761,7 @@ export default function LibrarySimple() {
         </div>
       </div>
       
-      {/* Preload next critical images */}
-      <div className="hero-image-preload">
-        <img src={LibraryHeaderImg} alt="" aria-hidden="true" />
-      </div>
-      
-      {/* Preload link for main breakpoint */}
-      <link rel="preload" as="image" href={LibraryHeaderImg} fetchPriority="high" />
+
     </div>
   );
 }

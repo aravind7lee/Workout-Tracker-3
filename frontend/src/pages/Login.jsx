@@ -36,17 +36,28 @@ const Login = () => {
       return;
     }
 
+    console.log('🔐 Login attempt:', {
+      email: formData.email,
+      hasPassword: !!formData.password,
+      backendStatus
+    });
+
     try {
       const result = await loginUser({
         email: formData.email,
         password: formData.password
       });
       
+      console.log('✅ Login successful, navigating to dashboard');
       login(result.user, result.token);
       navigate('/dashboard');
       
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error details:', {
+        message: err.message,
+        stack: err.stack,
+        name: err.name
+      });
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);

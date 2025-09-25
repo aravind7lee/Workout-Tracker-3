@@ -51,11 +51,16 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
+  console.log('🔐 Attempting login for:', credentials.email);
+  console.log('🌐 API Base URL:', api.defaults.baseURL);
+  
   try {
     const response = await api.post('/auth/login', {
       email: credentials.email.toLowerCase().trim(),
       password: credentials.password
     });
+    
+    console.log('✅ Login successful:', response.data.user?.email);
     
     return {
       success: true,
@@ -65,8 +70,16 @@ export const loginUser = async (credentials) => {
     };
     
   } catch (error) {
+    console.error('❌ Login error details:', {
+      status: error.response?.status,
+      message: error.response?.data?.message,
+      code: error.code,
+      url: error.config?.url
+    });
+    
     // If backend is down, try offline login
     if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
+      console.log('🔄 Trying offline login...');
       const offlineResult = tryOfflineLogin(credentials);
       if (offlineResult) return offlineResult;
     }
@@ -77,6 +90,7 @@ export const loginUser = async (credentials) => {
     }
     
     // Try offline as last resort
+    console.log('🔄 Trying offline login as fallback...');
     const offlineResult = tryOfflineLogin(credentials);
     if (offlineResult) return offlineResult;
     

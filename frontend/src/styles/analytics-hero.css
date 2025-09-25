@@ -242,8 +242,3 @@
   transform: translateZ(0);
 }
 
-/* Critical resource hints */
-.analytics-hero-preload {
-  content-visibility: auto;
-  contain-intrinsic-size: 1440px 480px;
-}

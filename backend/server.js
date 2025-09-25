@@ -27,9 +27,14 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://grindx-workout-tracker.onrender.com'
+    'https://grindx-workout-tracker.onrender.com',
+    'https://workout-tracker-frontend.onrender.com',
+    'https://gymtracker-app.onrender.com',
+    /\.onrender\.com$/
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json({ limit: '10mb' }));

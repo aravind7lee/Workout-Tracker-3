@@ -3,22 +3,30 @@ import axios from 'axios';
 
 // Determine the correct API base URL
 const getApiBaseUrl = () => {
+  // Use environment variable if available
+  if (import.meta.env.VITE_API_BASE) {
+    return import.meta.env.VITE_API_BASE;
+  }
+  
   // In development, prefer local backend if available
   if (import.meta.env.DEV) {
     return 'http://localhost:5000/api';
   }
+  
   // In production, use the deployed backend
   return 'https://workout-tracker-backend-wga7.onrender.com/api';
 };
 
 const api = axios.create({
   baseURL: getApiBaseUrl(),
-  timeout: 5000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
   validateStatus: (status) => status < 500,
 });
+
+console.log('🔗 API Base URL:', getApiBaseUrl());
 
 // Request interceptor
 api.interceptors.request.use(

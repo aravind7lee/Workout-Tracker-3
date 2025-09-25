@@ -860,6 +860,7 @@ body {
   background: rgba(71, 85, 105, 0.4);
   transform: scale(1.02);
 }
+
 /* ===== MOBILE NAVBAR ENHANCEMENTS ===== */
 
 /* Ensure mobile sidebar doesn't interfere with page content */
@@ -906,7 +907,6 @@ body {
     min-height: 44px;
   }
   
-  /* Backdrop blur optimization for mobile */
   .mobile-backdrop {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -1017,7 +1017,6 @@ body {
   }
 }
 
-/* Performance optimizations for mobile */
 @media (max-width: 768px) {
   .mobile-sidebar * {
     will-change: auto;
@@ -1060,7 +1059,6 @@ body {
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
 }
 
-/* Hero image optimization */
 .hero-image-container {
   aspect-ratio: 16/9;
   position: relative;
@@ -1079,8 +1077,7 @@ body {
   }
 }
 
-/* Preload optimization */
-.hero-image-preload {
+.image-preloader {
   position: absolute;
   top: -9999px;
   left: -9999px;
@@ -1119,6 +1116,7 @@ body {
 .text-sequence-delay-2 {
   transition-delay: 140ms;
 }
+
 /* Theme-aware hero overlays for WCAG compliance */
 .hero-overlay-light {
   background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.40));
@@ -1134,7 +1132,6 @@ body {
   color: #ffffff;
 }
 
-/* CTA button optimizations for mobile */
 .cta-button {
   position: relative;
   overflow: hidden;
@@ -1157,7 +1154,6 @@ body {
   left: 100%;
 }
 
-/* Performance optimizations */
 .hero-image-container {
   contain: layout style paint;
   will-change: transform;
@@ -1184,6 +1180,7 @@ body {
     animation-duration: 0.01ms !important;
   }
 }
+
 /* Full Viewport Hero Section for Professional Gym Experience */
 .hero-image-container {
   height: 100vh;
@@ -1278,6 +1275,7 @@ body {
     min-height: 800px; /* Minimum height for very wide screens */
   }
 }
+
 /* Mobile-specific image positioning for proper subject display */
 @media (max-width: 640px) {
   .hero-image-container img {
