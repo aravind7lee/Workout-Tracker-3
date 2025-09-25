@@ -82,29 +82,16 @@ export default function Library() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   
-  // Load header image
+  // LQIP for Library
+  const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+
+  // Load header image with optimization
   useEffect(() => {
-    console.log('🖼️ Attempting to load image:', LibraryHeaderImg);
     const img = new Image();
-    img.onload = () => {
-      setImageLoaded(true);
-      console.log('✅ Library header image loaded successfully');
-    };
-    img.onerror = (e) => {
-      setImageError(true);
-      console.error('❌ Failed to load library header image:', LibraryHeaderImg, e);
-    };
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
     img.src = LibraryHeaderImg;
-    
-    // Fallback: set loaded to true after 2 seconds regardless
-    const fallbackTimer = setTimeout(() => {
-      if (!imageLoaded && !imageError) {
-        console.log('⏰ Image loading timeout, showing anyway');
-        setImageLoaded(true);
-      }
-    }, 2000);
-    
-    return () => clearTimeout(fallbackTimer);
+    img.loading = 'eager';
   }, []);
   
   // Real-time data fetching with sync service
@@ -413,19 +400,23 @@ export default function Library() {
           </motion.div>
         ) : (
           <>
+            {/* LQIP Placeholder */}
+            <img
+              src={LIBRARY_LQIP}
+              alt=""
+              className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+              style={{ opacity: imageLoaded ? 0 : 1 }}
+            />
+            
+            {/* Main Image */}
             <img
               src={LibraryHeaderImg}
               alt="Exercise Library header – gym workout background"
-              className="w-full h-full object-cover object-center"
-              loading="lazy"
-              onLoad={() => {
-                setImageLoaded(true);
-                console.log('🖼️ Library header image loaded successfully');
-              }}
-              onError={() => {
-                setImageError(true);
-                console.error('🚫 Library header image failed to load');
-              }}
+              className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              style={{ opacity: imageLoaded ? 1 : 0 }}
             />
             {/* Premium gradient overlay for optimal text contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />

@@ -9,31 +9,45 @@ export default function WorkoutPlanBuilderHeader() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  // LQIP for Plan Builder
+  const PLAN_BUILDER_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+
   useEffect(() => {
-    preloadImage(PlanBuilderHeaderImg)
-      .then(() => setImageLoaded(true))
-      .catch(() => setImageError(true));
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = PlanBuilderHeaderImg;
+    img.loading = 'eager';
   }, []);
 
   return (
     <section className="workout-builder-header relative min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] overflow-hidden rounded-2xl mb-8" role="banner" aria-label="Workout Plan Builder Section">
       {/* Background Image */}
       <div className="absolute inset-0">
-        {!imageLoaded && !imageError && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse flex items-center justify-center">
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Loading image...</div>
-            </div>
-          </div>
-        )}
-        {(imageLoaded || imageError) && (
+        {/* LQIP Placeholder */}
+        <img
+          src={PLAN_BUILDER_LQIP}
+          alt=""
+          className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+          style={{ opacity: imageLoaded ? 0 : 1 }}
+        />
+        
+        {/* Main Image */}
+        {!imageError && (
           <img
             src={PlanBuilderHeaderImg}
             alt="Workout plans header – athlete training background"
-            className="w-full h-full object-cover object-center"
-            loading="lazy"
+            className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            style={{ opacity: imageLoaded ? 1 : 0 }}
           />
+        )}
+        
+        {/* Fallback */}
+        {imageError && (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 absolute inset-0"></div>
         )}
         {/* Gradient Overlay - Subtle vertical gradient */}
         <div className="gradient-overlay absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 light-theme:from-black/30 light-theme:to-black/70"></div>
@@ -53,13 +67,13 @@ export default function WorkoutPlanBuilderHeader() {
         </div>
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
-        {(imageLoaded || imageError) && (
+      {/* Content Container - Only show after image loads */}
+      {imageLoaded && (
+        <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="flex flex-col items-center"
           >
             {/* Professional Badge */}
@@ -99,8 +113,8 @@ export default function WorkoutPlanBuilderHeader() {
 
 
           </motion.div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Subtle Curve Decoration */}
       <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>

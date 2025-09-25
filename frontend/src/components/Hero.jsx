@@ -70,14 +70,16 @@ export default function Hero() {
     return num.toString();
   };
 
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
+  // LQIP for Home hero
+  const HOME_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
 
-  const handleImageError = () => {
-    setImageError(true);
-    setImageLoaded(true);
-  };
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = '/Heroimg.jpg';
+    img.loading = 'eager';
+  }, []);
 
   // Animation variants
   const containerVariants = {
@@ -113,18 +115,30 @@ export default function Hero() {
 
         {/* Background Image */}
         <div className="absolute inset-0">
-          {!imageError ? (
+          {/* LQIP Placeholder */}
+          <img
+            src={HOME_LQIP}
+            alt=""
+            className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+            style={{ opacity: imageLoaded ? 0 : 1 }}
+          />
+          
+          {/* Main Image */}
+          {!imageError && (
             <img 
               src="/Heroimg.jpg" 
               alt="Welcome to GymTracker - Professional Fitness Tracking" 
-              className="w-full h-full object-cover object-center"
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              loading="lazy"
-              style={{ display: imageLoaded ? 'block' : 'none' }}
+              className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              style={{ opacity: imageLoaded ? 1 : 0 }}
             />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
+          )}
+          
+          {/* Fallback */}
+          {imageError && (
+            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 absolute inset-0"></div>
           )}
           
           {/* Gradient Overlay - Lighter for better image visibility */}

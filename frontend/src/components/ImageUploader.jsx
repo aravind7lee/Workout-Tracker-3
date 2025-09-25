@@ -132,7 +132,7 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
         
         <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <div className="text-white text-center">
-            <div className="text-2xl mb-1">📷</div>
+            <div className="text-2xl mb-1" style={{display: 'none'}}>📷</div>
             <div className="text-xs">Change Photo</div>
           </div>
         </div>

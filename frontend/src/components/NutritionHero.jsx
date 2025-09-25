@@ -6,16 +6,27 @@ import SkeletonLoader from './SkeletonLoader';
 import nutritionHeaderImg from '../assets/Nutritionheader.jpg';
 import '../styles/nutrition-hero.css';
 
+// LQIP base64 placeholder (tiny blurred version)
+const LQIP_PLACEHOLDER = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+
 export default function NutritionHero() {
   const { theme } = useTheme();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
+    // Preload image immediately
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
+    img.onload = () => {
+      setImageLoaded(true);
+      // Small delay for smooth transition
+      setTimeout(() => setImageError(false), 50);
+    };
     img.onerror = () => setImageError(true);
     img.src = nutritionHeaderImg;
+    
+    // Start loading immediately
+    img.loading = 'eager';
   }, []);
 
   // Lighter overlay to show image more clearly
@@ -34,23 +45,27 @@ export default function NutritionHero() {
     >
       {/* Background Image */}
       <div className="absolute inset-0">
-        {!imageLoaded && !imageError && (
-          <SkeletonLoader className="w-full h-full rounded-2xl" />
-        )}
+        {/* LQIP Placeholder */}
+        <img
+          src={LQIP_PLACEHOLDER}
+          alt=""
+          className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+          style={{ opacity: imageLoaded ? 0 : 1 }}
+        />
         
-        {imageLoaded && (
-          <motion.img
-            src={nutritionHeaderImg}
-            alt="Professional nutrition tracking and meal planning - healthy foods and fitness lifestyle"
-            className="nutrition-hero-image w-full h-full object-cover object-center"
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            loading="eager"
-            decoding="async"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-          />
-        )}
+        {/* Main Image */}
+        <motion.img
+          src={nutritionHeaderImg}
+          alt="Professional nutrition tracking and meal planning - healthy foods and fitness lifestyle"
+          className="nutrition-hero-image w-full h-full object-cover absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: imageLoaded ? 1 : 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          sizes="(max-width: 640px) 100vw, 100vw"
+        />
         
         {imageError && (
           <div className="w-full h-full bg-gradient-to-br from-green-600 via-blue-600 to-purple-600 flex items-center justify-center">
@@ -59,10 +74,12 @@ export default function NutritionHero() {
         )}
       </div>
 
-      {/* Nutrition-themed Particle Background */}
-      <div className="absolute inset-0 opacity-40">
-        <NutritionParticles />
-      </div>
+      {/* Nutrition-themed Particle Background - Defer until image loads */}
+      {imageLoaded && (
+        <div className="absolute inset-0 opacity-40">
+          <NutritionParticles />
+        </div>
+      )}
 
       {/* Dark Overlay for Text Contrast */}
       <div className={`absolute inset-0 ${overlayClasses}`} />
@@ -116,7 +133,10 @@ export default function NutritionHero() {
               onClick={() => {
                 const progressSection = document.querySelector('[data-progress-section]');
                 if (progressSection) {
-                  progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  progressSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                  // Fallback: scroll to the main content area
+                  window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }
               }}
               className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 hover:border-white/50 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4 focus:ring-white/30"

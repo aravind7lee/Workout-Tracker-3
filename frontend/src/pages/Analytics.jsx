@@ -25,6 +25,9 @@ try {
 
 Chart.register(...registerables);
 
+// LQIP placeholder for Analytics
+const ANALYTICS_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+
 // Analytics Hero Component
 function AnalyticsHero() {
   const { theme } = useTheme();
@@ -32,8 +35,16 @@ function AnalyticsHero() {
 
   useEffect(() => {
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
+    img.onload = () => {
+      // Small delay to ensure image is fully rendered
+      setTimeout(() => setImageLoaded(true), 100);
+    };
+    img.onerror = () => {
+      console.warn('Analytics hero image failed to load');
+      setImageLoaded(true); // Show content even if image fails
+    };
     img.src = progressAnalyticsImg;
+    img.loading = 'eager';
   }, []);
 
   const overlayClass = theme === 'dark' 
@@ -49,54 +60,62 @@ function AnalyticsHero() {
     >
       {/* Background */}
       <div className="absolute inset-0">
-        {!imageLoaded && (
-          <div className="w-full h-full bg-slate-800 animate-pulse" />
-        )}
-        {imageLoaded && (
-          <img
-            src={progressAnalyticsImg}
-            alt="Progress & Analytics - Professional fitness tracking and data visualization"
-            className="w-full h-full object-cover object-center"
-            loading="lazy"
-            style={{ objectPosition: 'center top' }}
-          />
-        )}
+        {/* LQIP Placeholder */}
+        <img
+          src={ANALYTICS_LQIP}
+          alt=""
+          className="w-full h-full object-cover blur-sm transition-opacity duration-300"
+          style={{ opacity: imageLoaded ? 0 : 1 }}
+        />
+        
+        {/* Main Image */}
+        <img
+          src={progressAnalyticsImg}
+          alt="Progress & Analytics - Professional fitness tracking and data visualization"
+          className="w-full h-full object-cover absolute inset-0 transition-opacity duration-300"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          style={{ objectPosition: 'center top', opacity: imageLoaded ? 1 : 0 }}
+        />
       </div>
       
-      {/* Particles */}
-      <div className="hidden md:block absolute inset-0 opacity-30">
-        {Array.from({ length: 6 }, (_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-400/40 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Particles - Defer until image loads */}
+      {imageLoaded && (
+        <div className="hidden md:block absolute inset-0 opacity-30">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-blue-400/40 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
       
       {/* Overlay */}
       <div className={`absolute inset-0 ${overlayClass}`} />
       
-      {/* Content */}
+      {/* Content - Only show after image loads */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center px-4">
           <motion.h1 
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 drop-shadow-lg"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: imageLoaded ? 1 : 0, y: imageLoaded ? 0 : 20 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: imageLoaded ? 0.2 : 0 }}
           >
             Progress & Analytics
           </motion.h1>
           <motion.p 
             className="text-sm sm:text-base md:text-lg text-white/95 drop-shadow-md"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: imageLoaded ? 1 : 0, y: imageLoaded ? 0 : 15 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: imageLoaded ? 0.4 : 0 }}
           >
             Track your fitness journey with real-time insights
           </motion.p>

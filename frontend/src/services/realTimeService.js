@@ -1,209 +1,312 @@
-// frontend/src/services/realTimeService.js - ZERO API CALLS VERSION
+// Real-Time Service for Progress & Analytics
+import api from '../utils/api';
+
 class RealTimeService {
   constructor() {
-    this.subscribers = new Map();
+    this.isActive = false;
     this.updateInterval = null;
-    this.isOfflineMode = true; // Force offline mode
+    this.eventListeners = new Map();
   }
 
-  // Subscribe to updates
-  subscribe(dataType, callback) {
-    if (!this.subscribers.has(dataType)) {
-      this.subscribers.set(dataType, new Set());
-    }
-    this.subscribers.get(dataType).add(callback);
+  // Start real-time tracking
+  startRealTimeTracking() {
+    if (this.isActive) return;
     
-    return () => {
-      const callbacks = this.subscribers.get(dataType);
-      if (callbacks) {
-        callbacks.delete(callback);
-        if (callbacks.size === 0) {
-          this.subscribers.delete(dataType);
-        }
-      }
-    };
+    this.isActive = true;
+    console.log('🔴 Real-time tracking started');
+    
+    // Set up event listeners for instant updates
+    this.setupEventListeners();
+    
+    // Periodic sync every 10 seconds
+    this.updateInterval = setInterval(() => {
+      this.syncAnalytics();
+    }, 10000);
   }
 
-  // Notify subscribers
-  notifySubscribers(dataType, data) {
-    const callbacks = this.subscribers.get(dataType);
-    if (callbacks) {
-      callbacks.forEach(callback => {
-        try {
-          callback(data);
-        } catch (error) {
-          // Silent
-        }
-      });
-    }
-  }
-
-  // Start updates
-  startRealTimeUpdates(interval = 30000) {
+  // Stop real-time tracking
+  stopRealTimeTracking() {
+    if (!this.isActive) return;
+    
+    this.isActive = false;
+    
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
+      this.updateInterval = null;
     }
     
-    this.updateInterval = setInterval(() => {
-      const dashboardData = this.getDashboardData();
-      this.notifySubscribers('dashboard', dashboardData);
-    }, interval);
+    this.removeEventListeners();
+    console.log('⏹️ Real-time tracking stopped');
+  }
+
+  // Setup event listeners for instant updates
+  setupEventListeners() {
+    // Listen for workout completion
+    const workoutHandler = (event) => {
+      this.trackEvent('workout_completed', event.detail);
+    };
     
-    return () => {
-      if (this.updateInterval) {
-        clearInterval(this.updateInterval);
-        this.updateInterval = null;
-      }
+    // Listen for meal logging
+    const mealHandler = (event) => {
+      this.trackEvent('meal_logged', event.detail);
     };
-  }
-
-  // OFFLINE ONLY - NO API CALLS
-  getDashboardData() {
-    return {
-      totalWorkouts: this.getLocalWorkoutCount(),
-      completedToday: 0,
-      completedThisWeek: this.getLocalWeeklyCount(),
-      xpPoints: this.getLocalXP(),
-      currentStreak: this.getLocalStreak(),
-      totalPlans: this.getLocalPlanCount(),
-      lastActive: new Date().toISOString()
+    
+    // Listen for plan creation
+    const planHandler = (event) => {
+      this.trackEvent('plan_created', event.detail);
     };
+    
+    window.addEventListener('workoutCompleted', workoutHandler);
+    window.addEventListener('mealLogged', mealHandler);
+    window.addEventListener('planCreated', planHandler);
+    
+    // Store handlers for cleanup
+    this.eventListeners.set('workoutCompleted', workoutHandler);
+    this.eventListeners.set('mealLogged', mealHandler);
+    this.eventListeners.set('planCreated', planHandler);
   }
 
-  getWorkouts() {
-    return this.getLocalWorkouts();
-  }
-
-  getExercises() {
-    return [];
-  }
-
-  getNutritionData() {
-    return { meals: [], totalCalories: 0, totalProtein: 0 };
-  }
-
-  getAnalytics() {
-    return { 
-      achievements: this.getLocalAchievements(), 
-      stats: this.getLocalStats() 
-    };
-  }
-
-  // Local storage helpers
-  getLocalWorkoutCount() {
-    try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-      return workouts.length;
-    } catch {
-      return 0;
-    }
-  }
-
-  getLocalWeeklyCount() {
-    try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      return workouts.filter(w => new Date(w.completedAt) > oneWeekAgo).length;
-    } catch {
-      return 0;
-    }
-  }
-
-  getLocalXP() {
-    try {
-      return parseInt(localStorage.getItem('userXP') || '0');
-    } catch {
-      return 0;
-    }
-  }
-
-  getLocalStreak() {
-    try {
-      return parseInt(localStorage.getItem('workoutStreak') || '0');
-    } catch {
-      return 0;
-    }
-  }
-
-  getLocalPlanCount() {
-    try {
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-      return plans.length;
-    } catch {
-      return 0;
-    }
-  }
-
-  getLocalWorkouts() {
-    try {
-      return JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-    } catch {
-      return [];
-    }
-  }
-
-  getLocalAchievements() {
-    try {
-      return JSON.parse(localStorage.getItem('achievements') || '[]');
-    } catch {
-      return [];
-    }
-  }
-
-  getLocalStats() {
-    return {
-      workouts: this.getLocalWorkoutCount(),
-      plans: this.getLocalPlanCount(),
-      xp: this.getLocalXP(),
-      streak: this.getLocalStreak()
-    };
-  }
-
-  // All methods return promises for compatibility - NO API CALLS
-  updateProfile(profileData) {
-    return Promise.resolve({ success: true, user: profileData });
-  }
-
-  trackWorkout(workoutData) {
-    const workouts = this.getLocalWorkouts();
-    workouts.push({ ...workoutData, id: Date.now(), completedAt: new Date().toISOString() });
-    localStorage.setItem('completedWorkouts', JSON.stringify(workouts));
-    return Promise.resolve(workoutData);
-  }
-
-  trackMeal(mealData) {
-    return Promise.resolve(mealData);
-  }
-
-  createPlan(planData) {
-    return Promise.resolve(planData);
-  }
-
-  getUserData() {
-    try {
-      return Promise.resolve(JSON.parse(localStorage.getItem('user') || '{}'));
-    } catch {
-      return Promise.resolve({});
-    }
-  }
-
-  getStats() {
-    return Promise.resolve({
-      data: {
-        workouts: this.getLocalWorkoutCount(),
-        meals: 0,
-        xpPoints: this.getLocalXP(),
-        streak: this.getLocalStreak(),
-        weeklyGoal: { completed: this.getLocalWeeklyCount(), target: 4, percentage: 0 }
-      }
+  // Remove event listeners
+  removeEventListeners() {
+    this.eventListeners.forEach((handler, eventType) => {
+      window.removeEventListener(eventType, handler);
     });
+    this.eventListeners.clear();
   }
 
-  uploadProfilePicture(imageData) {
-    return Promise.resolve({ success: true, profileImage: imageData });
+  // Track real-time events
+  async trackEvent(eventType, eventData = {}) {
+    try {
+      const response = await api.post('/analytics/track-event', {
+        eventType,
+        eventData,
+        timestamp: new Date().toISOString()
+      });
+      
+      if (response.data.success) {
+        // Dispatch custom event with updated analytics
+        window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+          detail: {
+            analytics: response.data.analytics,
+            eventType,
+            timestamp: response.data.timestamp
+          }
+        }));
+        
+        console.log(`✅ Real-time event tracked: ${eventType}`);
+        return response.data.analytics;
+      }
+    } catch (error) {
+      console.error(`❌ Failed to track event ${eventType}:`, error);
+      
+      // Fallback to local storage update
+      this.updateLocalStats(eventType);
+      return null;
+    }
+  }
+
+  // Sync analytics data
+  async syncAnalytics() {
+    try {
+      const response = await api.get('/analytics');
+      
+      if (response.data.success) {
+        // Update local storage
+        localStorage.setItem('realTimeStats', JSON.stringify(response.data.data));
+        
+        // Dispatch update event
+        window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+          detail: {
+            analytics: response.data.data,
+            eventType: 'sync',
+            timestamp: new Date().toISOString()
+          }
+        }));
+        
+        return response.data.data;
+      }
+    } catch (error) {
+      console.error('❌ Analytics sync failed:', error);
+      return null;
+    }
+  }
+
+  // Update local stats when offline
+  updateLocalStats(eventType) {
+    try {
+      const currentStats = JSON.parse(localStorage.getItem('realTimeStats') || '{}');
+      
+      switch (eventType) {
+        case 'workout_completed':
+          currentStats.totalWorkouts = (currentStats.totalWorkouts || 0) + 1;
+          currentStats.xpPoints = (currentStats.xpPoints || 0) + 100;
+          break;
+          
+        case 'meal_logged':
+          currentStats.totalMeals = (currentStats.totalMeals || 0) + 1;
+          currentStats.xpPoints = (currentStats.xpPoints || 0) + 50;
+          break;
+          
+        case 'plan_created':
+          currentStats.totalPlans = (currentStats.totalPlans || 0) + 1;
+          currentStats.xpPoints = (currentStats.xpPoints || 0) + 150;
+          break;
+      }
+      
+      currentStats.lastUpdated = new Date().toISOString();
+      localStorage.setItem('realTimeStats', JSON.stringify(currentStats));
+      
+      // Dispatch local update event
+      window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+        detail: {
+          analytics: currentStats,
+          eventType: eventType + '_offline',
+          timestamp: new Date().toISOString()
+        }
+      }));
+      
+      console.log(`📱 Local stats updated: ${eventType}`);
+    } catch (error) {
+      console.error('❌ Failed to update local stats:', error);
+    }
+  }
+
+  // Trigger workout completion
+  async completeWorkout(workoutData = {}) {
+    try {
+      // Save workout to backend
+      const response = await api.post('/analytics/track-workout-completion', {
+        workoutData
+      });
+      
+      if (response.data.success) {
+        // Trigger real-time event
+        window.dispatchEvent(new CustomEvent('workoutCompleted', {
+          detail: {
+            workout: workoutData,
+            stats: response.data.stats,
+            timestamp: new Date().toISOString()
+          }
+        }));
+        
+        console.log('💪 Workout completed and tracked in real-time');
+        return response.data;
+      }
+    } catch (error) {
+      console.error('❌ Failed to complete workout:', error);
+      
+      // Fallback to local tracking
+      this.updateLocalStats('workout_completed');
+      
+      window.dispatchEvent(new CustomEvent('workoutCompleted', {
+        detail: {
+          workout: workoutData,
+          offline: true,
+          timestamp: new Date().toISOString()
+        }
+      }));
+      
+      return null;
+    }
+  }
+
+  // Trigger meal logging
+  async logMeal(mealData = {}) {
+    try {
+      const response = await api.post('/analytics/track-meal-logging', {
+        mealData
+      });
+      
+      if (response.data.success) {
+        window.dispatchEvent(new CustomEvent('mealLogged', {
+          detail: {
+            meal: mealData,
+            timestamp: new Date().toISOString()
+          }
+        }));
+        
+        console.log('🍎 Meal logged and tracked in real-time');
+        return response.data;
+      }
+    } catch (error) {
+      console.error('❌ Failed to log meal:', error);
+      
+      this.updateLocalStats('meal_logged');
+      
+      window.dispatchEvent(new CustomEvent('mealLogged', {
+        detail: {
+          meal: mealData,
+          offline: true,
+          timestamp: new Date().toISOString()
+        }
+      }));
+      
+      return null;
+    }
+  }
+
+  // Trigger plan creation
+  async createPlan(planData = {}) {
+    try {
+      window.dispatchEvent(new CustomEvent('planCreated', {
+        detail: {
+          plan: planData,
+          timestamp: new Date().toISOString()
+        }
+      }));
+      
+      console.log('📋 Plan created and tracked in real-time');
+      
+      // Update stats
+      this.trackEvent('plan_created', planData);
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to track plan creation:', error);
+      return false;
+    }
+  }
+
+  // Get current analytics
+  async getCurrentAnalytics() {
+    try {
+      const response = await api.get('/analytics');
+      return response.data.success ? response.data.data : null;
+    } catch (error) {
+      console.error('❌ Failed to get current analytics:', error);
+      
+      // Fallback to local storage
+      const localStats = localStorage.getItem('realTimeStats');
+      return localStats ? JSON.parse(localStats) : null;
+    }
+  }
+
+  // Force refresh analytics
+  async forceRefresh() {
+    console.log('🔄 Force refreshing analytics...');
+    return await this.syncAnalytics();
   }
 }
 
+// Create singleton instance
 export const realTimeService = new RealTimeService();
+
+// Auto-start when online
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    realTimeService.startRealTimeTracking();
+  });
+  
+  // Handle online/offline events
+  window.addEventListener('online', () => {
+    console.log('🌐 Back online - resuming real-time tracking');
+    realTimeService.startRealTimeTracking();
+    realTimeService.syncAnalytics();
+  });
+  
+  window.addEventListener('offline', () => {
+    console.log('📱 Gone offline - switching to local tracking');
+  });
+}
+
 export default realTimeService;

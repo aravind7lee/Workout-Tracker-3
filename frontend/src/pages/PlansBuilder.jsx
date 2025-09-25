@@ -429,19 +429,23 @@ export default function PlansBuilder() {
     <div className="space-y-0">
       {/* Hero Header Section */}
       <div className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden">
-        {/* Skeleton Loader */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 w-full h-full skeleton-shimmer bg-slate-700/40" />
-        )}
+        {/* LQIP Placeholder */}
+        <img
+          src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover blur-sm transition-opacity duration-300"
+          style={{ opacity: imageLoaded ? 0 : 1 }}
+        />
         
         {/* Hero Image */}
         <img
           src={MyPlansHeader}
           alt="Workout plans header - athlete training background"
-          loading="lazy"
-          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300"
+          style={{ opacity: imageLoaded ? 1 : 0 }}
           onLoad={() => setImageLoaded(true)}
         />
         
@@ -464,13 +468,14 @@ export default function PlansBuilder() {
           <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-emerald-400 rounded-full particle-accent" />
         </div>
         
-        {/* Overlay Content */}
-        <motion.div 
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="absolute inset-0 flex items-center justify-center text-center px-4"
-        >
+        {/* Overlay Content - Only show after image loads */}
+        {imageLoaded && (
+          <motion.div 
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center text-center px-4"
+          >
           <div className="max-w-4xl mx-auto">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -551,7 +556,8 @@ export default function PlansBuilder() {
               </div>
             </motion.div>
           </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
       
       {/* Main Content */}
