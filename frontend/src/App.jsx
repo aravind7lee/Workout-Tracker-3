@@ -4,7 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import LibrarySimple from './pages/LibrarySimple';
-import AnalyticsRealTime from './pages/AnalyticsRealTime';
+import Analytics from './pages/Analytics';
 import Nutrition from './pages/Nutrition';
 import PlansBuilder from './pages/PlansBuilder';
 import MyPlans from './pages/MyPlans';
@@ -27,7 +27,6 @@ import { DemoProvider } from './context/DemoContext';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import chromeErrorHandler from './utils/chromeErrorHandler';
-import RealTimeTestPanel from './components/RealTimeTestPanel';
 
 // Inline components to avoid module loading errors
 const Search = () => {
@@ -361,7 +360,6 @@ export default function App() {
               <DemoBanner />
               <DemoFloatingControls />
               <DemoFeatureTracker />
-              <RealTimeTestPanel />
               <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -369,7 +367,7 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/library" element={<LibrarySimple />} />
-                <Route path="/analytics" element={<AnalyticsRealTime />} />
+                <Route path="/analytics" element={<Analytics />} />
                 <Route path="/nutrition" element={<Nutrition />} />
                 <Route path="/plans" element={<PlansBuilder />} />
                 <Route path="/my-plans" element={<MyPlans />} />
