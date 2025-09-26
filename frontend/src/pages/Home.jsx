@@ -177,10 +177,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
                   <div className="text-5xl font-black text-orange-400 mb-3 font-heading tracking-tighter flex items-center gap-2">
-                    {stats.currentStreak || 0}<span className="text-red-400 animate-pulse">🔥</span>
+                    {stats.currentStreak || currentStreak || 0}<span className="text-red-400 animate-pulse">🔥</span>
                   </div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">DAY STREAK</div>
-                  <div className="text-xs text-orange-300/70 mt-1">{stats.currentStreak > 0 ? 'UNSTOPPABLE' : 'START TODAY'}</div>
+                  <div className="text-xs text-orange-300/70 mt-1">{(stats.currentStreak || currentStreak) > 0 ? 'UNSTOPPABLE' : 'START TODAY'}</div>
                 </div>
                 <div className="absolute top-4 right-4 text-orange-400/30 text-2xl">⚡</div>
                 <div className="absolute top-2 left-2 text-xs text-orange-400/70">

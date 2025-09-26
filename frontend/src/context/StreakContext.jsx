@@ -1,6 +1,7 @@
-// Real-Time Streak Context - Syncs across all pages instantly
+// Real-Time Streak Context - MongoDB Integration
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import api from '../utils/api';
 
 const StreakContext = createContext();
 
@@ -20,7 +21,9 @@ export const StreakProvider = ({ children }) => {
     totalCheckIns: 0,
     lastCheckInDate: null,
     streakStartDate: null,
-    canCheckIn: true
+    canCheckIn: true,
+    isRealTime: false,
+    lastSync: null
   });
   const [loading, setLoading] = useState(false);
 
@@ -30,52 +33,76 @@ export const StreakProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/users/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      console.log('🔥 Fetching real-time streak data from MongoDB...');
+      
+      // Get streak data from multiple endpoints
+      const [heroStats, userStats, streakStatus] = await Promise.allSettled([
+        api.get('/analytics/hero-stats'),
+        api.get('/users/stats'),
+        api.get('/users/streak-status')
+      ]);
 
-      if (response.ok) {
-        const userData = await response.json();
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Calculate real-time streak status
-        let currentStreak = userData.currentStreak || 0;
-        const lastCheckIn = userData.lastStreakCheckIn ? new Date(userData.lastStreakCheckIn).toISOString().split('T')[0] : null;
-        
-        // Check if streak is broken
-        if (lastCheckIn) {
-          const daysDiff = Math.floor((new Date() - new Date(lastCheckIn)) / (1000 * 60 * 60 * 24));
-          if (daysDiff > 1) {
-            currentStreak = 0;
-          }
-        }
+      let realTimeStreakData = {
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCheckIns: 0,
+        lastCheckInDate: null,
+        streakStartDate: null,
+        canCheckIn: true,
+        isRealTime: true,
+        lastSync: new Date().toISOString()
+      };
 
-        const newStreakData = {
-          currentStreak,
-          longestStreak: userData.longestStreak || 0,
-          totalCheckIns: userData.totalCheckIns || 0,
-          lastCheckInDate: lastCheckIn,
-          streakStartDate: userData.streakStartDate ? new Date(userData.streakStartDate).toISOString().split('T')[0] : null,
-          canCheckIn: lastCheckIn !== today
-        };
-
-        setStreakData(newStreakData);
-        
-        // Update localStorage as backup
-        const streakKey = `gymtracker_streak_${user.id}`;
-        localStorage.setItem(streakKey, JSON.stringify(newStreakData));
-        
-        console.log('✅ Real-time streak data loaded:', newStreakData);
-      } else {
-        // Fallback to localStorage
-        loadFromLocalStorage();
+      // Process hero stats for streak
+      if (heroStats.status === 'fulfilled' && heroStats.value?.data?.data) {
+        const data = heroStats.value.data.data;
+        realTimeStreakData.currentStreak = data.streak || data.currentStreak || 0;
       }
+
+      // Process user stats for comprehensive streak data
+      if (userStats.status === 'fulfilled' && userStats.value?.data) {
+        const data = userStats.value.data;
+        realTimeStreakData = {
+          ...realTimeStreakData,
+          currentStreak: data.currentStreak || realTimeStreakData.currentStreak,
+          longestStreak: data.longestStreak || 0,
+          totalCheckIns: data.totalCheckIns || 0
+        };
+      }
+
+      // Process streak status for detailed info
+      if (streakStatus.status === 'fulfilled' && streakStatus.value?.data) {
+        const data = streakStatus.value.data;
+        realTimeStreakData = {
+          ...realTimeStreakData,
+          currentStreak: data.currentStreak || realTimeStreakData.currentStreak,
+          longestStreak: data.longestStreak || realTimeStreakData.longestStreak,
+          totalCheckIns: data.totalCheckIns || realTimeStreakData.totalCheckIns,
+          canCheckIn: data.canCheckIn !== undefined ? data.canCheckIn : true
+        };
+      }
+
+      console.log('✅ Real-time streak data loaded from MongoDB:', realTimeStreakData);
+      setStreakData(realTimeStreakData);
+      
+      // Update localStorage as backup
+      if (user) {
+        const streakKey = `gymtracker_streak_${user.id}`;
+        localStorage.setItem(streakKey, JSON.stringify(realTimeStreakData));
+      }
+      
     } catch (error) {
-      console.warn('Streak fetch failed, using localStorage:', error);
+      console.error('❌ MongoDB streak fetch failed:', error.message);
+      
+      // Set error state
+      setStreakData(prev => ({
+        ...prev,
+        isRealTime: false,
+        lastSync: new Date().toISOString(),
+        error: error.message
+      }));
+      
+      // Fallback to localStorage
       loadFromLocalStorage();
     } finally {
       setLoading(false);
@@ -119,39 +146,37 @@ export const StreakProvider = ({ children }) => {
 
   // Update streak after check-in
   const updateStreak = useCallback(async (newStreakData) => {
-    setStreakData(newStreakData);
+    const updatedData = {
+      ...newStreakData,
+      isRealTime: true,
+      lastSync: new Date().toISOString()
+    };
+    
+    setStreakData(updatedData);
     
     // Broadcast update to all components
     window.dispatchEvent(new CustomEvent('streakUpdated', { 
-      detail: newStreakData 
+      detail: updatedData 
     }));
     
     // Update localStorage
     if (user) {
       const streakKey = `gymtracker_streak_${user.id}`;
-      localStorage.setItem(streakKey, JSON.stringify(newStreakData));
+      localStorage.setItem(streakKey, JSON.stringify(updatedData));
     }
     
-    // Sync to database
+    // Sync to MongoDB database
     try {
-      const token = localStorage.getItem('token');
-      await fetch('/api/users/profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          currentStreak: newStreakData.currentStreak,
-          longestStreak: newStreakData.longestStreak,
-          totalCheckIns: newStreakData.totalCheckIns,
-          lastStreakCheckIn: new Date().toISOString(),
-          streakStartDate: newStreakData.streakStartDate ? new Date(newStreakData.streakStartDate).toISOString() : null
-        })
+      await api.put('/users/profile', {
+        currentStreak: updatedData.currentStreak,
+        longestStreak: updatedData.longestStreak,
+        totalCheckIns: updatedData.totalCheckIns,
+        lastStreakCheckIn: new Date().toISOString(),
+        streakStartDate: updatedData.streakStartDate ? new Date(updatedData.streakStartDate).toISOString() : null
       });
-      console.log('✅ Streak synced to database');
+      console.log('✅ Streak synced to MongoDB database');
     } catch (error) {
-      console.warn('Database sync failed:', error);
+      console.warn('❌ MongoDB sync failed:', error.message);
     }
   }, [user]);
 
@@ -172,19 +197,31 @@ export const StreakProvider = ({ children }) => {
     return () => window.removeEventListener('streakUpdated', handleStreakUpdate);
   }, []);
 
-  // Periodic refresh every 5 minutes
+  // Periodic refresh every 2 minutes for real-time updates
   useEffect(() => {
     if (!isAuthenticated()) return;
     
-    const interval = setInterval(fetchStreakData, 300000); // 5 minutes
+    const interval = setInterval(fetchStreakData, 120000); // 2 minutes
     return () => clearInterval(interval);
   }, [fetchStreakData, isAuthenticated]);
+
+  // Listen for workout completions to update streak
+  useEffect(() => {
+    const handleWorkoutCompleted = () => {
+      console.log('🏋️ Workout completed - refreshing streak data');
+      setTimeout(fetchStreakData, 1000);
+    };
+
+    window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    return () => window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+  }, [fetchStreakData]);
 
   const value = {
     ...streakData,
     loading,
     fetchStreakData,
-    updateStreak
+    updateStreak,
+    refreshStreak: fetchStreakData
   };
 
   return (

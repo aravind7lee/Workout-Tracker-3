@@ -124,34 +124,40 @@ router.get('/hero-stats', async (req, res) => {
     // Calculate XP points (100 per completed workout, 50 per meal)
     const xpPoints = (completedWorkouts * 100) + (totalMeals * 50);
     
-    // Calculate current streak
+    // Calculate current streak - improved algorithm
     const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    today.setHours(0, 0, 0, 0);
     let streak = 0;
-    let currentDate = new Date(startOfToday);
+    let currentDate = new Date(today);
     
-    // Check for streak (limit to 365 days to prevent infinite loop)
+    // Check for streak starting from today going backwards
     for (let i = 0; i < 365; i++) {
       const dayStart = new Date(currentDate);
       const dayEnd = new Date(currentDate);
       dayEnd.setDate(dayEnd.getDate() + 1);
       
-      const hasActivity = await Workout.exists({
+      const hasWorkout = await Workout.exists({
         user: userId,
         completed: true,
         createdAt: { $gte: dayStart, $lt: dayEnd }
-      }) || await Meal.exists({
+      });
+      
+      const hasMeal = await Meal.exists({
         userId,
         createdAt: { $gte: dayStart, $lt: dayEnd }
       });
       
-      if (hasActivity) {
+      if (hasWorkout || hasMeal) {
         streak++;
         currentDate.setDate(currentDate.getDate() - 1);
+        console.log(`🔥 Day ${i + 1}: Found activity on ${dayStart.toDateString()}, streak: ${streak}`);
       } else {
+        console.log(`❌ Day ${i + 1}: No activity on ${dayStart.toDateString()}, breaking streak`);
         break;
       }
     }
+    
+    console.log(`🔥 Final calculated streak: ${streak} days`);
     
     // Calculate weekly goal progress
     const startOfWeek = new Date(today);
@@ -186,7 +192,10 @@ router.get('/hero-stats', async (req, res) => {
       timestamp: Date.now()
     };
 
-    console.log(`✅ Real-time hero stats for user ${userId}:`, heroStats);
+    console.log(`✅ Real-time hero stats for user ${userId}:`, {
+      ...heroStats,
+      streakCalculation: `${streak} days calculated from activities`
+    });
     res.json({ success: true, data: heroStats });
   } catch (error) {
     console.error('❌ Hero stats error:', error);
