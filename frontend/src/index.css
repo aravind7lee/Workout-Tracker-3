@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @import './styles/themes.css';
 @import './styles/hero-semantic-tokens.css';
 @import './styles/dark-mode-premium.css';
@@ -19,6 +21,200 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== RAW GYM TYPOGRAPHY - BEBAS NEUE + INTER ===== */
+:root {
+  --font-heading: 'Bebas Neue', cursive;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* BEAST MODE HEADINGS - Bebas Neue 💪 */
+h1, h2, h3, h4, h5, h6,
+.heading-text,
+.text-responsive-xl,
+.text-responsive-2xl,
+.hero-title,
+.section-title,
+.card-title,
+.nav-brand,
+.logo-text,
+.dashboard-title,
+.page-title,
+.modal-title,
+.form-title {
+  font-family: var(--font-heading) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+/* TECHNICAL PRECISION - Inter 📊 */
+* {
+  font-family: var(--font-body) !important;
+}
+
+/* Ensure all body text uses Inter */
+body, p, span, div, a, button, input, textarea, label, select, option,
+.btn, .card, .muted-text, .nav-link, .menu-item, .form-control,
+.table, .list-item, .description, .subtitle, .caption,
+.badge, .tag, .tooltip, .dropdown-item, .tab-content,
+.sidebar-text, .footer-text, .breadcrumb, .pagination {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+}
+
+/* Override any conflicting font declarations */
+.font-sans {
+  font-family: var(--font-body) !important;
+}
+
+.font-heading {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+}
+
+/* Ensure all Tailwind heading classes use Bebas Neue */
+.text-xs, .text-sm, .text-base, .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+  font-family: var(--font-body) !important;
+}
+
+/* Force headings to use Bebas Neue */
+.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Component-specific font overrides */
+.hero-title, .page-title, .section-title, .card-title {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Navigation and UI elements */
+.nav-link, .btn, .button, .menu-item {
+  font-family: var(--font-body) !important;
+}
+
+/* Form elements */
+input, textarea, select, option, label {
+  font-family: var(--font-body) !important;
+}
+
+/* Table elements */
+table, th, td {
+  font-family: var(--font-body) !important;
+}
+
+/* Modal and dialog elements */
+.modal-title, .dialog-title {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Ensure React components inherit proper fonts */
+[class*="component"], [class*="Component"] {
+  font-family: var(--font-body) !important;
+}
+
+/* Override any third-party library fonts */
+.framer-motion *, .motion-div *, .motion-button * {
+  font-family: inherit !important;
+}
+
+/* ===== BULLETPROOF FONT SYSTEM ===== */
+/* Ensure all possible selectors use the correct fonts */
+
+/* All headings across the entire app */
+h1, h2, h3, h4, h5, h6,
+[class*="title"], [class*="Title"],
+[class*="heading"], [class*="Heading"],
+[class*="hero"] h1, [class*="hero"] h2, [class*="hero"] h3,
+.dashboard-title, .page-title, .section-title,
+.modal-title, .dialog-title, .card-title,
+.nav-brand, .logo-text, .brand-text {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+  font-weight: 400 !important;
+}
+
+/* All body text across the entire app */
+*, *::before, *::after,
+body, p, span, div, a, button, input, textarea, label, select, option,
+.btn, .button, .card, .muted-text, .nav-link, .menu-item,
+.form-control, .table, .list-item, .description, .subtitle,
+.caption, .badge, .tag, .tooltip, .dropdown-item, .tab-content,
+.sidebar-text, .footer-text, .breadcrumb, .pagination,
+[class*="text"], [class*="Text"],
+[class*="content"], [class*="Content"],
+[class*="body"], [class*="Body"] {
+  font-family: var(--font-body) !important;
+}
+
+/* React component overrides */
+[data-testid], [data-cy], [role],
+.react-component, .component,
+[class*="Component"], [class*="component"] {
+  font-family: var(--font-body) !important;
+}
+
+/* Framer Motion overrides */
+.motion-div, .motion-button, .motion-span,
+[style*="transform"], [style*="opacity"] {
+  font-family: inherit !important;
+}
+
+/* Tailwind utility overrides */
+.font-sans, .font-serif, .font-mono {
+  font-family: var(--font-body) !important;
+}
+
+/* Specific heading size overrides */
+.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl,
+.text-7xl, .text-8xl, .text-9xl {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Body text size overrides */
+.text-xs, .text-sm, .text-base, .text-lg {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+}
+
+/* Ensure proper font loading fallbacks */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-display: swap;
+  src: local('Bebas Neue'), local('BebasNeue-Regular');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+  src: local('Inter'), local('Inter-Regular');
+}
+
+/* Final catch-all for any missed elements */
+body * {
+  font-family: var(--font-body) !important;
+}
+
+body h1, body h2, body h3, body h4, body h5, body h6 {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
 
 /* Theme variables now handled by themes.css */
 
@@ -1196,9 +1392,9 @@ body {
 .hero-overlay-dark {
   background: linear-gradient(
     135deg,
-    rgba(0,0,0,0.4) 0%,
-    rgba(0,0,0,0.6) 50%,
-    rgba(0,0,0,0.8) 100%
+    rgba(0,0,0,0.1) 0%,
+    rgba(0,0,0,0.2) 50%,
+    rgba(0,0,0,0.3) 100%
   );
 }
 

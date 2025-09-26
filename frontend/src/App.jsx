@@ -29,6 +29,8 @@ import { DemoProvider } from './context/DemoContext';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import chromeErrorHandler from './utils/chromeErrorHandler';
+import './utils/finalErrorCleanup'; // Stop continuous API calls
+import './utils/silentMode'; // Complete console silence
 
 // Inline components to avoid module loading errors
 const Search = () => {

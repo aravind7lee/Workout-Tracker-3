@@ -282,6 +282,20 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ===== HERO IMAGE BRIGHTNESS PRESERVATION ===== */
+/* Ensure hero images maintain original brightness and colors in dark mode */
+.dark img[src*="Heroimg"],
+.dark img[src*="heroimg"],
+.dark img[src*="Hero"],
+.dark .hero-image,
+.dark section img {
+  filter: none !important;
+  opacity: 1 !important;
+  brightness: 1 !important;
+  contrast: 1 !important;
+  saturate: 1 !important;
+}
+
 /* ===== ACCESSIBILITY ENHANCEMENTS ===== */
 @media (prefers-reduced-motion: reduce) {
   .dark * {

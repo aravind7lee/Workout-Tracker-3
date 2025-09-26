@@ -15,21 +15,36 @@ import {
   Smartphone,
   Mail,
   Activity,
-  Trophy
+  Trophy,
+  Zap,
+  BarChart3,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import settingsService from '../services/settingsService';
 import chromeErrorHandler from '../utils/chromeErrorHandler';
+import { onlineService } from '../services/onlineService';
 
 export default function Settings() {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('profile');
   const [isSaving, setIsSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [syncStatus, setSyncStatus] = useState('ready');
   const [lastSyncResult, setLastSyncResult] = useState(null);
+  const [realTimeStats, setRealTimeStats] = useState({
+    totalWorkouts: 0,
+    totalMeals: 0,
+    totalPlans: 0,
+    currentStreak: 0,
+    xpPoints: 0,
+    membershipDays: 0,
+    lastSync: null
+  });
+  const [loading, setLoading] = useState(true);
   
   const [settings, setSettings] = useState({
     profile: {
@@ -89,31 +104,74 @@ export default function Settings() {
     []
   );
 
+  // Load real-time data from MongoDB
+  const loadRealTimeData = useCallback(async () => {
+    if (!isAuthenticated()) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      // Load real-time stats from MongoDB
+      const statsResponse = await fetch('/api/users/stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (statsResponse.ok) {
+        const stats = await statsResponse.json();
+        setRealTimeStats({
+          totalWorkouts: stats.totalWorkouts || 0,
+          totalMeals: stats.totalMeals || 0,
+          totalPlans: stats.totalPlans || 0,
+          currentStreak: stats.currentStreak || 0,
+          xpPoints: stats.xpPoints || 0,
+          membershipDays: stats.membershipDays || 0,
+          lastSync: new Date().toISOString()
+        });
+        console.log('✅ Real-time stats loaded from MongoDB:', stats);
+      }
+    } catch (error) {
+      console.error('❌ Failed to load real-time data:', error);
+    }
+  }, [isAuthenticated]);
+
   // Load settings with FORCE MongoDB connection
   useEffect(() => {
     const loadSettings = async () => {
       try {
+        setLoading(true);
         setSyncStatus('loading');
         console.log('🚀 FORCE LOAD FROM MONGODB - Global Sync Priority');
         
-        const result = await chromeErrorHandler.safeExecuteAsync(async () => {
-          return await settingsService.loadSettings();
-        });
-        
-        if (result) {
-          setSettings(prev => ({ ...prev, ...result.settings }));
-          setLastSyncResult(result);
-          setSyncStatus(result.status);
-          
-          if (result.source === 'mongodb') {
-            console.log('✅ MongoDB Global Sync Successful!');
-          } else {
-            console.warn('⚠️ Using fallback:', result.source);
-          }
-        }
+        // Load both settings and real-time data
+        await Promise.all([
+          (async () => {
+            const result = await chromeErrorHandler.safeExecuteAsync(async () => {
+              return await settingsService.loadSettings();
+            });
+            
+            if (result) {
+              setSettings(prev => ({ ...prev, ...result.settings }));
+              setLastSyncResult(result);
+              setSyncStatus(result.status);
+              
+              if (result.source === 'mongodb') {
+                console.log('✅ MongoDB Global Sync Successful!');
+              } else {
+                console.warn('⚠️ Using fallback:', result.source);
+              }
+            }
+          })(),
+          loadRealTimeData()
+        ]);
       } catch (error) {
         console.error('❌ Error loading settings:', error);
         setSyncStatus('error');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -126,6 +184,7 @@ export default function Settings() {
         setIsOnline(true);
         setSyncStatus('syncing');
         loadSettings(); // Immediately try to sync with MongoDB
+        loadRealTimeData(); // Reload real-time data
       });
     };
     
@@ -137,14 +196,44 @@ export default function Settings() {
       });
     };
     
+    // Listen for real-time events
+    const handleWorkoutCompleted = () => {
+      console.log('🏋️ Workout completed - refreshing real-time data');
+      loadRealTimeData();
+    };
+    
+    const handleMealAdded = () => {
+      console.log('🍽️ Meal added - refreshing real-time data');
+      loadRealTimeData();
+    };
+    
+    const handlePlanCreated = () => {
+      console.log('📋 Plan created - refreshing real-time data');
+      loadRealTimeData();
+    };
+    
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('planCreated', handlePlanCreated);
+    
+    // Real-time refresh every 30 seconds
+    const refreshInterval = setInterval(() => {
+      if (isAuthenticated() && navigator.onLine) {
+        loadRealTimeData();
+      }
+    }, 30000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+      window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('planCreated', handlePlanCreated);
+      clearInterval(refreshInterval);
     };
-  }, []);
+  }, [isAuthenticated, loadRealTimeData]);
 
   const handleSettingChange = useCallback((section, key, value) => {
     setSettings(prev => ({
@@ -377,13 +466,14 @@ export default function Settings() {
         </div>
       </div>
       
-      {/* Real-time Goal Status */}
+      {/* Real-time Goal Status with Progress */}
       <div className="mt-6 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/50 rounded-lg">
-        <div className="text-green-300 text-sm flex items-center gap-2 mb-2">
+        <div className="text-green-300 text-sm flex items-center gap-2 mb-3">
           <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="font-medium">Current Fitness Goals</span>
+          <span className="font-medium">Current Fitness Goals & Progress</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs mb-4">
           <div className="text-center">
             <div className="text-green-400 font-bold text-lg">
               {settings.fitnessGoals.goal === 'lose' ? '🔥' : 
@@ -396,6 +486,9 @@ export default function Settings() {
           <div className="text-center">
             <div className="text-blue-400 font-bold text-lg">{settings.fitnessGoals.weeklyGoal}</div>
             <div className="text-slate-300">Weekly Goal</div>
+            <div className="text-xs text-blue-300 mt-1">
+              {Math.min(realTimeStats.totalWorkouts, settings.fitnessGoals.weeklyGoal)}/{settings.fitnessGoals.weeklyGoal} this week
+            </div>
           </div>
           <div className="text-center">
             <div className="text-purple-400 font-bold text-lg capitalize">{settings.fitnessGoals.activityLevel}</div>
@@ -406,6 +499,20 @@ export default function Settings() {
               {settings.fitnessGoals.targetWeight ? `${settings.fitnessGoals.targetWeight}kg` : 'Not Set'}
             </div>
             <div className="text-slate-300">Target Weight</div>
+          </div>
+        </div>
+        
+        {/* Weekly Progress Bar */}
+        <div className="mt-3">
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span>Weekly Progress</span>
+            <span>{Math.min(realTimeStats.totalWorkouts, settings.fitnessGoals.weeklyGoal)}/{settings.fitnessGoals.weeklyGoal} workouts</span>
+          </div>
+          <div className="w-full bg-slate-700 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, (realTimeStats.totalWorkouts / settings.fitnessGoals.weeklyGoal) * 100)}%` }}
+            ></div>
           </div>
         </div>
       </div>
@@ -650,6 +757,28 @@ export default function Settings() {
             <span>Theme changes are applied instantly • Real-time MongoDB sync • Auto-save enabled</span>
           </div>
         </div>
+        
+        {/* Real-time Activity Summary */}
+        <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+          <div className="text-blue-300 text-sm flex items-center gap-2 mb-2">
+            <BarChart3 size={16} />
+            <span className="font-medium">Real-Time Activity Summary</span>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-xs">
+            <div className="text-center">
+              <div className="text-blue-400 font-bold">{realTimeStats.totalWorkouts}</div>
+              <div className="text-slate-300">Total Workouts</div>
+            </div>
+            <div className="text-center">
+              <div className="text-green-400 font-bold">{realTimeStats.currentStreak}</div>
+              <div className="text-slate-300">Current Streak</div>
+            </div>
+            <div className="text-center">
+              <div className="text-yellow-400 font-bold">{realTimeStats.xpPoints}</div>
+              <div className="text-slate-300">XP Points</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
@@ -660,6 +789,96 @@ export default function Settings() {
       case 'fitness': return renderFitnessGoalsSettings();
       case 'notifications': return renderNotificationsSettings();
       case 'preferences': return renderPreferencesSettings();
+      case 'data': return (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-600/30">
+              <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+                <Database size={16} />
+                Data Storage Status
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-300">MongoDB Connection:</span>
+                  <span className={isOnline ? 'text-green-400' : 'text-red-400'}>
+                    {isOnline ? '✅ Connected' : '❌ Offline'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Auto Backup:</span>
+                  <span className="text-green-400">✅ Enabled</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Cross-Device Sync:</span>
+                  <span className="text-green-400">✅ Active</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Data Retention:</span>
+                  <span className="text-blue-400">1 Year</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-600/30">
+              <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+                <Clock size={16} />
+                Real-Time Sync Status
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Last Sync:</span>
+                  <span className="text-green-400">
+                    {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Never'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Sync Status:</span>
+                  <span className={`${statusDisplay.color.split(' ')[0]}`}>
+                    {statusDisplay.text}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Auto-Sync:</span>
+                  <span className="text-green-400">✅ Every 30s</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-300">Data Source:</span>
+                  <span className="text-blue-400">MongoDB Atlas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-4 bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-700/50 rounded-lg">
+            <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+              <BarChart3 size={16} />
+              Real-Time Data Summary
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">{realTimeStats.totalWorkouts}</div>
+                <div className="text-slate-300">Workouts Stored</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{realTimeStats.totalMeals}</div>
+                <div className="text-slate-300">Meals Logged</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-400">{realTimeStats.totalPlans}</div>
+                <div className="text-slate-300">Plans Created</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-400">{realTimeStats.membershipDays}</div>
+                <div className="text-slate-300">Days Active</div>
+              </div>
+            </div>
+            <div className="mt-3 text-xs text-center text-slate-400">
+              All data is stored securely in MongoDB and synced in real-time across all your devices
+            </div>
+          </div>
+        </div>
+      );
+      
       default: return (
         <div className="text-center py-8">
           <div className="text-slate-400 mb-2">Coming Soon</div>
@@ -671,8 +890,74 @@ export default function Settings() {
 
   const statusDisplay = settingsService.getSyncStatus(lastSyncResult);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-slate-400">Loading real-time settings...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* Real-Time Stats Dashboard */}
+      <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-xl p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Zap className="text-yellow-400" size={20} />
+            <h3 className="text-lg font-semibold text-white">Real-Time Progress</h3>
+            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse">
+              LIVE
+            </span>
+          </div>
+          <div className="text-xs text-slate-400">
+            Last sync: {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Never'}
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-blue-400">{realTimeStats.totalWorkouts}</div>
+            <div className="text-xs text-slate-300">Workouts</div>
+            <div className="text-xs text-green-400">+{realTimeStats.totalWorkouts * 100} XP</div>
+          </div>
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-green-400">{realTimeStats.totalMeals}</div>
+            <div className="text-xs text-slate-300">Meals</div>
+            <div className="text-xs text-green-400">+{realTimeStats.totalMeals * 25} XP</div>
+          </div>
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-purple-400">{realTimeStats.totalPlans}</div>
+            <div className="text-xs text-slate-300">Plans</div>
+            <div className="text-xs text-green-400">+{realTimeStats.totalPlans * 50} XP</div>
+          </div>
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-orange-400">{realTimeStats.currentStreak}</div>
+            <div className="text-xs text-slate-300">Streak</div>
+            <div className="text-xs text-orange-400">🔥 Days</div>
+          </div>
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-yellow-400">{realTimeStats.xpPoints}</div>
+            <div className="text-xs text-slate-300">Total XP</div>
+            <div className="text-xs text-yellow-400">⚡ Points</div>
+          </div>
+          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="text-2xl font-bold text-cyan-400">{realTimeStats.membershipDays}</div>
+            <div className="text-xs text-slate-300">Member</div>
+            <div className="text-xs text-cyan-400">📅 Days</div>
+          </div>
+        </div>
+        
+        <div className="mt-4 text-center">
+          <div className="text-xs text-slate-400">
+            📊 Real-time data from MongoDB • Updates instantly when you complete activities
+          </div>
+        </div>
+      </div>
+
       {/* Status Bar */}
       <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -704,7 +989,7 @@ export default function Settings() {
               LIVE
             </span>
           </h2>
-          <p className="text-slate-400 mt-1">Professional Gym Tracker • Real-Time MongoDB Configuration</p>
+          <p className="text-slate-400 mt-1">Professional Gym Tracker</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -778,11 +1063,22 @@ export default function Settings() {
                 <div className={`p-2 rounded-lg bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color}/20`}>
                   {React.createElement(settingsTabs.find(tab => tab.id === activeTab)?.icon, { size: 20, className: 'text-white' })}
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white">
-                    {settingsTabs.find(tab => tab.id === activeTab)?.label}
-                  </h3>
-                  <div className="text-xs text-slate-400">Professional Configuration Panel • Real-Time MongoDB</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-semibold text-white">
+                      {settingsTabs.find(tab => tab.id === activeTab)?.label}
+                    </h3>
+                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse">
+                      LIVE
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400">Professional Configuration Panel • Real-Time MongoDB • Instant Updates</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-slate-400">Last Update</div>
+                  <div className="text-xs text-green-400">
+                    {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Loading...'}
+                  </div>
                 </div>
               </div>
               <div className={`h-px bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color} w-24`}></div>

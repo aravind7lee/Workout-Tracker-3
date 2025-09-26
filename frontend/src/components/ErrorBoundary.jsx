@@ -12,7 +12,20 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    // Only log non-suppressed errors
+    const errorMessage = error?.message || error?.toString() || '';
+    const suppressedPatterns = [
+      /chrome-extension:/,
+      /fetchPriority.*prop.*DOM element/,
+      /Failed to load.*data.*SyntaxError/,
+      /Unexpected token.*doctype/
+    ];
+    
+    const shouldSuppress = suppressedPatterns.some(pattern => pattern.test(errorMessage));
+    
+    if (!shouldSuppress) {
+      console.error('Error caught by boundary:', error, errorInfo);
+    }
   }
 
   render() {

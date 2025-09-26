@@ -8,7 +8,7 @@ const HERO_IMAGES = {
   '/my-plans': '/src/assets/Myplansheader.jpg',
   '/plan-builder': '/src/assets/PlanBuilderheader.jpg',
   '/nutrition': '/src/assets/Nutritionheader.jpg',
-  '/analytics': '/src/assets/Progress & Analytics.jpg',
+  '/analytics': '/src/assets/Progress-Analytics.jpg',
   '/library': '/src/assets/Libraryheader.jpg'
 };
 

@@ -1,13 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 import dashboardHeaderImg from '../assets/Dashboardheader.jpg';
 
 const DashboardHero = () => {
+  let theme = 'dark';
+  try {
+    const themeContext = useTheme();
+    theme = themeContext?.theme || 'dark';
+  } catch (error) {
+    // Fallback to dark theme if context fails
+    theme = 'dark';
+  }
+  
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   // LQIP for Dashboard
   const DASHBOARD_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+
+    const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: 0.1,
+        staggerChildren: 0.06,
+        delayChildren: 0.08
+      }
+    }
+  };
+
+   const itemVariants = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
 
   useEffect(() => {
     const img = new Image();
@@ -45,7 +80,7 @@ const DashboardHero = () => {
           className="absolute inset-0 w-full h-full object-cover object-center sm:object-center md:object-center"
           loading="eager"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
         />
       )}
 
@@ -54,8 +89,8 @@ const DashboardHero = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-slate-900"></div>
       )}
 
-      {/* Background Overlay */}
-      <div className="absolute inset-0" style={{ background: 'var(--color-background-overlay)' }}></div>
+      {/* Background Overlay - Semantic Token */}
+      <div className="absolute inset-0 hero-overlay"></div>
 
       {/* Particle Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -87,22 +122,31 @@ const DashboardHero = () => {
       {imageLoaded && (
         <div className="absolute inset-0 flex items-center justify-center text-center px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 hero-text-primary"
-              style={{ color: 'var(--color-text-primary)' }}
-            >
-              Dashboard
-            </motion.h1>
+             <motion.div 
+                        className="text-center max-w-4xl w-full"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                      >
+             <motion.h1 
+                       className={`font-heading font-bold mb-4 drop-shadow-2xl ${
+                         theme === 'dark' ? 'text-white' : 'text-white'
+                       } text-3xl sm:text-4xl md:text-5xl lg:text-6xl`}
+                       variants={itemVariants}
+                       style={{
+                         textShadow: theme === 'dark' 
+                           ? '0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)'
+                           : '0 4px 12px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.7)'
+                       }}
+                     >
+                       Dashboard
+                     </motion.h1>
             
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-              className="text-lg sm:text-xl md:text-2xl font-medium max-w-2xl mx-auto hero-text-secondary"
-              style={{ color: 'var(--color-text-secondary)' }}
+              className="text-lg sm:text-xl md:text-2xl font-medium max-w-2xl mx-auto hero-text-secondary font-body"
             >
               Track your progress, view stats, and manage your workouts effortlessly.
             </motion.p>
@@ -112,13 +156,13 @@ const DashboardHero = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 inline-block px-6 py-3 rounded-full border"
-              style={{ background: 'var(--color-accent)', color: 'var(--color-on-accent)', borderColor: 'var(--color-accent)' }}
+              className="mt-8 inline-block px-6 py-3 rounded-full hero-card"
             >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span>Real-time tracking active</span>
+              <div className="flex items-center gap-2 text-sm font-medium hero-text-primary">
+                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-success)' }}></div>
+                <span className="font-body">Real-time tracking active</span>
               </div>
+            </motion.div>
             </motion.div>
           </div>
         </div>

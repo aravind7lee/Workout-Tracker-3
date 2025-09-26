@@ -11,7 +11,7 @@ Your Chrome console was showing continuous preload warnings because:
 ### 1. **Removed Duplicate HTML Preloads** - `frontend/index.html`
 ```html
 <!-- REMOVED THESE LINES -->
-<link rel="preload" as="image" href="/src/assets/Progress & Analytics.jpg" fetchpriority="high" />
+<link rel="preload" as="image" href="/src/assets/Progress-Analytics.jpg" fetchpriority="high" />
 <link rel="preload" as="image" href="/src/assets/Libraryheader.jpg" fetchpriority="high" />
 ```
 

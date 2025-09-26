@@ -81,7 +81,7 @@ frontend/
 │   ├── utils/
 │   │   └── imageOptimization.js   # Image utilities
 │   └── assets/
-│       └── Progress & Analytics.jpg
+│       └── Progress-Analytics.jpg
 ├── index.html                     # Preload link added
 └── ANALYTICS_HERO_README.md       # This file
 ```

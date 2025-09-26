@@ -142,7 +142,7 @@ export default function Hero() {
           )}
           
           {/* Gradient Overlay - Semantic overlay for proper text contrast */}
-          <div className="absolute inset-0 hero-overlay"></div>
+          <div className="absolute inset-0 hero-overlay" style={{ background: 'rgba(0,0,0,0.15)' }}></div>
         </div>
 
         {/* Content Overlay */}
@@ -156,18 +156,18 @@ export default function Hero() {
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
               {/* Main Title */}
               <motion.h1 
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg"
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
                 variants={itemVariants}
               >
                 Welcome to{' '}
-                <span className="hero-accent-text">
+                <span className="hero-accent-text font-heading">
                   GymTracker
                 </span>
               </motion.h1>
 
               {/* Subtitle */}
               <motion.p 
-                className="text-sm sm:text-base md:text-lg hero-text-secondary mb-4 sm:mb-6 drop-shadow-md max-w-2xl mx-auto leading-relaxed px-2"
+                className="text-sm sm:text-base md:text-lg hero-text-secondary mb-4 sm:mb-6 drop-shadow-md max-w-2xl mx-auto leading-relaxed px-2 font-body"
                 variants={itemVariants}
               >
                 Track workouts, monitor progress, and achieve your fitness goals efficiently.
@@ -180,14 +180,14 @@ export default function Hero() {
               >
                 <Link 
                   to={isAuthenticated?.() ? "/dashboard" : "/register"}
-                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-primary font-semibold rounded-md text-xs sm:text-sm shadow-lg transition-all duration-300"
+                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-primary font-semibold rounded-md text-xs sm:text-sm shadow-lg transition-all duration-300 font-body"
                 >
                   {isAuthenticated?.() ? 'Dashboard' : 'Start Now'}
                 </Link>
                 
                 <Link 
                   to="/library" 
-                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-secondary font-medium rounded-md text-xs sm:text-sm transition-all duration-300"
+                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-secondary font-medium rounded-md text-xs sm:text-sm transition-all duration-300 font-body"
                 >
                   Exercises
                 </Link>
@@ -199,31 +199,31 @@ export default function Hero() {
                   className="mt-4 sm:mt-6 hero-card rounded-lg p-3 sm:p-4 max-w-xs sm:max-w-md mx-auto"
                   variants={itemVariants}
                 >
-                  <h3 className="hero-text-primary font-semibold text-sm sm:text-base mb-2 sm:mb-3">Your Progress</h3>
+                  <h3 className="hero-text-primary font-semibold text-sm sm:text-base mb-2 sm:mb-3 font-heading">Your Progress</h3>
                   <div className="grid grid-cols-4 gap-2 sm:gap-3">
                     <div className="text-center">
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.workouts)}
                       </div>
-                      <div className="text-xs hero-card-label">Workouts</div>
+                      <div className="text-xs hero-card-label font-body">Workouts</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.meals)}
                       </div>
-                      <div className="text-xs hero-card-label">Meals</div>
+                      <div className="text-xs hero-card-label font-body">Meals</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.xpPoints)}
                       </div>
-                      <div className="text-xs hero-card-label">XP</div>
+                      <div className="text-xs hero-card-label font-body">XP</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : stats.streak}<span className="hero-icon-accent">🔥</span>
                       </div>
-                      <div className="text-xs hero-card-label">Streak</div>
+                      <div className="text-xs hero-card-label font-body">Streak</div>
                     </div>
                   </div>
                 </motion.div>

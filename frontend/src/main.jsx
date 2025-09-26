@@ -7,6 +7,8 @@ import "./index.css";
 import "./utils/consoleFilter";
 import "./utils/chromeErrorHandler"; // Initialize Chrome error handler
 import "./utils/errorSuppression"; // Initialize error suppression
+import "./utils/errorSuppressor"; // Initialize comprehensive error suppressor
+import "./utils/finalErrorCleanup"; // Final error cleanup
 
 // Handle storage quota gracefully without interfering with React
 if (typeof window !== "undefined") {

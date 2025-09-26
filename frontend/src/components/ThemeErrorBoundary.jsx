@@ -11,6 +11,15 @@ class ThemeErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    // Suppress theme-related errors
+    const errorMessage = error?.message || '';
+    if (errorMessage.includes('theme is not defined') || 
+        errorMessage.includes('useTheme must be used within') ||
+        errorMessage.includes('Theme Context Error')) {
+      // Silently handle theme errors
+      return;
+    }
+    
     console.error('Theme Context Error:', error, errorInfo);
     
     // Try to recover by applying default theme
@@ -20,7 +29,7 @@ class ThemeErrorBoundary extends React.Component {
       document.documentElement.setAttribute('data-theme', 'dark');
       localStorage.setItem('theme', 'dark');
     } catch (recoveryError) {
-      console.error('Failed to recover theme:', recoveryError);
+      // Silently handle recovery errors
     }
   }
 

@@ -7,12 +7,12 @@
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
-/* Enhanced Gradient Overlays - Theme Aware */
+/* Light Gradient Overlays - Preserve Image Clarity */
 .my-plans-hero .gradient-overlay {
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.7) 100%
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 100%
   );
 }
 
@@ -20,9 +20,9 @@
 [data-theme="light"] .my-plans-hero .gradient-overlay {
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  ) !important;
 }
 
 /* Professional Typography */
@@ -40,7 +40,22 @@
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7), 0 1px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Premium Gradient Buttons */
+/* Light Mode Typography Overrides - Using Semantic Tokens */
+.light-theme .my-plans-hero h1,
+[data-theme="light"] .my-plans-hero h1 {
+  color: var(--color-text-primary, #111111) !important;
+  text-shadow: 2px 2px 6px rgba(255,255,255,0.9), 0 0 10px rgba(255,255,255,0.8) !important;
+  font-weight: 900 !important;
+}
+
+.light-theme .my-plans-hero p,
+[data-theme="light"] .my-plans-hero p {
+  color: var(--color-text-secondary, #333333) !important;
+  text-shadow: 1px 1px 4px rgba(255,255,255,0.8), 0 0 8px rgba(255,255,255,0.6) !important;
+  font-weight: 700 !important;
+}
+
+/* Premium Gradient Buttons - Using Semantic Tokens */
 .premium-btn {
   position: relative;
   overflow: hidden;
@@ -57,26 +72,25 @@
 }
 
 .premium-btn.primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
-  color: white;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  background: var(--color-accent, #2563EB);
+  color: var(--color-on-accent, #FFFFFF);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
 }
 
 .premium-btn.primary:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e3a8a 100%);
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6);
+  background: #1d4ed8;
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.6);
   transform: translateY(-2px);
 }
 
 .premium-btn.secondary {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background: var(--color-accent, #2563EB);
+  color: var(--color-on-accent, #FFFFFF);
+  border: 2px solid transparent;
 }
 
 .premium-btn.secondary:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #1d4ed8;
   transform: translateY(-2px);
 }
 
@@ -96,10 +110,16 @@
   left: 100%;
 }
 
-/* Professional Badge */
+/* Professional Badge - Using Semantic Tokens */
 .my-plans-hero .professional-badge {
   backdrop-filter: blur(12px);
   animation: badge-glow 3s ease-in-out infinite alternate;
+  color: var(--color-text-muted, #999999);
+}
+
+.light-theme .my-plans-hero .professional-badge,
+[data-theme="light"] .my-plans-hero .professional-badge {
+  color: var(--color-text-muted, #555555);
 }
 
 @keyframes badge-glow {

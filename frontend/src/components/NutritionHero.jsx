@@ -29,10 +29,10 @@ export default function NutritionHero() {
     img.loading = 'eager';
   }, []);
 
-  // Professional overlay for maximum visual impact
+  // Professional overlay for maximum visual impact with stronger Light Mode overlay
   const overlayClasses = theme === 'dark' 
     ? 'bg-gradient-to-t from-black/80 via-black/50 to-black/30'
-    : 'bg-gradient-to-t from-black/70 via-black/40 to-black/20';
+    : 'bg-gradient-to-t from-black/60 via-black/50 to-black/40';
 
   return (
     <motion.div 
@@ -81,30 +81,71 @@ export default function NutritionHero() {
         </div>
       )}
 
-      {/* Dark Overlay for Text Contrast */}
-      <div className={`absolute inset-0 ${overlayClasses}`} />
+      {/* Dark Overlay for Text Contrast - Stronger overlay for Light Mode */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: theme === 'light' 
+            ? 'rgba(0,0,0,0.45)' 
+            : 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.3) 100%)'
+        }}
+      />
 
       {/* Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
           <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-lg"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight nutrition-hero-title"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ 
+              color: theme === 'light' ? '#16A34A' : '#4ADE80',
+              textShadow: 'none',
+              fontWeight: theme === 'light' ? '900' : '800'
+            }}
           >
             Nutrition Tracker
           </motion.h1>
           
           <motion.p 
-            className="text-sm sm:text-base md:text-lg lg:text-xl text-white/95 mb-4 sm:mb-6 leading-relaxed font-medium drop-shadow-md max-w-3xl mx-auto"
+            className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 leading-relaxed font-medium max-w-3xl mx-auto nutrition-hero-subtitle"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
+            style={{ 
+              color: theme === 'light' ? '#374151' : '#CCCCCC',
+              textShadow: 'none',
+              fontWeight: theme === 'light' ? '700' : '500'
+            }}
           >
             Transform your fitness journey with precision nutrition tracking
             <br className="hidden sm:block" />
-            <span className="text-green-300 font-semibold">Real-time insights</span> • <span className="text-blue-300 font-semibold">Smart goals</span> • <span className="text-purple-300 font-semibold">Professional results</span>
+            <span 
+              className="nutrition-hero-accent"
+              style={{ 
+                color: theme === 'light' ? '#4B5563' : '#AAAAAA',
+                fontWeight: theme === 'light' ? '600' : '500'
+              }}
+            >
+              Real-time insights
+            </span> • <span 
+              className="nutrition-hero-accent"
+              style={{ 
+                color: theme === 'light' ? '#4B5563' : '#AAAAAA',
+                fontWeight: theme === 'light' ? '600' : '500'
+              }}
+            >
+              Smart goals
+            </span> • <span 
+              className="nutrition-hero-accent"
+              style={{ 
+                color: theme === 'light' ? '#4B5563' : '#AAAAAA',
+                fontWeight: theme === 'light' ? '600' : '500'
+              }}
+            >
+              Professional results
+            </span>
           </motion.p>
           
           <motion.div 
@@ -124,7 +165,12 @@ export default function NutritionHero() {
                   }, 500);
                 }
               }}
-              className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4 focus:ring-green-500/30"
+              className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4"
+              style={{
+                background: '#2563EB',
+                color: '#FFFFFF',
+                border: 'none'
+              }}
               aria-label="Start tracking your nutrition now"
             >
               Start Tracking
@@ -139,7 +185,13 @@ export default function NutritionHero() {
                   window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }
               }}
-              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 hover:border-white/50 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4 focus:ring-white/30"
+              className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4"
+              style={{
+                background: theme === 'light' ? '#F3F4F6' : 'rgba(255,255,255,0.1)',
+                color: theme === 'light' ? '#111111' : '#FFFFFF',
+                border: theme === 'light' ? '2px solid rgba(0,0,0,0.1)' : '2px solid rgba(255,255,255,0.3)',
+                backdropFilter: 'blur(10px)'
+              }}
               aria-label="Learn more about nutrition tracking features"
             >
               Learn More

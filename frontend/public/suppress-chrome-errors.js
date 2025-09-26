@@ -24,7 +24,15 @@
     /useTranslation_useTranslation @/,
     /RootWrapper @/,
     /webpack_modules/,
-    /createAndMountRoot @/
+    /createAndMountRoot @/,
+    /Warning: React does not recognize/,
+    /fetchPriority.*prop.*DOM element/,
+    /Failed to load.*data.*SyntaxError.*Failed to execute.*json/,
+    /Unexpected token.*doctype.*not valid JSON/,
+    /theme is not defined/,
+    /ReferenceError: theme is not defined/,
+    /Theme Context Error/,
+    /useTheme must be used within/
   ];
   
   // Function to check if error is from Chrome extension

@@ -171,18 +171,45 @@ router.get('/stats', auth, async (req, res) => {
     let currentStreak = user.currentStreak || 0;
     if (!user.currentStreak) {
       currentStreak = calculateStreak(completedWorkouts);
+      // Update user with calculated streak
+      await User.findByIdAndUpdate(req.user.id, { currentStreak });
     }
     
     // Calculate XP from user model or from activities
     const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
     const userXP = user.xpPoints || calculatedXP;
     
+    // Update user XP if it's different from calculated
+    if (user.xpPoints !== calculatedXP) {
+      await User.findByIdAndUpdate(req.user.id, { xpPoints: calculatedXP });
+    }
+    
+    // Get today's workouts for daily stats
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayWorkouts = completedWorkouts.filter(w => {
+      const workoutDate = new Date(w.createdAt);
+      workoutDate.setHours(0, 0, 0, 0);
+      return workoutDate.getTime() === today.getTime();
+    });
+    
+    // Get this week's workouts
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    const weekWorkouts = completedWorkouts.filter(w => {
+      const workoutDate = new Date(w.createdAt);
+      return workoutDate >= weekStart;
+    });
+    
     const stats = {
       totalWorkouts: completedWorkouts.length,
+      todayWorkouts: todayWorkouts.length,
+      weeklyWorkouts: weekWorkouts.length,
       totalMeals: meals.length,
       totalPlans: plans.length,
+      totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
       currentStreak,
-      xpPoints: userXP,
+      xpPoints: calculatedXP,
       totalCaloriesBurned,
       totalDuration: Math.round(totalDuration / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
@@ -193,10 +220,11 @@ router.get('/stats', auth, async (req, res) => {
       membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24)),
       isRealTime: true,
       lastSync: new Date().toISOString(),
-      dataSource: 'MongoDB'
+      dataSource: 'MongoDB',
+      syncTimestamp: Date.now()
     };
     
-    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak`);
+    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak, ${calculatedXP} XP`);
     
     res.json(stats);
   } catch (error) {
@@ -429,7 +457,7 @@ router.get('/achievements', auth, async (req, res) => {
   }
 });
 
-// Enhanced streak calculation
+// Enhanced streak calculation with better logic
 function calculateStreak(workouts) {
   if (!workouts.length) return 0;
   
@@ -437,45 +465,59 @@ function calculateStreak(workouts) {
   const workoutDates = [...new Set(
     workouts
       .filter(w => w.completed)
-      .map(w => new Date(w.createdAt).toDateString())
-  )].sort((a, b) => new Date(b) - new Date(a));
+      .map(w => {
+        const date = new Date(w.createdAt);
+        date.setHours(0, 0, 0, 0);
+        return date.getTime();
+      })
+  )].sort((a, b) => b - a); // Sort descending (most recent first)
   
   if (!workoutDates.length) return 0;
   
   let streak = 0;
-  const today = new Date().toDateString();
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toDateString();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTime = today.getTime();
+  
+  const yesterday = new Date(todayTime - 24 * 60 * 60 * 1000);
+  const yesterdayTime = yesterday.getTime();
   
   // Check if streak is current (today or yesterday)
-  if (workoutDates[0] !== today && workoutDates[0] !== yesterday) {
-    return 0;
+  const mostRecentWorkout = workoutDates[0];
+  if (mostRecentWorkout !== todayTime && mostRecentWorkout !== yesterdayTime) {
+    return 0; // Streak is broken
   }
   
   // Count consecutive days
-  let currentDate = new Date(workoutDates[0]);
+  let expectedDate = mostRecentWorkout;
   
-  for (const dateStr of workoutDates) {
-    const workoutDate = new Date(dateStr);
-    const daysDiff = Math.floor((currentDate - workoutDate) / (1000 * 60 * 60 * 24));
-    
-    if (daysDiff === 0) {
+  for (const workoutTime of workoutDates) {
+    if (workoutTime === expectedDate) {
       streak++;
-      currentDate = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000);
-    } else if (daysDiff === 1) {
-      // Skip a day, but continue counting
-      currentDate = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000);
+      expectedDate -= 24 * 60 * 60 * 1000; // Move to previous day
     } else {
-      break;
+      break; // Gap found, streak ends
     }
   }
   
   return streak;
 }
 
-// Get user settings
+// Get user settings with real-time data
 router.get('/settings', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Get real-time activity counts
+    const [workouts, meals, plans] = await Promise.all([
+      Workout.countDocuments({ userId: req.user.id, completed: true }),
+      Meal.countDocuments({ userId: req.user.id }),
+      Plan.countDocuments({ userId: req.user.id })
+    ]);
     
     const settings = {
       profile: {
@@ -514,9 +556,22 @@ router.get('/settings', auth, async (req, res) => {
         syncAcrossDevices: true,
         dataRetention: '1year'
       },
+      // Real-time activity summary
+      activitySummary: {
+        totalWorkouts: workouts,
+        totalMeals: meals,
+        totalPlans: plans,
+        currentStreak: user.currentStreak || 0,
+        xpPoints: user.xpPoints || ((workouts * 100) + (plans * 50) + (meals * 25)),
+        membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24))
+      },
       lastSync: new Date().toISOString(),
-      isRealTime: true
+      isRealTime: true,
+      syncTimestamp: Date.now(),
+      dataSource: 'MongoDB'
     };
+    
+    console.log(`✅ Real-time settings loaded for user ${user._id}: ${workouts} workouts, ${meals} meals, ${plans} plans`);
     
     res.json(settings);
   } catch (error) {
@@ -525,35 +580,88 @@ router.get('/settings', auth, async (req, res) => {
   }
 });
 
-// Update user settings
+// Update user settings with real-time sync
 router.put('/settings', auth, async (req, res) => {
   try {
-    const { profile, fitnessGoals, notifications, privacy, preferences, data } = req.body;
+    const { profile, fitnessGoals, notifications, privacy, preferences, data, globalSync, autoSaveTimestamp } = req.body;
     
-    const updateData = {};
+    const updateData = {
+      updatedAt: new Date(),
+      lastActiveDate: new Date()
+    };
     
     // Update profile fields
     if (profile) {
-      if (profile.name) updateData.name = profile.name;
-      if (profile.email) updateData.email = profile.email;
+      if (profile.name !== undefined) updateData.name = profile.name;
+      if (profile.email !== undefined) updateData.email = profile.email;
       if (profile.phone !== undefined) updateData.phone = profile.phone;
       if (profile.location !== undefined) updateData.location = profile.location;
     }
     
-    // Update settings fields
-    if (fitnessGoals) updateData.fitnessGoals = fitnessGoals;
-    if (notifications) updateData.notifications = notifications;
-    if (privacy) updateData.privacy = privacy;
-    if (preferences) updateData.preferences = preferences;
-    if (data) updateData.dataSettings = data;
+    // Update settings fields with validation
+    if (fitnessGoals) {
+      updateData.fitnessGoals = {
+        goal: fitnessGoals.goal || 'maintain',
+        activityLevel: fitnessGoals.activityLevel || 'moderate',
+        targetWeight: fitnessGoals.targetWeight || null,
+        weeklyGoal: Math.max(1, Math.min(7, fitnessGoals.weeklyGoal || 3))
+      };
+    }
     
-    updateData.updatedAt = new Date();
+    if (notifications) {
+      updateData.notifications = {
+        emailNotifications: notifications.emailNotifications ?? true,
+        pushNotifications: notifications.pushNotifications ?? true,
+        workoutReminders: notifications.workoutReminders ?? true,
+        mealReminders: notifications.mealReminders ?? false,
+        achievementAlerts: notifications.achievementAlerts ?? true
+      };
+    }
+    
+    if (privacy) {
+      updateData.privacy = {
+        profileVisibility: privacy.profileVisibility || 'public',
+        dataSharing: privacy.dataSharing ?? false,
+        analyticsOptOut: privacy.analyticsOptOut ?? false
+      };
+    }
+    
+    if (preferences) {
+      updateData.preferences = {
+        theme: preferences.theme || 'dark',
+        language: preferences.language || 'en',
+        units: preferences.units || 'metric',
+        dateFormat: preferences.dateFormat || 'MM/DD/YYYY',
+        timeFormat: preferences.timeFormat || '12h'
+      };
+    }
+    
+    if (data) {
+      updateData.dataSettings = {
+        autoBackup: data.autoBackup ?? true,
+        syncAcrossDevices: data.syncAcrossDevices ?? true,
+        dataRetention: data.dataRetention || '1year'
+      };
+    }
+    
+    // Add sync metadata
+    if (globalSync) {
+      updateData.lastGlobalSync = new Date();
+    }
+    
+    if (autoSaveTimestamp) {
+      updateData.lastAutoSave = new Date(autoSaveTimestamp);
+    }
     
     const user = await User.findByIdAndUpdate(
       req.user.id,
       updateData,
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
     
     const settings = {
       profile: {
@@ -593,13 +701,35 @@ router.put('/settings', auth, async (req, res) => {
         dataRetention: '1year'
       },
       lastSync: new Date().toISOString(),
-      isRealTime: true
+      isRealTime: true,
+      syncTimestamp: Date.now(),
+      globalSync: !!globalSync
     };
     
-    res.json({ success: true, settings, user });
+    // Log the successful update
+    const updatedFields = Object.keys(updateData).filter(key => 
+      !['updatedAt', 'lastActiveDate', 'lastGlobalSync', 'lastAutoSave'].includes(key)
+    );
+    
+    console.log(`✅ Real-time settings update for user ${user._id}: ${updatedFields.join(', ')}`);
+    
+    res.json({ 
+      success: true, 
+      settings, 
+      user,
+      message: 'Settings updated successfully',
+      timestamp: new Date().toISOString(),
+      syncedFields: updatedFields,
+      source: 'mongodb'
+    });
   } catch (error) {
     console.error('Settings update error:', error);
-    res.status(500).json({ success: false, message: 'Failed to update settings', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to update settings', 
+      error: error.message,
+      source: 'error'
+    });
   }
 });
 
@@ -800,6 +930,12 @@ router.post('/sync-profile', auth, async (req, res) => {
     const activity = await getActivityForUser(req.user.id);
     const achievements = await getAchievementsForUser(req.user.id);
     
+    // Update last active timestamp
+    await User.findByIdAndUpdate(req.user.id, { 
+      lastActiveDate: new Date(),
+      lastSyncDate: new Date()
+    });
+    
     res.json({
       success: true,
       data: {
@@ -807,8 +943,10 @@ router.post('/sync-profile', auth, async (req, res) => {
         stats,
         activity,
         achievements,
-        syncTime: new Date().toISOString()
-      }
+        syncTime: new Date().toISOString(),
+        syncTimestamp: Date.now()
+      },
+      message: 'Profile synced successfully'
     });
   } catch (error) {
     console.error('Profile sync error:', error);
@@ -816,26 +954,69 @@ router.post('/sync-profile', auth, async (req, res) => {
   }
 });
 
+// Real-time settings sync status
+router.get('/sync-status', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('lastActiveDate lastSyncDate lastGlobalSync lastAutoSave');
+    
+    res.json({
+      success: true,
+      status: {
+        lastActive: user.lastActiveDate || user.createdAt,
+        lastSync: user.lastSyncDate || user.updatedAt,
+        lastGlobalSync: user.lastGlobalSync || null,
+        lastAutoSave: user.lastAutoSave || null,
+        isOnline: true,
+        syncTimestamp: Date.now()
+      }
+    });
+  } catch (error) {
+    console.error('Sync status error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get sync status', error: error.message });
+  }
+});
+
 // Helper functions for reusability
 async function getStatsForUser(userId) {
-  const [workouts, meals, user] = await Promise.all([
+  const [workouts, meals, plans, user] = await Promise.all([
     Workout.find({ userId }),
     Meal.find({ userId }),
+    Plan.find({ userId }),
     User.findById(userId)
   ]);
   
   const completedWorkouts = workouts.filter(w => w.completed);
-  const uniquePlans = [...new Set(workouts.filter(w => w.planId).map(w => w.planId))];
   const currentStreak = calculateStreak(completedWorkouts);
   const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
   const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
+  const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
+  
+  // Get today's and this week's workouts
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayWorkouts = completedWorkouts.filter(w => {
+    const workoutDate = new Date(w.createdAt);
+    workoutDate.setHours(0, 0, 0, 0);
+    return workoutDate.getTime() === today.getTime();
+  });
+  
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  const weekWorkouts = completedWorkouts.filter(w => {
+    const workoutDate = new Date(w.createdAt);
+    return workoutDate >= weekStart;
+  });
   
   return {
     totalWorkouts: completedWorkouts.length,
+    todayWorkouts: todayWorkouts.length,
+    weeklyWorkouts: weekWorkouts.length,
     totalMeals: meals.length,
-    totalPlans: uniquePlans.length,
+    totalPlans: plans.length,
+    totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
     currentStreak,
-    xpPoints: completedWorkouts.length * 100 + uniquePlans.length * 50 + meals.length * 25,
+    longestStreak: user.longestStreak || currentStreak,
+    xpPoints: user.xpPoints || calculatedXP,
     totalCaloriesBurned,
     totalDuration: Math.round(totalDuration / 60),
     averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
@@ -843,7 +1024,8 @@ async function getStatsForUser(userId) {
     lastActive: new Date(),
     membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24)),
     isRealTime: true,
-    lastSync: new Date().toISOString()
+    lastSync: new Date().toISOString(),
+    syncTimestamp: Date.now()
   };
 }
 

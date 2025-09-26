@@ -3,17 +3,20 @@
 
 :root {
   /* === HERO TEXT SEMANTIC TOKENS === */
-  --color-text-primary: #ffffff;           /* Primary heading text - Dark Mode */
-  --color-text-secondary: #cccccc;         /* Subheading text - Dark Mode */
+  --color-text-primary: #FFFFFF;           /* My Workout Plans title - Dark Mode */
+  --color-text-secondary: #CCCCCC;         /* Subtitle text - Dark Mode */
   --color-text-tertiary: #cbd5e1;          /* Muted text - Dark Mode */
+  --color-text-muted: #999999;             /* Professional Gym Tracker tagline - Dark Mode */
   
   /* === HERO ACCENT COLORS === */
-  --color-accent: #00d4ff;                 /* Primary accent - Dark Mode */
-  --color-on-accent: #ffffff;              /* White text on accent backgrounds */
+  --color-accent: #2563EB;                 /* Bright blue for buttons - Dark Mode */
+  --color-text-accent: #4ADE80;            /* Fresh green tone for titles - Dark Mode */
+  --color-on-accent: #FFFFFF;              /* White text on accent buttons */
   --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
+  --color-surface: rgba(255,255,255,0.1);  /* Surface background - Dark Mode */
   
   /* === HERO BACKGROUND OVERLAYS === */
-  --color-background-overlay: rgba(0,0,0,0.6);  /* Dark overlay - Dark Mode */
+  --color-background-overlay: rgba(0,0,0,0.2);  /* Light overlay - Dark Mode for better image visibility */
   
   /* === HERO BUTTON COLORS === */
   --color-button-primary-bg: #2563eb;      /* Primary button background */
@@ -28,23 +31,31 @@
   --color-card-text: #ffffff;              /* Card text - Dark Mode */
   --color-card-label: #e2e8f0;             /* Card labels - Dark Mode */
   --color-card-muted: #cbd5e1;             /* Card muted text - Dark Mode */
+  
+  /* === DASHBOARD HERO SEMANTIC TOKENS === */
+  --color-surface: rgba(255,255,255,0.1);  /* Surface background - Dark Mode */
+  --color-success: #22c55e;                /* Success indicator - green */
+  --color-background-overlay: rgba(0,0,0,0.6);  /* Background overlay - Dark Mode */
 }
 
 /* ===== LIGHT MODE SEMANTIC TOKENS ===== */
 .light-theme,
 [data-theme="light"] {
   /* === HERO TEXT SEMANTIC TOKENS - LIGHT MODE === */
-  --color-text-primary: #111111;           /* Dark neutral for headings */
-  --color-text-secondary: #333333;         /* Medium-dark neutral for subheadings */
-  --color-text-tertiary: #555555;          /* Dark neutral for muted text */
+  --color-text-primary: #111111;           /* My Workout Plans title - Light Mode */
+  --color-text-secondary: #333333;         /* Subtitle text - Light Mode */
+  --color-text-tertiary: #333333;          /* Dark gray for muted text */
+  --color-text-muted: #555555;             /* Professional Gym Tracker tagline - Light Mode */
   
   /* === HERO ACCENT COLORS - LIGHT MODE === */
-  --color-accent: #2563eb;                 /* Bright blue accent */
-  --color-on-accent: #ffffff;              /* White text on accent */
+  --color-accent: #2563EB;                 /* Bright blue for buttons - Light Mode */
+  --color-text-accent: #16A34A;            /* Fresh green tone for titles - Light Mode */
+  --color-on-accent: #FFFFFF;              /* White text on accent buttons */
   --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
+  --color-surface: #F3F4F6;                /* Surface background - Light Mode */
   
   /* === HERO BACKGROUND OVERLAYS - LIGHT MODE === */
-  --color-background-overlay: rgba(0,0,0,0.5);  /* Stronger dark overlay for better text contrast */
+  --color-background-overlay: rgba(0,0,0,0.35);  /* Subtle overlay for Light Mode readability while maintaining 4.5:1 contrast */
   
   /* === HERO BUTTON COLORS - LIGHT MODE === */
   --color-button-primary-bg: #2563eb;      /* Solid bright blue */
@@ -59,6 +70,11 @@
   --color-card-text: #111111;              /* Dark text for readability */
   --color-card-label: #333333;             /* Dark labels */
   --color-card-muted: #555555;             /* Dark muted text */
+  
+  /* === DASHBOARD HERO SEMANTIC TOKENS - LIGHT MODE === */
+  --color-surface: #ffffff;                /* White surface background - Light Mode */
+  --color-success: #22c55e;                /* Success indicator - green (same in both modes) */
+  --color-background-overlay: rgba(0,0,0,0.35);  /* Semi-transparent dark overlay - Light Mode */
 }
 
 /* ===== HERO SECTION SEMANTIC CLASSES ===== */
@@ -68,10 +84,26 @@
   text-shadow: 0 2px 8px var(--color-background-overlay) !important;
 }
 
+/* Light mode - ensure maximum contrast */
+.light-theme .hero-text-primary,
+[data-theme="light"] .hero-text-primary {
+  color: #000000 !important;
+  text-shadow: 2px 2px 4px rgba(255,255,255,0.8) !important;
+  font-weight: 900 !important;
+}
+
 .hero-text-secondary {
   color: var(--color-text-secondary) !important;
   font-weight: 600 !important;
   text-shadow: 0 2px 6px var(--color-background-overlay) !important;
+}
+
+/* Light mode - ensure readable contrast */
+.light-theme .hero-text-secondary,
+[data-theme="light"] .hero-text-secondary {
+  color: #1a1a1a !important;
+  text-shadow: 1px 1px 3px rgba(255,255,255,0.7) !important;
+  font-weight: 700 !important;
 }
 
 .hero-text-tertiary {
@@ -137,22 +169,24 @@
   background: var(--color-background-overlay) !important;
 }
 
+/* Minimal overlay for dark mode to preserve image brightness */
+.dark .hero-overlay,
+:root .hero-overlay {
+  background: rgba(0,0,0,0.15) !important;
+}
+
+/* Light mode overlay for text readability */
+.light-theme .hero-overlay,
+[data-theme="light"] .hero-overlay {
+  background: rgba(0,0,0,0.45) !important;
+}
+
 /* ===== LIGHT MODE SPECIFIC OVERRIDES ===== */
-/* Removed overrides to allow semantic tokens to control text colors */
-
-/* Remove text shadows in light mode for better readability */
-.light-theme .hero-text-primary,
-[data-theme="light"] .hero-text-primary {
-  text-shadow: none !important;
-}
-
-.light-theme .hero-text-secondary,
-[data-theme="light"] .hero-text-secondary {
-  text-shadow: none !important;
-}
+/* Text shadows removed in light mode for better readability */
 
 .light-theme .hero-text-tertiary,
 [data-theme="light"] .hero-text-tertiary {
+  color: #555555 !important;
   text-shadow: none !important;
 }
 
@@ -202,6 +236,72 @@
   .hero-text-secondary {
     text-shadow: 0 2px 8px var(--color-background-overlay) !important;
   }
+}
+
+/* ===== MY PLANS HEADER LIGHT MODE OVERRIDES ===== */
+.light-theme .my-plans-header-title,
+[data-theme="light"] .my-plans-header-title {
+  color: #000000 !important;
+  text-shadow: 2px 2px 6px rgba(255,255,255,0.9), 0 0 10px rgba(255,255,255,0.8) !important;
+  font-weight: 900 !important;
+}
+
+.light-theme .my-plans-header-subtitle,
+[data-theme="light"] .my-plans-header-subtitle {
+  color: #1a1a1a !important;
+  text-shadow: 1px 1px 4px rgba(255,255,255,0.8), 0 0 8px rgba(255,255,255,0.6) !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .my-plans-header-tagline,
+[data-theme="light"] .my-plans-header-tagline {
+  color: #333333 !important;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7) !important;
+  font-weight: 600 !important;
+}
+
+/* ===== BUILD NEW PLAN BUTTON STYLING ===== */
+.my-plans-button-secondary {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  color: #ffffff !important;
+  border: 2px solid #8b5cf6 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.my-plans-button-secondary:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+  border-color: #7c3aed !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6) !important;
+}
+
+/* ===== NUTRITION HERO TEXT STYLING ===== */
+.nutrition-hero-title {
+  color: var(--color-text-accent) !important;
+}
+
+.nutrition-hero-subtitle {
+  color: var(--color-text-secondary) !important;
+}
+
+.nutrition-hero-accent {
+  color: var(--color-text-secondary) !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .nutrition-hero-title,
+[data-theme="light"] .nutrition-hero-title {
+  color: #16A34A !important; /* Fresh green tone for healthy, energetic look */
+}
+
+.light-theme .nutrition-hero-subtitle,
+[data-theme="light"] .nutrition-hero-subtitle {
+  color: #374151 !important; /* Light Mode secondary text */
+}
+
+.light-theme .nutrition-hero-accent,
+[data-theme="light"] .nutrition-hero-accent {
+  color: #4B5563 !important; /* Slightly lighter gray for accent text */
 }
 
 /* ===== HIGH CONTRAST MODE ===== */

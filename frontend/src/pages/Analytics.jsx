@@ -8,7 +8,7 @@ import { useTheme } from '../context/ThemeContext';
 import AuthGuard from '../components/AuthGuard';
 import RealTimeAchievements from '../components/RealTimeAchievements';
 import RealTimeStats from '../components/RealTimeStats';
-import progressAnalyticsImg from '../assets/Progress & Analytics.jpg';
+import progressAnalyticsImg from '../assets/Progress-Analytics.jpg';
 
 // Safe import of onlineService
 let onlineService = null;

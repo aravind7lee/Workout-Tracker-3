@@ -203,7 +203,7 @@ export default function Navbar() {
                   }`}
                 >
                   <span className="mr-2">{link.icon}</span>
-                  {link.label}
+                  <span className="font-body">{link.label}</span>
                 </motion.div>
                 
                 {/* Active indicator */}
@@ -389,7 +389,7 @@ export default function Navbar() {
                       {(user?.name && user.name.charAt(0)?.toUpperCase()) || 'U'}
                     </div>
                   )}
-                  <span className="hidden sm:block text-white font-medium">{user?.name || 'User'}</span>
+                  <span className="hidden sm:block text-white font-medium font-body">{user?.name || 'User'}</span>
                   <span className="hidden lg:block text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full">
                     Online
                   </span>
@@ -426,7 +426,7 @@ export default function Navbar() {
                         }}
                       >
                         <UserCircle size={16} />
-                        <span>My Account</span>
+                        <span className="font-body">My Account</span>
                       </Link>
                       <Link
                         to="/settings"
@@ -445,7 +445,7 @@ export default function Navbar() {
                         }}
                       >
                         <Settings size={16} />
-                        <span>Settings</span>
+                        <span className="font-body">Settings</span>
                       </Link>
                       <hr style={{ margin: '8px 0', border: 'none', borderTop: '1px solid var(--panel-border)' }} />
                       <button
@@ -463,7 +463,7 @@ export default function Navbar() {
                         }}
                       >
                         <LogOut size={16} />
-                        <span>Logout</span>
+                        <span className="font-body">Logout</span>
                       </button>
                     </motion.div>
                   )}
@@ -684,7 +684,7 @@ export default function Navbar() {
                       }}
                     >
                       <span className="text-lg">{link.icon}</span>
-                      <span className="font-medium text-base">{link.label}</span>
+                      <span className="font-medium text-base font-body">{link.label}</span>
                     </Link>
                   ))}
                 </div>
@@ -729,7 +729,7 @@ export default function Navbar() {
                         }}
                       >
                         <UserCircle size={18} />
-                        <span className="text-sm sm:text-base">My Account</span>
+                        <span className="text-sm sm:text-base font-body">My Account</span>
                       </Link>
                       <Link
                         to="/settings"
@@ -746,7 +746,7 @@ export default function Navbar() {
                         }}
                       >
                         <Settings size={18} />
-                        <span className="text-sm sm:text-base">Settings</span>
+                        <span className="text-sm sm:text-base font-body">Settings</span>
                       </Link>
                       <button
                         onClick={handleLogout}
@@ -760,7 +760,7 @@ export default function Navbar() {
                         }}
                       >
                         <LogOut size={18} />
-                        <span className="text-sm sm:text-base">Logout</span>
+                        <span className="text-sm sm:text-base font-body">Logout</span>
                       </button>
                     </div>
                   </div>
@@ -773,7 +773,7 @@ export default function Navbar() {
                         className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-lg"
                       >
                         <User size={18} />
-                        <span className="font-medium">Login</span>
+                        <span className="font-medium font-body">Login</span>
                       </Link>
                       <Link
                         to="/register"
@@ -781,7 +781,7 @@ export default function Navbar() {
                         className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg"
                       >
                         <Zap size={18} />
-                        <span className="font-medium">Sign Up</span>
+                        <span className="font-medium font-body">Sign Up</span>
                       </Link>
                     </div>
                   </div>

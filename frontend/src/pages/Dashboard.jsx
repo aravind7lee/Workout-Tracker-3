@@ -7,6 +7,7 @@ import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
+import backendConnection from '../utils/backendConnection';
 
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated } = useAuth();
@@ -22,7 +23,7 @@ const Dashboard = () => {
 
   const checkOnlineStatus = async () => {
     try {
-      const online = await onlineService.checkBackendStatus();
+      const online = await backendConnection.testConnection();
       setIsOnline(online);
       return online;
     } catch (error) {
@@ -45,29 +46,18 @@ const Dashboard = () => {
         // Load from MongoDB backend
         try {
           const token = localStorage.getItem('token');
-          const [statsResponse, plansResponse, workoutsResponse] = await Promise.all([
-            fetch('/api/users/stats', {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            }),
-            fetch('/api/plans', {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            }),
-            fetch('/api/workouts', {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            })
+          const authHeaders = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          };
+          
+          const [stats, plans, workouts] = await Promise.all([
+            backendConnection.makeRequest('/api/users/stats', { headers: authHeaders }).catch(() => null),
+            backendConnection.makeRequest('/api/plans', { headers: authHeaders }).catch(() => []),
+            backendConnection.makeRequest('/api/workouts', { headers: authHeaders }).catch(() => [])
           ]);
           
-          if (statsResponse.ok) {
-            const stats = await statsResponse.json();
+          if (stats) {
             setWorkoutStats({
               total: stats.totalWorkouts || 0,
               today: stats.todayWorkouts || 0,
@@ -79,19 +69,17 @@ const Dashboard = () => {
             });
           }
           
-          if (plansResponse.ok) {
-            const plans = await plansResponse.json();
-            setSavedPlans(plans || []);
+          if (plans && Array.isArray(plans)) {
+            setSavedPlans(plans);
           }
           
-          if (workoutsResponse.ok) {
-            const workouts = await workoutsResponse.json();
-            setRecentWorkouts(workouts || []);
+          if (workouts && Array.isArray(workouts)) {
+            setRecentWorkouts(workouts);
           }
           
           console.log('✅ Dashboard data loaded from MongoDB');
         } catch (onlineError) {
-          console.error('Failed to load MongoDB data:', onlineError);
+          console.warn('MongoDB connection failed, switching to offline mode:', onlineError.message);
           setIsOnline(false);
           loadOfflineData();
         }
@@ -139,8 +127,6 @@ const Dashboard = () => {
     }
   }, [authUser]);
 
-
-
   useEffect(() => {
     if (!isAuthenticated()) {
       setLoading(false);
@@ -186,12 +172,12 @@ const Dashboard = () => {
     window.addEventListener('planCreated', loadDashboardData);
     window.addEventListener('mealAdded', loadDashboardData);
     
-    // Real-time refresh every 30 seconds
+    // Reduced refresh interval to prevent API spam - only refresh every 5 minutes
     const refreshInterval = setInterval(() => {
-      if (isAuthenticated()) {
+      if (isAuthenticated() && isOnline) {
         loadDashboardData();
       }
-    }, 30000);
+    }, 300000); // 5 minutes
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
@@ -211,8 +197,6 @@ const Dashboard = () => {
     loadDashboardData();
   };
 
-
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -223,8 +207,6 @@ const Dashboard = () => {
       </div>
     );
   }
-
-
 
   return (
     <AuthGuard>
@@ -267,9 +249,9 @@ const Dashboard = () => {
               Welcome back{authUser?.name ? `, ${authUser.name}` : ''}! 👋
             </h1>
             <p className="text-slate-400 mt-1 text-sm sm:text-base">
-              Ready to crush your fitness goals today?
+              Track your progress, manage workouts, and achieve your fitness goals efficiently.
               <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-yellow-400'}`}>
-                • {isOnline ? '🔥 MongoDB Live' : '📱 Local Mode'}
+                • {isOnline ? '🔥 Real-time tracking active' : '📱 Offline mode active'}
               </span>
             </p>
 
@@ -290,8 +272,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-
 
       {/* Real-Time Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">

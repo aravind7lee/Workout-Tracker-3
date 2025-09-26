@@ -212,6 +212,24 @@
   transition: opacity 0.3s ease;
 }
 
+/* Ensure hero image maintains original brightness in dark mode */
+.dark .hero-image,
+:root .hero-image {
+  filter: none !important;
+  opacity: 1 !important;
+  brightness: 1 !important;
+  contrast: 1 !important;
+}
+
+/* Specific styling for Heroimg.jpg to maintain original appearance */
+img[src="/Heroimg.jpg"],
+img[src*="Heroimg.jpg"] {
+  filter: none !important;
+  opacity: 1 !important;
+  brightness: 1 !important;
+  contrast: 1 !important;
+}
+
 /* Full Viewport Hero - Professional Gym Website */
 .hero-container {
   height: 100vh;
@@ -239,7 +257,7 @@
 
 /* Premium Gradient Overlays - Lighter for better image visibility */
 .hero-gradient-overlay {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2));
 }
 
 /* Light theme adjustments - Better image visibility */

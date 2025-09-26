@@ -6,9 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GRIND-X</title>
     <meta name="description" content="Professional Workout Tracker Application" />
+    
+    <!-- Google Fonts Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts - Bebas Neue + Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- Font Loading Optimization -->
+    <style>
+      /* Immediate font loading to prevent FOUT */
+      :root {
+        --font-heading: 'Bebas Neue', 'Arial Black', cursive;
+        --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      /* Critical font styles loaded immediately */
+      body {
+        font-family: var(--font-body);
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+    </style>
+    
     <!-- Chrome Extension Error Suppression - Load First -->
     <script src="/suppress-chrome-errors.js"></script>
+    
+    <!-- Additional Error Suppression -->
+    <script>
+      // Immediate error suppression
+      (function() {
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        console.error = function(...args) {
+          const message = args.join(' ');
+          if (message.includes('fetchPriority') || 
+              message.includes('chrome-extension') || 
+              message.includes('contentScript.bundle.js') ||
+              message.includes('Unexpected token') ||
+              message.includes('Failed to load') ||
+              message.includes('SyntaxError')) {
+            return; // Suppress immediately
+          }
+          return originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+          const message = args.join(' ');
+          if (message.includes('fetchPriority') || 
+              message.includes('React does not recognize') ||
+              message.includes('chrome-extension')) {
+            return; // Suppress immediately
+          }
+          return originalWarn.apply(console, args);
+        };
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

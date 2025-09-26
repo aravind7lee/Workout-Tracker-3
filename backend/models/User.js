@@ -235,6 +235,18 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  lastSyncDate: {
+    type: Date,
+    default: Date.now
+  },
+  lastGlobalSync: {
+    type: Date,
+    default: null
+  },
+  lastAutoSave: {
+    type: Date,
+    default: null
+  },
   streakLevel: {
     type: String,
     enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master', 'Legendary', 'Mythical', 'Infinite'],
@@ -260,6 +272,25 @@ const userSchema = new mongoose.Schema({
     perfectMonths: {
       type: Number,
       default: 0
+    }
+  },
+  // Real-time sync metadata
+  syncMetadata: {
+    deviceId: {
+      type: String,
+      default: null
+    },
+    lastSyncTimestamp: {
+      type: Number,
+      default: null
+    },
+    syncCount: {
+      type: Number,
+      default: 0
+    },
+    autoSaveEnabled: {
+      type: Boolean,
+      default: true
     }
   }
 }, {

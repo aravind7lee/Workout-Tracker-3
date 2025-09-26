@@ -49,8 +49,11 @@ export default function WorkoutPlanBuilderHeader() {
         {imageError && (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 absolute inset-0"></div>
         )}
-        {/* Enhanced Gradient Overlay - Professional Gym Style */}
-        <div className="gradient-overlay absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80"></div>
+        {/* Light Gradient Overlay - Preserve Image Clarity */}
+        <div className="gradient-overlay absolute inset-0" 
+             style={{
+               background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)'
+             }}></div>
         
         {/* Professional Particle Background Accent */}
         <div className="absolute inset-0 opacity-30">
@@ -79,7 +82,11 @@ export default function WorkoutPlanBuilderHeader() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 drop-shadow-2xl"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 drop-shadow-2xl"
+              style={{
+                color: 'var(--color-text-primary, #FFFFFF)',
+                textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6)'
+              }}
             >
               My Workout Plans
             </motion.h1>
@@ -89,7 +96,11 @@ export default function WorkoutPlanBuilderHeader() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="text-sm sm:text-base md:text-lg text-white/95 max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
+              className="text-sm sm:text-base md:text-lg max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
+              style={{
+                color: 'var(--color-text-secondary, rgba(255,255,255,0.95))',
+                textShadow: '0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)'
+              }}
             >
               Track, customize, and follow your training programs effortlessly.
             </motion.p>
@@ -103,14 +114,27 @@ export default function WorkoutPlanBuilderHeader() {
             >
               <button 
                 onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 shadow-lg"
+                style={{
+                  backgroundColor: 'var(--color-accent, #2563EB)',
+                  color: 'var(--color-on-accent, #FFFFFF)'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #2563EB)'}
                 aria-label="View your workout plans"
               >
                 View My Plans
               </button>
               <Link
                 to="/plans"
-                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 border-white/60 text-white hover:bg-white/10"
+                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
+                style={{
+                  backgroundColor: 'var(--color-accent, #2563EB)',
+                  color: 'var(--color-on-accent, #FFFFFF)',
+                  borderColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #2563EB)'}
                 aria-label="Create new workout plan"
               >
                 Build New Plan
@@ -124,7 +148,8 @@ export default function WorkoutPlanBuilderHeader() {
               transition={{ duration: 0.8, delay: 0.9 }}
               className="flex justify-center"
             >
-              <div className="bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-full px-3 py-1 text-xs text-blue-200">
+              <div className="bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-full px-3 py-1 text-xs"
+                   style={{ color: 'var(--color-text-muted, #999999)' }}>
                 <span className="flex items-center gap-1">
                   <span>Professional Gym Tracker</span>
                 </span>
