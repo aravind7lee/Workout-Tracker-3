@@ -89,10 +89,16 @@ router.get('/hero-stats', async (req, res) => {
         success: true, 
         data: {
           workouts: 0,
+          totalWorkouts: 0,
           meals: 0,
+          totalMeals: 0,
           xpPoints: 0,
           streak: 0,
-          weeklyGoal: { completed: 0, target: 4, percentage: 0 }
+          currentStreak: 0,
+          weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+          isRealTime: true,
+          lastSync: new Date().toISOString(),
+          dataSource: 'MongoDB'
         }
       });
     }
@@ -108,14 +114,15 @@ router.get('/hero-stats', async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Count total workouts
+    // Count total workouts (both completed and in-progress)
     const totalWorkouts = await Workout.countDocuments({ user: userId });
+    const completedWorkouts = await Workout.countDocuments({ user: userId, completed: true });
     
     // Count total meals
     const totalMeals = await Meal.countDocuments({ userId });
     
-    // Calculate XP points (100 per workout, 50 per meal)
-    const xpPoints = (totalWorkouts * 100) + (totalMeals * 50);
+    // Calculate XP points (100 per completed workout, 50 per meal)
+    const xpPoints = (completedWorkouts * 100) + (totalMeals * 50);
     
     // Calculate current streak
     const today = new Date();
@@ -123,13 +130,15 @@ router.get('/hero-stats', async (req, res) => {
     let streak = 0;
     let currentDate = new Date(startOfToday);
     
-    while (true) {
+    // Check for streak (limit to 365 days to prevent infinite loop)
+    for (let i = 0; i < 365; i++) {
       const dayStart = new Date(currentDate);
       const dayEnd = new Date(currentDate);
       dayEnd.setDate(dayEnd.getDate() + 1);
       
       const hasActivity = await Workout.exists({
         user: userId,
+        completed: true,
         createdAt: { $gte: dayStart, $lt: dayEnd }
       }) || await Meal.exists({
         userId,
@@ -151,6 +160,7 @@ router.get('/hero-stats', async (req, res) => {
     
     const weeklyWorkouts = await Workout.countDocuments({
       user: userId,
+      completed: true,
       createdAt: { $gte: startOfWeek }
     });
     
@@ -158,20 +168,28 @@ router.get('/hero-stats', async (req, res) => {
     const weeklyPercentage = Math.min((weeklyWorkouts / weeklyTarget) * 100, 100);
 
     const heroStats = {
-      workouts: totalWorkouts,
+      workouts: completedWorkouts,
+      totalWorkouts: completedWorkouts,
       meals: totalMeals,
+      totalMeals,
       xpPoints,
       streak,
+      currentStreak: streak,
       weeklyGoal: {
         completed: weeklyWorkouts,
         target: weeklyTarget,
         percentage: weeklyPercentage
-      }
+      },
+      isRealTime: true,
+      lastSync: new Date().toISOString(),
+      dataSource: 'MongoDB',
+      timestamp: Date.now()
     };
 
+    console.log(`✅ Real-time hero stats for user ${userId}:`, heroStats);
     res.json({ success: true, data: heroStats });
   } catch (error) {
-    console.error('Hero stats error:', error);
+    console.error('❌ Hero stats error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

@@ -1,27 +1,23 @@
-// Professional Real-Time Dashboard with Authentication Guard
+// Real-Time MongoDB Dashboard - Online Mode Only
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { planService } from '../services/planService';
-import { workoutService } from '../services/workoutService';
-import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
-import backendConnection from '../utils/backendConnection';
+import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
+import api from '../utils/api';
 
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated } = useAuth();
-  const { stats } = useRealTime();
+  const { stats, isOnline, loading: statsLoading, refreshStats } = useRealTime();
   const { currentStreak, longestStreak, totalCheckIns } = useStreak();
   const { unlockedCount, totalCount, currentXP, completionPercentage, isOnline: achievementsOnline, checkAchievements } = useAchievements();
   const [recentWorkouts, setRecentWorkouts] = useState([]);
   const [savedPlans, setSavedPlans] = useState([]);
-  const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, currentStreak: 0, xpPoints: 0, totalMeals: 0, totalExercises: 0 });
   const [loading, setLoading] = useState(true);
-  const [isOnline, setIsOnline] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [completionData, setCompletionData] = useState(null);
 
@@ -29,11 +25,12 @@ const Dashboard = () => {
 
   const checkOnlineStatus = async () => {
     try {
-      const online = await backendConnection.testConnection();
-      setIsOnline(online);
+      const response = await api.get('/health');
+      const online = response.status === 200;
+      console.log('🔗 Backend status:', online ? 'ONLINE' : 'OFFLINE');
       return online;
     } catch (error) {
-      setIsOnline(false);
+      console.warn('⚠️ Backend check failed:', error.message);
       return false;
     }
   };
@@ -45,132 +42,54 @@ const Dashboard = () => {
         return;
       }
       
-      // Check if online first
-      const online = await checkOnlineStatus();
+      console.log('🚀 Loading REAL-TIME MongoDB dashboard data...');
       
-      if (online) {
-        // Load REAL-TIME data from MongoDB backend - NO FAKE DATA
-        try {
-          const token = localStorage.getItem('token');
-          const authHeaders = {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          };
-          
-          const [realTimeStats, userPlans, completedWorkouts, exerciseCount] = await Promise.all([
-            backendConnection.makeRequest('/api/users/real-time-stats', { headers: authHeaders }).catch(() => null),
-            backendConnection.makeRequest('/api/plans', { headers: authHeaders }).catch(() => []),
-            backendConnection.makeRequest('/api/workouts/completed', { headers: authHeaders }).catch(() => []),
-            backendConnection.makeRequest('/api/exercises/count', { headers: authHeaders }).catch(() => ({ count: 0 }))
-          ]);
-          
-          // Set REAL stats from MongoDB - no defaults or fake data
-          if (realTimeStats) {
-            setWorkoutStats({
-              total: realTimeStats.totalCompletedWorkouts || 0,
-              today: realTimeStats.todayCompletedWorkouts || 0,
-              thisWeek: realTimeStats.weeklyCompletedWorkouts || 0,
-              currentStreak: realTimeStats.currentStreak || 0,
-              xpPoints: realTimeStats.totalXP || 0,
-              totalMeals: realTimeStats.totalMeals || 0,
-              totalExercises: exerciseCount?.count || 0
-            });
-          } else {
-            // If no stats exist, show zeros (real empty state)
-            setWorkoutStats({
-              total: 0,
-              today: 0,
-              thisWeek: 0,
-              currentStreak: 0,
-              xpPoints: 0,
-              totalMeals: 0,
-              totalExercises: 0
-            });
-          }
-          
-          // Set REAL plans from MongoDB
-          setSavedPlans(Array.isArray(userPlans) ? userPlans : []);
-          
-          // Only show REAL completed workouts from MongoDB
-          if (completedWorkouts && Array.isArray(completedWorkouts)) {
-            const realCompletedWorkouts = completedWorkouts.filter(workout => 
-              workout.completed === true && workout.completedAt
-            );
-            setRecentWorkouts(realCompletedWorkouts);
-          } else {
-            setRecentWorkouts([]);
-          }
-          
-          console.log('✅ Real-time MongoDB data loaded - NO FAKE DATA');
-        } catch (onlineError) {
-          console.warn('MongoDB connection failed, switching to offline mode:', onlineError.message);
-          setIsOnline(false);
-          loadRealOfflineData();
-        }
+      // Load REAL-TIME data from MongoDB backend
+      const [userPlans, completedWorkouts] = await Promise.allSettled([
+        api.get('/plans'),
+        api.get('/workouts')
+      ]);
+      
+      // Set REAL plans from MongoDB
+      if (userPlans.status === 'fulfilled' && userPlans.value?.data) {
+        const plans = Array.isArray(userPlans.value.data.plans) ? userPlans.value.data.plans : 
+                     Array.isArray(userPlans.value.data) ? userPlans.value.data : [];
+        setSavedPlans(plans);
+        console.log('✅ Real plans loaded:', plans.length);
       } else {
-        loadRealOfflineData();
+        setSavedPlans([]);
+        console.log('⚠️ No plans found or failed to load');
       }
       
+      // Set REAL completed workouts from MongoDB
+      if (completedWorkouts.status === 'fulfilled' && completedWorkouts.value?.data) {
+        const workouts = Array.isArray(completedWorkouts.value.data.workouts) ? completedWorkouts.value.data.workouts : 
+                        Array.isArray(completedWorkouts.value.data) ? completedWorkouts.value.data : [];
+        
+        // Only show completed workouts
+        const realCompletedWorkouts = workouts.filter(workout => 
+          workout.completed === true || workout.completedAt
+        );
+        setRecentWorkouts(realCompletedWorkouts);
+        console.log('✅ Real workouts loaded:', realCompletedWorkouts.length);
+      } else {
+        setRecentWorkouts([]);
+        console.log('⚠️ No workouts found or failed to load');
+      }
+      
+      console.log('✅ Real-time MongoDB dashboard data loaded successfully');
+      
     } catch (error) {
-      console.error('Dashboard load error:', error);
-      loadRealOfflineData();
+      console.error('❌ Dashboard load error:', error.message);
+      // Set empty states on error
+      setSavedPlans([]);
+      setRecentWorkouts([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Load REAL offline data from localStorage - NO FAKE/DUMMY DATA
-  const loadRealOfflineData = useCallback(() => {
-    try {
-      const allWorkouts = workoutService.getAllWorkouts() || [];
-      const plans = planService.getAllPlans() || [];
-      
-      // Only show REAL completed workouts with actual completion data
-      const realCompletedWorkouts = allWorkouts.filter(workout => 
-        workout.completed === true && 
-        workout.completedAt && 
-        workout.duration > 0
-      );
-      
-      setRecentWorkouts(realCompletedWorkouts);
-      setSavedPlans(plans);
-      
-      const realMeals = JSON.parse(localStorage.getItem('completedMeals') || '[]');
-      const exerciseLibrary = JSON.parse(localStorage.getItem('exerciseLibrary') || '[]');
-      
-      // Calculate REAL stats from actual completed data
-      const today = new Date().toDateString();
-      const weekAgo = new Date();
-      weekAgo.setDate(weekAgo.getDate() - 7);
-      
-      setWorkoutStats({
-        total: realCompletedWorkouts.length,
-        today: realCompletedWorkouts.filter(w => 
-          new Date(w.completedAt).toDateString() === today
-        ).length,
-        thisWeek: realCompletedWorkouts.filter(w => 
-          new Date(w.completedAt) >= weekAgo
-        ).length,
-        currentStreak: currentStreak || 0,
-        xpPoints: realCompletedWorkouts.reduce((total, w) => total + (w.xpEarned || 0), 0),
-        totalMeals: realMeals.length,
-        totalExercises: exerciseLibrary.length || 0
-      });
-      
-      console.log('✅ Real offline data loaded:', {
-        completedWorkouts: realCompletedWorkouts.length,
-        plans: plans.length,
-        meals: realMeals.length,
-        exercises: exerciseLibrary.length
-      });
-    } catch (error) {
-      console.error('Real offline data loading error:', error);
-      // Set to zeros if no real data exists
-      setRecentWorkouts([]);
-      setSavedPlans([]);
-      setWorkoutStats({ total: 0, today: 0, thisWeek: 0, currentStreak: 0, xpPoints: 0, totalMeals: 0, totalExercises: 0 });
-    }
-  }, [authUser, currentStreak]);
+
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -187,13 +106,6 @@ const Dashboard = () => {
       setCompletionData({ exercise, duration, sets, offline });
       setShowCompletionMessage(true);
       
-      setWorkoutStats(prev => ({
-        ...prev,
-        total: prev.total + 1,
-        thisWeek: prev.thisWeek + 1,
-        xpPoints: prev.xpPoints + (sets * 10) + 50
-      }));
-      
       // Add REAL completed workout to the list
       const newCompletedWorkout = {
         id: workout.id || Date.now(),
@@ -208,6 +120,9 @@ const Dashboard = () => {
       
       setRecentWorkouts(prev => [newCompletedWorkout, ...prev]);
       
+      // Refresh real-time stats
+      refreshStats();
+      
       // Check for new achievements
       checkAchievements();
       
@@ -217,29 +132,41 @@ const Dashboard = () => {
     
     const handleStreakUpdated = () => {
       console.log('🔥 Streak updated - refreshing dashboard');
+      refreshStats();
       loadDashboardData();
+    };
+    
+    const handlePlanCreated = () => {
+      console.log('📋 Plan created - refreshing dashboard');
+      loadDashboardData();
+    };
+    
+    const handleMealAdded = () => {
+      console.log('🍽️ Meal added - refreshing stats');
+      refreshStats();
     };
     
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
     window.addEventListener('streakUpdated', handleStreakUpdated);
-    window.addEventListener('planCreated', loadDashboardData);
-    window.addEventListener('mealAdded', loadDashboardData);
+    window.addEventListener('planCreated', handlePlanCreated);
+    window.addEventListener('mealAdded', handleMealAdded);
     
-    // Reduced refresh interval to prevent API spam - only refresh every 5 minutes
+    // Real-time refresh interval - every 2 minutes
     const refreshInterval = setInterval(() => {
-      if (isAuthenticated() && isOnline) {
+      if (isAuthenticated()) {
+        refreshStats();
         loadDashboardData();
       }
-    }, 300000); // 5 minutes
+    }, 120000); // 2 minutes
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
       window.removeEventListener('streakUpdated', handleStreakUpdated);
-      window.removeEventListener('planCreated', loadDashboardData);
-      window.removeEventListener('mealAdded', loadDashboardData);
+      window.removeEventListener('planCreated', handlePlanCreated);
+      window.removeEventListener('mealAdded', handleMealAdded);
       clearInterval(refreshInterval);
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, refreshStats]);
 
   const handleLogout = () => {
     logout();
@@ -247,6 +174,8 @@ const Dashboard = () => {
   };
   
   const handleRefresh = () => {
+    console.log('🔄 Manual refresh triggered');
+    refreshStats();
     loadDashboardData();
   };
 
@@ -262,8 +191,9 @@ const Dashboard = () => {
   }
 
   return (
-    <AuthGuard>
-      <div>
+    <DashboardErrorBoundary>
+      <AuthGuard>
+        <div>
         {/* Dashboard Hero Section - Full Viewport */}
         <DashboardHero />
       
@@ -303,9 +233,14 @@ const Dashboard = () => {
             </h1>
             <p className="text-slate-400 mt-1 text-sm sm:text-base">
               Track your progress, manage workouts, and achieve your fitness goals efficiently.
-              <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-yellow-400'}`}>
-                • {isOnline ? '🔥 Real-time tracking active' : '📱 Offline mode active'}
+              <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-red-400'}`}>
+                • {isOnline ? '🔥 Real-time MongoDB tracking active' : '❌ MongoDB connection failed'}
               </span>
+              {stats.lastSync && (
+                <span className="ml-2 text-xs text-slate-500">
+                  Last sync: {new Date(stats.lastSync).toLocaleTimeString()}
+                </span>
+              )}
             </p>
 
           </div>
@@ -337,15 +272,15 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">💪</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.total}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{stats.totalWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
               <div className="text-xs text-green-400">
-                {workoutStats.total > 0 ? `${workoutStats.total} completed!` : 'Start your first workout'}
+                {stats.totalWorkouts > 0 ? `${stats.totalWorkouts} completed!` : 'Start your first workout'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-blue-400/70">
-            {isOnline ? '🔴 LIVE' : '📱 LOCAL'}
+            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-blue-400/50 text-xs">→</div>
         </button>
@@ -360,16 +295,16 @@ const Dashboard = () => {
             </div>
             <div className="min-w-0">
               <div className="text-xl sm:text-2xl font-bold text-white">
-                {workoutStats.currentStreak > 0 ? `${workoutStats.currentStreak}🔥` : '0🔥'}
+                {stats.currentStreak > 0 ? `${stats.currentStreak}🔥` : '0🔥'}
               </div>
               <div className="text-slate-400 text-xs sm:text-sm">Current Streak</div>
               <div className="text-xs text-green-400">
-                {workoutStats.currentStreak > 0 ? `${workoutStats.currentStreak} days strong!` : 'Start your streak'}
+                {stats.currentStreak > 0 ? `${stats.currentStreak} days strong!` : 'Start your streak'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-red-400/70">
-            {isOnline ? '🔴 LIVE' : '📱 LOCAL'}
+            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-red-400/50 text-xs">→</div>
         </button>
@@ -383,15 +318,15 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">📊</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.thisWeek}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{stats.weeklyGoal?.completed || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
               <div className="text-xs text-green-400">
-                {workoutStats.thisWeek > 0 ? `${workoutStats.thisWeek} this week!` : 'No workouts yet'}
+                {stats.weeklyGoal?.completed > 0 ? `${stats.weeklyGoal.completed} this week!` : 'No workouts yet'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-green-400/70">
-            {isOnline ? '🔴 LIVE' : '📱 LOCAL'}
+            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-green-400/50 text-xs">→</div>
         </button>
@@ -405,15 +340,15 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">⭐</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.xpPoints}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{stats.xpPoints || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
               <div className="text-xs text-green-400">
-                {workoutStats.xpPoints > 0 ? `Level ${Math.floor(workoutStats.xpPoints / 100) + 1}` : 'Earn XP by working out'}
+                {stats.xpPoints > 0 ? `Level ${Math.floor(stats.xpPoints / 100) + 1}` : 'Earn XP by working out'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-purple-400/70">
-            {isOnline ? '🔴 LIVE' : '📱 LOCAL'}
+            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-purple-400/50 text-xs">→</div>
         </button>
@@ -435,7 +370,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-orange-400/70">
-            {isOnline ? '🔴 LIVE' : '📱 LOCAL'}
+            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-orange-400/50 text-xs">→</div>
         </button>
@@ -482,10 +417,10 @@ const Dashboard = () => {
             <div className="text-2xl sm:text-3xl mb-2">📚</div>
             <div className="font-medium text-sm sm:text-base">Exercise Library</div>
             <div className="text-xs text-blue-200 mt-1">
-              {workoutStats.totalExercises > 0 ? `${workoutStats.totalExercises} exercises` : 'Browse exercises'}
+              Browse exercises
             </div>
             <div className="absolute top-2 right-2 text-xs text-blue-300/70">
-              {isOnline ? '🔴' : '📱'}
+              {isOnline && stats.isRealTime ? '🔴' : '❌'}
             </div>
           </button>
           
@@ -499,7 +434,7 @@ const Dashboard = () => {
               {savedPlans.length > 0 ? `${savedPlans.length} plans ready` : 'Create your first plan'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-green-300/70">
-              {isOnline ? '🔴' : '📱'}
+              {isOnline && stats.isRealTime ? '🔴' : '❌'}
             </div>
           </button>
           
@@ -510,10 +445,10 @@ const Dashboard = () => {
             <div className="text-2xl sm:text-3xl mb-2">🍎</div>
             <div className="font-medium text-sm sm:text-base">Meal Planner</div>
             <div className="text-xs text-orange-200 mt-1">
-              {workoutStats.totalMeals > 0 ? `${workoutStats.totalMeals} meals logged` : 'Track your nutrition'}
+              {stats.totalMeals > 0 ? `${stats.totalMeals} meals logged` : 'Track your nutrition'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-orange-300/70">
-              {isOnline ? '🔴' : '📱'}
+              {isOnline && stats.isRealTime ? '🔴' : '❌'}
             </div>
           </button>
           
@@ -524,10 +459,10 @@ const Dashboard = () => {
             <div className="text-2xl sm:text-3xl mb-2">📊</div>
             <div className="font-medium text-sm sm:text-base">Analytics</div>
             <div className="text-xs text-purple-200 mt-1">
-              {workoutStats.total > 0 ? `${workoutStats.total} workouts tracked` : 'View your progress'}
+              {stats.totalWorkouts > 0 ? `${stats.totalWorkouts} workouts tracked` : 'View your progress'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-purple-300/70">
-              {isOnline ? '🔴' : '📱'}
+              {isOnline && stats.isRealTime ? '🔴' : '❌'}
             </div>
           </button>
         </div>
@@ -670,9 +605,10 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+        </div>
       </div>
-    </div>
-    </AuthGuard>
+      </AuthGuard>
+    </DashboardErrorBoundary>
   );
 };
 

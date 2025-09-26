@@ -1,7 +1,8 @@
-// Real-time Context for instant updates across the app
+// Real-Time MongoDB Context Provider
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { onlineService } from '../services/onlineService';
 import { useAuth } from './AuthContext';
+import { onlineService } from '../services/onlineService';
+import api from '../utils/api';
 
 const RealTimeContext = createContext();
 
@@ -14,132 +15,205 @@ export const useRealTime = () => {
 };
 
 export const RealTimeProvider = ({ children }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [stats, setStats] = useState({
     workouts: 0,
     meals: 0,
     xpPoints: 0,
     streak: 0,
-    weeklyGoal: { completed: 0, target: 4, percentage: 0 }
+    totalWorkouts: 0,
+    totalMeals: 0,
+    currentStreak: 0,
+    weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+    isRealTime: false,
+    lastSync: null,
+    dataSource: 'Loading'
   });
-  const [isOnline, setIsOnline] = useState(false);
-  const [lastSync, setLastSync] = useState(null);
-  const [updateTrigger, setUpdateTrigger] = useState(0);
+  const [isOnline, setIsOnline] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
-  // Real-time data fetching
-  const fetchStats = useCallback(async () => {
-    if (!isAuthenticated?.() || !user) return;
-
-    try {
-      const online = await onlineService.checkBackendStatus();
-      setIsOnline(online);
-      
-      if (online) {
-        const analytics = await onlineService.getAnalytics();
-        
-        if (analytics) {
-          setStats({
-            workouts: analytics.workouts || analytics.totalWorkouts || 0,
-            meals: analytics.meals || analytics.totalMeals || 0,
-            xpPoints: analytics.xpPoints || analytics.totalXP || 0,
-            streak: analytics.streak || analytics.currentStreak || 0,
-            weeklyGoal: {
-              completed: analytics.weeklyGoal?.completed || analytics.weeklyProgress?.completed || 0,
-              target: analytics.weeklyGoal?.target || analytics.weeklyProgress?.target || 4,
-              percentage: analytics.weeklyGoal?.percentage || analytics.weeklyProgress?.percentage || 0
-            }
-          });
-          setLastSync(new Date());
-        }
-      }
-    } catch (error) {
-      console.error('Real-time fetch error:', error);
+  // Fetch real-time stats from MongoDB
+  const fetchRealTimeStats = useCallback(async () => {
+    if (!isAuthenticated() || !user) {
+      console.log('🔒 User not authenticated, skipping stats fetch');
+      return;
     }
-  }, [isAuthenticated, user]);
 
-  // Listen for streak updates from StreakContext
-  useEffect(() => {
-    const handleStreakUpdate = (event) => {
+    setLoading(true);
+    try {
+      console.log('🚀 Fetching real-time MongoDB stats...');
+      
+      // Use multiple endpoints to get comprehensive data
+      const [heroStats, analyticsData, userStats] = await Promise.allSettled([
+        api.get('/analytics/hero-stats'),
+        api.get('/analytics'),
+        api.get('/users/stats')
+      ]);
+
+      let realTimeData = {
+        workouts: 0,
+        meals: 0,
+        xpPoints: 0,
+        streak: 0,
+        totalWorkouts: 0,
+        totalMeals: 0,
+        currentStreak: 0,
+        weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+        isRealTime: true,
+        lastSync: new Date().toISOString(),
+        dataSource: 'MongoDB'
+      };
+
+      // Process hero stats
+      if (heroStats.status === 'fulfilled' && heroStats.value?.data?.data) {
+        const data = heroStats.value.data.data;
+        realTimeData = {
+          ...realTimeData,
+          workouts: data.workouts || 0,
+          meals: data.meals || 0,
+          xpPoints: data.xpPoints || 0,
+          streak: data.streak || 0,
+          totalWorkouts: data.workouts || 0,
+          totalMeals: data.meals || 0,
+          currentStreak: data.streak || 0,
+          weeklyGoal: data.weeklyGoal || { completed: 0, target: 4, percentage: 0 }
+        };
+      }
+
+      // Process analytics data
+      if (analyticsData.status === 'fulfilled' && analyticsData.value?.data?.data) {
+        const data = analyticsData.value.data.data;
+        realTimeData = {
+          ...realTimeData,
+          workouts: data.workouts || realTimeData.workouts,
+          meals: data.meals || realTimeData.meals,
+          xpPoints: data.xpPoints || realTimeData.xpPoints,
+          streak: data.currentStreak || realTimeData.streak,
+          totalWorkouts: data.totalWorkouts || realTimeData.totalWorkouts,
+          totalMeals: data.totalMeals || realTimeData.totalMeals,
+          currentStreak: data.currentStreak || realTimeData.currentStreak
+        };
+      }
+
+      // Process user stats
+      if (userStats.status === 'fulfilled' && userStats.value?.data) {
+        const data = userStats.value.data;
+        realTimeData = {
+          ...realTimeData,
+          workouts: data.totalWorkouts || realTimeData.workouts,
+          meals: data.totalMeals || realTimeData.meals,
+          xpPoints: data.xpPoints || realTimeData.xpPoints,
+          streak: data.currentStreak || realTimeData.streak,
+          totalWorkouts: data.totalWorkouts || realTimeData.totalWorkouts,
+          totalMeals: data.totalMeals || realTimeData.totalMeals,
+          currentStreak: data.currentStreak || realTimeData.currentStreak
+        };
+      }
+
+      console.log('✅ Real-time MongoDB data loaded:', realTimeData);
+      setStats(realTimeData);
+      setIsOnline(true);
+      setLastUpdate(new Date());
+
+    } catch (error) {
+      console.error('❌ Failed to fetch real-time stats:', error.message);
+      
+      // Set error state but keep trying
       setStats(prev => ({
         ...prev,
-        streak: event.detail.currentStreak || 0
+        isRealTime: false,
+        dataSource: 'Error',
+        lastSync: new Date().toISOString(),
+        error: error.message
       }));
+      setIsOnline(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, isAuthenticated]);
+
+  // Initialize and set up real-time updates
+  useEffect(() => {
+    if (isAuthenticated() && user) {
+      fetchRealTimeStats();
+      
+      // Set up real-time polling every 30 seconds
+      const interval = setInterval(fetchRealTimeStats, 30000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [user, isAuthenticated, fetchRealTimeStats]);
+
+  // Listen for real-time events
+  useEffect(() => {
+    const handleWorkoutCompleted = () => {
+      console.log('🏋️ Workout completed - refreshing stats');
+      setTimeout(fetchRealTimeStats, 1000);
     };
 
-    window.addEventListener('streakUpdated', handleStreakUpdate);
-    return () => window.removeEventListener('streakUpdated', handleStreakUpdate);
+    const handleMealAdded = () => {
+      console.log('🍽️ Meal added - refreshing stats');
+      setTimeout(fetchRealTimeStats, 1000);
+    };
+
+    const handlePlanCreated = () => {
+      console.log('📋 Plan created - refreshing stats');
+      setTimeout(fetchRealTimeStats, 1000);
+    };
+
+    const handleStreakUpdated = () => {
+      console.log('🔥 Streak updated - refreshing stats');
+      setTimeout(fetchRealTimeStats, 1000);
+    };
+
+    // Listen for custom events
+    window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('planCreated', handlePlanCreated);
+    window.addEventListener('streakUpdated', handleStreakUpdated);
+
+    return () => {
+      window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+      window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('planCreated', handlePlanCreated);
+      window.removeEventListener('streakUpdated', handleStreakUpdated);
+    };
+  }, [fetchRealTimeStats]);
+
+  // Manual refresh function
+  const refreshStats = useCallback(async () => {
+    console.log('🔄 Manual stats refresh requested');
+    await fetchRealTimeStats();
+  }, [fetchRealTimeStats]);
+
+  // Update single stat (for optimistic updates)
+  const updateStat = useCallback((statName, value) => {
+    setStats(prev => ({
+      ...prev,
+      [statName]: value,
+      lastSync: new Date().toISOString()
+    }));
   }, []);
 
-  // Trigger instant update
-  const triggerUpdate = useCallback(() => {
-    setUpdateTrigger(prev => prev + 1);
-    fetchStats();
-  }, [fetchStats]);
-
-  // Update stats after workout completion
-  const updateWorkoutStats = useCallback((workoutData) => {
-    setStats(prev => {
-      const newWorkouts = prev.workouts + 1;
-      const newXP = prev.xpPoints + (workoutData.xpGained || 100);
-      const newStreak = prev.streak + 1;
-      const newWeeklyCompleted = Math.min(prev.weeklyGoal.completed + 1, prev.weeklyGoal.target);
-      
-      return {
-        ...prev,
-        workouts: newWorkouts,
-        xpPoints: newXP,
-        streak: newStreak,
-        weeklyGoal: {
-          ...prev.weeklyGoal,
-          completed: newWeeklyCompleted,
-          percentage: Math.min((newWeeklyCompleted / prev.weeklyGoal.target) * 100, 100)
-        }
-      };
-    });
-    
-    // Sync with backend after a short delay
-    setTimeout(fetchStats, 2000);
-  }, [fetchStats]);
-
-  // Update stats after meal addition
-  const updateMealStats = useCallback((mealData) => {
-    setStats(prev => {
-      const newMeals = prev.meals + 1;
-      const newXP = prev.xpPoints + (mealData.xpGained || 50);
-      
-      return {
-        ...prev,
-        meals: newMeals,
-        xpPoints: newXP
-      };
-    });
-    
-    // Sync with backend after a short delay
-    setTimeout(fetchStats, 2000);
-  }, [fetchStats]);
-
-  // Initial load
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
-
-  // Periodic sync
-  useEffect(() => {
-    if (!isAuthenticated?.()) return;
-    
-    const interval = setInterval(fetchStats, 30000); // 30 seconds
-    return () => clearInterval(interval);
-  }, [fetchStats, isAuthenticated]);
+  // Increment stat (for real-time updates)
+  const incrementStat = useCallback((statName, increment = 1) => {
+    setStats(prev => ({
+      ...prev,
+      [statName]: (prev[statName] || 0) + increment,
+      lastSync: new Date().toISOString()
+    }));
+  }, []);
 
   const value = {
     stats,
     isOnline,
-    lastSync,
-    updateTrigger,
-    triggerUpdate,
-    updateWorkoutStats,
-    updateMealStats,
-    fetchStats
+    loading,
+    lastUpdate,
+    refreshStats,
+    updateStat,
+    incrementStat,
+    fetchRealTimeStats
   };
 
   return (
@@ -148,3 +222,5 @@ export const RealTimeProvider = ({ children }) => {
     </RealTimeContext.Provider>
   );
 };
+
+export default RealTimeProvider;

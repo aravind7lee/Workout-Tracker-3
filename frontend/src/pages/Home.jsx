@@ -1,4 +1,4 @@
-// Real-time Home page with MongoDB integration
+// Real-time Home page with MongoDB integration - Online Mode Only
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -116,7 +116,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* User Stats - Real-time - Clickable Navigation */}
+          {/* User Stats - Real-time MongoDB Data - Clickable Navigation */}
           {isAuthenticated() && (
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
               <button
@@ -125,11 +125,14 @@ export default function Home() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
-                  <div className="text-5xl font-black text-blue-400 mb-3 font-heading tracking-tighter">{stats.workouts}</div>
+                  <div className="text-5xl font-black text-blue-400 mb-3 font-heading tracking-tighter">{stats.totalWorkouts || 0}</div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">WORKOUTS</div>
-                  <div className="text-xs text-blue-300/70 mt-1">CONQUERED</div>
+                  <div className="text-xs text-blue-300/70 mt-1">{stats.totalWorkouts > 0 ? 'CONQUERED' : 'START NOW'}</div>
                 </div>
                 <div className="absolute top-4 right-4 text-blue-400/30 text-2xl">💪</div>
+                <div className="absolute top-2 left-2 text-xs text-blue-400/70">
+                  {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                </div>
                 <div className="absolute bottom-2 right-2 text-blue-400/50 text-xs">→</div>
               </button>
 
@@ -139,11 +142,14 @@ export default function Home() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
-                  <div className="text-5xl font-black text-green-400 mb-3 font-heading tracking-tighter">{stats.meals}</div>
+                  <div className="text-5xl font-black text-green-400 mb-3 font-heading tracking-tighter">{stats.totalMeals || 0}</div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">MEALS</div>
-                  <div className="text-xs text-green-300/70 mt-1">TRACKED</div>
+                  <div className="text-xs text-green-300/70 mt-1">{stats.totalMeals > 0 ? 'TRACKED' : 'START LOGGING'}</div>
                 </div>
                 <div className="absolute top-4 right-4 text-green-400/30 text-2xl">🍎</div>
+                <div className="absolute top-2 left-2 text-xs text-green-400/70">
+                  {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                </div>
                 <div className="absolute bottom-2 right-2 text-green-400/50 text-xs">→</div>
               </button>
 
@@ -153,11 +159,14 @@ export default function Home() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
-                  <div className="text-5xl font-black text-purple-400 mb-3 font-heading tracking-tighter">{stats.xpPoints.toLocaleString()}</div>
+                  <div className="text-5xl font-black text-purple-400 mb-3 font-heading tracking-tighter">{(stats.xpPoints || 0).toLocaleString()}</div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">XP POINTS</div>
-                  <div className="text-xs text-purple-300/70 mt-1">EARNED</div>
+                  <div className="text-xs text-purple-300/70 mt-1">{stats.xpPoints > 0 ? 'EARNED' : 'START EARNING'}</div>
                 </div>
                 <div className="absolute top-4 right-4 text-purple-400/30 text-2xl">⭐</div>
+                <div className="absolute top-2 left-2 text-xs text-purple-400/70">
+                  {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                </div>
                 <div className="absolute bottom-2 right-2 text-purple-400/50 text-xs">→</div>
               </button>
 
@@ -168,12 +177,15 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
                   <div className="text-5xl font-black text-orange-400 mb-3 font-heading tracking-tighter flex items-center gap-2">
-                    {currentStreak}<span className="text-red-400 animate-pulse">🔥</span>
+                    {stats.currentStreak || 0}<span className="text-red-400 animate-pulse">🔥</span>
                   </div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">DAY STREAK</div>
-                  <div className="text-xs text-orange-300/70 mt-1">{currentStreak > 0 ? 'UNSTOPPABLE' : 'START TODAY'}</div>
+                  <div className="text-xs text-orange-300/70 mt-1">{stats.currentStreak > 0 ? 'UNSTOPPABLE' : 'START TODAY'}</div>
                 </div>
                 <div className="absolute top-4 right-4 text-orange-400/30 text-2xl">⚡</div>
+                <div className="absolute top-2 left-2 text-xs text-orange-400/70">
+                  {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                </div>
                 <div className="absolute bottom-2 right-2 text-orange-400/50 text-xs">→</div>
               </button>
 
@@ -185,8 +197,8 @@ export default function Home() {
                 <div className="relative z-10">
                   <div className="text-5xl font-black text-yellow-400 mb-3 font-heading tracking-tighter flex items-center gap-2">
                     {unlockedCount}
-                    <span className={`text-xs px-2 py-1 rounded-full ${achievementsOnline ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                      {achievementsOnline ? 'LIVE' : 'LOCAL'}
+                    <span className={`text-xs px-2 py-1 rounded-full ${isOnline && stats.isRealTime ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                      {isOnline && stats.isRealTime ? 'LIVE' : 'OFFLINE'}
                     </span>
                   </div>
                   <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">ACHIEVEMENTS</div>
@@ -195,6 +207,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="absolute top-4 right-4 text-yellow-400/30 text-2xl">🏆</div>
+                <div className="absolute top-2 left-2 text-xs text-yellow-400/70">
+                  {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                </div>
                 <div className="absolute bottom-2 right-2 text-yellow-400/50 text-xs">→</div>
               </button>
             </div>
