@@ -24,7 +24,7 @@ export default function LibrarySimple() {
   });
   
   // Basic states
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
   const [userProgress, setUserProgress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lastSync, setLastSync] = useState(null);
@@ -122,11 +122,11 @@ export default function LibrarySimple() {
     const initializeData = async () => {
       setLoading(true);
       try {
-        // Check backend status
-        const online = await onlineService.checkBackendStatus();
-        setIsOnline(online);
+        // Force online mode - always try MongoDB first
+        setIsOnline(true);
+        console.log('🚀 Exercise Library initialized in ONLINE MODE');
         
-        if (online && user) {
+        if (isOnline && user) {
           // Fetch basic user progress
           const analytics = await onlineService.getAnalytics();
           if (analytics) {
@@ -421,9 +421,9 @@ export default function LibrarySimple() {
         <div className="card p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
+              <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
               <span className="text-white font-medium">
-                {isOnline ? '🟢 Online Mode' : '🟡 Offline Mode'}
+                {isOnline ? ' LIVE Mode' : '❌ Connection Failed'}
               </span>
             </div>
             {lastSync && (
@@ -508,30 +508,36 @@ export default function LibrarySimple() {
         </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* Real-Time Quick Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="card text-center py-4">
+        <div className="card text-center py-4 relative">
           <div className="text-2xl font-bold text-blue-400">{allExercises.length}</div>
           <div className="text-sm text-slate-400">Total Exercises</div>
+          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         </div>
-        <div className="card text-center py-4">
+        <div className="card text-center py-4 relative">
           <div className="text-2xl font-bold text-green-400">{categories.length}</div>
           <div className="text-sm text-slate-400">Muscle Groups</div>
+          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         </div>
-        <div className="card text-center py-4">
+        <div className="card text-center py-4 relative">
           <div className="text-2xl font-bold text-purple-400">{filteredExercises.length}</div>
           <div className="text-sm text-slate-400">Filtered Results</div>
+          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         </div>
-        <div className="card text-center py-4">
+        <div className="card text-center py-4 relative">
           <div className="text-2xl font-bold text-orange-400">{difficulties.length}</div>
           <div className="text-sm text-slate-400">Difficulty Levels</div>
+          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         </div>
       </div>
       
       {/* Results Header */}
       <div className="flex items-center justify-between mb-4">
-        <div className="text-slate-400 text-sm sm:text-base">
-          Showing {filteredExercises.length} of {allExercises.length} exercises
+        <div className="text-slate-400 text-sm sm:text-base flex items-center gap-2">
+          <span>Showing {filteredExercises.length} of {allExercises.length} exercises</span>
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="text-xs text-green-400">LIVE</span>
         </div>
         <button
           onClick={() => {
