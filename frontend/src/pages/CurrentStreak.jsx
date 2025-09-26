@@ -1,18 +1,18 @@
+// Real-Time Streak Tracker with Context Integration
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useStreak } from '../context/StreakContext';
 import AuthGuard from '../components/AuthGuard';
 
 const CurrentStreak = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { theme } = useTheme();
-  const [streakData, setStreakData] = useState({
-    currentStreak: 0,
-    longestStreak: 0,
-    totalCheckIns: 0,
-    canCheckIn: true,
+  const { currentStreak, longestStreak, totalCheckIns, canCheckIn, updateStreak, loading: streakLoading } = useStreak();
+  
+  const [localData, setLocalData] = useState({
     milestones: [],
     weeklyProgress: [],
     monthlyProgress: [],
@@ -26,160 +26,50 @@ const CurrentStreak = () => {
 
   useEffect(() => {
     if (user) {
-      initializeRealTimeStreak();
+      initializeLocalData();
     }
-  }, [user]);
+  }, [user, currentStreak]);
 
-  const initializeRealTimeStreak = async () => {
+  const initializeLocalData = async () => {
     try {
       setLoading(true);
       
-      // Fetch real-time data from MongoDB
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/users/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      // Generate milestones and progress based on current streak from context
+      const milestones = generateLifetimeMilestones(currentStreak);
+      const streakKey = `gymtracker_streak_${user.id}`;
+      const savedData = localStorage.getItem(streakKey);
       
-      if (response.ok) {
-        const userData = await response.json();
-        await loadStreakFromDatabase(userData);
-      } else {
-        // Fallback to localStorage if API fails
-        loadStreakFromLocalStorage();
+      let checkInHistory = [];
+      let streakHistory = [];
+      let lastCheckInDate = null;
+      let streakStartDate = null;
+      
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+          checkInHistory = data.checkInHistory || [];
+          streakHistory = data.streakHistory || [];
+          lastCheckInDate = data.lastCheckInDate;
+          streakStartDate = data.streakStartDate;
+        } catch (error) {
+          console.error('Failed to parse saved streak data:', error);
+        }
       }
       
+      setLocalData({
+        milestones,
+        weeklyProgress: generateWeeklyProgress(checkInHistory),
+        monthlyProgress: generateMonthlyProgress(checkInHistory),
+        streakHistory,
+        lastCheckInDate,
+        streakStartDate
+      });
+      
     } catch (error) {
-      console.warn('Database connection failed, using local storage:', error);
-      loadStreakFromLocalStorage();
+      console.error('Failed to initialize local data:', error);
     } finally {
       setLoading(false);
     }
-  };
-  
-  const loadStreakFromDatabase = async (userData) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    
-    // Get streak data from user profile
-    const streakInfo = {
-      currentStreak: userData.currentStreak || 0,
-      longestStreak: userData.longestStreak || 0,
-      totalCheckIns: userData.totalCheckIns || 0,
-      lastCheckInDate: userData.lastStreakCheckIn ? new Date(userData.lastStreakCheckIn).toISOString().split('T')[0] : null,
-      streakStartDate: userData.streakStartDate ? new Date(userData.streakStartDate).toISOString().split('T')[0] : null,
-      checkInHistory: userData.streakHistory ? userData.streakHistory.map(h => new Date(h.date).toISOString().split('T')[0]) : [],
-      streakHistory: userData.streakHistory || []
-    };
-    
-    // Real-time streak validation
-    const canCheckIn = streakInfo.lastCheckInDate !== todayStr;
-    let currentStreak = streakInfo.currentStreak;
-    
-    if (streakInfo.lastCheckInDate) {
-      const lastDate = new Date(streakInfo.lastCheckInDate);
-      const daysDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
-      
-      // Break streak if more than 1 day gap
-      if (daysDiff > 1) {
-        currentStreak = 0;
-        streakInfo.streakStartDate = null;
-        // Update database with broken streak
-        await updateStreakInDatabase({ currentStreak: 0, streakStartDate: null });
-      }
-    }
-    
-    // Generate lifetime milestones
-    const milestones = generateLifetimeMilestones(currentStreak);
-    
-    setStreakData({
-      currentStreak,
-      longestStreak: streakInfo.longestStreak,
-      totalCheckIns: streakInfo.totalCheckIns,
-      canCheckIn,
-      milestones,
-      weeklyProgress: generateWeeklyProgress(streakInfo.checkInHistory),
-      monthlyProgress: generateMonthlyProgress(streakInfo.checkInHistory),
-      streakHistory: streakInfo.streakHistory,
-      lastCheckInDate: streakInfo.lastCheckInDate,
-      streakStartDate: streakInfo.streakStartDate
-    });
-  };
-  
-  const loadStreakFromLocalStorage = () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    
-    const streakKey = `gymtracker_streak_${user.id}`;
-    const savedData = localStorage.getItem(streakKey);
-    
-    let streakInfo = {
-      currentStreak: 0,
-      longestStreak: 0,
-      totalCheckIns: 0,
-      lastCheckInDate: null,
-      streakStartDate: null,
-      checkInHistory: [],
-      streakHistory: []
-    };
-    
-    if (savedData) {
-      streakInfo = { ...streakInfo, ...JSON.parse(savedData) };
-    }
-    
-    const canCheckIn = streakInfo.lastCheckInDate !== todayStr;
-    let currentStreak = streakInfo.currentStreak;
-    
-    if (streakInfo.lastCheckInDate) {
-      const lastDate = new Date(streakInfo.lastCheckInDate);
-      const daysDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
-      
-      if (daysDiff > 1) {
-        currentStreak = 0;
-        streakInfo.streakStartDate = null;
-      }
-    }
-    
-    const milestones = generateLifetimeMilestones(currentStreak);
-    
-    setStreakData({
-      currentStreak,
-      longestStreak: streakInfo.longestStreak,
-      totalCheckIns: streakInfo.totalCheckIns,
-      canCheckIn,
-      milestones,
-      weeklyProgress: generateWeeklyProgress(streakInfo.checkInHistory),
-      monthlyProgress: generateMonthlyProgress(streakInfo.checkInHistory),
-      streakHistory: streakInfo.streakHistory,
-      lastCheckInDate: streakInfo.lastCheckInDate,
-      streakStartDate: streakInfo.streakStartDate
-    });
-  };
-  
-  const updateStreakInDatabase = async (streakData) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/users/profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(streakData)
-      });
-      
-      if (response.ok) {
-        console.log('✅ Streak data synced to database');
-        return true;
-      }
-    } catch (error) {
-      console.warn('Database sync failed:', error);
-    }
-    return false;
   };
 
   const generateLifetimeMilestones = (currentStreak) => {
@@ -272,7 +162,7 @@ const CurrentStreak = () => {
   };
 
   const handleRealTimeCheckIn = async () => {
-    if (!streakData.canCheckIn || checkingIn) return;
+    if (!canCheckIn || checkingIn) return;
     
     try {
       setCheckingIn(true);
@@ -286,30 +176,41 @@ const CurrentStreak = () => {
       let newStreak = 1;
       let streakStartDate = todayStr;
       
-      if (streakData.lastCheckInDate) {
-        const lastDate = new Date(streakData.lastCheckInDate);
+      if (localData.lastCheckInDate) {
+        const lastDate = new Date(localData.lastCheckInDate);
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         
         if (lastDate.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
-          newStreak = streakData.currentStreak + 1;
-          streakStartDate = streakData.streakStartDate || todayStr;
+          newStreak = currentStreak + 1;
+          streakStartDate = localData.streakStartDate || todayStr;
         }
       }
       
-      const newLongestStreak = Math.max(streakData.longestStreak, newStreak);
-      const newTotalCheckIns = streakData.totalCheckIns + 1;
+      const newLongestStreak = Math.max(longestStreak, newStreak);
+      const newTotalCheckIns = totalCheckIns + 1;
       
-      // Prepare database update
-      const dbUpdateData = {
+      // Update context with new streak data - this will sync to database and broadcast to all components
+      await updateStreak({
         currentStreak: newStreak,
         longestStreak: newLongestStreak,
         totalCheckIns: newTotalCheckIns,
-        lastStreakCheckIn: today.toISOString(),
-        streakStartDate: new Date(streakStartDate).toISOString(),
-        xpPoints: (streakData.totalCheckIns * 10) + 10, // Award XP
+        lastCheckInDate: todayStr,
+        streakStartDate,
+        canCheckIn: false
+      });
+      
+      // Update localStorage as backup
+      const streakKey = `gymtracker_streak_${user.id}`;
+      const localDataUpdate = {
+        currentStreak: newStreak,
+        longestStreak: newLongestStreak,
+        totalCheckIns: newTotalCheckIns,
+        lastCheckInDate: todayStr,
+        streakStartDate,
+        checkInHistory: [...(localData.weeklyProgress.filter(d => d.hasCheckIn).map(d => d.date)), todayStr],
         streakHistory: [
-          ...(streakData.streakHistory || []),
+          ...(localData.streakHistory || []),
           {
             date: today.toISOString(),
             streakDay: newStreak,
@@ -317,43 +218,23 @@ const CurrentStreak = () => {
           }
         ]
       };
+      localStorage.setItem(streakKey, JSON.stringify(localDataUpdate));
       
-      // Update database first
-      const dbSuccess = await updateStreakInDatabase(dbUpdateData);
-      
-      // Update localStorage as backup
-      const streakKey = `gymtracker_streak_${user.id}`;
-      const localData = {
-        currentStreak: newStreak,
-        longestStreak: newLongestStreak,
-        totalCheckIns: newTotalCheckIns,
-        lastCheckInDate: todayStr,
-        streakStartDate,
-        checkInHistory: [...(streakData.weeklyProgress.filter(d => d.hasCheckIn).map(d => d.date)), todayStr],
-        streakHistory: dbUpdateData.streakHistory
-      };
-      localStorage.setItem(streakKey, JSON.stringify(localData));
-      
-      // Update state with real-time data
+      // Update local data
       const updatedMilestones = generateLifetimeMilestones(newStreak);
       
-      setStreakData(prev => ({
+      setLocalData(prev => ({
         ...prev,
-        currentStreak: newStreak,
-        longestStreak: newLongestStreak,
-        totalCheckIns: newTotalCheckIns,
-        canCheckIn: false,
         milestones: updatedMilestones,
-        weeklyProgress: generateWeeklyProgress([...localData.checkInHistory]),
-        monthlyProgress: generateMonthlyProgress([...localData.checkInHistory]),
+        weeklyProgress: generateWeeklyProgress([...localDataUpdate.checkInHistory]),
+        monthlyProgress: generateMonthlyProgress([...localDataUpdate.checkInHistory]),
         lastCheckInDate: todayStr,
         streakStartDate
       }));
       
-      // Success message with database sync status
+      // Success message
       const streakDays = newStreak === 1 ? 'Day 1 - Streak Started!' : `Day ${newStreak} - Keep Going!`;
-      const syncStatus = dbSuccess ? '✅ Synced to Database' : '💾 Saved Locally';
-      setSuccessMessage(`🔥 ${streakDays} ${syncStatus}`);
+      setSuccessMessage(`🔥 ${streakDays} ✅ Real-time Update Active`);
       
       setTimeout(() => setSuccessMessage(''), 4000);
       
@@ -367,7 +248,6 @@ const CurrentStreak = () => {
   };
 
   const getStreakMotivation = () => {
-    const { currentStreak } = streakData;
     if (currentStreak === 0) return "Ready to start your journey? 💪";
     if (currentStreak < 7) return `${currentStreak} days strong! Building momentum! 🔥`;
     if (currentStreak < 30) return `${currentStreak} days! You're on fire! 🚀`;
@@ -375,7 +255,7 @@ const CurrentStreak = () => {
     return `${currentStreak} days! You're a legend! 👑`;
   };
 
-  if (loading) {
+  if (loading || streakLoading) {
     return (
       <AuthGuard>
         <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -416,10 +296,10 @@ const CurrentStreak = () => {
               </div>
               <div className="text-center sm:text-right">
                 <div className="text-4xl sm:text-6xl font-bold text-white">
-                  {streakData.currentStreak}
+                  {currentStreak}
                 </div>
                 <div className="text-white/80 text-sm sm:text-base">
-                  {streakData.currentStreak === 0 ? 'Start Today' : `Day${streakData.currentStreak !== 1 ? 's' : ''}`}
+                  {currentStreak === 0 ? 'Start Today' : `Day${currentStreak !== 1 ? 's' : ''}`}
                 </div>
               </div>
             </div>
@@ -442,11 +322,11 @@ const CurrentStreak = () => {
           <div className="text-center mb-8">
             <button
               onClick={handleRealTimeCheckIn}
-              disabled={!streakData.canCheckIn || checkingIn}
+              disabled={!canCheckIn || checkingIn}
               className={`
                 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl
                 ${
-                  streakData.canCheckIn && !checkingIn
+                  canCheckIn && !checkingIn
                     ? 'bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 hover:from-orange-600 hover:via-red-600 hover:to-pink-600 text-white animate-pulse'
                     : 'bg-gray-600 text-gray-400 cursor-not-allowed'
                 }
@@ -457,15 +337,15 @@ const CurrentStreak = () => {
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing Check-in...
                 </span>
-              ) : streakData.canCheckIn ? (
-                streakData.currentStreak === 0 
+              ) : canCheckIn ? (
+                currentStreak === 0 
                   ? '🔥 START DAY 1 STREAK' 
-                  : `🔥 CONTINUE DAY ${streakData.currentStreak + 1}`
+                  : `🔥 CONTINUE DAY ${currentStreak + 1}`
               ) : (
                 '✅ Checked In Today - Come Back Tomorrow!'
               )}
             </button>
-            {!streakData.canCheckIn && (
+            {!canCheckIn && (
               <p className="text-green-400 text-sm mt-3">
                 Streak secured for today! Return tomorrow to continue your journey! 🚀
               </p>
@@ -493,7 +373,7 @@ const CurrentStreak = () => {
               <div className={`text-3xl font-bold ${
                 theme === 'dark' ? 'text-orange-400' : 'text-orange-600'
               }`}>
-                {streakData.currentStreak} days
+                {currentStreak} days
               </div>
             </div>
 
@@ -516,7 +396,7 @@ const CurrentStreak = () => {
               <div className={`text-3xl font-bold ${
                 theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
               }`}>
-                {streakData.longestStreak} days
+                {longestStreak} days
               </div>
             </div>
 
@@ -539,7 +419,7 @@ const CurrentStreak = () => {
               <div className={`text-3xl font-bold ${
                 theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
               }`}>
-                {streakData.totalCheckIns}
+                {totalCheckIns}
               </div>
             </div>
 
@@ -562,8 +442,8 @@ const CurrentStreak = () => {
               <div className={`text-3xl font-bold ${
                 theme === 'dark' ? 'text-green-400' : 'text-green-600'
               }`}>
-                {streakData.streakStartDate 
-                  ? Math.floor((new Date() - new Date(streakData.streakStartDate)) / (1000 * 60 * 60 * 24)) + 1
+                {localData.streakStartDate 
+                  ? Math.floor((new Date() - new Date(localData.streakStartDate)) / (1000 * 60 * 60 * 24)) + 1
                   : 0} days
               </div>
             </div>
@@ -579,7 +459,7 @@ const CurrentStreak = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>This Week's Real-Time Progress</h3>
             <div className="grid grid-cols-7 gap-3">
-              {streakData.weeklyProgress.map((day, index) => (
+              {localData.weeklyProgress.map((day, index) => (
                 <div key={index} className="text-center">
                   <div className={`text-sm mb-2 ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -622,7 +502,7 @@ const CurrentStreak = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>Lifetime Streak Milestones</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {streakData.milestones.slice(0, 12).map((milestone, index) => (
+              {localData.milestones.slice(0, 12).map((milestone, index) => (
                 <div key={index} className={`
                   p-4 rounded-lg border transition-all duration-300 transform hover:scale-105
                   ${

@@ -5,6 +5,7 @@ import Workout from '../models/Workout.js';
 import Meal from '../models/Meal.js';
 import auth from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
+import { settingsLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -503,21 +504,35 @@ function calculateStreak(workouts) {
   return streak;
 }
 
-// Get user settings with real-time data
-router.get('/settings', auth, async (req, res) => {
+// Get user settings with improved error handling and rate limiting
+router.get('/settings', settingsLimiter, auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found',
+        error: 'USER_NOT_FOUND'
+      });
     }
     
-    // Get real-time activity counts
-    const [workouts, meals, plans] = await Promise.all([
-      Workout.countDocuments({ userId: req.user.id, completed: true }),
-      Meal.countDocuments({ userId: req.user.id }),
-      Plan.countDocuments({ userId: req.user.id })
-    ]);
+    // Get real-time activity counts with timeout protection
+    let workouts = 0, meals = 0, plans = 0;
+    
+    try {
+      const results = await Promise.allSettled([
+        Workout.countDocuments({ userId: req.user.id, completed: true }),
+        Meal.countDocuments({ userId: req.user.id }),
+        Plan.countDocuments({ userId: req.user.id })
+      ]);
+      
+      workouts = results[0].status === 'fulfilled' ? results[0].value : 0;
+      meals = results[1].status === 'fulfilled' ? results[1].value : 0;
+      plans = results[2].status === 'fulfilled' ? results[2].value : 0;
+    } catch (dbError) {
+      console.warn('⚠️ Database query failed, using defaults:', dbError.message);
+    }
     
     const settings = {
       profile: {
@@ -568,20 +583,28 @@ router.get('/settings', auth, async (req, res) => {
       lastSync: new Date().toISOString(),
       isRealTime: true,
       syncTimestamp: Date.now(),
-      dataSource: 'MongoDB'
+      dataSource: 'MongoDB',
+      success: true
     };
     
-    console.log(`✅ Real-time settings loaded for user ${user._id}: ${workouts} workouts, ${meals} meals, ${plans} plans`);
+    console.log(`✅ Settings loaded for user ${user._id}`);
     
     res.json(settings);
   } catch (error) {
-    console.error('Settings get error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('❌ Settings get error:', error.message);
+    
+    // Return a proper error response
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to load settings',
+      error: error.message,
+      code: 'SETTINGS_LOAD_ERROR'
+    });
   }
 });
 
-// Update user settings with real-time sync
-router.put('/settings', auth, async (req, res) => {
+// Update user settings with improved error handling and rate limiting
+router.put('/settings', settingsLimiter, auth, async (req, res) => {
   try {
     const { profile, fitnessGoals, notifications, privacy, preferences, data, globalSync, autoSaveTimestamp } = req.body;
     
@@ -590,10 +613,14 @@ router.put('/settings', auth, async (req, res) => {
       lastActiveDate: new Date()
     };
     
-    // Update profile fields
+    // Update profile fields with validation
     if (profile) {
-      if (profile.name !== undefined) updateData.name = profile.name;
-      if (profile.email !== undefined) updateData.email = profile.email;
+      if (profile.name !== undefined && typeof profile.name === 'string') {
+        updateData.name = profile.name.trim();
+      }
+      if (profile.email !== undefined && typeof profile.email === 'string') {
+        updateData.email = profile.email.toLowerCase().trim();
+      }
       if (profile.phone !== undefined) updateData.phone = profile.phone;
       if (profile.location !== undefined) updateData.location = profile.location;
     }
@@ -601,46 +628,46 @@ router.put('/settings', auth, async (req, res) => {
     // Update settings fields with validation
     if (fitnessGoals) {
       updateData.fitnessGoals = {
-        goal: fitnessGoals.goal || 'maintain',
-        activityLevel: fitnessGoals.activityLevel || 'moderate',
-        targetWeight: fitnessGoals.targetWeight || null,
-        weeklyGoal: Math.max(1, Math.min(7, fitnessGoals.weeklyGoal || 3))
+        goal: ['lose', 'maintain', 'gain', 'muscle', 'strength'].includes(fitnessGoals.goal) ? fitnessGoals.goal : 'maintain',
+        activityLevel: ['sedentary', 'light', 'moderate', 'very', 'extra'].includes(fitnessGoals.activityLevel) ? fitnessGoals.activityLevel : 'moderate',
+        targetWeight: fitnessGoals.targetWeight && !isNaN(fitnessGoals.targetWeight) ? Number(fitnessGoals.targetWeight) : null,
+        weeklyGoal: Math.max(1, Math.min(7, parseInt(fitnessGoals.weeklyGoal) || 3))
       };
     }
     
     if (notifications) {
       updateData.notifications = {
-        emailNotifications: notifications.emailNotifications ?? true,
-        pushNotifications: notifications.pushNotifications ?? true,
-        workoutReminders: notifications.workoutReminders ?? true,
-        mealReminders: notifications.mealReminders ?? false,
-        achievementAlerts: notifications.achievementAlerts ?? true
+        emailNotifications: Boolean(notifications.emailNotifications ?? true),
+        pushNotifications: Boolean(notifications.pushNotifications ?? true),
+        workoutReminders: Boolean(notifications.workoutReminders ?? true),
+        mealReminders: Boolean(notifications.mealReminders ?? false),
+        achievementAlerts: Boolean(notifications.achievementAlerts ?? true)
       };
     }
     
     if (privacy) {
       updateData.privacy = {
-        profileVisibility: privacy.profileVisibility || 'public',
-        dataSharing: privacy.dataSharing ?? false,
-        analyticsOptOut: privacy.analyticsOptOut ?? false
+        profileVisibility: ['public', 'friends', 'private'].includes(privacy.profileVisibility) ? privacy.profileVisibility : 'public',
+        dataSharing: Boolean(privacy.dataSharing ?? false),
+        analyticsOptOut: Boolean(privacy.analyticsOptOut ?? false)
       };
     }
     
     if (preferences) {
       updateData.preferences = {
-        theme: preferences.theme || 'dark',
-        language: preferences.language || 'en',
-        units: preferences.units || 'metric',
-        dateFormat: preferences.dateFormat || 'MM/DD/YYYY',
-        timeFormat: preferences.timeFormat || '12h'
+        theme: ['dark', 'light', 'auto'].includes(preferences.theme) ? preferences.theme : 'dark',
+        language: ['en', 'es', 'fr', 'de'].includes(preferences.language) ? preferences.language : 'en',
+        units: ['metric', 'imperial'].includes(preferences.units) ? preferences.units : 'metric',
+        dateFormat: ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'].includes(preferences.dateFormat) ? preferences.dateFormat : 'MM/DD/YYYY',
+        timeFormat: ['12h', '24h'].includes(preferences.timeFormat) ? preferences.timeFormat : '12h'
       };
     }
     
     if (data) {
       updateData.dataSettings = {
-        autoBackup: data.autoBackup ?? true,
-        syncAcrossDevices: data.syncAcrossDevices ?? true,
-        dataRetention: data.dataRetention || '1year'
+        autoBackup: Boolean(data.autoBackup ?? true),
+        syncAcrossDevices: Boolean(data.syncAcrossDevices ?? true),
+        dataRetention: ['6months', '1year', '2years', 'forever'].includes(data.dataRetention) ? data.dataRetention : '1year'
       };
     }
     
@@ -660,7 +687,11 @@ router.put('/settings', auth, async (req, res) => {
     ).select('-password');
     
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found',
+        error: 'USER_NOT_FOUND'
+      });
     }
     
     const settings = {
@@ -711,7 +742,7 @@ router.put('/settings', auth, async (req, res) => {
       !['updatedAt', 'lastActiveDate', 'lastGlobalSync', 'lastAutoSave'].includes(key)
     );
     
-    console.log(`✅ Real-time settings update for user ${user._id}: ${updatedFields.join(', ')}`);
+    console.log(`✅ Settings updated for user ${user._id}`);
     
     res.json({ 
       success: true, 
@@ -723,11 +754,13 @@ router.put('/settings', auth, async (req, res) => {
       source: 'mongodb'
     });
   } catch (error) {
-    console.error('Settings update error:', error);
+    console.error('❌ Settings update error:', error.message);
+    
     res.status(500).json({ 
       success: false, 
       message: 'Failed to update settings', 
       error: error.message,
+      code: 'SETTINGS_UPDATE_ERROR',
       source: 'error'
     });
   }

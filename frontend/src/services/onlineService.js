@@ -67,6 +67,14 @@ class OnlineService {
       if (!this.isOnline) return null;
       
       const response = await api.post('/plans', planData);
+      
+      // Dispatch plan created event for achievements
+      if (response.data.plan) {
+        window.dispatchEvent(new CustomEvent('planCreated', {
+          detail: { plan: response.data.plan }
+        }));
+      }
+      
       return response.data.plan;
     } catch (error) {
       return null;
@@ -168,6 +176,17 @@ class OnlineService {
       });
       
       if (response.data?.success || response.status === 200) {
+        // Track workout completion for achievements
+        try {
+          await this.trackWorkoutCompletion({
+            title: workoutData.title || 'Workout',
+            exercises: workoutData.exercises || [],
+            duration: workoutData.durationMinutes || 0
+          });
+        } catch (achievementError) {
+          console.warn('Failed to track workout for achievements:', achievementError);
+        }
+        
         return response.data.workout || response.data;
       } else {
         throw new Error(response.data?.message || 'Save failed');
@@ -199,6 +218,17 @@ class OnlineService {
       if (!this.isOnline) return null;
       
       const response = await api.post('/nutrition', mealData);
+      
+      // Track meal logging for achievements
+      try {
+        await this.trackMealLogging({
+          name: mealData.name || 'Meal',
+          calories: mealData.calories || 0
+        });
+      } catch (achievementError) {
+        console.warn('Failed to track meal for achievements:', achievementError);
+      }
+      
       return response.data.meal;
     } catch (error) {
       return null;
@@ -235,6 +265,72 @@ class OnlineService {
         achievements: achievements.data?.data
       };
     } catch (error) {
+      return null;
+    }
+  }
+
+  async getAchievements() {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return [];
+      
+      const response = await api.get('/analytics/achievements');
+      return response.data?.data || [];
+    } catch (error) {
+      console.error('Failed to fetch achievements:', error);
+      this.isOnline = false;
+      return [];
+    }
+  }
+
+  async getAchievementProgress() {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
+      
+      const response = await api.get('/analytics/progress');
+      return response.data?.data || null;
+    } catch (error) {
+      console.error('Failed to fetch achievement progress:', error);
+      return null;
+    }
+  }
+
+  async unlockAchievement(achievementId) {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
+      
+      const response = await api.post(`/analytics/unlock/${achievementId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to unlock achievement:', error);
+      return null;
+    }
+  }
+
+  async trackWorkoutCompletion(workoutData) {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
+      
+      const response = await api.post('/analytics/track-workout-completion', workoutData);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to track workout completion:', error);
+      return null;
+    }
+  }
+
+  async trackMealLogging(mealData) {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) return null;
+      
+      const response = await api.post('/analytics/track-meal-logging', mealData);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to track meal logging:', error);
       return null;
     }
   }
@@ -380,6 +476,61 @@ class OnlineService {
     } catch (error) {
       return null;
     }
+  }
+
+  async getRealTimeStats() {
+    try {
+      const online = await this.checkBackendStatus();
+      if (!online) {
+        // Return local stats as fallback
+        const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+        const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+        
+        return {
+          totalWorkouts: workouts.length,
+          totalPlans: plans.length,
+          totalMeals: meals.length,
+          currentStreak: this.calculateLocalStreak(workouts),
+          xpPoints: (workouts.length * 100) + (plans.length * 150) + (meals.length * 50),
+          isRealTime: false
+        };
+      }
+      
+      const response = await api.get('/analytics/hero-stats');
+      const data = response.data?.data || {};
+      
+      return {
+        totalWorkouts: data.workouts || 0,
+        totalPlans: data.totalPlans || 0,
+        totalMeals: data.meals || 0,
+        currentStreak: data.streak || 0,
+        xpPoints: data.xpPoints || 0,
+        weeklyGoal: data.weeklyGoal || { completed: 0, target: 4, percentage: 0 },
+        isRealTime: true
+      };
+    } catch (error) {
+      console.error('Failed to get real-time stats:', error);
+      return null;
+    }
+  }
+
+  calculateLocalStreak(workouts) {
+    if (!workouts.length) return 0;
+    const today = new Date();
+    let streak = 0;
+    
+    for (let i = 0; i < 30; i++) {
+      const checkDate = new Date(today);
+      checkDate.setDate(today.getDate() - i);
+      const hasWorkout = workouts.some(w => {
+        const workoutDate = new Date(w.completedAt || w.createdAt || w.date);
+        return workoutDate.toDateString() === checkDate.toDateString();
+      });
+      if (hasWorkout) streak++;
+      else break;
+    }
+    return streak;
   }
 }
 

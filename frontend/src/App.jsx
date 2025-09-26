@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { RealTimeProvider } from './context/RealTimeContext';
+import { StreakProvider } from './context/StreakContext';
+import { AchievementsProvider } from './context/AchievementsContext';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import LibrarySimple from './pages/LibrarySimple';
@@ -358,39 +361,45 @@ export default function App() {
       <ErrorBoundary>
         <ThemeErrorBoundary>
           <ThemeProvider>
-          <DemoProvider>
-            <div className="min-h-screen">
-              <Navbar />
-              <DemoBanner />
-              <DemoFloatingControls />
-              <DemoFeatureTracker />
-              <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/library" element={<LibrarySimple />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/nutrition" element={<Nutrition />} />
-                <Route path="/plans" element={<PlansBuilder />} />
-                <Route path="/my-plans" element={<MyPlans />} />
-                <Route path="/edit-plan/:planId" element={<EditPlan />} />
-                <Route path="/workout/:planId" element={<WorkoutSession />} />
-                <Route path="/achievements" element={<Achievements />} />
-                <Route path="/profile" element={<ProfileAdvanced />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/forum" element={<Forum />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/start-workout" element={<StartWorkout />} />
-                <Route path="/xp-points" element={<XPPoints />} />
-                <Route path="/current-streak" element={<CurrentStreak />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/exercises/:id" element={<ExerciseDetail />} />
-              </Routes>
-              </main>
-            </div>
-          </DemoProvider>
+            <RealTimeProvider>
+              <StreakProvider>
+                <AchievementsProvider>
+                  <DemoProvider>
+                  <div className="min-h-screen">
+                    <Navbar />
+                    <DemoBanner />
+                    <DemoFloatingControls />
+                    <DemoFeatureTracker />
+                    <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/library" element={<LibrarySimple />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/nutrition" element={<Nutrition />} />
+                      <Route path="/plans" element={<PlansBuilder />} />
+                      <Route path="/my-plans" element={<MyPlans />} />
+                      <Route path="/edit-plan/:planId" element={<EditPlan />} />
+                      <Route path="/workout/:planId" element={<WorkoutSession />} />
+                      <Route path="/achievements" element={<Achievements />} />
+                      <Route path="/profile" element={<ProfileAdvanced />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/forum" element={<Forum />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/start-workout" element={<StartWorkout />} />
+                      <Route path="/xp-points" element={<XPPoints />} />
+                      <Route path="/current-streak" element={<CurrentStreak />} />
+                      <Route path="/search" element={<Search />} />
+                      <Route path="/exercises/:id" element={<ExerciseDetail />} />
+                    </Routes>
+                    </main>
+                  </div>
+                </DemoProvider>
+                </AchievementsProvider>
+              </StreakProvider>
+            </RealTimeProvider>
           </ThemeProvider>
         </ThemeErrorBoundary>
       </ErrorBoundary>

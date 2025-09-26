@@ -2,65 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useRealTime } from '../context/RealTimeContext';
+import { useStreak } from '../context/StreakContext';
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
-  const [stats, setStats] = useState({
-    workouts: 0,
-    meals: 0,
-    xpPoints: 0,
-    streak: 0,
-    weeklyGoal: { completed: 0, target: 4, percentage: 0 }
-  });
-  const [loading, setLoading] = useState(true);
+  const { stats, isOnline, lastSync, updateTrigger } = useRealTime();
+  const { currentStreak } = useStreak();
+  const [loading, setLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const userIsAuth = isAuthenticated && typeof isAuthenticated === 'function' ? isAuthenticated() : false;
-        
-        if (userIsAuth) {
-          let workouts = [];
-          let meals = [];
-          
-          try {
-            workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-            if (!Array.isArray(workouts)) workouts = [];
-          } catch (e) {
-            workouts = [];
-          }
-          
-          try {
-            meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-            if (!Array.isArray(meals)) meals = [];
-          } catch (e) {
-            meals = [];
-          }
-          
-          setStats({
-            workouts: workouts.length,
-            meals: meals.length,
-            xpPoints: workouts.length * 100 + meals.length * 50,
-            streak: Math.min(workouts.length, 7),
-            weeklyGoal: { 
-              completed: Math.min(workouts.length, 4), 
-              target: 4, 
-              percentage: Math.min((workouts.length / 4) * 100, 100) 
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    const timer = setTimeout(fetchStats, 100);
-    return () => clearTimeout(timer);
-  }, [isAuthenticated]);
 
   const formatNumber = (num) => {
     if (typeof num !== 'number' || isNaN(num)) return '0';
@@ -198,37 +151,91 @@ export default function Hero() {
                 <motion.div 
                   className="mt-4 sm:mt-6 hero-card rounded-lg p-3 sm:p-4 max-w-xs sm:max-w-md mx-auto"
                   variants={itemVariants}
+                  key={updateTrigger} // Force re-render on updates
                 >
-                  <h3 className="hero-text-primary font-semibold text-sm sm:text-base mb-2 sm:mb-3 font-heading">Your Progress</h3>
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <h3 className="hero-text-primary font-semibold text-sm sm:text-base font-heading">Your Progress</h3>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
+                      <span className="text-xs text-gray-400">
+                        {isOnline ? 'Live' : 'Offline'}
+                      </span>
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                    <div className="text-center">
+                    <motion.div 
+                      className="text-center"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 0.3 }}
+                      key={`workouts-${stats.workouts}-${updateTrigger}`}
+                    >
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.workouts)}
                       </div>
                       <div className="text-xs hero-card-label font-body">Workouts</div>
-                    </div>
-                    <div className="text-center">
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="text-center"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                      key={`meals-${stats.meals}-${updateTrigger}`}
+                    >
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.meals)}
                       </div>
                       <div className="text-xs hero-card-label font-body">Meals</div>
-                    </div>
-                    <div className="text-center">
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="text-center"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      key={`xp-${stats.xpPoints}-${updateTrigger}`}
+                    >
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.xpPoints)}
                       </div>
                       <div className="text-xs hero-card-label font-body">XP</div>
-                    </div>
-                    <div className="text-center">
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="text-center"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                      key={`streak-${currentStreak}-${updateTrigger}`}
+                    >
                       <div className="text-lg sm:text-xl font-bold hero-card-text">
-                        {loading ? '...' : stats.streak}<span className="hero-icon-accent">🔥</span>
+                        {loading ? '...' : currentStreak}<span className="hero-icon-accent">🔥</span>
                       </div>
                       <div className="text-xs hero-card-label font-body">Streak</div>
-                    </div>
+                    </motion.div>
                   </div>
+                  
+                  {/* Real-time sync indicator */}
+                  {lastSync && isOnline && (
+                    <div className="text-center mt-2">
+                      <span className="text-xs text-gray-500">
+                        Last updated: {lastSync.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </div>
+          </motion.div>
+        )}
+        
+        {/* Real-time update indicator */}
+        {isAuthenticated?.() && isOnline && (
+          <motion.div 
+            className="absolute bottom-4 right-4 bg-green-500/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-green-300 border border-green-500/30"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            🟢 Real-time sync active
           </motion.div>
         )}
       </div>

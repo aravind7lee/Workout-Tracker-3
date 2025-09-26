@@ -1,174 +1,145 @@
-// frontend/src/context/RealTimeContext.jsx - Real-Time Data Context
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import realTimeService from '../services/realTimeService';
+// Real-time Context for instant updates across the app
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { onlineService } from '../services/onlineService';
 import { useAuth } from './AuthContext';
 
 const RealTimeContext = createContext();
 
-const initialState = {
-  user: null,
-  stats: {
+export const useRealTime = () => {
+  const context = useContext(RealTimeContext);
+  if (!context) {
+    throw new Error('useRealTime must be used within a RealTimeProvider');
+  }
+  return context;
+};
+
+export const RealTimeProvider = ({ children }) => {
+  const { isAuthenticated, user } = useAuth();
+  const [stats, setStats] = useState({
     workouts: 0,
     meals: 0,
     xpPoints: 0,
     streak: 0,
     weeklyGoal: { completed: 0, target: 4, percentage: 0 }
-  },
-  workouts: [],
-  meals: [],
-  plans: [],
-  loading: false,
-  syncing: false
-};
+  });
+  const [isOnline, setIsOnline] = useState(false);
+  const [lastSync, setLastSync] = useState(null);
+  const [updateTrigger, setUpdateTrigger] = useState(0);
 
-function realTimeReducer(state, action) {
-  switch (action.type) {
-    case 'SET_LOADING':
-      return { ...state, loading: action.payload };
-    case 'SET_SYNCING':
-      return { ...state, syncing: action.payload };
-    case 'SET_USER':
-      return { ...state, user: action.payload };
-    case 'SET_STATS':
-      return { ...state, stats: action.payload };
-    case 'UPDATE_STATS':
-      return { ...state, stats: { ...state.stats, ...action.payload } };
-    case 'ADD_WORKOUT':
-      return { 
-        ...state, 
-        workouts: [action.payload, ...state.workouts],
-        stats: { 
-          ...state.stats, 
-          workouts: state.stats.workouts + 1,
-          xpPoints: state.stats.xpPoints + 100
+  // Real-time data fetching
+  const fetchStats = useCallback(async () => {
+    if (!isAuthenticated?.() || !user) return;
+
+    try {
+      const online = await onlineService.checkBackendStatus();
+      setIsOnline(online);
+      
+      if (online) {
+        const analytics = await onlineService.getAnalytics();
+        
+        if (analytics) {
+          setStats({
+            workouts: analytics.workouts || analytics.totalWorkouts || 0,
+            meals: analytics.meals || analytics.totalMeals || 0,
+            xpPoints: analytics.xpPoints || analytics.totalXP || 0,
+            streak: analytics.streak || analytics.currentStreak || 0,
+            weeklyGoal: {
+              completed: analytics.weeklyGoal?.completed || analytics.weeklyProgress?.completed || 0,
+              target: analytics.weeklyGoal?.target || analytics.weeklyProgress?.target || 4,
+              percentage: analytics.weeklyGoal?.percentage || analytics.weeklyProgress?.percentage || 0
+            }
+          });
+          setLastSync(new Date());
         }
-      };
-    case 'ADD_MEAL':
-      return { 
-        ...state, 
-        meals: [action.payload, ...state.meals],
-        stats: { 
-          ...state.stats, 
-          meals: state.stats.meals + 1,
-          xpPoints: state.stats.xpPoints + 50
-        }
-      };
-    case 'SET_WORKOUTS':
-      return { ...state, workouts: action.payload };
-    case 'SET_MEALS':
-      return { ...state, meals: action.payload };
-    case 'SET_PLANS':
-      return { ...state, plans: action.payload };
-    case 'RESET_STATE':
-      return initialState;
-    default:
-      return state;
-  }
-}
-
-export function RealTimeProvider({ children }) {
-  const [state, dispatch] = useReducer(realTimeReducer, initialState);
-  const { isAuthenticated } = useAuth();
-
-  // Load user data on mount
-  useEffect(() => {
-    if (isAuthenticated()) {
-      loadUserData();
-    } else {
-      dispatch({ type: 'RESET_STATE' });
+      }
+    } catch (error) {
+      console.error('Real-time fetch error:', error);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
-  // Real-time event listeners
+  // Listen for streak updates from StreakContext
   useEffect(() => {
-    const handleWorkoutComplete = (event) => {
-      dispatch({ type: 'ADD_WORKOUT', payload: event.detail });
+    const handleStreakUpdate = (event) => {
+      setStats(prev => ({
+        ...prev,
+        streak: event.detail.currentStreak || 0
+      }));
     };
 
-    const handleMealLogged = (event) => {
-      dispatch({ type: 'ADD_MEAL', payload: event.detail });
-    };
-
-    window.addEventListener('workoutCompleted', handleWorkoutComplete);
-    window.addEventListener('mealLogged', handleMealLogged);
-
-    return () => {
-      window.removeEventListener('workoutCompleted', handleWorkoutComplete);
-      window.removeEventListener('mealLogged', handleMealLogged);
-    };
+    window.addEventListener('streakUpdated', handleStreakUpdate);
+    return () => window.removeEventListener('streakUpdated', handleStreakUpdate);
   }, []);
 
-  const loadUserData = async () => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    try {
-      const userData = await realTimeService.getUserData();
-      dispatch({ type: 'SET_USER', payload: userData.user || userData });
+  // Trigger instant update
+  const triggerUpdate = useCallback(() => {
+    setUpdateTrigger(prev => prev + 1);
+    fetchStats();
+  }, [fetchStats]);
+
+  // Update stats after workout completion
+  const updateWorkoutStats = useCallback((workoutData) => {
+    setStats(prev => {
+      const newWorkouts = prev.workouts + 1;
+      const newXP = prev.xpPoints + (workoutData.xpGained || 100);
+      const newStreak = prev.streak + 1;
+      const newWeeklyCompleted = Math.min(prev.weeklyGoal.completed + 1, prev.weeklyGoal.target);
       
-      // Load stats
-      const statsData = await realTimeService.getStats();
-      dispatch({ type: 'SET_STATS', payload: statsData.data || statsData });
-    } catch (error) {
-      // Silent error handling - set default values
-      dispatch({ type: 'SET_STATS', payload: {
-        workouts: 0,
-        meals: 0,
-        xpPoints: 0,
-        streak: 0,
-        weeklyGoal: { completed: 0, target: 4, percentage: 0 }
-      }});
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
-  };
+      return {
+        ...prev,
+        workouts: newWorkouts,
+        xpPoints: newXP,
+        streak: newStreak,
+        weeklyGoal: {
+          ...prev.weeklyGoal,
+          completed: newWeeklyCompleted,
+          percentage: Math.min((newWeeklyCompleted / prev.weeklyGoal.target) * 100, 100)
+        }
+      };
+    });
+    
+    // Sync with backend after a short delay
+    setTimeout(fetchStats, 2000);
+  }, [fetchStats]);
 
-  const updateProfile = async (profileData) => {
-    dispatch({ type: 'SET_SYNCING', payload: true });
-    try {
-      const updatedUser = await realTimeService.updateProfile(profileData);
-      dispatch({ type: 'SET_USER', payload: updatedUser.user || updatedUser });
-      return updatedUser;
-    } catch (error) {
-      // Silent error handling - return success for UI
-      return { success: true, user: profileData };
-    } finally {
-      dispatch({ type: 'SET_SYNCING', payload: false });
-    }
-  };
+  // Update stats after meal addition
+  const updateMealStats = useCallback((mealData) => {
+    setStats(prev => {
+      const newMeals = prev.meals + 1;
+      const newXP = prev.xpPoints + (mealData.xpGained || 50);
+      
+      return {
+        ...prev,
+        meals: newMeals,
+        xpPoints: newXP
+      };
+    });
+    
+    // Sync with backend after a short delay
+    setTimeout(fetchStats, 2000);
+  }, [fetchStats]);
 
-  const trackWorkout = async (workoutData) => {
-    dispatch({ type: 'SET_SYNCING', payload: true });
-    try {
-      const result = await realTimeService.trackWorkout(workoutData);
-      // Event listener will handle state update
-      return result;
-    } catch (error) {
-      // Silent error handling
-      return { success: true };
-    } finally {
-      dispatch({ type: 'SET_SYNCING', payload: false });
-    }
-  };
+  // Initial load
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
-  const trackMeal = async (mealData) => {
-    dispatch({ type: 'SET_SYNCING', payload: true });
-    try {
-      const result = await realTimeService.trackMeal(mealData);
-      // Event listener will handle state update
-      return result;
-    } catch (error) {
-      // Silent error handling
-      return { success: true };
-    } finally {
-      dispatch({ type: 'SET_SYNCING', payload: false });
-    }
-  };
+  // Periodic sync
+  useEffect(() => {
+    if (!isAuthenticated?.()) return;
+    
+    const interval = setInterval(fetchStats, 30000); // 30 seconds
+    return () => clearInterval(interval);
+  }, [fetchStats, isAuthenticated]);
 
   const value = {
-    ...state,
-    updateProfile,
-    trackWorkout,
-    trackMeal,
-    loadUserData
+    stats,
+    isOnline,
+    lastSync,
+    updateTrigger,
+    triggerUpdate,
+    updateWorkoutStats,
+    updateMealStats,
+    fetchStats
   };
 
   return (
@@ -176,14 +147,4 @@ export function RealTimeProvider({ children }) {
       {children}
     </RealTimeContext.Provider>
   );
-}
-
-export function useRealTime() {
-  const context = useContext(RealTimeContext);
-  if (!context) {
-    throw new Error('useRealTime must be used within a RealTimeProvider');
-  }
-  return context;
-}
-
-export default RealTimeContext;
+};

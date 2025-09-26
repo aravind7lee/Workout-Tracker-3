@@ -320,7 +320,10 @@ export default function Nutrition() {
                 onChange={(e) => setCustomCalorieTarget(parseInt(e.target.value))}
                 className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-blue-500 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-dark-accent/20 transition-all"
               >
+                <option value={1600}>1600 cal</option>
+                <option value={1800}>1800 cal</option>
                 <option value={2000}>2000 cal</option>
+                <option value={2200}>2200 cal</option>
                 <option value={2300}>2300 cal</option>
                 <option value={2500}>2500 cal</option>
                 <option value={2800}>2800 cal</option>
@@ -424,23 +427,37 @@ export default function Nutrition() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className={`flex items-center justify-between p-4 rounded-lg transition-all duration-200 ${
+                  className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-200 space-y-3 sm:space-y-0 ${
                     meal.synced === false 
                       ? 'bg-blue-500/10 dark:bg-blue-500/10 border border-blue-500/30 dark:border-blue-400/30' 
                       : 'bg-gray-50 dark:bg-dark-bg-secondary/60 hover:bg-gray-100 dark:hover:bg-dark-bg-secondary/80 border border-gray-200 dark:border-dark-border backdrop-blur-xs'
                   }`}
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <div className="font-medium text-light-text-primary dark:text-dark-text-primary capitalize">{meal.parsedName || meal.name || 'Unknown Food'}</div>
-                      {meal.synced === false && (
-                        <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
-                          Syncing...
-                        </div>
-                      )}
+                  {/* Mobile: Stacked Layout */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="font-medium text-light-text-primary dark:text-dark-text-primary capitalize text-sm sm:text-base">{meal.parsedName || meal.name || 'Unknown Food'}</div>
+                        {meal.synced === false && (
+                          <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
+                            Syncing...
+                          </div>
+                        )}
+                      </div>
+                      {/* Mobile: Remove button in header */}
+                      <button
+                        onClick={() => handleDeleteMeal(meal._id || meal.id)}
+                        className="sm:hidden text-red-400 hover:text-red-300 hover:bg-red-500/20 dark:hover:bg-red-500/30 p-1.5 rounded-lg transition-all border border-red-400/30 hover:border-red-400/60"
+                        title="Delete meal"
+                        disabled={!meal._id && !meal.id}
+                      >
+                        <span className="text-xs">🗑️</span>
+                      </button>
                     </div>
-                    <div className="text-sm text-light-text-muted dark:text-dark-text-muted">{meal.servingText || 'Standard serving'}</div>
-                    <div className="text-xs text-light-text-muted/80 dark:text-dark-text-muted/80 mt-1 flex items-center gap-2">
+                    
+                    <div className="text-xs sm:text-sm text-light-text-muted dark:text-dark-text-muted">{meal.servingText || 'Standard serving'}</div>
+                    
+                    <div className="text-xs text-light-text-muted/80 dark:text-dark-text-muted/80 flex flex-wrap items-center gap-2">
                       <span>{new Date(meal.consumedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       <span className="capitalize">{meal.mealType || 'snack'}</span>
                       {meal.source && (
@@ -453,9 +470,30 @@ export default function Nutrition() {
                         </span>
                       )}
                     </div>
+                    
+                    {/* Mobile: Nutrition info in grid */}
+                    <div className="grid grid-cols-4 gap-2 sm:hidden pt-2 border-t border-gray-200 dark:border-dark-border">
+                      <div className="text-center">
+                        <div className="text-light-text-primary dark:text-dark-text-primary font-medium text-sm">{Math.round(meal.calories || 0)}</div>
+                        <div className="text-light-text-muted dark:text-dark-text-muted text-xs">cal</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-blue-600 dark:text-blue-400 font-medium text-sm">{Math.round((meal.protein || 0) * 10) / 10}g</div>
+                        <div className="text-light-text-muted dark:text-dark-text-muted text-xs">protein</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-green-600 dark:text-green-400 font-medium text-sm">{Math.round((meal.carbs || 0) * 10) / 10}g</div>
+                        <div className="text-light-text-muted dark:text-dark-text-muted text-xs">carbs</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-yellow-600 dark:text-yellow-400 font-medium text-sm">{Math.round((meal.fat || 0) * 10) / 10}g</div>
+                        <div className="text-light-text-muted dark:text-dark-text-muted text-xs">fat</div>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm">
+                  {/* Desktop: Horizontal layout */}
+                  <div className="hidden sm:flex items-center gap-4 text-sm">
                     <div className="text-center">
                       <div className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round(meal.calories || 0)}</div>
                       <div className="text-light-text-muted dark:text-dark-text-muted text-xs">cal</div>

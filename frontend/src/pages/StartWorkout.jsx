@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useRealTime } from '../context/RealTimeContext';
 import { onlineService } from '../services/onlineService';
 
 export default function StartWorkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { updateWorkoutStats, triggerUpdate } = useRealTime();
   const [exercise, setExercise] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
   const [workoutData, setWorkoutData] = useState({
@@ -159,17 +161,17 @@ export default function StartWorkout() {
         const result = await onlineService.saveWorkout(workoutPayload);
         
         if (result) {
-          // Trigger real-time dashboard update
-          window.dispatchEvent(new CustomEvent('workoutCompleted', {
-            detail: { 
-              workout: result,
-              exercise: exercise.name,
-              duration: timer,
-              sets: workoutData.sets.length
-            }
-          }));
+          // Trigger real-time updates
+          updateWorkoutStats({
+            exerciseName: exercise.name,
+            sets: workoutData.sets.length,
+            duration: timer,
+            xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
+          });
           
-          navigate('/dashboard', { 
+          triggerUpdate();
+          
+          navigate('/', { 
             state: { 
               workoutCompleted: true, 
               exercise: exercise.name,
@@ -186,18 +188,17 @@ export default function StartWorkout() {
       savedWorkouts.push(finalWorkoutData);
       localStorage.setItem('offlineWorkouts', JSON.stringify(savedWorkouts));
       
-      // Trigger offline dashboard update
-      window.dispatchEvent(new CustomEvent('workoutCompleted', {
-        detail: { 
-          workout: finalWorkoutData,
-          exercise: exercise.name,
-          duration: timer,
-          sets: workoutData.sets.length,
-          offline: true
-        }
-      }));
+      // Trigger real-time updates for offline
+      updateWorkoutStats({
+        exerciseName: exercise.name,
+        sets: workoutData.sets.length,
+        duration: timer,
+        xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
+      });
       
-      navigate('/dashboard', { 
+      triggerUpdate();
+      
+      navigate('/', { 
         state: { 
           workoutCompleted: true, 
           exercise: exercise.name,
@@ -212,19 +213,17 @@ export default function StartWorkout() {
       savedWorkouts.push(finalWorkoutData);
       localStorage.setItem('offlineWorkouts', JSON.stringify(savedWorkouts));
       
-      // Trigger offline dashboard update
-      window.dispatchEvent(new CustomEvent('workoutCompleted', {
-        detail: { 
-          workout: finalWorkoutData,
-          exercise: exercise.name,
-          duration: timer,
-          sets: workoutData.sets.length,
-          offline: true,
-          error: error.message
-        }
-      }));
+      // Trigger real-time updates for error case
+      updateWorkoutStats({
+        exerciseName: exercise.name,
+        sets: workoutData.sets.length,
+        duration: timer,
+        xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
+      });
       
-      navigate('/dashboard', { 
+      triggerUpdate();
+      
+      navigate('/', { 
         state: { 
           workoutCompleted: true, 
           exercise: exercise.name,

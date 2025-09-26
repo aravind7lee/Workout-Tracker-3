@@ -17,6 +17,9 @@ import dashboardRoutes from './routes/dashboard.js';
 import reviewRoutes from './routes/reviews.js';
 import syncRoutes from './routes/sync.js';
 
+// Import rate limiters
+import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
+
 dotenv.config();
 
 const app = express();
@@ -40,8 +43,11 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
-app.use('/api/auth', authRoutes);
+// Apply rate limiting
+app.use('/api/', generalLimiter);
+
+// Routes with specific rate limiting
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/plans', planRoutes);
@@ -53,7 +59,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
 
-// Health check
+// Health check (no rate limiting)
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -61,6 +67,10 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     cloudinary: {
       configured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
+    },
+    rateLimit: {
+      enabled: true,
+      message: 'Rate limiting is active'
     }
   });
 });

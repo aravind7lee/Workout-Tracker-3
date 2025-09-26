@@ -176,7 +176,7 @@ router.get('/hero-stats', async (req, res) => {
   }
 });
 
-// Track workout completion
+// Track workout completion with achievement checking
 router.post('/track-workout-completion', async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
@@ -185,24 +185,70 @@ router.post('/track-workout-completion', async (req, res) => {
     }
 
     const Workout = (await import('../models/Workout.js')).default;
+    const Achievement = (await import('../models/Achievement.js')).default;
     
     // Create workout entry
     const workout = new Workout({
       user: userId,
-      title: 'Quick Workout',
-      exercises: [],
-      durationMinutes: 0,
+      title: req.body.title || 'Quick Workout',
+      exercises: req.body.exercises || [],
+      durationMinutes: req.body.duration || 0,
       createdAt: new Date()
     });
     
     await workout.save();
-    res.json({ success: true, message: 'Workout tracked' });
+    
+    // Check for new achievements
+    const totalWorkouts = await Workout.countDocuments({ user: userId });
+    const newAchievements = [];
+    
+    // Define workout milestones
+    const workoutMilestones = [
+      { count: 1, title: 'First Rep', icon: '🎯' },
+      { count: 5, title: 'Getting Strong', icon: '💪' },
+      { count: 10, title: 'Fitness Enthusiast', icon: '🔥' },
+      { count: 25, title: 'Iron Warrior', icon: '⚔️' },
+      { count: 50, title: 'Gym Legend', icon: '👑' },
+      { count: 100, title: 'Ultimate Beast', icon: '🦁' }
+    ];
+    
+    // Check if any milestone was just reached
+    for (const milestone of workoutMilestones) {
+      if (totalWorkouts === milestone.count) {
+        // Check if achievement already exists
+        const existing = await Achievement.findOne({
+          user: userId,
+          title: milestone.title
+        });
+        
+        if (!existing) {
+          const achievement = new Achievement({
+            user: userId,
+            title: milestone.title,
+            description: `Completed ${milestone.count} workout${milestone.count > 1 ? 's' : ''}`,
+            badgeIcon: milestone.icon,
+            achievedAt: new Date()
+          });
+          
+          await achievement.save();
+          newAchievements.push(achievement);
+        }
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Workout tracked successfully',
+      newAchievements: newAchievements.length > 0 ? newAchievements : null,
+      totalWorkouts
+    });
   } catch (error) {
+    console.error('Workout tracking error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Track meal logging
+// Track meal logging with achievement checking
 router.post('/track-meal-logging', async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
@@ -211,18 +257,58 @@ router.post('/track-meal-logging', async (req, res) => {
     }
 
     const Meal = (await import('../models/Meal.js')).default;
+    const Achievement = (await import('../models/Achievement.js')).default;
     
     // Create meal entry
     const meal = new Meal({
       userId,
-      name: 'Quick Meal',
-      calories: 0,
+      name: req.body.name || 'Quick Meal',
+      calories: req.body.calories || 0,
       createdAt: new Date()
     });
     
     await meal.save();
-    res.json({ success: true, message: 'Meal tracked' });
+    
+    // Check for nutrition achievements
+    const totalMeals = await Meal.countDocuments({ userId });
+    const newAchievements = [];
+    
+    const nutritionMilestones = [
+      { count: 1, title: 'Nutrition Starter', icon: '🥗' },
+      { count: 10, title: 'Meal Tracker', icon: '🍎' },
+      { count: 50, title: 'Nutrition Expert', icon: '🥇' }
+    ];
+    
+    for (const milestone of nutritionMilestones) {
+      if (totalMeals === milestone.count) {
+        const existing = await Achievement.findOne({
+          user: userId,
+          title: milestone.title
+        });
+        
+        if (!existing) {
+          const achievement = new Achievement({
+            user: userId,
+            title: milestone.title,
+            description: `Logged ${milestone.count} meal${milestone.count > 1 ? 's' : ''}`,
+            badgeIcon: milestone.icon,
+            achievedAt: new Date()
+          });
+          
+          await achievement.save();
+          newAchievements.push(achievement);
+        }
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Meal tracked successfully',
+      newAchievements: newAchievements.length > 0 ? newAchievements : null,
+      totalMeals
+    });
   } catch (error) {
+    console.error('Meal tracking error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -484,47 +570,305 @@ router.post('/sync-offline-data', async (req, res) => {
   }
 });
 
-// Get achievements
+// Get real-time achievements with MongoDB data
 router.get('/achievements', async (req, res) => {
   try {
-    const achievements = [
-      {
-        id: 1,
-        title: 'First Workout',
-        description: 'Complete your first workout',
-        icon: '🏋️',
-        unlocked: true,
-        unlockedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-      },
-      {
-        id: 2,
-        title: 'Nutrition Tracker',
-        description: 'Log your first meal',
-        icon: '🍎',
-        unlocked: true,
-        unlockedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-      },
-      {
-        id: 3,
-        title: 'Week Warrior',
-        description: 'Work out 5 times in a week',
-        icon: '🔥',
-        unlocked: false,
-        progress: 3,
-        target: 5
-      },
-      {
-        id: 4,
-        title: 'Consistency King',
-        description: 'Maintain a 30-day streak',
-        icon: '👑',
-        unlocked: false,
-        progress: 7,
-        target: 30
-      }
-    ];
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+      return res.json({ success: true, data: [] });
+    }
 
-    res.json({ success: true, data: achievements });
+    // Import models
+    const User = (await import('../models/User.js')).default;
+    const Workout = (await import('../models/Workout.js')).default;
+    const Meal = (await import('../models/Meal.js')).default;
+    const Plan = (await import('../models/Plan.js')).default;
+    const Achievement = (await import('../models/Achievement.js')).default;
+
+    // Get user data
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Get real-time statistics
+    const totalWorkouts = await Workout.countDocuments({ user: userId });
+    const totalMeals = await Meal.countDocuments({ userId });
+    const totalPlans = await Plan.countDocuments({ user: userId });
+    
+    // Calculate current streak
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    let currentStreak = 0;
+    let currentDate = new Date(startOfToday);
+    
+    while (true) {
+      const dayStart = new Date(currentDate);
+      const dayEnd = new Date(currentDate);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+      
+      const hasActivity = await Workout.exists({
+        user: userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      }) || await Meal.exists({
+        userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      });
+      
+      if (hasActivity) {
+        currentStreak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    
+    // Calculate total XP
+    const totalXP = (totalWorkouts * 100) + (totalPlans * 150) + (totalMeals * 50);
+    
+    // Get existing achievements from database
+    const existingAchievements = await Achievement.find({ user: userId });
+    const unlockedIds = new Set(existingAchievements.map(a => a.title));
+    
+    // Define all possible achievements with real-time data
+    const achievementDefinitions = [
+      // 🏋️ WORKOUT ACHIEVEMENTS
+      { id: 'workout_1', title: 'First Rep', description: 'Completed your first workout', icon: '🎯', xp: 100, tier: 'bronze', threshold: 1, current: totalWorkouts, type: 'workout' },
+      { id: 'workout_5', title: 'Getting Strong', description: 'Completed 5 workouts', icon: '💪', xp: 250, tier: 'bronze', threshold: 5, current: totalWorkouts, type: 'workout' },
+      { id: 'workout_10', title: 'Fitness Enthusiast', description: 'Completed 10 workouts', icon: '🔥', xp: 500, tier: 'silver', threshold: 10, current: totalWorkouts, type: 'workout' },
+      { id: 'workout_25', title: 'Iron Warrior', description: 'Completed 25 workouts', icon: '⚔️', xp: 1000, tier: 'silver', threshold: 25, current: totalWorkouts, type: 'workout' },
+      { id: 'workout_50', title: 'Gym Legend', description: 'Completed 50 workouts', icon: '👑', xp: 2000, tier: 'gold', threshold: 50, current: totalWorkouts, type: 'workout' },
+      { id: 'workout_100', title: 'Ultimate Beast', description: 'Completed 100 workouts', icon: '🦁', xp: 5000, tier: 'platinum', threshold: 100, current: totalWorkouts, type: 'workout' },
+      
+      // 📋 PLANNING ACHIEVEMENTS
+      { id: 'plan_1', title: 'Plan Creator', description: 'Created your first workout plan', icon: '📋', xp: 150, tier: 'bronze', threshold: 1, current: totalPlans, type: 'plan' },
+      { id: 'plan_3', title: 'Strategic Planner', description: 'Created 3 workout plans', icon: '🎯', xp: 400, tier: 'silver', threshold: 3, current: totalPlans, type: 'plan' },
+      { id: 'plan_5', title: 'Master Planner', description: 'Created 5 workout plans', icon: '🧠', xp: 750, tier: 'gold', threshold: 5, current: totalPlans, type: 'plan' },
+      
+      // 🔥 STREAK ACHIEVEMENTS
+      { id: 'streak_3', title: 'On Fire', description: '3-day workout streak', icon: '🔥', xp: 200, tier: 'bronze', threshold: 3, current: currentStreak, type: 'streak' },
+      { id: 'streak_7', title: 'Week Warrior', description: '7-day workout streak', icon: '⚡', xp: 500, tier: 'silver', threshold: 7, current: currentStreak, type: 'streak' },
+      { id: 'streak_14', title: 'Unstoppable', description: '14-day workout streak', icon: '🚀', xp: 1000, tier: 'gold', threshold: 14, current: currentStreak, type: 'streak' },
+      { id: 'streak_30', title: 'Consistency King', description: '30-day workout streak', icon: '👑', xp: 2500, tier: 'platinum', threshold: 30, current: currentStreak, type: 'streak' },
+      
+      // 🥗 NUTRITION ACHIEVEMENTS
+      { id: 'nutrition_1', title: 'Nutrition Starter', description: 'Logged your first meal', icon: '🥗', xp: 50, tier: 'bronze', threshold: 1, current: totalMeals, type: 'nutrition' },
+      { id: 'nutrition_10', title: 'Meal Tracker', description: 'Logged 10 meals', icon: '🍎', xp: 300, tier: 'silver', threshold: 10, current: totalMeals, type: 'nutrition' },
+      { id: 'nutrition_50', title: 'Nutrition Expert', description: 'Logged 50 meals', icon: '🥇', xp: 1000, tier: 'gold', threshold: 50, current: totalMeals, type: 'nutrition' },
+      
+      // 💎 XP ACHIEVEMENTS
+      { id: 'xp_500', title: 'XP Collector', description: 'Earned 500 XP points', icon: '💎', xp: 100, tier: 'bronze', threshold: 500, current: totalXP, type: 'xp' },
+      { id: 'xp_1000', title: 'XP Master', description: 'Earned 1,000 XP points', icon: '💠', xp: 200, tier: 'silver', threshold: 1000, current: totalXP, type: 'xp' },
+      { id: 'xp_2500', title: 'XP Legend', description: 'Earned 2,500 XP points', icon: '🌟', xp: 500, tier: 'gold', threshold: 2500, current: totalXP, type: 'xp' },
+      { id: 'xp_5000', title: 'XP God', description: 'Earned 5,000 XP points', icon: '⭐', xp: 1000, tier: 'platinum', threshold: 5000, current: totalXP, type: 'xp' }
+    ];
+    
+    // Process achievements and check for new unlocks
+    const processedAchievements = [];
+    const newlyUnlocked = [];
+    
+    for (const def of achievementDefinitions) {
+      const isUnlocked = def.current >= def.threshold;
+      const wasAlreadyUnlocked = unlockedIds.has(def.title);
+      
+      // If newly unlocked, save to database
+      if (isUnlocked && !wasAlreadyUnlocked) {
+        try {
+          const newAchievement = new Achievement({
+            user: userId,
+            title: def.title,
+            description: def.description,
+            badgeIcon: def.icon,
+            achievedAt: new Date()
+          });
+          await newAchievement.save();
+          newlyUnlocked.push(def.title);
+        } catch (error) {
+          console.error('Failed to save achievement:', error);
+        }
+      }
+      
+      processedAchievements.push({
+        id: def.id,
+        title: def.title,
+        description: def.description,
+        icon: def.icon,
+        xp: def.xp,
+        tier: def.tier,
+        category: def.type,
+        unlocked: isUnlocked,
+        progress: Math.min(def.current, def.threshold),
+        target: def.threshold,
+        percentage: Math.min((def.current / def.threshold) * 100, 100),
+        unlockedAt: isUnlocked ? (wasAlreadyUnlocked ? existingAchievements.find(a => a.title === def.title)?.achievedAt : new Date()) : null,
+        isNew: newlyUnlocked.includes(def.title)
+      });
+    }
+    
+    // Sort achievements: unlocked first, then by tier, then by progress
+    processedAchievements.sort((a, b) => {
+      if (a.unlocked !== b.unlocked) return b.unlocked - a.unlocked;
+      const tierOrder = { 'platinum': 4, 'gold': 3, 'silver': 2, 'bronze': 1 };
+      if (tierOrder[a.tier] !== tierOrder[b.tier]) return tierOrder[b.tier] - tierOrder[a.tier];
+      return b.percentage - a.percentage;
+    });
+    
+    // Include summary statistics
+    const summary = {
+      totalAchievements: processedAchievements.length,
+      unlockedCount: processedAchievements.filter(a => a.unlocked).length,
+      totalXPEarned: processedAchievements.filter(a => a.unlocked).reduce((sum, a) => sum + a.xp, 0),
+      newlyUnlocked: newlyUnlocked.length,
+      stats: {
+        totalWorkouts,
+        totalMeals,
+        totalPlans,
+        currentStreak,
+        totalXP
+      }
+    };
+
+    res.json({ 
+      success: true, 
+      data: processedAchievements,
+      summary,
+      message: newlyUnlocked.length > 0 ? `🎉 ${newlyUnlocked.length} new achievement(s) unlocked!` : null
+    });
+  } catch (error) {
+    console.error('Achievements error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Real-time achievement progress tracking
+router.get('/progress', async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+      return res.json({ success: true, data: {} });
+    }
+
+    const User = (await import('../models/User.js')).default;
+    const Workout = (await import('../models/Workout.js')).default;
+    const Meal = (await import('../models/Meal.js')).default;
+    const Plan = (await import('../models/Plan.js')).default;
+
+    // Get current statistics
+    const [totalWorkouts, totalMeals, totalPlans] = await Promise.all([
+      Workout.countDocuments({ user: userId }),
+      Meal.countDocuments({ userId }),
+      Plan.countDocuments({ user: userId })
+    ]);
+    
+    // Calculate streak
+    const today = new Date();
+    let currentStreak = 0;
+    let currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    while (currentStreak < 365) { // Max 365 days to prevent infinite loop
+      const dayStart = new Date(currentDate);
+      const dayEnd = new Date(currentDate);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+      
+      const hasActivity = await Workout.exists({
+        user: userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      }) || await Meal.exists({
+        userId,
+        createdAt: { $gte: dayStart, $lt: dayEnd }
+      });
+      
+      if (hasActivity) {
+        currentStreak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    
+    const totalXP = (totalWorkouts * 100) + (totalPlans * 150) + (totalMeals * 50);
+    
+    // Calculate progress to next milestones
+    const getNextMilestone = (current, milestones) => {
+      const next = milestones.find(m => m > current);
+      return next ? {
+        target: next,
+        progress: current,
+        percentage: Math.min((current / next) * 100, 100),
+        remaining: next - current
+      } : null;
+    };
+    
+    const progress = {
+      workouts: {
+        current: totalWorkouts,
+        next: getNextMilestone(totalWorkouts, [1, 5, 10, 25, 50, 100])
+      },
+      plans: {
+        current: totalPlans,
+        next: getNextMilestone(totalPlans, [1, 3, 5, 10])
+      },
+      meals: {
+        current: totalMeals,
+        next: getNextMilestone(totalMeals, [1, 10, 50, 100])
+      },
+      streak: {
+        current: currentStreak,
+        next: getNextMilestone(currentStreak, [3, 7, 14, 30, 60, 100])
+      },
+      xp: {
+        current: totalXP,
+        next: getNextMilestone(totalXP, [500, 1000, 2500, 5000, 10000])
+      }
+    };
+    
+    res.json({ success: true, data: progress });
+  } catch (error) {
+    console.error('Progress tracking error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Unlock achievement manually (for testing or special events)
+router.post('/unlock/:achievementId', async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const { achievementId } = req.params;
+    
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const Achievement = (await import('../models/Achievement.js')).default;
+    
+    // Check if already unlocked
+    const existing = await Achievement.findOne({ 
+      user: userId, 
+      title: achievementId 
+    });
+    
+    if (existing) {
+      return res.json({ success: false, message: 'Achievement already unlocked' });
+    }
+    
+    // Create new achievement
+    const achievement = new Achievement({
+      user: userId,
+      title: achievementId,
+      description: 'Manually unlocked',
+      badgeIcon: '🏆',
+      achievedAt: new Date()
+    });
+    
+    await achievement.save();
+    
+    res.json({ 
+      success: true, 
+      message: 'Achievement unlocked!',
+      achievement 
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -536,7 +880,7 @@ router.get('/health', (req, res) => {
     success: true, 
     status: 'online',
     timestamp: new Date().toISOString(),
-    message: 'Analytics service is running' 
+    message: 'Analytics service is running with real-time achievements' 
   });
 });
 

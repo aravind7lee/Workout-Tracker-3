@@ -4,8 +4,8 @@ import chromeErrorHandler from '../utils/chromeErrorHandler';
 class SettingsService {
   constructor() {
     this.baseURL = import.meta.env.VITE_API_BASE;
-    this.retryAttempts = 5; // Increased retry attempts for MongoDB
-    this.retryDelay = 2000; // Increased delay for better connection
+    this.retryAttempts = 3; // Reduced retry attempts to prevent spam
+    this.retryDelay = 1000; // Reduced delay
     
     console.log('🏗️ Settings Service Initialized');
     console.log('🌐 Backend URL:', this.baseURL);
@@ -22,9 +22,15 @@ class SettingsService {
     };
   }
 
-  // Safe API call with retry logic and error handling - FORCE MongoDB Connection
+  // Safe API call with retry logic and error handling - FIXED
   async safeApiCall(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
+    
+    // Check if we have a valid token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
     
     // Force online mode for MongoDB sync
     if (!navigator.onLine) {
@@ -33,14 +39,16 @@ class SettingsService {
     
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       try {
-        console.log(`🔄 Attempting MongoDB sync (${attempt}/${this.retryAttempts}):`, url);
+        console.log(`🔄 API call attempt (${attempt}/${this.retryAttempts}):`, url);
         
         const response = await fetch(url, {
           ...options,
           headers: {
             ...this.getAuthHeaders(),
             ...options.headers
-          }
+          },
+          // Add timeout to prevent hanging requests
+          signal: AbortSignal.timeout(10000) // 10 second timeout
         });
 
         console.log(`📡 Response status: ${response.status} ${response.statusText}`);
@@ -48,20 +56,26 @@ class SettingsService {
         if (!response.ok) {
           // Handle specific HTTP errors
           if (response.status === 401) {
+            // Clear invalid token and redirect to login
+            localStorage.removeItem('token');
+            window.location.href = '/login';
             throw new Error('Authentication failed. Please log in again.');
           }
           if (response.status === 404) {
-            console.warn('⚠️ Settings endpoint not found - checking backend deployment');
-            throw new Error('Backend endpoint not available. Check deployment.');
+            console.warn('⚠️ Settings endpoint not found - using local fallback');
+            throw new Error('Backend endpoint not available. Using local storage.');
           }
           if (response.status >= 500) {
+            if (attempt === this.retryAttempts) {
+              throw new Error(`Server error (${response.status}). Please try again later.`);
+            }
             throw new Error(`Server error (${response.status}). Retrying...`);
           }
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('✅ MongoDB sync successful:', data);
+        console.log('✅ API call successful');
         return data;
       } catch (error) {
         console.warn(`❌ API call attempt ${attempt} failed:`, error.message);
@@ -69,7 +83,8 @@ class SettingsService {
         // If it's the last attempt or a non-retryable error, throw
         if (attempt === this.retryAttempts || 
             error.message.includes('Authentication failed') ||
-            error.message.includes('not found')) {
+            error.message.includes('not found') ||
+            error.name === 'AbortError') {
           throw error;
         }
         
@@ -79,53 +94,65 @@ class SettingsService {
     }
   }
 
-  // Load settings from MongoDB - PRIORITY MongoDB Connection
+  // Load settings with improved error handling
   async loadSettings() {
-    console.log('🚀 Loading settings - Priority: MongoDB Global Sync');
+    console.log('🚀 Loading settings...');
     
     try {
-      // PRIORITY: Try MongoDB first for global sync
-      if (navigator.onLine && localStorage.getItem('token')) {
-        try {
-          console.log('🌐 Attempting MongoDB connection...');
-          const mongoSettings = await this.safeApiCall('/users/settings');
-          
-          const globalSettings = {
-            ...mongoSettings,
-            lastSync: new Date().toISOString(),
-            isRealTime: true,
-            source: 'mongodb'
-          };
-          
-          // Update localStorage with MongoDB data
-          this.saveLocalSettings(globalSettings);
-          
-          console.log('✅ MongoDB Global Sync Successful!');
-          return {
-            settings: globalSettings,
-            source: 'mongodb',
-            status: 'synced'
-          };
-        } catch (mongoError) {
-          console.warn('⚠️ MongoDB connection failed:', mongoError.message);
-          
-          // Fallback to local settings only if MongoDB fails
-          const localSettings = this.getLocalSettings();
-          return {
-            settings: localSettings,
-            source: 'local',
-            status: 'offline',
-            error: mongoError.message
-          };
-        }
-      } else {
-        console.warn('📱 Offline or not authenticated - using local settings');
+      // Check if we have authentication and are online
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn('📱 No authentication token - using local settings');
         const localSettings = this.getLocalSettings();
         return {
           settings: localSettings,
           source: 'local',
           status: 'offline',
-          error: 'Offline or not authenticated'
+          error: 'Not authenticated'
+        };
+      }
+      
+      if (!navigator.onLine) {
+        console.warn('📱 Offline - using local settings');
+        const localSettings = this.getLocalSettings();
+        return {
+          settings: localSettings,
+          source: 'local',
+          status: 'offline',
+          error: 'Offline'
+        };
+      }
+      
+      try {
+        console.log('🌐 Attempting to load settings from server...');
+        const mongoSettings = await this.safeApiCall('/users/settings');
+        
+        const globalSettings = {
+          ...mongoSettings,
+          lastSync: new Date().toISOString(),
+          isRealTime: true,
+          source: 'mongodb'
+        };
+        
+        // Update localStorage with MongoDB data
+        this.saveLocalSettings(globalSettings);
+        
+        console.log('✅ Settings loaded from server successfully!');
+        return {
+          settings: globalSettings,
+          source: 'mongodb',
+          status: 'synced'
+        };
+      } catch (serverError) {
+        console.warn('⚠️ Server connection failed:', serverError.message);
+        
+        // Fallback to local settings
+        const localSettings = this.getLocalSettings();
+        return {
+          settings: localSettings,
+          source: 'local',
+          status: 'offline',
+          error: serverError.message
         };
       }
     } catch (error) {
@@ -141,57 +168,64 @@ class SettingsService {
     }
   }
 
-  // Save settings to MongoDB - FORCE Global Sync
+  // Save settings with improved error handling
   async saveSettings(settings) {
-    console.log('💾 Saving settings - FORCE MongoDB Global Sync');
+    console.log('💾 Saving settings...');
     
     try {
-      // PRIORITY: Save to MongoDB first for global sync
-      if (navigator.onLine && localStorage.getItem('token')) {
-        try {
-          console.log('🌐 Forcing MongoDB global save...');
-          
-          const result = await this.safeApiCall('/users/settings', {
-            method: 'PUT',
-            body: JSON.stringify({
-              ...settings,
-              lastSync: new Date().toISOString(),
-              isRealTime: true
-            })
-          });
-          
-          // Save to localStorage after successful MongoDB save
-          this.saveLocalSettings(settings);
-          
-          console.log('✅ MongoDB Global Save Successful!');
-          return {
-            success: true,
-            source: 'mongodb',
-            status: 'synced',
-            data: result
-          };
-        } catch (mongoError) {
-          console.warn('⚠️ MongoDB save failed:', mongoError.message);
-          
-          // Save locally as fallback
-          this.saveLocalSettings(settings);
-          
-          return {
-            success: true,
-            source: 'local',
-            status: 'offline',
-            error: mongoError.message
-          };
-        }
-      } else {
-        console.warn('📱 Offline or not authenticated - saving locally');
-        this.saveLocalSettings(settings);
-        
+      // Always save locally first as backup
+      this.saveLocalSettings(settings);
+      
+      // Check if we can save to server
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn('📱 No authentication token - saved locally only');
         return {
           success: true,
           source: 'local',
           status: 'offline',
-          error: 'Offline or not authenticated'
+          error: 'Not authenticated'
+        };
+      }
+      
+      if (!navigator.onLine) {
+        console.warn('📱 Offline - saved locally only');
+        return {
+          success: true,
+          source: 'local',
+          status: 'offline',
+          error: 'Offline'
+        };
+      }
+      
+      try {
+        console.log('🌐 Attempting to save settings to server...');
+        
+        const result = await this.safeApiCall('/users/settings', {
+          method: 'PUT',
+          body: JSON.stringify({
+            ...settings,
+            lastSync: new Date().toISOString(),
+            isRealTime: true
+          })
+        });
+        
+        console.log('✅ Settings saved to server successfully!');
+        return {
+          success: true,
+          source: 'mongodb',
+          status: 'synced',
+          data: result
+        };
+      } catch (serverError) {
+        console.warn('⚠️ Server save failed:', serverError.message);
+        
+        // Local save already completed above
+        return {
+          success: true,
+          source: 'local',
+          status: 'offline',
+          error: serverError.message
         };
       }
     } catch (error) {
@@ -275,19 +309,29 @@ class SettingsService {
     };
   }
 
-  // Auto-save with debouncing
-  setupAutoSave(callback, delay = 1000) {
+  // Auto-save with debouncing and error prevention
+  setupAutoSave(callback, delay = 2000) {
     let timeoutId;
+    let isProcessing = false;
     
     return (settings) => {
+      // Prevent multiple simultaneous saves
+      if (isProcessing) {
+        console.log('⏳ Auto-save already in progress, skipping...');
+        return;
+      }
+      
       clearTimeout(timeoutId);
       timeoutId = setTimeout(async () => {
         try {
+          isProcessing = true;
           const result = await this.saveSettings(settings);
           if (callback) callback(result);
         } catch (error) {
           console.error('Auto-save failed:', error);
           if (callback) callback({ success: false, error: error.message });
+        } finally {
+          isProcessing = false;
         }
       }, delay);
     };

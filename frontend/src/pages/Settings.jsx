@@ -104,7 +104,7 @@ export default function Settings() {
     []
   );
 
-  // Load real-time data from MongoDB
+  // Load real-time data with error handling
   const loadRealTimeData = useCallback(async () => {
     if (!isAuthenticated()) return;
     
@@ -112,13 +112,19 @@ export default function Settings() {
       const token = localStorage.getItem('token');
       if (!token) return;
       
-      // Load real-time stats from MongoDB
-      const statsResponse = await fetch('/api/users/stats', {
+      // Load real-time stats with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      const statsResponse = await fetch(`${import.meta.env.VITE_API_BASE}/users/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       if (statsResponse.ok) {
         const stats = await statsResponse.json();
@@ -131,10 +137,16 @@ export default function Settings() {
           membershipDays: stats.membershipDays || 0,
           lastSync: new Date().toISOString()
         });
-        console.log('✅ Real-time stats loaded from MongoDB:', stats);
+        console.log('✅ Real-time stats loaded successfully');
+      } else {
+        console.warn('⚠️ Stats endpoint returned:', statsResponse.status);
       }
     } catch (error) {
-      console.error('❌ Failed to load real-time data:', error);
+      if (error.name === 'AbortError') {
+        console.warn('⏱️ Stats request timed out');
+      } else {
+        console.error('❌ Failed to load real-time data:', error.message);
+      }
     }
   }, [isAuthenticated]);
 
@@ -147,26 +159,27 @@ export default function Settings() {
         console.log('🚀 FORCE LOAD FROM MONGODB - Global Sync Priority');
         
         // Load both settings and real-time data
-        await Promise.all([
-          (async () => {
-            const result = await chromeErrorHandler.safeExecuteAsync(async () => {
-              return await settingsService.loadSettings();
-            });
-            
-            if (result) {
-              setSettings(prev => ({ ...prev, ...result.settings }));
-              setLastSyncResult(result);
-              setSyncStatus(result.status);
-              
-              if (result.source === 'mongodb') {
-                console.log('✅ MongoDB Global Sync Successful!');
-              } else {
-                console.warn('⚠️ Using fallback:', result.source);
-              }
-            }
-          })(),
-          loadRealTimeData()
-        ]);
+        // Load settings first, then stats
+        const result = await chromeErrorHandler.safeExecuteAsync(async () => {
+          return await settingsService.loadSettings();
+        });
+        
+        if (result) {
+          setSettings(prev => ({ ...prev, ...result.settings }));
+          setLastSyncResult(result);
+          setSyncStatus(result.status);
+          
+          if (result.source === 'mongodb') {
+            console.log('✅ Settings loaded from server!');
+          } else {
+            console.warn('⚠️ Using fallback:', result.source);
+          }
+        }
+        
+        // Load real-time data separately with delay
+        setTimeout(() => {
+          loadRealTimeData();
+        }, 1000);
       } catch (error) {
         console.error('❌ Error loading settings:', error);
         setSyncStatus('error');
@@ -183,8 +196,12 @@ export default function Settings() {
         console.log('🌐 Network back online - FORCE MongoDB reconnection');
         setIsOnline(true);
         setSyncStatus('syncing');
-        loadSettings(); // Immediately try to sync with MongoDB
-        loadRealTimeData(); // Reload real-time data
+        setTimeout(() => {
+          loadSettings(); // Delayed sync to prevent spam
+        }, 2000);
+        setTimeout(() => {
+          loadRealTimeData(); // Delayed reload
+        }, 3000);
       });
     };
     
@@ -199,17 +216,17 @@ export default function Settings() {
     // Listen for real-time events
     const handleWorkoutCompleted = () => {
       console.log('🏋️ Workout completed - refreshing real-time data');
-      loadRealTimeData();
+      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
     };
     
     const handleMealAdded = () => {
       console.log('🍽️ Meal added - refreshing real-time data');
-      loadRealTimeData();
+      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
     };
     
     const handlePlanCreated = () => {
       console.log('📋 Plan created - refreshing real-time data');
-      loadRealTimeData();
+      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
     };
     
     window.addEventListener('online', handleOnline);
@@ -218,12 +235,12 @@ export default function Settings() {
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
     
-    // Real-time refresh every 30 seconds
+    // Real-time refresh every 60 seconds (reduced frequency)
     const refreshInterval = setInterval(() => {
-      if (isAuthenticated() && navigator.onLine) {
+      if (isAuthenticated() && navigator.onLine && !loading) {
         loadRealTimeData();
       }
-    }, 30000);
+    }, 60000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -267,10 +284,10 @@ export default function Settings() {
     }
   }, [theme, toggleTheme]);
 
-  // Auto-save with FORCE MongoDB sync
+  // Auto-save with improved debouncing
   useEffect(() => {
-    if (Object.keys(settings).length > 0 && settings.profile.name !== undefined) {
-      console.log('🔄 Auto-save triggered - FORCE MongoDB sync');
+    if (Object.keys(settings).length > 0 && settings.profile.name !== undefined && !loading) {
+      console.log('🔄 Auto-save triggered');
       setSyncStatus('syncing');
       autoSave({
         ...settings,
@@ -278,7 +295,7 @@ export default function Settings() {
         globalSync: true
       });
     }
-  }, [settings, autoSave]);
+  }, [settings, autoSave, loading]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -903,60 +920,6 @@ export default function Settings() {
 
   return (
     <div className="space-y-6">
-      {/* Real-Time Stats Dashboard */}
-      <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-xl p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Zap className="text-yellow-400" size={20} />
-            <h3 className="text-lg font-semibold text-white">Real-Time Progress</h3>
-            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse">
-              LIVE
-            </span>
-          </div>
-          <div className="text-xs text-slate-400">
-            Last sync: {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Never'}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-blue-400">{realTimeStats.totalWorkouts}</div>
-            <div className="text-xs text-slate-300">Workouts</div>
-            <div className="text-xs text-green-400">+{realTimeStats.totalWorkouts * 100} XP</div>
-          </div>
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-green-400">{realTimeStats.totalMeals}</div>
-            <div className="text-xs text-slate-300">Meals</div>
-            <div className="text-xs text-green-400">+{realTimeStats.totalMeals * 25} XP</div>
-          </div>
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-purple-400">{realTimeStats.totalPlans}</div>
-            <div className="text-xs text-slate-300">Plans</div>
-            <div className="text-xs text-green-400">+{realTimeStats.totalPlans * 50} XP</div>
-          </div>
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-orange-400">{realTimeStats.currentStreak}</div>
-            <div className="text-xs text-slate-300">Streak</div>
-            <div className="text-xs text-orange-400">🔥 Days</div>
-          </div>
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-yellow-400">{realTimeStats.xpPoints}</div>
-            <div className="text-xs text-slate-300">Total XP</div>
-            <div className="text-xs text-yellow-400">⚡ Points</div>
-          </div>
-          <div className="text-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/30">
-            <div className="text-2xl font-bold text-cyan-400">{realTimeStats.membershipDays}</div>
-            <div className="text-xs text-slate-300">Member</div>
-            <div className="text-xs text-cyan-400">📅 Days</div>
-          </div>
-        </div>
-        
-        <div className="mt-4 text-center">
-          <div className="text-xs text-slate-400">
-            📊 Real-time data from MongoDB • Updates instantly when you complete activities
-          </div>
-        </div>
-      </div>
 
       {/* Status Bar */}
       <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
