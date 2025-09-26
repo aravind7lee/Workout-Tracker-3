@@ -141,8 +141,8 @@ export default function Hero() {
             <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 absolute inset-0"></div>
           )}
           
-          {/* Gradient Overlay - Lighter for better image visibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40"></div>
+          {/* Gradient Overlay - Semantic overlay for proper text contrast */}
+          <div className="absolute inset-0 hero-overlay"></div>
         </div>
 
         {/* Content Overlay */}
@@ -156,18 +156,18 @@ export default function Hero() {
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
               {/* Main Title */}
               <motion.h1 
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white dark:text-white light-theme:text-slate-900 mb-2 sm:mb-3 drop-shadow-lg hero-text-contrast"
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg"
                 variants={itemVariants}
               >
                 Welcome to{' '}
-                <span className="text-blue-400 font-extrabold">
+                <span className="hero-accent-text">
                   GymTracker
                 </span>
               </motion.h1>
 
               {/* Subtitle */}
               <motion.p 
-                className="text-sm sm:text-base md:text-lg text-gray-200 dark:text-gray-200 light-theme:text-gray-700 mb-4 sm:mb-6 drop-shadow-md max-w-2xl mx-auto leading-relaxed px-2 hero-text-contrast"
+                className="text-sm sm:text-base md:text-lg hero-text-secondary mb-4 sm:mb-6 drop-shadow-md max-w-2xl mx-auto leading-relaxed px-2"
                 variants={itemVariants}
               >
                 Track workouts, monitor progress, and achieve your fitness goals efficiently.
@@ -180,14 +180,14 @@ export default function Hero() {
               >
                 <Link 
                   to={isAuthenticated?.() ? "/dashboard" : "/register"}
-                  className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-md text-xs sm:text-sm shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-primary font-semibold rounded-md text-xs sm:text-sm shadow-lg transition-all duration-300"
                 >
                   {isAuthenticated?.() ? 'Dashboard' : 'Start Now'}
                 </Link>
                 
                 <Link 
                   to="/library" 
-                  className="px-3 py-2 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-md text-xs sm:text-sm hover:bg-white/20 transition-all duration-300"
+                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-secondary font-medium rounded-md text-xs sm:text-sm transition-all duration-300"
                 >
                   Exercises
                 </Link>
@@ -196,34 +196,34 @@ export default function Hero() {
               {/* Real-time Stats Preview - Compact on Mobile */}
               {isAuthenticated?.() && (
                 <motion.div 
-                  className="mt-4 sm:mt-6 bg-black/15 dark:bg-black/15 light-theme:bg-white/20 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/10 dark:border-white/10 light-theme:border-black/20 max-w-xs sm:max-w-md mx-auto"
+                  className="mt-4 sm:mt-6 hero-card rounded-lg p-3 sm:p-4 max-w-xs sm:max-w-md mx-auto"
                   variants={itemVariants}
                 >
-                  <h3 className="text-white dark:text-white light-theme:text-slate-800 font-semibold text-sm sm:text-base mb-2 sm:mb-3">Your Progress</h3>
+                  <h3 className="hero-text-primary font-semibold text-sm sm:text-base mb-2 sm:mb-3">Your Progress</h3>
                   <div className="grid grid-cols-4 gap-2 sm:gap-3">
                     <div className="text-center">
-                      <div className="text-lg sm:text-xl font-bold text-blue-400">
+                      <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.workouts)}
                       </div>
-                      <div className="text-xs text-gray-300 dark:text-gray-300 light-theme:text-gray-600">Workouts</div>
+                      <div className="text-xs hero-card-label">Workouts</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg sm:text-xl font-bold text-green-400">
+                      <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.meals)}
                       </div>
-                      <div className="text-xs text-gray-300 dark:text-gray-300 light-theme:text-gray-600">Meals</div>
+                      <div className="text-xs hero-card-label">Meals</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg sm:text-xl font-bold text-purple-400">
+                      <div className="text-lg sm:text-xl font-bold hero-card-text">
                         {loading ? '...' : formatNumber(stats.xpPoints)}
                       </div>
-                      <div className="text-xs text-gray-300 dark:text-gray-300 light-theme:text-gray-600">XP</div>
+                      <div className="text-xs hero-card-label">XP</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg sm:text-xl font-bold text-orange-400">
-                        {loading ? '...' : `${stats.streak}🔥`}
+                      <div className="text-lg sm:text-xl font-bold hero-card-text">
+                        {loading ? '...' : stats.streak}<span className="hero-icon-accent">🔥</span>
                       </div>
-                      <div className="text-xs text-gray-300 dark:text-gray-300 light-theme:text-gray-600">Streak</div>
+                      <div className="text-xs hero-card-label">Streak</div>
                     </div>
                   </div>
                 </motion.div>

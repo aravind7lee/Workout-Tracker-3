@@ -5,6 +5,7 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import AuthGuard from '../components/AuthGuard';
 import RealTimeAchievements from '../components/RealTimeAchievements';
 import RealTimeStats from '../components/RealTimeStats';
 import progressAnalyticsImg from '../assets/Progress & Analytics.jpg';
@@ -580,9 +581,10 @@ export default function Analytics() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Hero Header */}
-      <AnalyticsHero />
+    <AuthGuard>
+      <div className="space-y-4 sm:space-y-6">
+        {/* Hero Header */}
+        <AnalyticsHero />
       
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -675,6 +677,7 @@ export default function Analytics() {
 
         <RealTimeAchievements />
       </div>
-    </div>
+      </div>
+    </AuthGuard>
   );
 }

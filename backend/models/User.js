@@ -156,6 +156,111 @@ const userSchema = new mongoose.Schema({
       enum: ['6months', '1year', '2years', 'forever'],
       default: '1year'
     }
+  },
+  // Professional Streak Tracking System
+  currentStreak: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  longestStreak: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  lastStreakCheckIn: {
+    type: Date,
+    default: null
+  },
+  streakStartDate: {
+    type: Date,
+    default: null
+  },
+  totalCheckIns: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  xpPoints: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  streakHistory: [{
+    date: {
+      type: Date,
+      required: true
+    },
+    streakDay: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    xpEarned: {
+      type: Number,
+      default: 10,
+      min: 0
+    },
+    milestone: {
+      type: String,
+      default: null
+    },
+    tier: {
+      type: String,
+      enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master', 'Legendary', 'Mythical', 'Infinite'],
+      default: 'Beginner'
+    }
+  }],
+  // Streak achievements and milestones
+  unlockedMilestones: [{
+    days: {
+      type: Number,
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    tier: {
+      type: String,
+      required: true
+    },
+    unlockedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  // Real-time tracking metadata
+  lastActiveDate: {
+    type: Date,
+    default: Date.now
+  },
+  streakLevel: {
+    type: String,
+    enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master', 'Legendary', 'Mythical', 'Infinite'],
+    default: 'Beginner'
+  },
+  lifetimeStats: {
+    totalDaysActive: {
+      type: Number,
+      default: 0
+    },
+    averageStreakLength: {
+      type: Number,
+      default: 0
+    },
+    streakBreaks: {
+      type: Number,
+      default: 0
+    },
+    perfectWeeks: {
+      type: Number,
+      default: 0
+    },
+    perfectMonths: {
+      type: Number,
+      default: 0
+    }
   }
 }, {
   timestamps: true

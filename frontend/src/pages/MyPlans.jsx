@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import PlanDetailsModal from '../components/PlanDetailsModal';
 import WorkoutPlanBuilderHeader from '../components/WorkoutPlanBuilderHeader';
+import AuthGuard from '../components/AuthGuard';
 import { onlineService } from '../services/onlineService';
 import { planService } from '../services/planService';
 import { useAuth } from '../context/AuthContext';
@@ -255,7 +256,8 @@ export default function MyPlans() {
   }
 
   return (
-    <div className="workout-builder-section">
+    <AuthGuard>
+      <div className="workout-builder-section">
       {/* My Plans Hero Header - Full Viewport */}
       <WorkoutPlanBuilderHeader />
       
@@ -494,5 +496,6 @@ export default function MyPlans() {
         )}
       </div>
     </div>
+    </AuthGuard>
   );
 }

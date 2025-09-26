@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ImageUploader from '../components/ImageUploader';
+import AuthGuard from '../components/AuthGuard';
 import api from '../utils/api';
 
 const Profile = () => {
@@ -304,7 +305,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <AuthGuard>
+      <div className="max-w-6xl mx-auto space-y-6">
       {/* Real-time Status Header */}
       <motion.div 
         className="card"
@@ -763,7 +765,8 @@ const Profile = () => {
           </motion.button>
         </div>
       </motion.div>
-    </div>
+      </div>
+    </AuthGuard>
   );
 };
 

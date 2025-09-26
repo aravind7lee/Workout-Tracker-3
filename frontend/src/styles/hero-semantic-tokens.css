@@ -1,0 +1,220 @@
+/* ===== HERO SECTION SEMANTIC COLOR TOKENS ===== */
+/* Global semantic color system for Hero Section readability */
+
+:root {
+  /* === HERO TEXT SEMANTIC TOKENS === */
+  --color-text-primary: #ffffff;           /* Primary heading text - Dark Mode */
+  --color-text-secondary: #cccccc;         /* Subheading text - Dark Mode */
+  --color-text-tertiary: #cbd5e1;          /* Muted text - Dark Mode */
+  
+  /* === HERO ACCENT COLORS === */
+  --color-accent: #00d4ff;                 /* Primary accent - Dark Mode */
+  --color-on-accent: #ffffff;              /* White text on accent backgrounds */
+  --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
+  
+  /* === HERO BACKGROUND OVERLAYS === */
+  --color-background-overlay: rgba(0,0,0,0.6);  /* Dark overlay - Dark Mode */
+  
+  /* === HERO BUTTON COLORS === */
+  --color-button-primary-bg: #2563eb;      /* Primary button background */
+  --color-button-primary-text: #ffffff;    /* Primary button text */
+  --color-button-secondary-bg: rgba(255,255,255,0.1);  /* Secondary button bg */
+  --color-button-secondary-text: #ffffff;  /* Secondary button text */
+  --color-button-secondary-border: rgba(255,255,255,0.2);  /* Secondary button border */
+  
+  /* === HERO CARD COLORS === */
+  --color-card-bg: rgba(0,0,0,0.15);       /* Card background - Dark Mode */
+  --color-card-border: rgba(255,255,255,0.1);  /* Card border - Dark Mode */
+  --color-card-text: #ffffff;              /* Card text - Dark Mode */
+  --color-card-label: #e2e8f0;             /* Card labels - Dark Mode */
+  --color-card-muted: #cbd5e1;             /* Card muted text - Dark Mode */
+}
+
+/* ===== LIGHT MODE SEMANTIC TOKENS ===== */
+.light-theme,
+[data-theme="light"] {
+  /* === HERO TEXT SEMANTIC TOKENS - LIGHT MODE === */
+  --color-text-primary: #111111;           /* Dark neutral for headings */
+  --color-text-secondary: #333333;         /* Medium-dark neutral for subheadings */
+  --color-text-tertiary: #555555;          /* Dark neutral for muted text */
+  
+  /* === HERO ACCENT COLORS - LIGHT MODE === */
+  --color-accent: #2563eb;                 /* Bright blue accent */
+  --color-on-accent: #ffffff;              /* White text on accent */
+  --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
+  
+  /* === HERO BACKGROUND OVERLAYS - LIGHT MODE === */
+  --color-background-overlay: rgba(0,0,0,0.5);  /* Stronger dark overlay for better text contrast */
+  
+  /* === HERO BUTTON COLORS - LIGHT MODE === */
+  --color-button-primary-bg: #2563eb;      /* Solid bright blue */
+  --color-button-primary-text: #ffffff;    /* White text */
+  --color-button-secondary-bg: rgba(0,0,0,0.1);  /* Light dark background */
+  --color-button-secondary-text: #111111;  /* Dark text */
+  --color-button-secondary-border: rgba(0,0,0,0.2);  /* Dark border */
+  
+  /* === HERO CARD COLORS - LIGHT MODE === */
+  --color-card-bg: rgba(255,255,255,0.2);  /* Light semi-transparent background */
+  --color-card-border: rgba(0,0,0,0.2);    /* Dark border for definition */
+  --color-card-text: #111111;              /* Dark text for readability */
+  --color-card-label: #333333;             /* Dark labels */
+  --color-card-muted: #555555;             /* Dark muted text */
+}
+
+/* ===== HERO SECTION SEMANTIC CLASSES ===== */
+.hero-text-primary {
+  color: var(--color-text-primary) !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 8px var(--color-background-overlay) !important;
+}
+
+.hero-text-secondary {
+  color: var(--color-text-secondary) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 2px 6px var(--color-background-overlay) !important;
+}
+
+.hero-text-tertiary {
+  color: var(--color-text-tertiary) !important;
+  text-shadow: 0 1px 4px var(--color-background-overlay) !important;
+}
+
+.hero-accent-text {
+  color: var(--color-accent) !important;
+  font-weight: 800 !important;
+}
+
+.hero-icon-accent {
+  color: var(--color-icon-accent) !important;
+}
+
+.hero-button-primary {
+  background: var(--color-button-primary-bg) !important;
+  color: var(--color-button-primary-text) !important;
+  border: none !important;
+}
+
+.hero-button-primary:hover {
+  background: #1d4ed8 !important; /* Fallback for older browsers */
+  background: color-mix(in srgb, var(--color-button-primary-bg) 85%, black) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4) !important;
+}
+
+.hero-button-secondary {
+  background: var(--color-button-secondary-bg) !important;
+  color: var(--color-button-secondary-text) !important;
+  border: 1px solid var(--color-button-secondary-border) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.hero-button-secondary:hover {
+  background: var(--color-accent) !important;
+  color: var(--color-on-accent) !important;
+  border-color: var(--color-accent) !important;
+}
+
+.hero-card {
+  background: var(--color-card-bg) !important;
+  border: 1px solid var(--color-card-border) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.hero-card-text {
+  color: var(--color-text-primary) !important;
+}
+
+.hero-card-label {
+  color: var(--color-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.hero-card-muted {
+  color: var(--color-card-muted) !important;
+}
+
+.hero-overlay {
+  background: var(--color-background-overlay) !important;
+}
+
+/* ===== LIGHT MODE SPECIFIC OVERRIDES ===== */
+/* Removed overrides to allow semantic tokens to control text colors */
+
+/* Remove text shadows in light mode for better readability */
+.light-theme .hero-text-primary,
+[data-theme="light"] .hero-text-primary {
+  text-shadow: none !important;
+}
+
+.light-theme .hero-text-secondary,
+[data-theme="light"] .hero-text-secondary {
+  text-shadow: none !important;
+}
+
+.light-theme .hero-text-tertiary,
+[data-theme="light"] .hero-text-tertiary {
+  text-shadow: none !important;
+}
+
+/* Target Hero accent text specifically */
+.light-theme .hero-accent-text,
+[data-theme="light"] .hero-accent-text {
+  color: #60a5fa !important;
+  text-shadow: none !important;
+}
+
+/* Override any conflicting Tailwind classes in Light Mode */
+.light-theme .text-white,
+[data-theme="light"] .text-white {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.light-theme .text-gray-200,
+[data-theme="light"] .text-gray-200 {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+/* Ensure flame emoji and icons remain vivid in Light Mode */
+.light-theme .hero-icon-accent,
+[data-theme="light"] .hero-icon-accent {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)) !important;
+}
+
+/* Light Mode button hover states */
+.light-theme .hero-button-primary:hover,
+[data-theme="light"] .hero-button-primary:hover {
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
+}
+
+.light-theme .hero-button-secondary:hover,
+[data-theme="light"] .hero-button-secondary:hover {
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 640px) {
+  .hero-text-primary {
+    text-shadow: 0 2px 10px var(--color-background-overlay) !important;
+  }
+  
+  .hero-text-secondary {
+    text-shadow: 0 2px 8px var(--color-background-overlay) !important;
+  }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+  .light-theme .hero-text-primary,
+  [data-theme="light"] .hero-text-primary {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+  
+  .light-theme .hero-text-secondary,
+  [data-theme="light"] .hero-text-secondary {
+    color: #222222 !important;
+    text-shadow: none !important;
+  }
+}

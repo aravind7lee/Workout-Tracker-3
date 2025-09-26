@@ -8,6 +8,7 @@ import NutritionPreviewModal from '../components/NutritionPreviewModal';
 import FoodCategories from '../components/FoodCategories';
 import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
 import NutritionHero from '../components/NutritionHero';
+import AuthGuard from '../components/AuthGuard';
 import realTimeEvents from '../utils/realTimeEvents';
 
 export default function Nutrition() {
@@ -264,8 +265,9 @@ export default function Nutrition() {
   };
 
   return (
-    <NutritionErrorBoundary>
-      <div className="space-y-6">
+    <AuthGuard>
+      <NutritionErrorBoundary>
+        <div className="space-y-6">
         {/* Hero Header */}
         <NutritionHero />
         
@@ -495,7 +497,8 @@ export default function Nutrition() {
           onConfirm={handleConfirmMeal}
           isAdding={isAddingMeal}
         />
-      </div>
-    </NutritionErrorBoundary>
+        </div>
+      </NutritionErrorBoundary>
+    </AuthGuard>
   );
 }

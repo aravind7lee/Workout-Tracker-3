@@ -30,18 +30,46 @@ router.get('/profile', auth, async (req, res) => {
   }
 });
 
-// Update user profile with real-time sync
+// Update user profile with real-time sync and streak data
 router.put('/profile', auth, async (req, res) => {
   try {
-    const { name, email, profileImage } = req.body;
+    const { 
+      name, 
+      email, 
+      profileImage, 
+      currentStreak, 
+      longestStreak, 
+      totalCheckIns, 
+      lastStreakCheckIn, 
+      streakStartDate, 
+      xpPoints, 
+      streakHistory,
+      unlockedMilestones,
+      streakLevel,
+      lifetimeStats
+    } = req.body;
+    
     const updateData = { 
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      lastActiveDate: new Date()
     };
     
-    // Update fields only if provided
+    // Update profile fields
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
     if (profileImage !== undefined) updateData.profileImage = profileImage;
+    
+    // Update streak fields with validation
+    if (currentStreak !== undefined) updateData.currentStreak = Math.max(0, currentStreak);
+    if (longestStreak !== undefined) updateData.longestStreak = Math.max(0, longestStreak);
+    if (totalCheckIns !== undefined) updateData.totalCheckIns = Math.max(0, totalCheckIns);
+    if (lastStreakCheckIn !== undefined) updateData.lastStreakCheckIn = new Date(lastStreakCheckIn);
+    if (streakStartDate !== undefined) updateData.streakStartDate = streakStartDate ? new Date(streakStartDate) : null;
+    if (xpPoints !== undefined) updateData.xpPoints = Math.max(0, xpPoints);
+    if (streakHistory !== undefined) updateData.streakHistory = streakHistory;
+    if (unlockedMilestones !== undefined) updateData.unlockedMilestones = unlockedMilestones;
+    if (streakLevel !== undefined) updateData.streakLevel = streakLevel;
+    if (lifetimeStats !== undefined) updateData.lifetimeStats = lifetimeStats;
     
     const user = await User.findByIdAndUpdate(
       req.user.id,
@@ -54,13 +82,15 @@ router.put('/profile', auth, async (req, res) => {
     }
     
     // Log the update for real-time tracking
-    console.log(`✅ Profile updated for user ${user._id}: ${Object.keys(updateData).join(', ')}`);
+    const updatedFields = Object.keys(updateData).filter(key => key !== 'updatedAt' && key !== 'lastActiveDate');
+    console.log(`✅ Real-time update for user ${user._id}: ${updatedFields.join(', ')}`);
     
     res.json({ 
       success: true, 
       user,
       message: 'Profile updated successfully',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      syncedFields: updatedFields
     });
   } catch (error) {
     console.error('Profile update error:', error);
@@ -122,41 +152,55 @@ router.put('/profile-picture', auth, async (req, res) => {
   }
 });
 
-// Get user stats with real-time data
+// Get user stats with real-time MongoDB data
 router.get('/stats', auth, async (req, res) => {
   try {
-    const [workouts, meals, user] = await Promise.all([
+    const [workouts, meals, plans, user] = await Promise.all([
       Workout.find({ userId: req.user.id }),
       Meal.find({ userId: req.user.id }),
+      Plan.find({ userId: req.user.id }),
       User.findById(req.user.id)
     ]);
     
-    // Calculate comprehensive stats
+    // Calculate real-time stats
     const completedWorkouts = workouts.filter(w => w.completed);
-    const uniquePlans = [...new Set(workouts.filter(w => w.planId).map(w => w.planId))];
-    const currentStreak = calculateStreak(completedWorkouts);
     const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
     const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
+    
+    // Get real streak from user model or calculate from workouts
+    let currentStreak = user.currentStreak || 0;
+    if (!user.currentStreak) {
+      currentStreak = calculateStreak(completedWorkouts);
+    }
+    
+    // Calculate XP from user model or from activities
+    const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
+    const userXP = user.xpPoints || calculatedXP;
     
     const stats = {
       totalWorkouts: completedWorkouts.length,
       totalMeals: meals.length,
-      totalPlans: uniquePlans.length,
+      totalPlans: plans.length,
       currentStreak,
-      xpPoints: completedWorkouts.length * 100 + uniquePlans.length * 50 + meals.length * 25,
+      xpPoints: userXP,
       totalCaloriesBurned,
-      totalDuration: Math.round(totalDuration / 60), // Convert to minutes
+      totalDuration: Math.round(totalDuration / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
+      longestStreak: user.longestStreak || currentStreak,
+      totalCheckIns: user.totalCheckIns || 0,
       joinDate: user.createdAt,
       lastActive: new Date(),
       membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24)),
       isRealTime: true,
-      lastSync: new Date().toISOString()
+      lastSync: new Date().toISOString(),
+      dataSource: 'MongoDB'
     };
+    
+    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak`);
     
     res.json(stats);
   } catch (error) {
-    console.error('Stats error:', error);
+    console.error('Real-time stats error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -556,6 +600,195 @@ router.put('/settings', auth, async (req, res) => {
   } catch (error) {
     console.error('Settings update error:', error);
     res.status(500).json({ success: false, message: 'Failed to update settings', error: error.message });
+  }
+});
+
+// Get XP details
+router.get('/xp-details', auth, async (req, res) => {
+  try {
+    const [workouts, meals, plans] = await Promise.all([
+      Workout.find({ userId: req.user.id, completed: true }),
+      Meal.find({ userId: req.user.id }),
+      Plan.find({ userId: req.user.id })
+    ]);
+    
+    const workoutXP = workouts.length * 100;
+    const mealXP = meals.length * 25;
+    const planXP = plans.length * 50;
+    const totalXP = workoutXP + mealXP + planXP;
+    
+    res.json({
+      totalXP,
+      workoutXP,
+      mealXP,
+      planXP,
+      xpSources: { workouts: workoutXP, meals: mealXP, plans: planXP, streaks: 0 },
+      xpHistory: [],
+      achievements: []
+    });
+  } catch (error) {
+    console.error('XP details error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Start/Continue streak
+router.post('/streak/check-in', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Check if already checked in today
+    if (lastCheckIn && lastCheckIn.getTime() === today.getTime()) {
+      return res.status(400).json({ message: 'Already checked in today' });
+    }
+
+    let newStreak = 1;
+    if (lastCheckIn && lastCheckIn.getTime() === yesterday.getTime()) {
+      newStreak = (user.currentStreak || 0) + 1;
+    }
+
+    // Update user streak data
+    user.currentStreak = newStreak;
+    user.longestStreak = Math.max(user.longestStreak || 0, newStreak);
+    user.lastStreakCheckIn = today;
+    user.totalCheckIns = (user.totalCheckIns || 0) + 1;
+    user.xpPoints = (user.xpPoints || 0) + 10;
+
+    // Initialize streak history if not exists
+    if (!user.streakHistory) {
+      user.streakHistory = [];
+    }
+
+    // Add to streak history
+    user.streakHistory.push({
+      date: today,
+      streakDay: newStreak,
+      xpEarned: 10
+    });
+
+    await user.save();
+
+    res.json({
+      currentStreak: newStreak,
+      longestStreak: user.longestStreak,
+      totalCheckIns: user.totalCheckIns,
+      xpEarned: 10,
+      canCheckIn: false
+    });
+  } catch (error) {
+    console.error('Error checking in streak:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get streak status
+router.get('/streak/status', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
+    const canCheckIn = !lastCheckIn || lastCheckIn.getTime() !== today.getTime();
+
+    // Check if streak is broken
+    let currentStreak = user.currentStreak || 0;
+    if (lastCheckIn) {
+      const daysDiff = Math.floor((today - lastCheckIn) / (1000 * 60 * 60 * 24));
+      if (daysDiff > 1) {
+        currentStreak = 0;
+        user.currentStreak = 0;
+        await user.save();
+      }
+    }
+
+    // Calculate milestones
+    const milestones = [
+      { days: 3, emoji: '🔥', title: '3 Day Streak' },
+      { days: 7, emoji: '🚀', title: '7 Day Streak' },
+      { days: 14, emoji: '⚡', title: '14 Day Streak' },
+      { days: 30, emoji: '🏆', title: '30 Day Streak' },
+      { days: 60, emoji: '👑', title: '60 Day Streak' },
+      { days: 100, emoji: '💎', title: '100 Day Streak' },
+      { days: 365, emoji: '🌟', title: '365 Day Streak' }
+    ];
+
+    const milestoneProgress = milestones.map(milestone => ({
+      ...milestone,
+      achieved: currentStreak >= milestone.days,
+      progress: Math.min(currentStreak, milestone.days),
+      remaining: Math.max(0, milestone.days - currentStreak)
+    }));
+
+    // Get weekly progress
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    
+    const weeklyProgress = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + i);
+      
+      const hasCheckIn = user.streakHistory?.some(entry => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0);
+        return entryDate.getTime() === date.getTime();
+      }) || false;
+      
+      weeklyProgress.push({
+        date: date.toISOString(),
+        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        hasCheckIn,
+        isToday: date.getTime() === today.getTime()
+      });
+    }
+
+    res.json({
+      currentStreak,
+      longestStreak: user.longestStreak || 0,
+      totalCheckIns: user.totalCheckIns || 0,
+      canCheckIn,
+      milestones: milestoneProgress,
+      weeklyProgress,
+      streakHistory: user.streakHistory || []
+    });
+  } catch (error) {
+    console.error('Error fetching streak status:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get streak details
+router.get('/streak-details', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const workouts = await Workout.find({ userId: req.user.id, completed: true }).sort({ createdAt: -1 });
+    const currentStreak = user.currentStreak || 0;
+    
+    res.json({
+      currentStreak,
+      longestStreak: user.longestStreak || 0,
+      lastWorkoutDate: workouts.length > 0 ? workouts[0].createdAt : null,
+      streakHistory: user.streakHistory || [],
+      weeklyProgress: []
+    });
+  } catch (error) {
+    console.error('Streak details error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

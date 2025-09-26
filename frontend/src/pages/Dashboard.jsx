@@ -1,4 +1,4 @@
-// Online-enabled Dashboard with MongoDB backend integration
+// Professional Real-Time Dashboard with Authentication Guard
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { planService } from '../services/planService';
@@ -6,12 +6,13 @@ import { workoutService } from '../services/workoutService';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import DashboardHero from '../components/DashboardHero';
+import AuthGuard from '../components/AuthGuard';
 
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated } = useAuth();
   const [recentWorkouts, setRecentWorkouts] = useState([]);
   const [savedPlans, setSavedPlans] = useState([]);
-  const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
+  const [workoutStats, setWorkoutStats] = useState({ total: 0, today: 0, thisWeek: 0, currentStreak: 0, xpPoints: 0, totalMeals: 0, totalExercises: 0 });
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
@@ -41,30 +42,56 @@ const Dashboard = () => {
       const online = await checkOnlineStatus();
       
       if (online) {
-        // Load from backend with proper error handling
+        // Load from MongoDB backend
         try {
-          // First ensure we're actually online by checking the service status
-          onlineService.isOnline = true;
-          
-          const [onlinePlans, onlineWorkouts, onlineAnalytics] = await Promise.all([
-            onlineService.getWorkoutPlans(),
-            onlineService.getWorkoutHistory(),
-            onlineService.getAnalytics()
+          const token = localStorage.getItem('token');
+          const [statsResponse, plansResponse, workoutsResponse] = await Promise.all([
+            fetch('/api/users/stats', {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }),
+            fetch('/api/plans', {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }),
+            fetch('/api/workouts', {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            })
           ]);
           
-          setSavedPlans(onlinePlans || []);
-          setRecentWorkouts(onlineWorkouts || []);
-          
-          if (onlineAnalytics) {
+          if (statsResponse.ok) {
+            const stats = await statsResponse.json();
             setWorkoutStats({
-              total: onlineAnalytics.totalWorkouts || onlineAnalytics.workouts || 0,
-              today: onlineAnalytics.todayWorkouts || 0,
-              thisWeek: onlineAnalytics.weeklyWorkouts || onlineAnalytics.weeklyGoal?.completed || 0,
-              xpPoints: onlineAnalytics.xpPoints || 0
+              total: stats.totalWorkouts || 0,
+              today: stats.todayWorkouts || 0,
+              thisWeek: stats.weeklyWorkouts || 0,
+              currentStreak: stats.currentStreak || 0,
+              xpPoints: stats.xpPoints || 0,
+              totalMeals: stats.totalMeals || 0,
+              totalExercises: stats.totalExercises || 0
             });
           }
+          
+          if (plansResponse.ok) {
+            const plans = await plansResponse.json();
+            setSavedPlans(plans || []);
+          }
+          
+          if (workoutsResponse.ok) {
+            const workouts = await workoutsResponse.json();
+            setRecentWorkouts(workouts || []);
+          }
+          
+          console.log('✅ Dashboard data loaded from MongoDB');
         } catch (onlineError) {
-          console.error('Failed to load online data:', onlineError);
+          console.error('Failed to load MongoDB data:', onlineError);
           setIsOnline(false);
           loadOfflineData();
         }
@@ -86,21 +113,31 @@ const Dashboard = () => {
       const workouts = workoutService.getAllWorkouts() || [];
       const plans = planService.getAllPlans() || [];
       
+      // Get streak from localStorage
+      const streakKey = `gymtracker_streak_${authUser?.id}`;
+      const streakData = JSON.parse(localStorage.getItem(streakKey) || '{}');
+      
       setRecentWorkouts(workouts);
       setSavedPlans(plans);
+      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      const exercises = JSON.parse(localStorage.getItem('exerciseLibrary') || '[]');
+      
       setWorkoutStats({
-        total: workouts.length,
+        total: workouts.filter(w => w.completed).length,
         today: 0,
-        thisWeek: workouts.length,
-        xpPoints: workouts.length * 100 + plans.length * 50
+        thisWeek: workouts.filter(w => w.completed).length,
+        currentStreak: streakData.currentStreak || 0,
+        xpPoints: (workouts.filter(w => w.completed).length * 100) + (plans.length * 50),
+        totalMeals: meals.length,
+        totalExercises: exercises.length || 50 // Default exercise count
       });
     } catch (error) {
       console.error('Offline data loading error:', error);
       setRecentWorkouts([]);
       setSavedPlans([]);
-      setWorkoutStats({ total: 0, today: 0, thisWeek: 0, xpPoints: 0 });
+      setWorkoutStats({ total: 0, today: 0, thisWeek: 0, currentStreak: 0, xpPoints: 0, totalMeals: 0, totalExercises: 50 });
     }
-  }, []);
+  }, [authUser]);
 
 
 
@@ -112,15 +149,13 @@ const Dashboard = () => {
     
     loadDashboardData();
     
-    // Listen for real-time workout completion events
+    // Listen for real-time events
     const handleWorkoutCompleted = (event) => {
       const { workout, exercise, duration, sets, offline } = event.detail;
       
-      // Show completion message
       setCompletionData({ exercise, duration, sets, offline });
       setShowCompletionMessage(true);
       
-      // Instantly update workout stats
       setWorkoutStats(prev => ({
         ...prev,
         total: prev.total + 1,
@@ -128,7 +163,6 @@ const Dashboard = () => {
         xpPoints: prev.xpPoints + (sets * 10) + 50
       }));
       
-      // Add to recent workouts
       setRecentWorkouts(prev => [{
         id: workout.id || Date.now(),
         planName: workout.title || workout.exerciseName || exercise,
@@ -138,20 +172,21 @@ const Dashboard = () => {
         synced: !offline
       }, ...prev]);
       
-      // Hide completion message after 5 seconds
-      setTimeout(() => {
-        setShowCompletionMessage(false);
-      }, 5000);
-      
-      // Reload full data after a short delay to ensure backend sync
-      setTimeout(() => {
-        loadDashboardData();
-      }, 2000);
+      setTimeout(() => setShowCompletionMessage(false), 5000);
+      setTimeout(() => loadDashboardData(), 2000);
+    };
+    
+    const handleStreakUpdated = () => {
+      console.log('🔥 Streak updated - refreshing dashboard');
+      loadDashboardData();
     };
     
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    window.addEventListener('streakUpdated', handleStreakUpdated);
+    window.addEventListener('planCreated', loadDashboardData);
+    window.addEventListener('mealAdded', loadDashboardData);
     
-    // Set up periodic refresh for real-time updates
+    // Real-time refresh every 30 seconds
     const refreshInterval = setInterval(() => {
       if (isAuthenticated()) {
         loadDashboardData();
@@ -160,6 +195,9 @@ const Dashboard = () => {
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+      window.removeEventListener('streakUpdated', handleStreakUpdated);
+      window.removeEventListener('planCreated', loadDashboardData);
+      window.removeEventListener('mealAdded', loadDashboardData);
       clearInterval(refreshInterval);
     };
   }, [isAuthenticated]);
@@ -186,34 +224,13 @@ const Dashboard = () => {
     );
   }
 
-  if (!isAuthenticated()) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-6">🔒</div>
-        <h2 className="text-2xl font-bold text-white mb-4">Authentication Required</h2>
-        <p className="text-slate-400 mb-6">Please log in to access your dashboard</p>
-        <div className="flex gap-4 justify-center">
-          <button 
-            onClick={() => navigate('/login')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Login
-          </button>
-          <button 
-            onClick={() => navigate('/register')}
-            className="btn border border-slate-600 text-slate-300 hover:bg-slate-700"
-          >
-            Register
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
-    <div>
-      {/* Dashboard Hero Section - Full Viewport */}
-      <DashboardHero />
+    <AuthGuard>
+      <div>
+        {/* Dashboard Hero Section - Full Viewport */}
+        <DashboardHero />
       
       {/* Dashboard Content */}
       <div className="space-y-4 sm:space-y-6 px-4 py-8">
@@ -252,7 +269,7 @@ const Dashboard = () => {
             <p className="text-slate-400 mt-1 text-sm sm:text-base">
               Ready to crush your fitness goals today?
               <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-yellow-400'}`}>
-                • {isOnline ? 'Online mode' : 'Offline mode'}
+                • {isOnline ? '🔥 MongoDB Live' : '📱 Local Mode'}
               </span>
             </p>
 
@@ -276,9 +293,9 @@ const Dashboard = () => {
 
 
 
-      {/* Stats */}
-      <div className="grid-responsive">
-        <div className="card">
+      {/* Real-Time Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div className="card cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/library')}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-lg sm:text-2xl">💪</span>
@@ -286,23 +303,46 @@ const Dashboard = () => {
             <div className="min-w-0">
               <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.total}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
+              <div className="text-xs text-green-400">
+                {workoutStats.total > 0 ? `${workoutStats.total} completed!` : 'Start your first workout'}
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="card">
+        <div className="card cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/current-streak')}>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-lg sm:text-2xl">🔥</span>
+            </div>
+            <div className="min-w-0">
+              <div className="text-xl sm:text-2xl font-bold text-white">
+                {workoutStats.currentStreak > 0 ? `${workoutStats.currentStreak}🔥` : '0🔥'}
+              </div>
+              <div className="text-slate-400 text-xs sm:text-sm">Current Streak</div>
+              <div className="text-xs text-green-400">
+                {workoutStats.currentStreak > 0 ? `${workoutStats.currentStreak} days strong!` : 'Start your streak'}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="card cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/analytics')}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">🔥</span>
+              <span className="text-lg sm:text-2xl">📊</span>
             </div>
             <div className="min-w-0">
               <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.thisWeek}</div>
               <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
+              <div className="text-xs text-green-400">
+                {workoutStats.thisWeek > 0 ? `${workoutStats.thisWeek} this week!` : 'No workouts yet'}
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="card">
+        <div className="card cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/xp-points')}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-lg sm:text-2xl">⭐</span>
@@ -310,11 +350,14 @@ const Dashboard = () => {
             <div className="min-w-0">
               <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats.xpPoints}</div>
               <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
+              <div className="text-xs text-green-400">
+                {workoutStats.xpPoints > 0 ? `Level ${Math.floor(workoutStats.xpPoints / 100) + 1}` : 'Earn XP by working out'}
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="card">
+        <div className="card cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/my-plans')}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-lg sm:text-2xl">📋</span>
@@ -322,45 +365,66 @@ const Dashboard = () => {
             <div className="min-w-0">
               <div className="text-xl sm:text-2xl font-bold text-white">{savedPlans.length}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Workout Plans</div>
+              <div className="text-xs text-green-400">
+                {savedPlans.length > 0 ? `${savedPlans.length} plans ready` : 'Create your first plan'}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Real-Time Quick Actions */}
       <div className="card">
-        <h2 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">Quick Actions</h2>
-        <div className="grid-responsive-4">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-white">Quick Actions</h2>
+          <div className="text-xs text-green-400 flex items-center gap-1">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            Real-time Data
+          </div>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <button 
             onClick={() => navigate('/library')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4 sm:py-6"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105"
           >
             <div className="text-2xl sm:text-3xl mb-2">📚</div>
             <div className="font-medium text-sm sm:text-base">Exercise Library</div>
+            <div className="text-xs text-blue-200 mt-1">
+              {workoutStats.totalExercises || 50}+ exercises
+            </div>
           </button>
           
           <button 
             onClick={() => navigate('/my-plans')}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 sm:py-6"
+            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105"
           >
             <div className="text-2xl sm:text-3xl mb-2">📋</div>
             <div className="font-medium text-sm sm:text-base">My Plans ({savedPlans.length})</div>
+            <div className="text-xs text-green-200 mt-1">
+              {savedPlans.length > 0 ? `${savedPlans.length} plans ready` : 'Create your first plan'}
+            </div>
           </button>
           
           <button 
             onClick={() => navigate('/nutrition')}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4 sm:py-6"
+            className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105"
           >
             <div className="text-2xl sm:text-3xl mb-2">🍎</div>
             <div className="font-medium text-sm sm:text-base">Meal Planner</div>
+            <div className="text-xs text-orange-200 mt-1">
+              {workoutStats.totalMeals > 0 ? `${workoutStats.totalMeals} meals logged` : 'Track your nutrition'}
+            </div>
           </button>
           
           <button 
             onClick={() => navigate('/analytics')}
-            className="btn bg-purple-600 hover:bg-purple-700 text-white flex-col h-auto py-4 sm:py-6"
+            className="btn bg-purple-600 hover:bg-purple-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105"
           >
             <div className="text-2xl sm:text-3xl mb-2">📊</div>
             <div className="font-medium text-sm sm:text-base">Analytics</div>
+            <div className="text-xs text-purple-200 mt-1">
+              {workoutStats.total > 0 ? `${workoutStats.total} workouts tracked` : 'View your progress'}
+            </div>
           </button>
         </div>
       </div>
@@ -483,6 +547,7 @@ const Dashboard = () => {
       </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

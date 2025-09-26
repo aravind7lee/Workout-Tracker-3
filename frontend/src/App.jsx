@@ -16,6 +16,8 @@ import Settings from './pages/Settings';
 import Forum from './pages/Forum';
 import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
+import XPPoints from './pages/XPPoints';
+import CurrentStreak from './pages/CurrentStreak';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 import ChromeErrorBoundary from './components/ChromeErrorBoundary';
@@ -379,6 +381,8 @@ export default function App() {
                 <Route path="/forum" element={<Forum />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/start-workout" element={<StartWorkout />} />
+                <Route path="/xp-points" element={<XPPoints />} />
+                <Route path="/current-streak" element={<CurrentStreak />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/exercises/:id" element={<ExerciseDetail />} />
               </Routes>
