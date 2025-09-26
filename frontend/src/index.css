@@ -1476,19 +1476,22 @@ body {
 /* Mobile-specific image positioning for proper subject display */
 @media (max-width: 640px) {
   .hero-image-container img {
-    object-position: 65% center; /* Focus on the right side where the man is positioned */
+    object-position: 40% center; /* Focus on the left-center where the man is positioned */
+    object-fit: cover;
   }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
   .hero-image-container img {
-    object-position: 60% center; /* Slightly adjust for tablet */
+    object-position: 45% center; /* Slightly adjust for tablet */
+    object-fit: cover;
   }
 }
 
 @media (min-width: 769px) {
   .hero-image-container img {
     object-position: center center; /* Center for desktop */
+    object-fit: cover;
   }
 }
 

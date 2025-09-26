@@ -310,7 +310,11 @@ export default function LibrarySimple() {
                 1440px
               "
               alt="Exercise Library header – gym workout background"
-              className="w-full h-full object-cover object-right sm:object-center absolute inset-0"
+              className="w-full h-full object-cover absolute inset-0"
+              style={{
+                objectPosition: window.innerWidth <= 640 ? 'center center' : 
+                               window.innerWidth <= 768 ? 'center center' : 'center center'
+              }}
               loading="eager"
               decoding="async"
               fetchPriority="high"
