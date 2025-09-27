@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App";
 import "./index.css";
+import "./utils/themeInit"; // Initialize theme before anything else
 import "./utils/errorSuppressor"; // Complete error suppression
 
 // Handle storage quota gracefully without interfering with React

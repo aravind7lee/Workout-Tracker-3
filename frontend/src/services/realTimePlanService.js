@@ -1,487 +1,412 @@
-// Real-Time Plan Service for MongoDB Integration
+// Real-Time Plan Service - Instant Dashboard Updates
 import { onlineService } from './onlineService';
-import { planService } from './planService';
 
 class RealTimePlanService {
   constructor() {
-    this.isActive = false;
-    this.syncInterval = null;
-    this.eventListeners = new Map();
+    this.listeners = new Map();
+    this.planCache = new Map();
+    this.isOnline = navigator.onLine;
     this.syncQueue = [];
-    this.retryAttempts = 0;
-    this.maxRetries = 3;
-    this.lastSyncTime = null;
+    this.lastSync = null;
     
-    // Initialize real-time features
-    this.initializeRealTimeFeatures();
+    // Listen for network changes
+    window.addEventListener('online', () => {
+      this.isOnline = true;
+      this.processSyncQueue();
+    });
+    
+    window.addEventListener('offline', () => {
+      this.isOnline = false;
+    });
+    
+    console.log('🚀 Real-Time Plan Service initialized');
   }
 
-  initializeRealTimeFeatures() {
-    // Listen for network changes only
-    if (typeof window !== 'undefined') {
-      this.onlineHandler = () => this.handleOnlineStatus(true);
-      this.offlineHandler = () => this.handleOnlineStatus(false);
-      
-      window.addEventListener('online', this.onlineHandler);
-      window.addEventListener('offline', this.offlineHandler);
+  // Event system for real-time updates
+  on(event, callback) {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set());
+    }
+    this.listeners.get(event).add(callback);
+  }
+
+  off(event, callback) {
+    if (this.listeners.has(event)) {
+      this.listeners.get(event).delete(callback);
     }
   }
 
-  // Start real-time sync
-  startRealTimeSync(intervalMs = 30000) {
-    if (this.isActive) return;
-    
-    this.isActive = true;
-    console.log('🔄 Starting real-time plan sync...');
-    
-    // Initial sync
-    this.performSync();
-    
-    // Set up interval sync
-    this.syncInterval = setInterval(() => {
-      this.performSync();
-    }, intervalMs);
-    
-    // Emit sync started event
-    this.emitEvent('syncStarted', { timestamp: new Date().toISOString() });
-  }
-
-  // Stop real-time sync
-  stopRealTimeSync() {
-    if (this.syncInterval) {
-      clearInterval(this.syncInterval);
-      this.syncInterval = null;
-    }
-    
-    this.isActive = false;
-    console.log('⏹️ Real-time plan sync stopped');
-    
-    this.emitEvent('syncStopped', { timestamp: new Date().toISOString() });
-  }
-
-  // Perform sync operation
-  async performSync() {
-    try {
-      const isOnline = await onlineService.checkBackendStatus();
-      if (!isOnline) {
-        this.emitEvent('syncStatus', { status: 'offline', timestamp: new Date().toISOString() });
-        return;
-      }
-
-      this.emitEvent('syncStatus', { status: 'syncing', timestamp: new Date().toISOString() });
-
-      // Process sync queue
-      await this.processSyncQueue();
-      
-      // Sync local plans with backend
-      await this.syncLocalPlans();
-      
-      // Update last sync time
-      this.lastSyncTime = new Date().toISOString();
-      this.retryAttempts = 0;
-      
-      this.emitEvent('syncStatus', { 
-        status: 'synced', 
-        timestamp: this.lastSyncTime,
-        queueSize: this.syncQueue.length 
-      });
-      
-    } catch (error) {
-      console.error('Sync failed:', error);
-      this.retryAttempts++;
-      
-      this.emitEvent('syncStatus', { 
-        status: 'error', 
-        error: error.message,
-        retryAttempts: this.retryAttempts,
-        timestamp: new Date().toISOString() 
-      });
-      
-      // Retry logic
-      if (this.retryAttempts < this.maxRetries) {
-        setTimeout(() => this.performSync(), 5000 * this.retryAttempts);
-      }
-    }
-  }
-
-  // Process sync queue
-  async processSyncQueue() {
-    const queue = [...this.syncQueue];
-    this.syncQueue = [];
-    
-    for (const operation of queue) {
-      try {
-        await this.processOperation(operation);
-      } catch (error) {
-        console.error('Failed to process operation:', operation, error);
-        // Re-add to queue for retry
-        this.syncQueue.push(operation);
-      }
-    }
-  }
-
-  // Process individual operation
-  async processOperation(operation) {
-    switch (operation.type) {
-      case 'create':
-        return await onlineService.saveWorkoutPlan(operation.data);
-      case 'update':
-        return await onlineService.updateWorkoutPlan(operation.id, operation.data);
-      case 'delete':
-        return await onlineService.deletePlan(operation.id);
-      default:
-        throw new Error(`Unknown operation type: ${operation.type}`);
-    }
-  }
-
-  // Sync local plans with backend
-  async syncLocalPlans() {
-    const localPlans = planService.getAllPlans();
-    const unsyncedPlans = localPlans.filter(plan => !plan.synced && !plan.backendId);
-    
-    for (const plan of unsyncedPlans) {
-      try {
-        const backendPlan = await onlineService.saveWorkoutPlan({
-          name: plan.name,
-          exercises: plan.exercises,
-          category: plan.category,
-          description: plan.description,
-          localId: plan.id
-        });
-        
-        if (backendPlan) {
-          // Update local plan with backend info
-          planService.updatePlan(plan.id, {
-            backendId: backendPlan._id,
-            synced: true,
-            lastSynced: new Date().toISOString()
-          });
-          
-          this.emitEvent('planSynced', { 
-            localId: plan.id, 
-            backendId: backendPlan._id,
-            plan: backendPlan 
-          });
-        }
-      } catch (error) {
-        console.error('Failed to sync plan:', plan.name, error);
-      }
-    }
-  }
-
-  // Add operation to sync queue
-  queueOperation(type, data, id = null) {
-    const operation = {
-      id: Date.now().toString(),
-      type,
-      data,
-      planId: id,
-      timestamp: new Date().toISOString(),
-      retries: 0
-    };
-    
-    this.syncQueue.push(operation);
-    
-    // Trigger immediate sync if online
-    if (navigator.onLine) {
-      setTimeout(() => this.performSync(), 1000);
-    }
-    
-    return operation.id;
-  }
-
-  // Create plan with real-time sync
-  async createPlan(planData) {
-    try {
-      // Save locally first
-      const localPlan = planService.savePlan(planData);
-      
-      // Emit local creation event
-      this.emitEvent('planCreatedLocally', { plan: localPlan });
-      
-      // Try immediate sync if online
-      const isOnline = await onlineService.checkBackendStatus();
-      if (isOnline) {
-        try {
-          const backendPlan = await onlineService.saveWorkoutPlan({
-            ...planData,
-            localId: localPlan.id
-          });
-          
-          if (backendPlan) {
-            // Update local plan with backend info
-            planService.updatePlan(localPlan.id, {
-              backendId: backendPlan._id,
-              synced: true,
-              lastSynced: new Date().toISOString()
-            });
-            
-            this.emitEvent('planSynced', { 
-              localId: localPlan.id, 
-              backendId: backendPlan._id,
-              plan: backendPlan 
-            });
-            
-            return { success: true, plan: backendPlan, synced: true };
-          }
-        } catch (error) {
-          console.error('Immediate sync failed:', error);
-          // Queue for later sync
-          this.queueOperation('create', planData, localPlan.id);
-        }
-      } else {
-        // Queue for sync when online
-        this.queueOperation('create', planData, localPlan.id);
-      }
-      
-      return { success: true, plan: localPlan, synced: false };
-      
-    } catch (error) {
-      console.error('Failed to create plan:', error);
-      throw error;
-    }
-  }
-
-  // Update plan with real-time sync
-  async updatePlan(planId, planData) {
-    try {
-      // Update locally first
-      const updatedPlan = planService.updatePlan(planId, planData);
-      
-      // Emit local update event
-      this.emitEvent('planUpdatedLocally', { plan: updatedPlan });
-      
-      // Try immediate sync if online and plan has backend ID
-      if (updatedPlan.backendId) {
-        const isOnline = await onlineService.checkBackendStatus();
-        if (isOnline) {
-          try {
-            const backendPlan = await onlineService.updateWorkoutPlan(updatedPlan.backendId, planData);
-            
-            if (backendPlan) {
-              // Update sync status
-              planService.updatePlan(planId, {
-                synced: true,
-                lastSynced: new Date().toISOString()
-              });
-              
-              this.emitEvent('planSynced', { 
-                localId: planId, 
-                backendId: updatedPlan.backendId,
-                plan: backendPlan 
-              });
-              
-              return { success: true, plan: backendPlan, synced: true };
-            }
-          } catch (error) {
-            console.error('Immediate update sync failed:', error);
-            // Queue for later sync
-            this.queueOperation('update', planData, updatedPlan.backendId);
-          }
-        } else {
-          // Queue for sync when online
-          this.queueOperation('update', planData, updatedPlan.backendId);
-        }
-      }
-      
-      return { success: true, plan: updatedPlan, synced: false };
-      
-    } catch (error) {
-      console.error('Failed to update plan:', error);
-      throw error;
-    }
-  }
-
-  // Delete plan with real-time sync
-  async deletePlan(planId) {
-    try {
-      const plan = planService.getPlanById(planId);
-      if (!plan) {
-        throw new Error('Plan not found');
-      }
-      
-      // Delete locally first
-      planService.deletePlan(planId);
-      
-      // Emit local deletion event
-      this.emitEvent('planDeletedLocally', { planId, plan });
-      
-      // Try immediate sync if online and plan has backend ID
-      if (plan.backendId) {
-        const isOnline = await onlineService.checkBackendStatus();
-        if (isOnline) {
-          try {
-            await onlineService.deletePlan(plan.backendId);
-            
-            this.emitEvent('planSynced', { 
-              localId: planId, 
-              backendId: plan.backendId,
-              action: 'deleted' 
-            });
-            
-            return { success: true, synced: true };
-          } catch (error) {
-            console.error('Immediate delete sync failed:', error);
-            // Queue for later sync
-            this.queueOperation('delete', null, plan.backendId);
-          }
-        } else {
-          // Queue for sync when online
-          this.queueOperation('delete', null, plan.backendId);
-        }
-      }
-      
-      return { success: true, synced: false };
-      
-    } catch (error) {
-      console.error('Failed to delete plan:', error);
-      throw error;
-    }
-  }
-
-  // Get real-time analytics
-  async getRealTimeAnalytics() {
-    try {
-      const isOnline = await onlineService.checkBackendStatus();
-      if (isOnline) {
-        const analytics = await onlineService.getPlanAnalytics();
-        if (analytics && !analytics.error) {
-          this.emitEvent('analyticsUpdated', analytics);
-          return analytics;
-        }
-      }
-      
-      // Fallback to local analytics
-      const localPlans = planService.getAllPlans();
-      const localAnalytics = {
-        totalPlans: localPlans.length,
-        totalWorkouts: 0,
-        syncedPlans: localPlans.filter(p => p.synced).length,
-        unsyncedPlans: localPlans.filter(p => !p.synced).length,
-        sync: {
-          totalPlans: localPlans.length,
-          syncedPlans: localPlans.filter(p => p.synced).length,
-          unsyncedPlans: localPlans.filter(p => !p.synced).length,
-          syncPercentage: localPlans.length > 0 ? Math.round((localPlans.filter(p => p.synced).length / localPlans.length) * 100) : 100
-        },
-        lastSync: this.lastSyncTime,
-        isRealTime: false
-      };
-      
-      return localAnalytics;
-      
-    } catch (error) {
-      console.error('Failed to get analytics:', error);
-      return {
-        totalPlans: 0,
-        totalWorkouts: 0,
-        syncedPlans: 0,
-        unsyncedPlans: 0,
-        sync: { syncPercentage: 0, syncedPlans: 0, unsyncedPlans: 0 },
-        isRealTime: false,
-        error: true
-      };
-    }
-  }
-
-  // Handle network status changes
-  handleOnlineStatus(isOnline) {
-    this.emitEvent('networkStatusChanged', { isOnline, timestamp: new Date().toISOString() });
-    
-    if (isOnline && this.syncQueue.length > 0) {
-      console.log('🌐 Back online - processing sync queue...');
-      setTimeout(() => this.performSync(), 2000);
-    }
-  }
-
-  // Handle plan events
-  handlePlanEvent(eventType, eventData) {
-    console.log(`📋 Plan ${eventType}:`, eventData);
-    
-    // Trigger analytics update
-    setTimeout(() => this.getRealTimeAnalytics(), 1000);
-  }
-
-  // Cleanup method
-  cleanup() {
-    if (this.syncInterval) {
-      clearInterval(this.syncInterval);
-      this.syncInterval = null;
-    }
-    
-    if (typeof window !== 'undefined' && this.onlineHandler && this.offlineHandler) {
-      window.removeEventListener('online', this.onlineHandler);
-      window.removeEventListener('offline', this.offlineHandler);
-    }
-    
-    this.eventListeners.clear();
-    this.syncQueue = [];
-    this.isActive = false;
-  }
-
-  // Event system
-  addEventListener(event, callback) {
-    if (!this.eventListeners.has(event)) {
-      this.eventListeners.set(event, []);
-    }
-    this.eventListeners.get(event).push(callback);
-  }
-
-  removeEventListener(event, callback) {
-    if (this.eventListeners.has(event)) {
-      const listeners = this.eventListeners.get(event);
-      const index = listeners.indexOf(callback);
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    }
-  }
-
-  emitEvent(event, data) {
-    if (this.eventListeners.has(event)) {
-      this.eventListeners.get(event).forEach(callback => {
+  emit(event, data) {
+    if (this.listeners.has(event)) {
+      this.listeners.get(event).forEach(callback => {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in event listener for ${event}:`, error);
+          console.error('Event callback error:', error);
         }
       });
+    }
+  }
+
+  // Real-time plan creation with instant dashboard updates
+  async createPlan(planData) {
+    try {
+      const tempId = `temp_${Date.now()}`;
+      const localPlan = {
+        id: tempId,
+        ...planData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        synced: false,
+        backendId: null,
+        isTemp: true
+      };
+
+      // 1. INSTANT UI UPDATE - Add to cache immediately
+      this.planCache.set(tempId, localPlan);
+      
+      // 2. INSTANT DASHBOARD UPDATE - Emit event immediately
+      this.emit('planCreated', {
+        plan: localPlan,
+        isTemp: true,
+        timestamp: new Date().toISOString()
+      });
+
+      // 3. INSTANT DASHBOARD COUNTER UPDATE
+      window.dispatchEvent(new CustomEvent('dashboardUpdate', {
+        detail: {
+          type: 'planCreated',
+          plan: localPlan,
+          instant: true
+        }
+      }));
+
+      // 4. Save to localStorage immediately
+      this.saveToLocalStorage();
+
+      // 5. Background MongoDB sync
+      if (this.isOnline) {
+        try {
+          const savedPlan = await onlineService.saveWorkoutPlan(planData);
+          
+          if (savedPlan) {
+            // Update with real backend data
+            const realPlan = {
+              ...localPlan,
+              id: savedPlan._id,
+              backendId: savedPlan._id,
+              synced: true,
+              isTemp: false,
+              ...savedPlan
+            };
+
+            // Update cache
+            this.planCache.delete(tempId);
+            this.planCache.set(savedPlan._id, realPlan);
+
+            // Update localStorage
+            this.saveToLocalStorage();
+
+            // Emit sync success
+            this.emit('planSynced', {
+              tempId,
+              realPlan,
+              timestamp: new Date().toISOString()
+            });
+
+            // Update dashboard with real data
+            window.dispatchEvent(new CustomEvent('dashboardUpdate', {
+              detail: {
+                type: 'planSynced',
+                tempId,
+                plan: realPlan,
+                instant: true
+              }
+            }));
+
+            console.log('✅ Plan created and synced to MongoDB:', realPlan.name);
+            return realPlan;
+          }
+        } catch (error) {
+          console.error('❌ MongoDB sync failed, keeping local:', error);
+          // Keep the local plan, add to sync queue
+          this.syncQueue.push({ action: 'create', data: planData, tempId });
+        }
+      } else {
+        // Offline - add to sync queue
+        this.syncQueue.push({ action: 'create', data: planData, tempId });
+      }
+
+      return localPlan;
+    } catch (error) {
+      console.error('❌ Plan creation failed:', error);
+      throw error;
+    }
+  }
+
+  // Real-time plan loading with cache
+  async getPlans(forceRefresh = false) {
+    try {
+      if (!forceRefresh && this.planCache.size > 0) {
+        return Array.from(this.planCache.values());
+      }
+
+      let plans = [];
+
+      // Load from MongoDB if online
+      if (this.isOnline) {
+        try {
+          const backendPlans = await onlineService.getWorkoutPlans();
+          plans = backendPlans.map(plan => ({
+            id: plan._id,
+            backendId: plan._id,
+            name: plan.name,
+            exercises: plan.exercises || [],
+            category: plan.category || 'General',
+            description: plan.description || '',
+            createdAt: plan.createdAt,
+            updatedAt: plan.updatedAt,
+            synced: true,
+            isTemp: false,
+            stats: plan.stats || {}
+          }));
+
+          console.log('✅ Plans loaded from MongoDB:', plans.length);
+        } catch (error) {
+          console.error('❌ MongoDB load failed, using local:', error);
+          this.isOnline = false;
+        }
+      }
+
+      // Fallback to localStorage
+      if (plans.length === 0) {
+        const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+        plans = localPlans.map(plan => ({
+          ...plan,
+          synced: plan.synced || false,
+          isTemp: plan.isTemp || false
+        }));
+        console.log('📱 Plans loaded from localStorage:', plans.length);
+      }
+
+      // Update cache
+      this.planCache.clear();
+      plans.forEach(plan => {
+        this.planCache.set(plan.id, plan);
+      });
+
+      this.lastSync = new Date().toISOString();
+      return plans;
+    } catch (error) {
+      console.error('❌ Failed to load plans:', error);
+      return [];
+    }
+  }
+
+  // Real-time plan deletion
+  async deletePlan(planId) {
+    try {
+      const plan = this.planCache.get(planId);
+      if (!plan) return false;
+
+      // 1. INSTANT UI UPDATE - Remove from cache
+      this.planCache.delete(planId);
+
+      // 2. INSTANT DASHBOARD UPDATE
+      this.emit('planDeleted', {
+        planId,
+        plan,
+        timestamp: new Date().toISOString()
+      });
+
+      // 3. INSTANT DASHBOARD COUNTER UPDATE
+      window.dispatchEvent(new CustomEvent('dashboardUpdate', {
+        detail: {
+          type: 'planDeleted',
+          planId,
+          plan,
+          instant: true
+        }
+      }));
+
+      // 4. Update localStorage immediately
+      this.saveToLocalStorage();
+
+      // 5. Background MongoDB deletion
+      if (this.isOnline && plan.backendId) {
+        try {
+          await onlineService.deletePlan(plan.backendId);
+          console.log('✅ Plan deleted from MongoDB:', plan.name);
+        } catch (error) {
+          console.error('❌ MongoDB deletion failed:', error);
+          // Add to sync queue for later
+          this.syncQueue.push({ action: 'delete', planId: plan.backendId });
+        }
+      } else if (!this.isOnline && plan.backendId) {
+        // Offline - add to sync queue
+        this.syncQueue.push({ action: 'delete', planId: plan.backendId });
+      }
+
+      return true;
+    } catch (error) {
+      console.error('❌ Plan deletion failed:', error);
+      return false;
+    }
+  }
+
+  // Real-time plan duplication
+  async duplicatePlan(originalPlan) {
+    try {
+      const duplicatedData = {
+        name: `${originalPlan.name} (Copy)`,
+        exercises: [...(originalPlan.exercises || [])],
+        category: originalPlan.category || 'General',
+        description: originalPlan.description || ''
+      };
+
+      return await this.createPlan(duplicatedData);
+    } catch (error) {
+      console.error('❌ Plan duplication failed:', error);
+      throw error;
+    }
+  }
+
+  // Get real-time plan count for dashboard
+  getPlanCount() {
+    return this.planCache.size;
+  }
+
+  // Get real-time plan stats for dashboard
+  getPlanStats() {
+    const plans = Array.from(this.planCache.values());
+    const syncedPlans = plans.filter(p => p.synced).length;
+    const totalExercises = plans.reduce((sum, p) => sum + (p.exercises?.length || 0), 0);
+
+    return {
+      totalPlans: plans.length,
+      syncedPlans,
+      unsyncedPlans: plans.length - syncedPlans,
+      totalExercises,
+      categories: [...new Set(plans.map(p => p.category).filter(Boolean))],
+      lastSync: this.lastSync,
+      isOnline: this.isOnline
+    };
+  }
+
+  // Save to localStorage
+  saveToLocalStorage() {
+    try {
+      const plans = Array.from(this.planCache.values());
+      localStorage.setItem('workoutPlans', JSON.stringify(plans));
+    } catch (error) {
+      console.error('❌ Failed to save to localStorage:', error);
+    }
+  }
+
+  // Process sync queue when back online
+  async processSyncQueue() {
+    if (!this.isOnline || this.syncQueue.length === 0) return;
+
+    console.log('🔄 Processing sync queue:', this.syncQueue.length, 'items');
+
+    const queue = [...this.syncQueue];
+    this.syncQueue = [];
+
+    for (const item of queue) {
+      try {
+        if (item.action === 'create') {
+          const savedPlan = await onlineService.saveWorkoutPlan(item.data);
+          if (savedPlan && item.tempId) {
+            // Update temp plan with real data
+            const tempPlan = this.planCache.get(item.tempId);
+            if (tempPlan) {
+              const realPlan = {
+                ...tempPlan,
+                id: savedPlan._id,
+                backendId: savedPlan._id,
+                synced: true,
+                isTemp: false
+              };
+
+              this.planCache.delete(item.tempId);
+              this.planCache.set(savedPlan._id, realPlan);
+
+              this.emit('planSynced', {
+                tempId: item.tempId,
+                realPlan,
+                timestamp: new Date().toISOString()
+              });
+            }
+          }
+        } else if (item.action === 'delete') {
+          await onlineService.deletePlan(item.planId);
+        }
+      } catch (error) {
+        console.error('❌ Sync queue item failed:', error);
+        // Re-add to queue for retry
+        this.syncQueue.push(item);
+      }
+    }
+
+    if (this.syncQueue.length === 0) {
+      this.saveToLocalStorage();
+      console.log('✅ Sync queue processed successfully');
+    }
+  }
+
+  // Force sync all data
+  async forceSync() {
+    try {
+      if (!this.isOnline) {
+        throw new Error('Cannot sync while offline');
+      }
+
+      console.log('🔄 Force syncing all plans...');
+
+      // Process sync queue first
+      await this.processSyncQueue();
+
+      // Reload all plans from backend
+      const freshPlans = await this.getPlans(true);
+
+      // Emit sync complete event
+      this.emit('syncComplete', {
+        planCount: freshPlans.length,
+        timestamp: new Date().toISOString()
+      });
+
+      // Update dashboard
+      window.dispatchEvent(new CustomEvent('dashboardUpdate', {
+        detail: {
+          type: 'syncComplete',
+          planCount: freshPlans.length,
+          instant: true
+        }
+      }));
+
+      console.log('✅ Force sync completed:', freshPlans.length, 'plans');
+      return { success: true, planCount: freshPlans.length };
+    } catch (error) {
+      console.error('❌ Force sync failed:', error);
+      return { success: false, error: error.message };
     }
   }
 
   // Get sync status
   getSyncStatus() {
+    const stats = this.getPlanStats();
     return {
-      isActive: this.isActive,
-      lastSyncTime: this.lastSyncTime,
-      queueSize: this.syncQueue.length,
-      retryAttempts: this.retryAttempts,
-      maxRetries: this.maxRetries
+      isOnline: this.isOnline,
+      totalPlans: stats.totalPlans,
+      syncedPlans: stats.syncedPlans,
+      unsyncedPlans: stats.unsyncedPlans,
+      queueLength: this.syncQueue.length,
+      lastSync: this.lastSync,
+      syncPercentage: stats.totalPlans > 0 ? Math.round((stats.syncedPlans / stats.totalPlans) * 100) : 100
     };
-  }
-
-  // Force sync
-  async forceSync() {
-    console.log('🔄 Force sync triggered...');
-    this.retryAttempts = 0;
-    await this.performSync();
-  }
-
-  // Clear sync queue
-  clearSyncQueue() {
-    this.syncQueue = [];
-    console.log('🗑️ Sync queue cleared');
   }
 }
 
 // Create singleton instance
 export const realTimePlanService = new RealTimePlanService();
 export default realTimePlanService;
-
-// Auto-start real-time sync when service is imported
-if (typeof window !== 'undefined') {
-  // Start sync after a short delay to allow app initialization
-  setTimeout(() => {
-    realTimePlanService.startRealTimeSync();
-  }, 2000);
-}

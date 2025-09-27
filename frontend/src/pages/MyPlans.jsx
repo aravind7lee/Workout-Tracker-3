@@ -1,11 +1,10 @@
-// frontend/src/pages/MyPlans.jsx
+// frontend/src/pages/MyPlans.jsx - REAL-TIME MONGODB INTEGRATION
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import PlanDetailsModal from '../components/PlanDetailsModal';
 import WorkoutPlanBuilderHeader from '../components/WorkoutPlanBuilderHeader';
 import AuthGuard from '../components/AuthGuard';
-import { onlineService } from '../services/onlineService';
-import { planService } from '../services/planService';
+import { realTimePlanService } from '../services/realTimePlanService';
 import { useAuth } from '../context/AuthContext';
 
 export default function MyPlans() {
@@ -17,9 +16,9 @@ export default function MyPlans() {
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [searchQuery, setSearchQuery] = useState(navbarSearch);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [syncStatus, setSyncStatus] = useState('idle');
   const [lastSync, setLastSync] = useState(null);
+  const [realTimeStats, setRealTimeStats] = useState({ isOnline: false, totalPlans: 0 });
   
   // Filter plans based on search
   const filteredPlans = useMemo(() => {
@@ -39,33 +38,49 @@ export default function MyPlans() {
     }
   }, [navbarSearch]);
   
-  // Real-time data loading and sync
+  // Real-time data loading with instant updates
   useEffect(() => {
     loadRealTimePlans();
     
-    // Set up real-time sync interval
-    const syncInterval = setInterval(() => {
-      if (isOnline && user) {
-        syncPlansWithBackend();
-      }
-    }, 30000); // Sync every 30 seconds
-    
-    // Listen for network status changes
-    const handleOnline = () => {
-      setIsOnline(true);
-      syncPlansWithBackend();
+    // Listen for real-time plan events
+    const handlePlanCreated = (data) => {
+      console.log('🚀 My Plans - Plan Created:', data.plan.name);
+      setSavedPlans(prev => [data.plan, ...prev]);
+      updateRealTimeStats();
     };
-    const handleOffline = () => setIsOnline(false);
     
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    const handlePlanDeleted = (data) => {
+      console.log('🗑️ My Plans - Plan Deleted:', data.planId);
+      setSavedPlans(prev => prev.filter(p => p.id !== data.planId));
+      updateRealTimeStats();
+    };
+    
+    const handlePlanSynced = (data) => {
+      console.log('☁️ My Plans - Plan Synced:', data.realPlan.name);
+      setSavedPlans(prev => prev.map(p => 
+        p.id === data.tempId ? data.realPlan : p
+      ));
+      updateRealTimeStats();
+    };
+    
+    const handleSyncComplete = () => {
+      console.log('✅ My Plans - Sync Complete');
+      loadRealTimePlans();
+    };
+    
+    // Subscribe to real-time events
+    realTimePlanService.on('planCreated', handlePlanCreated);
+    realTimePlanService.on('planDeleted', handlePlanDeleted);
+    realTimePlanService.on('planSynced', handlePlanSynced);
+    realTimePlanService.on('syncComplete', handleSyncComplete);
     
     return () => {
-      clearInterval(syncInterval);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      realTimePlanService.off('planCreated', handlePlanCreated);
+      realTimePlanService.off('planDeleted', handlePlanDeleted);
+      realTimePlanService.off('planSynced', handlePlanSynced);
+      realTimePlanService.off('syncComplete', handleSyncComplete);
     };
-  }, [user, isOnline]);
+  }, [user]);
 
   useEffect(() => {
     loadRealTimePlans();
@@ -73,174 +88,105 @@ export default function MyPlans() {
 
   const loadRealTimePlans = async () => {
     setLoading(true);
-    try {
-      if (user && isOnline) {
-        // Try to load from backend first
-        await syncPlansWithBackend();
-      } else {
-        // Load from local storage
-        const localPlans = planService.getAllPlans();
-        setSavedPlans(localPlans);
-      }
-    } catch (error) {
-      console.error('Error loading plans:', error);
-      // Fallback to local storage
-      const localPlans = planService.getAllPlans();
-      setSavedPlans(localPlans);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const syncPlansWithBackend = async () => {
-    if (!user || !isOnline) return;
-    
     setSyncStatus('syncing');
     try {
-      // Get plans from backend
-      const backendPlans = await onlineService.getWorkoutPlans();
+      console.log('🚀 Loading REAL-TIME plans from MongoDB...');
       
-      // Get local plans
-      const localPlans = planService.getAllPlans();
+      // Load plans using real-time service
+      const plans = await realTimePlanService.getPlans();
+      setSavedPlans(plans);
       
-      // Merge and sync plans
-      const mergedPlans = await mergePlansData(localPlans, backendPlans);
-      
-      // Update local storage
-      localStorage.setItem('workoutPlans', JSON.stringify(mergedPlans));
-      setSavedPlans(mergedPlans);
+      // Update real-time stats
+      updateRealTimeStats();
       
       setLastSync(new Date());
       setSyncStatus('synced');
       
+      console.log('✅ REAL-TIME plans loaded:', plans.length);
+      
+      // Auto-hide sync status
+      setTimeout(() => setSyncStatus('idle'), 3000);
+    } catch (error) {
+      console.error('❌ Failed to load real-time plans:', error);
+      setSyncStatus('error');
+      setTimeout(() => setSyncStatus('idle'), 5000);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const updateRealTimeStats = () => {
+    const stats = realTimePlanService.getPlanStats();
+    setRealTimeStats(stats);
+  };
+
+  const syncPlansWithBackend = async () => {
+    if (!user) return;
+    
+    setSyncStatus('syncing');
+    try {
+      console.log('🔄 Force syncing all plans...');
+      
+      const result = await realTimePlanService.forceSync();
+      
+      if (result.success) {
+        // Reload plans after sync
+        const plans = await realTimePlanService.getPlans(true);
+        setSavedPlans(plans);
+        updateRealTimeStats();
+        
+        setLastSync(new Date());
+        setSyncStatus('synced');
+        
+        console.log('✅ Force sync completed:', result.planCount, 'plans');
+      } else {
+        throw new Error(result.error || 'Sync failed');
+      }
+      
       // Auto-hide sync status after 3 seconds
       setTimeout(() => setSyncStatus('idle'), 3000);
     } catch (error) {
-      console.error('Sync failed:', error);
+      console.error('❌ Sync failed:', error);
       setSyncStatus('error');
       setTimeout(() => setSyncStatus('idle'), 5000);
     }
   };
 
-  const mergePlansData = async (localPlans, backendPlans) => {
-    const merged = [...localPlans];
-    
-    // Add backend plans that don't exist locally
-    for (const backendPlan of backendPlans) {
-      const existsLocally = localPlans.find(p => p.id === backendPlan._id || p.backendId === backendPlan._id);
-      if (!existsLocally) {
-        merged.push({
-          id: backendPlan._id,
-          backendId: backendPlan._id,
-          name: backendPlan.name,
-          exercises: backendPlan.exercises || [],
-          category: backendPlan.category || 'General',
-          createdAt: backendPlan.createdAt,
-          updatedAt: backendPlan.updatedAt || backendPlan.createdAt,
-          synced: true
-        });
-      }
-    }
-    
-    // Sync local plans to backend
-    for (const localPlan of localPlans) {
-      if (!localPlan.synced && !localPlan.backendId) {
-        try {
-          const savedPlan = await onlineService.saveWorkoutPlan({
-            name: localPlan.name,
-            exercises: localPlan.exercises,
-            category: localPlan.category
-          });
-          
-          if (savedPlan) {
-            const planIndex = merged.findIndex(p => p.id === localPlan.id);
-            if (planIndex !== -1) {
-              merged[planIndex] = {
-                ...merged[planIndex],
-                backendId: savedPlan._id,
-                synced: true
-              };
-            }
-          }
-        } catch (error) {
-          console.error('Failed to sync plan to backend:', error);
-        }
-      }
-    }
-    
-    return merged;
-  };
-
   const deletePlan = async (planId) => {
     if (window.confirm('Are you sure you want to delete this plan?')) {
       try {
-        const plan = savedPlans.find(p => p.id === planId);
+        console.log('🗑️ Deleting plan with REAL-TIME update:', planId);
         
-        // Delete from backend if synced
-        if (plan?.backendId && isOnline && user) {
-          try {
-            await onlineService.deletePlan(plan.backendId);
-          } catch (error) {
-            console.error('Failed to delete from backend:', error);
-          }
-        }
+        // Use real-time service for instant deletion
+        const success = await realTimePlanService.deletePlan(planId);
         
-        // Delete locally
-        const updatedPlans = savedPlans.filter(plan => plan.id !== planId);
-        localStorage.setItem('workoutPlans', JSON.stringify(updatedPlans));
-        setSavedPlans(updatedPlans);
-        
-        // Store deletion for later sync if offline
-        if (!isOnline || !user) {
-          const pendingDeletes = JSON.parse(localStorage.getItem('pendingPlanDeletes') || '[]');
-          pendingDeletes.push({ planId, timestamp: new Date().toISOString() });
-          localStorage.setItem('pendingPlanDeletes', JSON.stringify(pendingDeletes));
+        if (success) {
+          console.log('✅ Plan deleted with REAL-TIME dashboard update');
+        } else {
+          throw new Error('Failed to delete plan');
         }
       } catch (error) {
-        console.error('Error deleting plan:', error);
+        console.error('❌ Error deleting plan:', error);
+        alert('Failed to delete plan. Please try again.');
       }
     }
   };
 
   const duplicatePlan = async (plan) => {
     try {
-      const newPlan = {
-        ...plan,
-        id: Date.now().toString(),
-        name: `${plan.name} (Copy)`,
-        createdAt: new Date().toISOString(),
-        synced: false,
-        backendId: null
-      };
+      console.log('📋 Duplicating plan with REAL-TIME update:', plan.name);
       
-      const updatedPlans = [...savedPlans, newPlan];
-      localStorage.setItem('workoutPlans', JSON.stringify(updatedPlans));
-      setSavedPlans(updatedPlans);
+      // Use real-time service for instant duplication
+      const duplicatedPlan = await realTimePlanService.duplicatePlan(plan);
       
-      // Sync to backend if online
-      if (isOnline && user) {
-        try {
-          const savedPlan = await onlineService.saveWorkoutPlan({
-            name: newPlan.name,
-            exercises: newPlan.exercises,
-            category: newPlan.category
-          });
-          
-          if (savedPlan) {
-            const finalPlans = updatedPlans.map(p => 
-              p.id === newPlan.id 
-                ? { ...p, backendId: savedPlan._id, synced: true }
-                : p
-            );
-            localStorage.setItem('workoutPlans', JSON.stringify(finalPlans));
-            setSavedPlans(finalPlans);
-          }
-        } catch (error) {
-          console.error('Failed to sync duplicated plan:', error);
-        }
+      if (duplicatedPlan) {
+        console.log('✅ Plan duplicated with REAL-TIME dashboard update:', duplicatedPlan.name);
+      } else {
+        throw new Error('Failed to duplicate plan');
       }
     } catch (error) {
-      console.error('Error duplicating plan:', error);
+      console.error('❌ Error duplicating plan:', error);
+      alert('Failed to duplicate plan. Please try again.');
     }
   };
 
@@ -269,10 +215,10 @@ export default function MyPlans() {
             {/* Real-time Status Indicator */}
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${
-                isOnline ? 'bg-green-500' : 'bg-red-500'
+                realTimeStats.isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'
               }`}></div>
               <span className="text-xs muted-text">
-                {isOnline ? 'Online' : 'Offline'}
+                {realTimeStats.isOnline ? 'REAL-TIME MONGODB' : 'OFFLINE MODE'}
               </span>
               
               {/* Sync Status */}
@@ -303,14 +249,14 @@ export default function MyPlans() {
           
           <div className="flex items-center gap-2">
             {/* Manual Sync Button */}
-            {isOnline && user && (
+            {user && (
               <button
                 onClick={syncPlansWithBackend}
                 disabled={syncStatus === 'syncing'}
                 className="btn-secondary text-sm px-3 py-1 disabled:opacity-50"
-                title="Sync with server"
+                title="Force sync with MongoDB"
               >
-                🔄 Sync
+                {syncStatus === 'syncing' ? '🔄 Syncing...' : '🔄 Force Sync'}
               </button>
             )}
             
@@ -476,14 +422,18 @@ export default function MyPlans() {
 
         {savedPlans.length > 0 && (
           <div className="features-box bg-blue-900/20 dark:bg-blue-900/20 light-theme:bg-blue-50 border border-blue-500/30 dark:border-blue-500/30 light-theme:border-blue-200 rounded-lg p-4">
-            <h4 className="text-blue-700 dark:text-blue-300 font-medium mb-2">💡 Real-time Features:</h4>
+            <h4 className="text-blue-700 dark:text-blue-300 font-medium mb-2">🚀 REAL-TIME MongoDB Features:</h4>
             <ul className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
-              <li>• {isOnline ? '🌐 Real-time sync with MongoDB database' : '📱 Offline mode - data saved locally'}</li>
-              <li>• 🔄 Auto-sync every 30 seconds when online</li>
-              <li>• 💾 All workout data persists across sessions</li>
+              <li>• {realTimeStats.isOnline ? '🔥 INSTANT MongoDB sync - changes appear immediately' : '📱 Offline mode - data saved locally'}</li>
+              <li>• ⚡ INSTANT dashboard updates when plans are created/deleted</li>
+              <li>• 💾 Professional-grade data persistence with MongoDB</li>
               <li>• 📊 Real-time progress tracking and analytics</li>
-              <li>• {user ? '👤 Logged in - data synced to your account' : '🔒 Login to sync across devices'}</li>
+              <li>• 🏋️ Professional gym-level experience</li>
+              <li>• {user ? `👤 Account: ${realTimeStats.totalPlans} plans synced` : '🔒 Login to sync across devices'}</li>
             </ul>
+            <div className="mt-3 text-xs text-blue-600 dark:text-blue-400">
+              📈 Stats: {realTimeStats.totalPlans} total • {realTimeStats.syncedPlans} synced • {realTimeStats.unsyncedPlans} pending
+            </div>
           </div>
         )}
         

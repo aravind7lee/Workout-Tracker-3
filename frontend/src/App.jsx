@@ -64,17 +64,17 @@ const Search = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Search Results</h1>
-      {query && <p className="text-gray-600 dark:text-gray-400 mb-6">Results for: "{query}"</p>}
+      <h1 className="text-3xl font-bold text-white mb-4">Search Results</h1>
+      {query && <p className="text-gray-400 mb-6">Results for: "{query}"</p>}
       <div className="space-y-4">
         {results.map((exercise) => (
-          <div key={exercise.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{exercise.name}</h3>
+          <div key={exercise.id} className="bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-semibold text-white mb-2">{exercise.name}</h3>
             <div className="flex items-center space-x-4 mb-4">
-              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+              <span className="px-3 py-1 bg-blue-900 text-blue-200 rounded-full text-sm">
                 {exercise.category}
               </span>
-              <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">
+              <span className="px-3 py-1 bg-green-900 text-green-200 rounded-full text-sm">
                 {exercise.difficulty}
               </span>
             </div>
@@ -88,8 +88,8 @@ const Search = () => {
         ))}
         {results.length === 0 && query && (
           <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No results found</h3>
-            <p className="text-gray-600 dark:text-gray-400">Try different keywords</p>
+            <h3 className="text-lg font-medium text-white mb-2">No results found</h3>
+            <p className="text-gray-400">Try different keywords</p>
           </div>
         )}
       </div>
@@ -164,24 +164,24 @@ const ExerciseDetail = () => {
       <button onClick={() => navigate(-1)} className="mb-6 text-blue-600 hover:text-blue-800">
         ← Back
       </button>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{exercise.name}</h1>
+      <div className="bg-gray-800 rounded-lg shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-white mb-4">{exercise.name}</h1>
         <div className="flex items-center space-x-4 mb-6">
-          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+          <span className="px-3 py-1 bg-blue-900 text-blue-200 rounded-full">
             {exercise.category}
           </span>
-          <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
+          <span className="px-3 py-1 bg-green-900 text-green-200 rounded-full">
             {exercise.difficulty}
           </span>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">{exercise.description}</p>
+        <p className="text-gray-400 mb-6">{exercise.description}</p>
         <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
           Start Exercise
         </button>
         
         {/* Inline Review System */}
-        <div className="mt-8 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Reviews & Ratings</h3>
+        <div className="mt-8 bg-gray-700 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-white mb-4">Reviews & Ratings</h3>
           
           {/* Rating Display */}
           <div className="flex items-center space-x-2 mb-4">
@@ -190,7 +190,7 @@ const ExerciseDetail = () => {
                 <span key={star} className="text-yellow-400 text-xl">★</span>
               ))}
             </div>
-            <span className="text-gray-600 dark:text-gray-400">4.8 (24 reviews)</span>
+            <span className="text-gray-400">4.8 (24 reviews)</span>
           </div>
           
           {/* Write Review Section */}
@@ -202,12 +202,12 @@ const ExerciseDetail = () => {
               ✍️ Write a Review
             </button>
           ) : (
-            <div className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg border">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Write Your Review</h4>
+            <div className="mb-6 p-4 bg-gray-800 rounded-lg border">
+              <h4 className="font-semibold text-white mb-3">Write Your Review</h4>
               
               {/* Star Rating Input */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Rating</label>
                 <div className="flex items-center space-x-1">
                   {[1,2,3,4,5].map(star => (
                     <button
@@ -223,12 +223,12 @@ const ExerciseDetail = () => {
               
               {/* Comment Input */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Comment</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Comment</label>
                 <textarea
                   value={userComment}
                   onChange={(e) => setUserComment(e.target.value)}
                   placeholder="Share your experience with this exercise..."
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white"
                   rows={3}
                 />
               </div>
@@ -248,7 +248,7 @@ const ExerciseDetail = () => {
                     setUserRating(0);
                     setUserComment('');
                   }}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                  className="px-4 py-2 text-gray-400 hover:text-gray-200"
                 >
                   Cancel
                 </button>
@@ -260,23 +260,23 @@ const ExerciseDetail = () => {
           <div className="space-y-4">
             {/* User's own reviews */}
             {userReviews.map((review) => (
-              <div key={review.id} className="border-b border-gray-200 dark:border-gray-600 pb-4">
+              <div key={review.id} className="border-b border-gray-600 pb-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-2xl">{review.avatar}</span>
-                  <span className="font-medium text-gray-900 dark:text-white">{review.author}</span>
+                  <span className="font-medium text-white">{review.author}</span>
                   <div className="flex">
                     {[1,2,3,4,5].map(star => (
                       <span key={star} className={star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
                     ))}
                   </div>
                   {review.author === 'You' && (
-                    <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs">
+                    <span className="px-2 py-1 bg-green-900 text-green-200 rounded-full text-xs">
                       Your Review
                     </span>
                   )}
                 </div>
                 {review.comment && (
-                  <p className="text-gray-700 dark:text-gray-300 mb-2">{review.comment}</p>
+                  <p className="text-gray-300 mb-2">{review.comment}</p>
                 )}
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>{review.date}</span>
@@ -286,17 +286,17 @@ const ExerciseDetail = () => {
             ))}
             
             {/* Sample Reviews */}
-            <div className="border-b border-gray-200 dark:border-gray-600 pb-4">
+            <div className="border-b border-gray-600 pb-4">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="text-2xl">👨💼</span>
-                <span className="font-medium text-gray-900 dark:text-white">Alex Johnson</span>
+                <span className="font-medium text-white">Alex Johnson</span>
                 <div className="flex">
                   {[1,2,3,4,5].map(star => (
                     <span key={star} className="text-yellow-400">★</span>
                   ))}
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <p className="text-gray-300 mb-2">
                 Excellent exercise! Really helped build my strength and the instructions are clear.
               </p>
               <div className="flex items-center justify-between text-sm text-gray-500">
@@ -305,10 +305,10 @@ const ExerciseDetail = () => {
               </div>
             </div>
             
-            <div className="border-b border-gray-200 dark:border-gray-600 pb-4">
+            <div className="border-b border-gray-600 pb-4">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="text-2xl">👩🦰</span>
-                <span className="font-medium text-gray-900 dark:text-white">Sarah Wilson</span>
+                <span className="font-medium text-white">Sarah Wilson</span>
                 <div className="flex">
                   {[1,2,3,4].map(star => (
                     <span key={star} className="text-yellow-400">★</span>
@@ -316,7 +316,7 @@ const ExerciseDetail = () => {
                   <span className="text-gray-300">★</span>
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <p className="text-gray-300 mb-2">
                 Great for beginners! Perfect form demonstration and easy to follow.
               </p>
               <div className="flex items-center justify-between text-sm text-gray-500">
@@ -328,14 +328,14 @@ const ExerciseDetail = () => {
             <div className="pb-4">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="text-2xl">👨🎓</span>
-                <span className="font-medium text-gray-900 dark:text-white">Mike Chen</span>
+                <span className="font-medium text-white">Mike Chen</span>
                 <div className="flex">
                   {[1,2,3,4,5].map(star => (
                     <span key={star} className="text-yellow-400">★</span>
                   ))}
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <p className="text-gray-300 mb-2">
                 Challenging but effective. Saw results quickly after adding this to my routine.
               </p>
               <div className="flex items-center justify-between text-sm text-gray-500">

@@ -22,14 +22,14 @@ import {
   Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
+
 import settingsService from '../services/settingsService';
 import chromeErrorHandler from '../utils/chromeErrorHandler';
 import { onlineService } from '../services/onlineService';
 
 export default function Settings() {
   const { user, updateUser, isAuthenticated } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  // Theme is always dark mode - no toggle functionality
   const [activeTab, setActiveTab] = useState('profile');
   const [isSaving, setIsSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -72,7 +72,7 @@ export default function Settings() {
       analyticsOptOut: user?.privacy?.analyticsOptOut || false
     },
     preferences: {
-      theme: user?.preferences?.theme || theme || 'dark',
+      theme: 'dark', // Always dark mode
       language: user?.preferences?.language || 'en',
       units: user?.preferences?.units || 'metric',
       dateFormat: user?.preferences?.dateFormat || 'MM/DD/YYYY',
@@ -262,27 +262,7 @@ export default function Settings() {
     }));
   }, []);
 
-  // Handle theme changes with immediate effect
-  const handleThemeChange = useCallback((newTheme) => {
-    setSettings(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        theme: newTheme
-      }
-    }));
-
-    if (newTheme === 'auto') {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const autoTheme = systemPrefersDark ? 'dark' : 'light';
-      
-      if (theme !== autoTheme) {
-        toggleTheme();
-      }
-    } else if (newTheme !== theme) {
-      toggleTheme();
-    }
-  }, [theme, toggleTheme]);
+  // Theme is always dark mode - no theme change functionality
 
   // Auto-save with improved debouncing
   useEffect(() => {
@@ -670,82 +650,41 @@ export default function Settings() {
   );
 
   const renderPreferencesSettings = () => {
-    const currentTheme = theme || 'dark';
-    
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
-              {currentTheme === 'dark' ? <Moon size={16} /> : <Sun size={16} />}
-              Theme Selection
+              <Moon size={16} />
+              Theme (Dark Mode Only)
             </label>
             <div className="space-y-3">
-              {[
-                { value: 'dark', label: 'Dark Mode', icon: Moon, desc: 'Perfect for gym environments', color: 'from-slate-600 to-slate-800' },
-                { value: 'light', label: 'Light Mode', icon: Sun, desc: 'Bright and clean interface', color: 'from-yellow-400 to-orange-500' },
-                { value: 'auto', label: 'Auto Mode', icon: Globe, desc: 'Follow system preference', color: 'from-blue-500 to-purple-500' }
-              ].map((themeOption) => {
-                const isSelected = settings.preferences.theme === themeOption.value;
-                const isCurrentTheme = currentTheme === themeOption.value || 
-                  (themeOption.value === 'auto' && settings.preferences.theme === 'auto');
-                
-                return (
-                  <motion.div 
-                    key={themeOption.value}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleThemeChange(themeOption.value)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 ${
-                      isSelected
-                        ? `border-blue-500 bg-gradient-to-r ${themeOption.color}/10 shadow-lg`
-                        : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500/50 hover:bg-slate-700/30'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg transition-all ${
-                        isSelected
-                          ? `bg-gradient-to-r ${themeOption.color}/20 text-white shadow-md`
-                          : 'bg-slate-700/50 text-slate-400'
-                      }`}>
-                        <themeOption.icon size={18} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-white font-medium flex items-center gap-2">
-                          {themeOption.label}
-                          {isCurrentTheme && (
-                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-slate-400 text-sm">{themeOption.desc}</div>
-                      </div>
-                      {isSelected && (
-                        <motion.div 
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="text-blue-400 text-xl"
-                        >
-                          ✓
-                        </motion.div>
-                      )}
+              <motion.div 
+                className="p-4 rounded-xl border border-blue-500 bg-gradient-to-r from-slate-600/10 to-slate-800/10 shadow-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-slate-600/20 to-slate-800/20 text-white shadow-md">
+                    <Moon size={18} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-white font-medium flex items-center gap-2">
+                      Dark Mode
+                      <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+                        Active
+                      </span>
                     </div>
-                  </motion.div>
-                );
-              })}
+                    <div className="text-slate-400 text-sm">Perfect for gym environments - Professional experience</div>
+                  </div>
+                  <div className="text-blue-400 text-xl">✓</div>
+                </div>
+              </motion.div>
             </div>
             
-            {/* Real-time Theme Preview */}
+            {/* Dark Mode Info */}
             <div className="mt-4 p-3 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-lg">
               <div className="text-blue-300 text-sm flex items-center gap-2">
                 <span className="animate-pulse">🎨</span>
-                <span>Current theme: <strong>{currentTheme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode'}</strong></span>
-                {settings.preferences.theme === 'auto' && (
-                  <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
-                    Auto-detected
-                  </span>
-                )}
+                <span>GymTracker uses <strong>🌙 Dark Mode Only</strong> for the best gym experience</span>
               </div>
             </div>
           </div>
@@ -771,7 +710,7 @@ export default function Settings() {
         <div className="mt-4 p-3 bg-green-900/20 border border-green-700/50 rounded-lg">
           <div className="text-green-300 text-sm flex items-center gap-2">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span>Theme changes are applied instantly • Real-time MongoDB sync • Auto-save enabled</span>
+            <span>Dark mode is permanently enabled • Professional gym experience • Real-time MongoDB sync</span>
           </div>
         </div>
         

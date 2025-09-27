@@ -4,28 +4,62 @@
 @import './styles/hero-semantic-tokens.css';
 @import './styles/dark-mode-premium.css';
 @import './styles/nutrition-theme-complete.css';
-@import './styles/light-mode-fix.css';
-@import './styles/light-mode-global-fix.css';
-@import './styles/light-mode-complete-fix.css';
-@import './styles/light-mode-final-override.css';
-@import './styles/hero-nutrition-light-fix.css';
+
+
+
+
+
 @import './styles/hero-styles.css';
 @import './styles/dashboard-hero.css';
 @import './styles/nutrition-hero.css';
-@import './styles/light-mode-workout-builder-fix.css';
-@import './styles/global-light-mode-text-fix.css';
+
+
 @import './styles/my-plans-hero.css';
-@import './styles/light-mode-header-fix.css';
+
 @import './styles/analytics-hero.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ===== RAW GYM TYPOGRAPHY - BEBAS NEUE + INTER ===== */
+/* ===== DARK MODE ONLY THEME VARIABLES ===== */
 :root {
   --font-heading: 'Bebas Neue', cursive;
   --font-body: 'Inter', sans-serif;
+  
+  /* Dark Theme Variables - Always Active */
+  --bg: #0f172a;
+  --bg-soft: rgba(30, 41, 59, 0.8);
+  --bg-accent: rgba(71, 85, 105, 0.3);
+  --text: #e2e8f0;
+  --heading: #ffffff;
+  --muted: #94a3b8;
+  --accent: #00d4ff;
+  --accent-contrast: #ffffff;
+  --panel-border: rgba(71, 85, 105, 0.4);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --btn-secondary-bg: rgba(71, 85, 105, 0.3);
+  --btn-secondary-border: rgba(71, 85, 105, 0.5);
+  --btn-secondary-text: #e2e8f0;
+  --danger: #ef4444;
+}
+
+/* Ensure dark theme is always applied */
+.dark {
+  --bg: #0f172a;
+  --bg-soft: rgba(30, 41, 59, 0.8);
+  --bg-accent: rgba(71, 85, 105, 0.3);
+  --text: #e2e8f0;
+  --heading: #ffffff;
+  --muted: #94a3b8;
+  --accent: #00d4ff;
+  --accent-contrast: #ffffff;
+  --panel-border: rgba(71, 85, 105, 0.4);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --btn-secondary-bg: rgba(71, 85, 105, 0.3);
+  --btn-secondary-border: rgba(71, 85, 105, 0.5);
+  --btn-secondary-text: #e2e8f0;
+  --danger: #ef4444;
 }
 
 /* BEAST MODE HEADINGS - Bebas Neue 💪 */
@@ -216,7 +250,11 @@ body h1, body h2, body h3, body h4, body h5, body h6 {
   letter-spacing: 0.02em !important;
 }
 
-/* Theme variables now handled by themes.css */
+/* Apply theme variables to body */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
 
 /* Mobile-first base styles */
 body {
@@ -241,22 +279,7 @@ body {
   }
 }
 
-/* Light mode specific backgrounds */
-.light-theme body,
-[data-theme="light"] body {
-  background: radial-gradient(800px 400px at 10% 10%, rgba(0,123,255,0.03), transparent),
-              radial-gradient(600px 300px at 90% 90%, rgba(40,167,69,0.02), transparent),
-              var(--bg);
-}
 
-@media (min-width: 768px) {
-  .light-theme body,
-  [data-theme="light"] body {
-    background: radial-gradient(1200px 600px at 10% 10%, rgba(0,123,255,0.03), transparent),
-                radial-gradient(900px 450px at 90% 90%, rgba(40,167,69,0.02), transparent),
-                var(--bg);
-  }
-}
 
 /* Mobile-first card component with enhanced dark mode */
 .card {
@@ -277,12 +300,7 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Light mode card */
-.light-theme .card {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
+
 
 @media (min-width: 640px) {
   .card {
@@ -304,12 +322,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Light mode hover */
-.light-theme .card:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: #1d4ed8;
-  box-shadow: 0 8px 30px rgba(29, 78, 216, 0.15);
-}
+
 
 
 
@@ -334,11 +347,7 @@ body {
   box-shadow: 0 0 25px var(--accent), 0 8px 40px rgba(0,212,255,0.5);
 }
 
-/* Light mode neon hover */
-.light-theme .neon:hover,
-[data-theme="light"] .neon:hover {
-  box-shadow: 0 0 15px var(--accent), 0 6px 25px rgba(0,123,255,0.3);
-}
+
 
 /* Responsive typography */
 .text-responsive-xl {
@@ -659,11 +668,7 @@ body {
   box-shadow: 0 0 15px var(--accent);
 }
 
-/* Light mode - subtle shadow */
-.light-theme .btn-secondary:hover,
-[data-theme="light"] .btn-secondary:hover {
-  box-shadow: 0 4px 15px rgba(0,123,255,0.2);
-}
+
 
 .btn-secondary:active {
   transform: scale(0.98);
@@ -1190,16 +1195,7 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Light theme scrollbar */
-.light-theme .mobile-sidebar::-webkit-scrollbar-thumb,
-[data-theme="light"] .mobile-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-}
 
-.light-theme .mobile-sidebar::-webkit-scrollbar-thumb:hover,
-[data-theme="light"] .mobile-sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
 
 /* Navbar glass effect improvements for mobile */
 @media (max-width: 1279px) {
@@ -1250,11 +1246,7 @@ body {
   animation: shimmer 2s infinite;
 }
 
-/* Light theme shimmer */
-.light-theme .animate-shimmer::after,
-[data-theme="light"] .animate-shimmer::after {
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
-}
+
 
 .hero-image-container {
   aspect-ratio: 16/9;
@@ -1314,11 +1306,7 @@ body {
   transition-delay: 140ms;
 }
 
-/* Theme-aware hero overlays for WCAG compliance */
-.hero-overlay-light {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.40));
-}
-
+/* Dark mode hero overlay for WCAG compliance */
 .hero-overlay-dark {
   background: linear-gradient(to bottom, rgba(0,0,0,0.30), rgba(0,0,0,0.70));
 }
@@ -1398,14 +1386,7 @@ body {
   );
 }
 
-.hero-overlay-light {
-  background: linear-gradient(
-    135deg,
-    rgba(0,0,0,0.2) 0%,
-    rgba(0,0,0,0.4) 50%,
-    rgba(0,0,0,0.6) 100%
-  );
-}
+
 
 /* Professional gym website text styling */
 .hero-text-contrast {

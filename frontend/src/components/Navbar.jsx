@@ -6,7 +6,7 @@ import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap }
 import { useAuth } from '../context/AuthContext';
 import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
 import { demoService } from '../services/demoService';
-import ThemeToggle from './ThemeToggle';
+
 import logo from '../assets/logo.png';
 
 
@@ -488,8 +488,7 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Theme Toggle - Always visible on all screens */}
-            <ThemeToggle />
+
 
             {/* Mobile Menu Button */}
             <motion.button
@@ -650,10 +649,7 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Mobile Theme Toggle - Always show in sidebar */}
-                <div className="mb-4 sm:mb-6 flex justify-center">
-                  <ThemeToggle />
-                </div>
+
 
                 {/* Mobile Navigation Links */}
                 <div className="space-y-1 sm:space-y-2 mb-4 sm:mb-6">

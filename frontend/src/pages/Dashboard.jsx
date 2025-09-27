@@ -1,10 +1,11 @@
-// Real-Time MongoDB Dashboard - Online Mode Only
+// Real-Time MongoDB Dashboard - INSTANT PLAN UPDATES
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
+import { useRealTimeDashboard } from '../hooks/useRealTimeDashboard';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
 import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
@@ -15,8 +16,21 @@ const Dashboard = () => {
   const { stats, isOnline, loading: statsLoading, refreshStats } = useRealTime();
   const { currentStreak, longestStreak, totalCheckIns } = useStreak();
   const { unlockedCount, totalCount, currentXP, completionPercentage, isOnline: achievementsOnline, checkAchievements } = useAchievements();
+  
+  // REAL-TIME DASHBOARD HOOK - INSTANT PLAN UPDATES
+  const {
+    dashboardStats,
+    planStats,
+    recentPlans,
+    syncStatus: planSyncStatus,
+    refreshDashboard,
+    forceSync,
+    isOnline: plansOnline,
+    isRealTime,
+    lastSync: planLastSync
+  } = useRealTimeDashboard();
+  
   const [recentWorkouts, setRecentWorkouts] = useState([]);
-  const [savedPlans, setSavedPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [completionData, setCompletionData] = useState(null);
@@ -44,22 +58,10 @@ const Dashboard = () => {
       
       console.log('🚀 Loading REAL-TIME MongoDB dashboard data...');
       
-      // Load REAL-TIME data from MongoDB backend
-      const [userPlans, completedWorkouts] = await Promise.allSettled([
-        api.get('/plans'),
+      // Load REAL-TIME workouts from MongoDB backend
+      const [completedWorkouts] = await Promise.allSettled([
         api.get('/workouts')
       ]);
-      
-      // Set REAL plans from MongoDB
-      if (userPlans.status === 'fulfilled' && userPlans.value?.data) {
-        const plans = Array.isArray(userPlans.value.data.plans) ? userPlans.value.data.plans : 
-                     Array.isArray(userPlans.value.data) ? userPlans.value.data : [];
-        setSavedPlans(plans);
-        console.log('✅ Real plans loaded:', plans.length);
-      } else {
-        setSavedPlans([]);
-        console.log('⚠️ No plans found or failed to load');
-      }
       
       // Set REAL completed workouts from MongoDB
       if (completedWorkouts.status === 'fulfilled' && completedWorkouts.value?.data) {
@@ -82,7 +84,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error('❌ Dashboard load error:', error.message);
       // Set empty states on error
-      setSavedPlans([]);
       setRecentWorkouts([]);
     } finally {
       setLoading(false);
@@ -173,10 +174,21 @@ const Dashboard = () => {
     navigate('/login');
   };
   
-  const handleRefresh = () => {
-    console.log('🔄 Manual refresh triggered');
+  const handleRefresh = async () => {
+    console.log('🔄 Manual refresh triggered - REAL-TIME SYNC');
     refreshStats();
     loadDashboardData();
+    await refreshDashboard();
+  };
+  
+  const handleForceSync = async () => {
+    console.log('🚀 Force sync triggered - INSTANT UPDATES');
+    const result = await forceSync();
+    if (result.success) {
+      console.log('✅ Force sync completed successfully');
+    } else {
+      console.error('❌ Force sync failed:', result.error);
+    }
   };
 
   if (loading) {
@@ -226,34 +238,61 @@ const Dashboard = () => {
       
       {/* Header */}
       <div className="card">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex flex-col gap-4">
+          {/* Welcome Section */}
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
               Welcome back{authUser?.name ? `, ${authUser.name}` : ''}! 👋
             </h1>
-            <p className="text-slate-400 mt-1 text-sm sm:text-base">
+            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
               Track your progress, manage workouts, and achieve your fitness goals efficiently.
-              <span className={`ml-2 text-xs preserve-color ${isOnline ? 'text-green-400' : 'text-red-400'}`}>
-                • {isOnline ? '🔥 Real-time MongoDB tracking active' : '❌ MongoDB connection failed'}
+            </p>
+          </div>
+          
+          {/* Status Section */}
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className={`flex items-center gap-1 px-2 py-1 rounded-full ${
+                plansOnline ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+              }`}>
+                {plansOnline ? '🚀' : '❌'}
+                {plansOnline ? 'REAL-TIME MongoDB + INSTANT Plan Updates' : 'MongoDB connection failed'}
               </span>
-              {stats.lastSync && (
-                <span className="ml-2 text-xs text-slate-500">
-                  Last sync: {new Date(stats.lastSync).toLocaleTimeString()}
+              {planLastSync && (
+                <span className="text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
+                  Plans sync: {new Date(planLastSync).toLocaleTimeString()}
                 </span>
               )}
-            </p>
-
+              {planSyncStatus !== 'idle' && (
+                <span className={`px-2 py-1 rounded-full ${
+                  planSyncStatus === 'syncing' ? 'bg-blue-900/30 text-blue-400' :
+                  planSyncStatus === 'synced' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+                }`}>
+                  {planSyncStatus === 'syncing' ? '🔄 Syncing...' : 
+                      planSyncStatus === 'synced' ? '✅ Synced' : '❌ Sync Error'}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2">
             <button
               onClick={handleRefresh}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 sm:flex-none"
+              className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm flex-1 sm:flex-none"
             >
               🔄 Refresh
             </button>
             <button
+              onClick={handleForceSync}
+              disabled={planSyncStatus === 'syncing'}
+              className="btn bg-green-600 hover:bg-green-700 text-white text-sm flex-1 sm:flex-none disabled:opacity-50"
+            >
+              {planSyncStatus === 'syncing' ? '🔄 Syncing...' : '⚡ Force Sync'}
+            </button>
+            <button
               onClick={handleLogout}
-              className="btn bg-red-600 hover:bg-red-700 text-white flex-1 sm:flex-none"
+              className="btn bg-red-600 hover:bg-red-700 text-white text-sm flex-1 sm:flex-none"
             >
               Logout
             </button>
@@ -362,15 +401,20 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">📋</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{savedPlans.length}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                {dashboardStats.totalPlans}
+                {planSyncStatus === 'syncing' && (
+                  <div className="animate-spin w-4 h-4 border border-orange-500 border-t-transparent rounded-full"></div>
+                )}
+              </div>
               <div className="text-slate-400 text-xs sm:text-sm">Workout Plans</div>
               <div className="text-xs text-green-400">
-                {savedPlans.length > 0 ? `${savedPlans.length} plans ready` : 'Create your first plan'}
+                {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans ready • REAL-TIME` : 'Create your first plan'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-orange-400/70">
-            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+            {plansOnline && isRealTime ? '🚀 INSTANT' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-orange-400/50 text-xs">→</div>
         </button>
@@ -429,12 +473,17 @@ const Dashboard = () => {
             className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
           >
             <div className="text-2xl sm:text-3xl mb-2">📋</div>
-            <div className="font-medium text-sm sm:text-base">My Plans ({savedPlans.length})</div>
+            <div className="font-medium text-sm sm:text-base flex items-center gap-2">
+              My Plans ({dashboardStats.totalPlans})
+              {planSyncStatus === 'syncing' && (
+                <div className="animate-spin w-3 h-3 border border-green-300 border-t-transparent rounded-full"></div>
+              )}
+            </div>
             <div className="text-xs text-green-200 mt-1">
-              {savedPlans.length > 0 ? `${savedPlans.length} plans ready` : 'Create your first plan'}
+              {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans • INSTANT UPDATES` : 'Create your first plan'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-green-300/70">
-              {isOnline && stats.isRealTime ? '🔴' : '❌'}
+              {plansOnline && isRealTime ? '🚀' : '❌'}
             </div>
           </button>
           
@@ -479,10 +528,15 @@ const Dashboard = () => {
             + Create Plan
           </button>
         </div>
-        {!savedPlans || savedPlans.length === 0 ? (
+        {!recentPlans || recentPlans.length === 0 ? (
           <div className="text-center py-6 sm:py-8">
             <div className="text-3xl sm:text-4xl mb-4">📋</div>
-            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">No workout plans yet. Create your first plan!</p>
+            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+              {dashboardStats.loading ? 'Loading plans...' : 'No workout plans yet. Create your first plan!'}
+            </p>
+            <div className="text-xs text-slate-500 mb-4">
+              {plansOnline ? '🚀 Real-time MongoDB data' : '📱 Offline mode'}
+            </div>
             <button 
               onClick={() => navigate('/plans')}
               className="btn bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
@@ -491,34 +545,60 @@ const Dashboard = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {savedPlans.slice(0, 3).map((plan, index) => (
-              <div key={plan.id || index} className="p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-medium text-white text-sm sm:text-base truncate">{plan.name || 'Unnamed Plan'}</h3>
-                  <span className="text-xs text-slate-400 bg-slate-600/50 px-2 py-1 rounded flex-shrink-0 ml-2">
-                    {plan.category || 'General'}
-                  </span>
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs text-green-400 flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                {plansOnline ? 'REAL-TIME MongoDB Plans' : 'Local Plans'}
+              </span>
+              <span className="text-xs text-slate-400">
+                {dashboardStats.totalPlans} total • {planStats.syncedPlans} synced
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recentPlans.map((plan, index) => (
+                <div key={plan.id || index} className="p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors relative">
+                  {/* Sync Status Badge */}
+                  <div className="absolute top-2 right-2">
+                    {plan.synced ? (
+                      <div className="w-2 h-2 bg-green-400 rounded-full" title="Synced to MongoDB"></div>
+                    ) : (
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" title="Pending sync"></div>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-start justify-between mb-3 pr-4">
+                    <h3 className="font-medium text-white text-sm sm:text-base truncate">{plan.name || 'Unnamed Plan'}</h3>
+                    <span className="text-xs text-slate-400 bg-slate-600/50 px-2 py-1 rounded flex-shrink-0 ml-2">
+                      {plan.category || 'General'}
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-sm text-slate-400 mb-3">
+                    {plan.exercises?.length || 0} {(plan.exercises?.length || 0) === 1 ? 'exercise' : 'exercises'}
+                    {plan.isTemp && <span className="text-yellow-400 ml-2">• Creating...</span>}
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => {
+                        const workoutId = plan.id || plan.tempId || `temp_${Date.now()}`;
+                        console.log('🚀 Starting workout for plan:', plan.name, 'ID:', workoutId);
+                        navigate(`/workout/${workoutId}`);
+                      }}
+                      className="btn bg-green-600 hover:bg-green-700 text-white text-xs flex-1 font-medium"
+                      title={`Start workout: ${plan.name}`}
+                    >
+                      🏋️ Start Workout
+                    </button>
+                    <button 
+                      onClick={() => navigate('/my-plans')}
+                      className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs flex-1"
+                    >
+                      📋 View All
+                    </button>
+                  </div>
                 </div>
-                <div className="text-xs sm:text-sm text-slate-400 mb-3">
-                  {plan.exercises?.length || 0} {(plan.exercises?.length || 0) === 1 ? 'exercise' : 'exercises'}
-                </div>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => navigate(`/workout/${plan.id}`)}
-                    className="btn-secondary text-xs flex-1"
-                  >
-                    Start
-                  </button>
-                  <button 
-                    onClick={() => navigate('/my-plans')}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs flex-1"
-                  >
-                    View
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -594,10 +674,20 @@ const Dashboard = () => {
                     ) : 'Today'}
                   </div>
                   <button
-                    onClick={() => navigate(`/workout/${workout.planId || workout.id}`)}
-                    className="btn-secondary text-xs px-3 py-1"
+                    onClick={() => {
+                      const workoutId = workout.planId || workout.id;
+                      if (workoutId) {
+                        console.log('🔄 Repeating workout:', workout.planName, 'ID:', workoutId);
+                        navigate(`/workout/${workoutId}`);
+                      } else {
+                        console.warn('⚠️ Workout ID missing, redirecting to plans');
+                        navigate('/my-plans');
+                      }
+                    }}
+                    className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
+                    title={`Repeat workout: ${workout.planName || 'Workout Session'}`}
                   >
-                    Repeat
+                    🔄 Repeat
                   </button>
                 </div>
               </div>
