@@ -179,19 +179,9 @@ export const AchievementsProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  // Real-time sync every 5 seconds for professional gym experience
+  // Initialize ONLY - NO POLLING
   useEffect(() => {
     calculateRealTimeAchievements();
-    
-    if (isAuthenticated?.()) {
-      intervalRef.current = setInterval(calculateRealTimeAchievements, 5000);
-    }
-    
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
   }, [calculateRealTimeAchievements]);
 
   // Listen for real-time events

@@ -151,20 +151,20 @@ const Dashboard = () => {
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
     
-    // Real-time refresh interval - every 2 minutes
-    const refreshInterval = setInterval(() => {
-      if (isAuthenticated()) {
-        refreshStats();
-        loadDashboardData();
-      }
-    }, 120000); // 2 minutes
+    // NO AUTOMATIC REFRESH - MANUAL ONLY
+    // const refreshInterval = setInterval(() => {
+    //   if (isAuthenticated()) {
+    //     refreshStats();
+    //     loadDashboardData();
+    //   }
+    // }, 600000); // Disabled to prevent API spam
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
       window.removeEventListener('streakUpdated', handleStreakUpdated);
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
-      clearInterval(refreshInterval);
+      // clearInterval(refreshInterval); // Disabled
     };
   }, [isAuthenticated, refreshStats]);
 

@@ -133,15 +133,10 @@ export const RealTimeProvider = ({ children }) => {
     }
   }, [user, isAuthenticated]);
 
-  // Initialize and set up real-time updates
+  // Initialize ONLY - NO POLLING
   useEffect(() => {
     if (isAuthenticated() && user) {
       fetchRealTimeStats();
-      
-      // Set up real-time polling every 30 seconds
-      const interval = setInterval(fetchRealTimeStats, 30000);
-      
-      return () => clearInterval(interval);
     }
   }, [user, isAuthenticated, fetchRealTimeStats]);
 

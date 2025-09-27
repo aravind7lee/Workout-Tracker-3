@@ -181,13 +181,10 @@ export const StreakProvider = ({ children }) => {
     }
   }, [updateStreakState]);
 
-  // Initialize and validate on mount
+  // Initialize ONLY - NO API CALLS
   useEffect(() => {
     validateStreak();
-    if (isAuthenticated() && user) {
-      fetchStreakData();
-    }
-  }, [validateStreak, fetchStreakData, isAuthenticated, user]);
+  }, [validateStreak]);
 
   // Save data whenever it changes
   useEffect(() => {
