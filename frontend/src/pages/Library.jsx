@@ -412,11 +412,15 @@ export default function Library() {
             <img
               src={LibraryHeaderImg}
               alt="Exercise Library header – gym workout background"
-              className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
+              className="w-full h-full absolute inset-0 transition-opacity duration-300"
               loading="eager"
               decoding="async"
               fetchPriority="high"
-              style={{ opacity: imageLoaded ? 1 : 0 }}
+              style={{ 
+                opacity: imageLoaded ? 1 : 0,
+                objectFit: 'cover',
+                objectPosition: '50% 50%'
+              }}
             />
             {/* Premium gradient overlay for optimal text contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />

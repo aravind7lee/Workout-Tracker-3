@@ -1495,6 +1495,30 @@ body {
   }
 }
 
+/* Library header image specific positioning to center the man properly */
+.library-header-image {
+  object-fit: cover;
+  object-position: center center;
+}
+
+@media (max-width: 640px) {
+  .library-header-image {
+    object-position: 50% 50%; /* Perfect center positioning for mobile */
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .library-header-image {
+    object-position: 50% 50%; /* Perfect center positioning for tablet */
+  }
+}
+
+@media (min-width: 769px) {
+  .library-header-image {
+    object-position: center center; /* Full center for desktop */
+  }
+}
+
 /* Ensure proper aspect ratio maintenance */
 .hero-image-container {
   position: relative;
