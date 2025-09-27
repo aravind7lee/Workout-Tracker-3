@@ -517,92 +517,9 @@ const ProfileAdvanced = () => {
         </div>
       </div>
 
-      {/* Real-Time Progress Stats */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-            <span>📊</span>
-            <span>Real-Time Progress</span>
-            {stats.isRealTime && (
-              <span className="text-xs bg-green-900/30 text-green-300 px-2 py-1 rounded-full">
-                Live
-              </span>
-            )}
-          </h2>
-          <div className="text-xs text-slate-400">
-            {stats.isRealTime ? '☁️ MongoDB Live Data' : '📱 Local Data'}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="text-center p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 border border-blue-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-blue-400 animate-pulse">{stats?.totalWorkouts || 0}</div>
-            <div className="text-sm text-slate-400">Total Workouts</div>
-            <div className="text-xs text-blue-300 mt-1">💪 Completed</div>
-          </div>
-          
-          <div className="text-center p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-green-400 animate-pulse">{stats?.totalMeals || 0}</div>
-            <div className="text-sm text-slate-400">Meals Logged</div>
-            <div className="text-xs text-green-300 mt-1">🍽️ Nutrition</div>
-          </div>
-          
-          <div className="text-center p-4 bg-gradient-to-br from-purple-900/30 to-purple-800/20 border border-purple-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-purple-400 animate-pulse">{stats?.totalPlans || 0}</div>
-            <div className="text-sm text-slate-400">Workout Plans</div>
-            <div className="text-xs text-purple-300 mt-1">📋 Created</div>
-          </div>
-          
-          <div className="text-center p-4 bg-gradient-to-br from-orange-900/30 to-orange-800/20 border border-orange-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-orange-400 animate-pulse">{stats?.currentStreak || 0}</div>
-            <div className="text-sm text-slate-400">Day Streak</div>
-            <div className="text-xs text-orange-300 mt-1">🔥 Consistency</div>
-          </div>
-          
-          <div className="text-center p-4 bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 border border-yellow-700/30 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-400 animate-pulse">{stats?.xpPoints || 0}</div>
-            <div className="text-sm text-slate-400">XP Points</div>
-            <div className="text-xs text-yellow-300 mt-1">⭐ Experience</div>
-          </div>
-        </div>
-        
-        {stats.isRealTime && (
-          <div className="mt-4 p-3 bg-green-900/20 border border-green-700/50 rounded-lg">
-            <div className="text-green-300 text-sm flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <span>Real-time data from MongoDB • Updates automatically across all devices</span>
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Recent Activity */}
-      {activity.length > 0 && (
-        <div className="card">
-          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-            <span>🎯</span>
-            <span>Recent Activity</span>
-            <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full">
-              Live Feed
-            </span>
-          </h2>
-          
-          <div className="space-y-3">
-            {activity.slice(0, 5).map((item, index) => (
-              <div key={item.id} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                <span className="text-2xl">{item.icon}</span>
-                <div className="flex-1">
-                  <div className="text-white font-medium">{item.title}</div>
-                  <div className="text-slate-400 text-sm">{item.description}</div>
-                </div>
-                <div className="text-xs text-slate-500">
-                  {new Date(item.timestamp).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
+
 
       {/* Achievements */}
       {achievements.length > 0 && (
@@ -650,56 +567,7 @@ const ProfileAdvanced = () => {
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div className="card">
-        <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <span>⚡</span>
-          <span>Quick Actions</span>
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button 
-            onClick={() => navigate('/my-plans')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4 relative"
-          >
-            <div className="text-2xl mb-2">📋</div>
-            <div className="text-sm">My Plans</div>
-            {stats.totalPlans > 0 && (
-              <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
-                {stats.totalPlans}
-              </span>
-            )}
-          </button>
-          
-          <button 
-            onClick={() => navigate('/analytics')}
-            className="btn bg-purple-600 hover:bg-purple-700 text-white flex-col h-auto py-4"
-          >
-            <div className="text-2xl mb-2">📊</div>
-            <div className="text-sm">Analytics</div>
-          </button>
-          
-          <button 
-            onClick={() => navigate('/nutrition')}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 relative"
-          >
-            <div className="text-2xl mb-2">🍎</div>
-            <div className="text-sm">Nutrition</div>
-            {stats.totalMeals > 0 && (
-              <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
-                {stats.totalMeals}
-              </span>
-            )}
-          </button>
-          
-          <button 
-            onClick={() => navigate('/start-workout')}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4"
-          >
-            <div className="text-2xl mb-2">🏋️</div>
-            <div className="text-sm">Start Workout</div>
-          </button>
-        </div>
-      </div>
+
 
       {/* Professional Footer */}
       <div className="card bg-gradient-to-r from-slate-800/60 to-slate-900/60">
