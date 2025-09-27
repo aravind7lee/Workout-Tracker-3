@@ -124,40 +124,25 @@ router.get('/hero-stats', async (req, res) => {
     // Calculate XP points (100 per completed workout, 50 per meal)
     const xpPoints = (completedWorkouts * 100) + (totalMeals * 50);
     
-    // Calculate current streak - improved algorithm
+    // Get streak from user model (consistent with dedicated endpoint)
+    let streak = user.currentStreak || 0;
+    
+    // Validate streak is still current
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    let streak = 0;
-    let currentDate = new Date(today);
+    const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
     
-    // Check for streak starting from today going backwards
-    for (let i = 0; i < 365; i++) {
-      const dayStart = new Date(currentDate);
-      const dayEnd = new Date(currentDate);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-      
-      const hasWorkout = await Workout.exists({
-        user: userId,
-        completed: true,
-        createdAt: { $gte: dayStart, $lt: dayEnd }
-      });
-      
-      const hasMeal = await Meal.exists({
-        userId,
-        createdAt: { $gte: dayStart, $lt: dayEnd }
-      });
-      
-      if (hasWorkout || hasMeal) {
-        streak++;
-        currentDate.setDate(currentDate.getDate() - 1);
-        console.log(`🔥 Day ${i + 1}: Found activity on ${dayStart.toDateString()}, streak: ${streak}`);
-      } else {
-        console.log(`❌ Day ${i + 1}: No activity on ${dayStart.toDateString()}, breaking streak`);
-        break;
+    if (lastCheckIn && streak > 0) {
+      lastCheckIn.setHours(0, 0, 0, 0);
+      const daysDiff = Math.floor((today - lastCheckIn) / (1000 * 60 * 60 * 24));
+      if (daysDiff > 1) {
+        // Streak is broken - should be updated in database
+        streak = 0;
+        console.log(`⚠️ Streak broken for user ${userId} - ${daysDiff} days gap`);
       }
     }
     
-    console.log(`🔥 Final calculated streak: ${streak} days`);
+    console.log(`🔥 Using streak from user model: ${streak} days`);
     
     // Calculate weekly goal progress
     const startOfWeek = new Date(today);

@@ -795,7 +795,7 @@ router.get('/xp-details', auth, async (req, res) => {
   }
 });
 
-// Start/Continue streak
+// Start/Continue streak - FIXED for real-time persistence
 router.post('/streak/check-in', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -805,56 +805,106 @@ router.post('/streak/check-in', auth, async (req, res) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
     
     const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    let lastCheckInStr = null;
+    if (lastCheckIn) {
+      lastCheckIn.setHours(0, 0, 0, 0);
+      lastCheckInStr = lastCheckIn.toISOString().split('T')[0];
+    }
 
     // Check if already checked in today
-    if (lastCheckIn && lastCheckIn.getTime() === today.getTime()) {
-      return res.status(400).json({ message: 'Already checked in today' });
+    if (lastCheckInStr === todayStr) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Already checked in today',
+        currentStreak: user.currentStreak || 0,
+        canCheckIn: false
+      });
     }
 
+    // Calculate new streak
     let newStreak = 1;
-    if (lastCheckIn && lastCheckIn.getTime() === yesterday.getTime()) {
-      newStreak = (user.currentStreak || 0) + 1;
+    let streakStartDate = today;
+    
+    if (lastCheckIn) {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      
+      if (lastCheckInStr === yesterdayStr) {
+        // Continue streak
+        newStreak = (user.currentStreak || 0) + 1;
+        streakStartDate = user.streakStartDate || today;
+      } else {
+        // Streak broken, start new
+        newStreak = 1;
+        streakStartDate = today;
+      }
     }
 
-    // Update user streak data
-    user.currentStreak = newStreak;
-    user.longestStreak = Math.max(user.longestStreak || 0, newStreak);
-    user.lastStreakCheckIn = today;
-    user.totalCheckIns = (user.totalCheckIns || 0) + 1;
-    user.xpPoints = (user.xpPoints || 0) + 10;
-
-    // Initialize streak history if not exists
-    if (!user.streakHistory) {
-      user.streakHistory = [];
-    }
+    // Update user streak data with atomic operation
+    const updateData = {
+      currentStreak: newStreak,
+      longestStreak: Math.max(user.longestStreak || 0, newStreak),
+      lastStreakCheckIn: today,
+      streakStartDate: streakStartDate,
+      totalCheckIns: (user.totalCheckIns || 0) + 1,
+      xpPoints: (user.xpPoints || 0) + 10,
+      lastActiveDate: new Date(),
+      lastSyncDate: new Date()
+    };
 
     // Add to streak history
-    user.streakHistory.push({
+    const streakEntry = {
       date: today,
       streakDay: newStreak,
-      xpEarned: 10
-    });
-
-    await user.save();
-
-    res.json({
-      currentStreak: newStreak,
-      longestStreak: user.longestStreak,
-      totalCheckIns: user.totalCheckIns,
       xpEarned: 10,
-      canCheckIn: false
-    });
+      tier: newStreak <= 7 ? 'Beginner' : newStreak <= 30 ? 'Intermediate' : newStreak <= 100 ? 'Advanced' : 'Expert'
+    };
+
+    // Use findByIdAndUpdate for atomic operation
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        ...updateData,
+        $push: { streakHistory: streakEntry }
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const responseData = {
+      success: true,
+      currentStreak: newStreak,
+      longestStreak: updatedUser.longestStreak,
+      totalCheckIns: updatedUser.totalCheckIns,
+      lastCheckInDate: todayStr,
+      streakStartDate: streakStartDate.toISOString().split('T')[0],
+      xpEarned: 10,
+      canCheckIn: false,
+      isRealTime: true,
+      message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Keep Going!`,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log(`✅ Streak check-in successful for user ${req.user.id}: Day ${newStreak}`);
+    res.json(responseData);
   } catch (error) {
-    console.error('Error checking in streak:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Error checking in streak:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error', 
+      error: error.message 
+    });
   }
 });
 
-// Get streak status
+// Get streak status - FIXED for real-time persistence
 router.get('/streak/status', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -864,40 +914,57 @@ router.get('/streak/status', auth, async (req, res) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
     
     const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
-    const canCheckIn = !lastCheckIn || lastCheckIn.getTime() !== today.getTime();
-
-    // Check if streak is broken
-    let currentStreak = user.currentStreak || 0;
+    let lastCheckInStr = null;
     if (lastCheckIn) {
+      lastCheckIn.setHours(0, 0, 0, 0);
+      lastCheckInStr = lastCheckIn.toISOString().split('T')[0];
+    }
+    
+    const canCheckIn = !lastCheckInStr || lastCheckInStr !== todayStr;
+
+    // Check if streak is broken and update if needed
+    let currentStreak = user.currentStreak || 0;
+    let streakStartDate = user.streakStartDate;
+    
+    if (lastCheckIn && currentStreak > 0) {
       const daysDiff = Math.floor((today - lastCheckIn) / (1000 * 60 * 60 * 24));
       if (daysDiff > 1) {
+        // Streak is broken - reset
         currentStreak = 0;
-        user.currentStreak = 0;
-        await user.save();
+        streakStartDate = null;
+        await User.findByIdAndUpdate(req.user.id, {
+          currentStreak: 0,
+          streakStartDate: null
+        });
+        console.log(`🔥 Streak broken for user ${req.user.id} - ${daysDiff} days gap`);
       }
     }
 
     // Calculate milestones
     const milestones = [
-      { days: 3, emoji: '🔥', title: '3 Day Streak' },
-      { days: 7, emoji: '🚀', title: '7 Day Streak' },
-      { days: 14, emoji: '⚡', title: '14 Day Streak' },
-      { days: 30, emoji: '🏆', title: '30 Day Streak' },
-      { days: 60, emoji: '👑', title: '60 Day Streak' },
-      { days: 100, emoji: '💎', title: '100 Day Streak' },
-      { days: 365, emoji: '🌟', title: '365 Day Streak' }
+      { days: 1, emoji: '🎯', title: 'First Day', tier: 'Beginner' },
+      { days: 3, emoji: '🔥', title: '3 Day Fire', tier: 'Beginner' },
+      { days: 7, emoji: '🚀', title: 'Week Warrior', tier: 'Beginner' },
+      { days: 14, emoji: '⚡', title: '2 Week Power', tier: 'Intermediate' },
+      { days: 21, emoji: '💪', title: '3 Week Strong', tier: 'Intermediate' },
+      { days: 30, emoji: '🏆', title: 'Monthly Master', tier: 'Intermediate' },
+      { days: 60, emoji: '👑', title: '2 Month King', tier: 'Advanced' },
+      { days: 100, emoji: '💎', title: 'Century Club', tier: 'Expert' },
+      { days: 365, emoji: '🌟', title: 'Year Champion', tier: 'Legendary' }
     ];
 
     const milestoneProgress = milestones.map(milestone => ({
       ...milestone,
       achieved: currentStreak >= milestone.days,
       progress: Math.min(currentStreak, milestone.days),
-      remaining: Math.max(0, milestone.days - currentStreak)
+      remaining: Math.max(0, milestone.days - currentStreak),
+      progressPercent: Math.min(100, (currentStreak / milestone.days) * 100)
     }));
 
-    // Get weekly progress
+    // Get weekly progress from streak history
     const weekStart = new Date(today);
     weekStart.setDate(today.getDate() - today.getDay());
     
@@ -905,33 +972,44 @@ router.get('/streak/status', auth, async (req, res) => {
     for (let i = 0; i < 7; i++) {
       const date = new Date(weekStart);
       date.setDate(weekStart.getDate() + i);
+      const dateStr = date.toISOString().split('T')[0];
       
       const hasCheckIn = user.streakHistory?.some(entry => {
         const entryDate = new Date(entry.date);
-        entryDate.setHours(0, 0, 0, 0);
-        return entryDate.getTime() === date.getTime();
+        const entryDateStr = entryDate.toISOString().split('T')[0];
+        return entryDateStr === dateStr;
       }) || false;
       
       weeklyProgress.push({
-        date: date.toISOString(),
+        date: dateStr,
         day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        dayNumber: date.getDate(),
         hasCheckIn,
-        isToday: date.getTime() === today.getTime()
+        isToday: dateStr === todayStr,
+        isPast: date < today
       });
     }
 
-    res.json({
+    const responseData = {
       currentStreak,
       longestStreak: user.longestStreak || 0,
       totalCheckIns: user.totalCheckIns || 0,
+      lastCheckInDate: lastCheckInStr,
+      streakStartDate: streakStartDate ? streakStartDate.toISOString().split('T')[0] : null,
       canCheckIn,
       milestones: milestoneProgress,
       weeklyProgress,
-      streakHistory: user.streakHistory || []
-    });
+      streakHistory: user.streakHistory || [],
+      isRealTime: true,
+      lastSync: new Date().toISOString(),
+      dataSource: 'MongoDB'
+    };
+
+    console.log(`✅ Streak status for user ${req.user.id}: ${currentStreak} days, canCheckIn: ${canCheckIn}`);
+    res.json(responseData);
   } catch (error) {
-    console.error('Error fetching streak status:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Error fetching streak status:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
