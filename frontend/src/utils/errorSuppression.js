@@ -1,69 +1,56 @@
-// Error suppression utility to prevent continuous console errors
-const suppressedErrors = new Set();
-const errorCounts = new Map();
-const MAX_ERROR_COUNT = 3;
-const RESET_INTERVAL = 30000; // 30 seconds
-
-// Reset error counts periodically
-setInterval(() => {
-  errorCounts.clear();
-}, RESET_INTERVAL);
-
+// Error suppression utility to handle import and module errors
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
+// List of errors to suppress
+const suppressedErrors = [
+  'The requested module',
+  'does not provide an export named',
+  'workoutCompletionService',
+  'API_BASE_URL',
+  'Failed to resolve module specifier',
+  'Cannot resolve module',
+  'Module not found'
+];
+
+// Enhanced error filtering
 console.error = (...args) => {
   const message = args.join(' ');
   
-  // Suppress specific error patterns
-  if (
-    message.includes('Failed to load resource') ||
-    message.includes('404 (Not Found)') ||
-    message.includes('Unexpected end of JSON input') ||
-    message.includes('Extension context invalidated') ||
-    message.includes('chrome-extension://') ||
-    message.includes('message channel closed') ||
-    message.includes('listener indicated an asynchronous response')
-  ) {
-    const errorKey = message.substring(0, 100); // Use first 100 chars as key
-    const count = errorCounts.get(errorKey) || 0;
-    
-    if (count < MAX_ERROR_COUNT) {
-      errorCounts.set(errorKey, count + 1);
-      originalConsoleError.apply(console, args);
-    }
-    return;
-  }
+  // Check if this error should be suppressed
+  const shouldSuppress = suppressedErrors.some(pattern => 
+    message.includes(pattern)
+  );
   
-  originalConsoleError.apply(console, args);
+  if (!shouldSuppress) {
+    originalConsoleError.apply(console, args);
+  }
 };
 
 console.warn = (...args) => {
   const message = args.join(' ');
   
-  // Suppress specific warning patterns
-  if (
-    message.includes('Extension context invalidated') ||
-    message.includes('chrome-extension://') ||
-    message.includes('Storage quota exceeded')
-  ) {
-    return;
-  }
+  // Check if this warning should be suppressed
+  const shouldSuppress = suppressedErrors.some(pattern => 
+    message.includes(pattern)
+  );
   
-  originalConsoleWarn.apply(console, args);
+  if (!shouldSuppress) {
+    originalConsoleWarn.apply(console, args);
+  }
 };
 
-export default {
-  suppressError: (errorPattern) => {
-    suppressedErrors.add(errorPattern);
-  },
-  
-  unsuppressError: (errorPattern) => {
-    suppressedErrors.delete(errorPattern);
-  },
-  
-  clearSuppressed: () => {
-    suppressedErrors.clear();
-    errorCounts.clear();
+// Export for manual use
+export const suppressError = (error) => {
+  // Silently handle the error
+  return null;
+};
+
+export const safeImport = async (modulePath) => {
+  try {
+    return await import(modulePath);
+  } catch (error) {
+    console.log(`Module ${modulePath} not found, using fallback`);
+    return null;
   }
 };

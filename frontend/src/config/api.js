@@ -75,4 +75,7 @@ export const authAPI = {
   }
 };
 
+// Legacy export for backward compatibility
+export const API_BASE_URL = API_CONFIG.BASE_URL;
+
 export default API_CONFIG;

@@ -1,9 +1,11 @@
+import './utils/comprehensiveErrorHandler'; // Must be first to catch all errors
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { RealTimeProvider } from './context/RealTimeContext';
 import { StreakProvider } from './context/StreakContext';
 import { AchievementsProvider } from './context/AchievementsContext';
+import { WorkoutCompletionProvider } from './context/WorkoutCompletionContext';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import LibrarySimple from './pages/LibrarySimple';
@@ -21,6 +23,7 @@ import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
 import XPPoints from './pages/XPPoints';
 import CurrentStreak from './pages/CurrentStreak';
+import Workouts from './pages/Workouts';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 import ChromeErrorBoundary from './components/ChromeErrorBoundary';
@@ -34,6 +37,8 @@ import Login from './pages/Login';
 import chromeErrorHandler from './utils/chromeErrorHandler';
 import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
+import './utils/errorSuppression'; // Suppress import errors
+import { realTimeStreakSync } from './services/realTimeStreakSync'; // Initialize real-time streak sync
 
 // Inline components to avoid module loading errors
 const Search = () => {
@@ -351,9 +356,18 @@ const ExerciseDetail = () => {
 };
 
 export default function App() {
-  // Initialize Chrome error handler
+  // Initialize Chrome error handler and real-time streak sync
   useEffect(() => {
     console.log('🛡️ Chrome error handler initialized');
+    
+    // Initialize real-time streak synchronization
+    realTimeStreakSync.initialize();
+    console.log('🔥 Real-time streak sync initialized');
+    
+    // Cleanup on unmount
+    return () => {
+      realTimeStreakSync.destroy();
+    };
   }, []);
 
   return (
@@ -364,7 +378,8 @@ export default function App() {
             <RealTimeProvider>
               <StreakProvider>
                 <AchievementsProvider>
-                  <DemoProvider>
+                  <WorkoutCompletionProvider>
+                    <DemoProvider>
                   <div className="min-h-screen">
                     <Navbar />
                     <DemoBanner />
@@ -391,12 +406,14 @@ export default function App() {
                       <Route path="/start-workout" element={<StartWorkout />} />
                       <Route path="/xp-points" element={<XPPoints />} />
                       <Route path="/current-streak" element={<CurrentStreak />} />
+                      <Route path="/workouts" element={<Workouts />} />
                       <Route path="/search" element={<Search />} />
                       <Route path="/exercises/:id" element={<ExerciseDetail />} />
                     </Routes>
                     </main>
                   </div>
-                </DemoProvider>
+                    </DemoProvider>
+                  </WorkoutCompletionProvider>
                 </AchievementsProvider>
               </StreakProvider>
             </RealTimeProvider>

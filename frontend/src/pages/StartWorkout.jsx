@@ -20,6 +20,8 @@ export default function StartWorkout() {
     targetSets: 3,
     targetReps: 12
   });
+  const [showSetSelector, setShowSetSelector] = useState(false);
+  const [customSets, setCustomSets] = useState(3);
   const [currentSet, setCurrentSet] = useState({ reps: '', weight: '', rest: 60 });
   const [timer, setTimer] = useState(0);
   const [isResting, setIsResting] = useState(false);
@@ -49,6 +51,10 @@ export default function StartWorkout() {
           targetSets: workoutConfig.targetSets,
           targetReps: workoutConfig.targetReps
         }));
+        setCustomSets(workoutConfig.targetSets);
+      } else {
+        // Show set selector for new workouts
+        setShowSetSelector(true);
       }
     } else {
       // Fallback exercise if none provided
@@ -61,6 +67,7 @@ export default function StartWorkout() {
         sets: '3 sets of 10-15 reps',
         difficulty: 'beginner'
       });
+      setShowSetSelector(true);
     }
 
     // Check online status
@@ -127,111 +134,78 @@ export default function StartWorkout() {
       return;
     }
 
-    const finalWorkoutData = {
-      exerciseId: exercise.id,
-      exerciseName: exercise.name,
-      sets: workoutData.sets,
-      notes: workoutData.notes,
+    const completedWorkout = {
+      id: Date.now(),
+      exercise: exercise.name,
+      name: exercise.name,
+      category: exercise.category,
+      difficulty: exercise.difficulty,
+      completedAt: new Date().toISOString(),
       duration: timer,
-      completedAt: new Date(),
-      calories: Math.floor(timer / 60 * 5)
+      caloriesBurned: Math.floor(timer / 60 * 5) + workoutData.sets.length * 10,
+      sets: workoutData.sets.length,
+      reps: workoutData.sets.reduce((total, set) => total + set.reps, 0),
+      totalWeight: workoutData.sets.reduce((total, set) => total + (set.weight * set.reps), 0),
+      userId: user?.id,
+      savedOffline: !isOnline,
+      notes: workoutData.notes || `Completed ${workoutData.sets.length} sets in ${formatTime(timer)}`,
+      setsData: workoutData.sets
     };
 
     try {
-      const backendOnline = await onlineService.checkBackendStatus();
+      // Save to localStorage for /workouts page
+      const existing = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      const updatedWorkouts = [completedWorkout, ...existing];
+      localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
       
-      if (backendOnline && user) {
-        const workoutPayload = {
-          title: `${exercise.name} Workout`,
-          exercises: [{
-            exercise: exercise.name,
-            sets: workoutData.sets.map(set => ({
-              reps: parseInt(set.reps) || 0,
-              weight: parseFloat(set.weight) || 0,
-              rest: parseInt(set.rest) || 60
-            })),
-            notes: workoutData.notes || ''
-          }],
-          durationMinutes: Math.floor(timer / 60),
-          calories: finalWorkoutData.calories,
-          date: new Date().toISOString(),
-          isPublic: false
-        };
-        
-        const result = await onlineService.saveWorkout(workoutPayload);
-        
-        if (result) {
-          // Trigger real-time updates
-          updateWorkoutStats({
-            exerciseName: exercise.name,
-            sets: workoutData.sets.length,
-            duration: timer,
-            xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
-          });
-          
-          triggerUpdate();
-          
-          navigate('/', { 
-            state: { 
-              workoutCompleted: true, 
-              exercise: exercise.name,
-              duration: formatTime(timer),
-              savedOnline: true
-            } 
-          });
-          return;
+      // Calculate real-time stats
+      const todayWorkouts = updatedWorkouts.filter(w => 
+        new Date(w.completedAt).toDateString() === new Date().toDateString()
+      ).length;
+      
+      const weeklyWorkouts = updatedWorkouts.filter(w => {
+        const workoutDate = new Date(w.completedAt);
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        return workoutDate >= weekAgo;
+      }).length;
+      
+      // Trigger comprehensive real-time events
+      window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: completedWorkout }));
+      
+      window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
+        detail: { 
+          todayWorkouts,
+          totalWorkouts: updatedWorkouts.length,
+          weeklyWorkouts,
+          totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
         }
-      }
+      }));
       
-      // Fallback to offline storage
-      const savedWorkouts = JSON.parse(localStorage.getItem('offlineWorkouts') || '[]');
-      savedWorkouts.push(finalWorkoutData);
-      localStorage.setItem('offlineWorkouts', JSON.stringify(savedWorkouts));
+      // Trigger streak update
+      window.dispatchEvent(new CustomEvent('streakUpdated', { 
+        detail: { 
+          type: 'WORKOUT_COMPLETED',
+          currentStreak: todayWorkouts,
+          exercise: exercise.name
+        }
+      }));
       
-      // Trigger real-time updates for offline
-      updateWorkoutStats({
-        exerciseName: exercise.name,
-        sets: workoutData.sets.length,
-        duration: timer,
-        xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
-      });
+      console.log('🎯 Workout completed from StartWorkout:', completedWorkout);
       
-      triggerUpdate();
-      
-      navigate('/', { 
+      // Navigate to workouts page to show the completed workout
+      navigate('/workouts', { 
         state: { 
           workoutCompleted: true, 
           exercise: exercise.name,
           duration: formatTime(timer),
-          savedOffline: true
+          sets: workoutData.sets.length,
+          calories: completedWorkout.caloriesBurned
         } 
       });
       
     } catch (error) {
-      // Always save offline as final fallback
-      const savedWorkouts = JSON.parse(localStorage.getItem('offlineWorkouts') || '[]');
-      savedWorkouts.push(finalWorkoutData);
-      localStorage.setItem('offlineWorkouts', JSON.stringify(savedWorkouts));
-      
-      // Trigger real-time updates for error case
-      updateWorkoutStats({
-        exerciseName: exercise.name,
-        sets: workoutData.sets.length,
-        duration: timer,
-        xpGained: Math.floor(timer / 60 * 10) + workoutData.sets.length * 5
-      });
-      
-      triggerUpdate();
-      
-      navigate('/', { 
-        state: { 
-          workoutCompleted: true, 
-          exercise: exercise.name,
-          duration: formatTime(timer),
-          savedOffline: true,
-          error: error.message
-        } 
-      });
+      console.error('Error finishing workout:', error);
+      alert('Error saving workout. Please try again.');
     }
   };
 
@@ -272,19 +246,87 @@ export default function StartWorkout() {
           </div>
         </div>
 
+        {/* Set Selector Modal */}
+        {showSetSelector && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
+              <h3 className="text-xl font-bold text-white mb-4">How many sets do you want to perform?</h3>
+              <p className="text-slate-300 mb-6">Choose the number of sets for your {exercise.name} workout.</p>
+              
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                {[1,2,3,4,5,6].map(num => (
+                  <button
+                    key={num}
+                    onClick={() => setCustomSets(num)}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      customSets === num 
+                        ? 'bg-blue-600 text-white border-2 border-blue-400' 
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600 border-2 border-transparent'
+                    }`}
+                  >
+                    <div className="text-2xl font-bold">{num}</div>
+                    <div className="text-xs">{num === 1 ? 'set' : 'sets'}</div>
+                  </button>
+                ))}
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-slate-300 mb-2">Custom amount:</label>
+                <input
+                  type="number"
+                  value={customSets}
+                  onChange={(e) => setCustomSets(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 text-white"
+                  min="1"
+                  max="20"
+                />
+              </div>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate('/library')}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setWorkoutData(prev => ({ ...prev, targetSets: customSets }));
+                    setShowSetSelector(false);
+                  }}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                >
+                  Start with {customSets} {customSets === 1 ? 'set' : 'sets'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Start Workout Button or Timer */}
-        {!workoutStarted ? (
+        {!workoutStarted && !showSetSelector && (
           <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30 rounded-lg p-6 mb-6 text-center">
             <div className="text-2xl font-bold text-white mb-2">Ready to Start?</div>
-            <p className="text-slate-300 mb-4">Take your time to get ready. Click below when you're prepared to begin your workout.</p>
-            <button
-              onClick={() => setWorkoutStarted(true)}
-              className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold"
-            >
-              🚀 Start Workout Duration
-            </button>
+            <p className="text-slate-300 mb-2">Target: {workoutData.targetSets} {workoutData.targetSets === 1 ? 'set' : 'sets'}</p>
+            <p className="text-slate-400 mb-4 text-sm">Take your time to get ready. Click below when you're prepared to begin your workout.</p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setShowSetSelector(true)}
+                className="btn bg-slate-600 hover:bg-slate-700 text-white px-6 py-3"
+              >
+                ⚙️ Change Sets
+              </button>
+              <button
+                onClick={() => setWorkoutStarted(true)}
+                className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold"
+              >
+                🚀 Start Workout
+              </button>
+            </div>
           </div>
-        ) : (
+        )}
+
+        {workoutStarted && (
           <div className="bg-slate-800/50 rounded-lg p-4 mb-6">
             <div className="text-center mb-4">
               <div className="text-3xl font-bold text-blue-400 mb-2">
@@ -449,9 +491,9 @@ export default function StartWorkout() {
           <button
             onClick={finishWorkout}
             disabled={workoutData.sets.length === 0}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50"
+            className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 font-semibold"
           >
-            Finish Workout ({workoutData.sets.length} sets)
+            ✅ Finish Workout ({workoutData.sets.length}/{workoutData.targetSets} sets)
           </button>
         </div>
       </div>

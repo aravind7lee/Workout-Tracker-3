@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
+import { getRealTimeStreak } from '../utils/streakUtils';
 import Hero from '../components/Hero';
 import RealTimeNotification from '../components/RealTimeNotification';
 
@@ -80,7 +81,35 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Handle workout completion notifications
+  // REAL-TIME STREAK UPDATES - Listen for instant updates
+  useEffect(() => {
+    const handleStreakUpdate = (event) => {
+      if (event.detail) {
+        const streakData = event.detail;
+        console.log('🔥 HOME: Real-time streak update received:', streakData);
+        
+        // Show notification for streak updates
+        if (streakData.type === 'STREAK_UPDATED' && streakData.currentStreak > 0) {
+          setNotification({
+            message: `🔥 Day ${streakData.currentStreak} Streak Active! Keep it up!`,
+            type: 'streak'
+          });
+          setTimeout(() => setNotification(null), 4000);
+        }
+      }
+    };
+    
+    // Listen for real-time streak updates
+    window.addEventListener('homeStreakUpdate', handleStreakUpdate);
+    window.addEventListener('streakUpdated', handleStreakUpdate);
+    
+    return () => {
+      window.removeEventListener('homeStreakUpdate', handleStreakUpdate);
+      window.removeEventListener('streakUpdated', handleStreakUpdate);
+    };
+  }, []);
+
+  // Handle workout completion notifications and refresh stats
   useEffect(() => {
     const workoutState = location.state;
     if (workoutState?.workoutCompleted) {
@@ -98,20 +127,64 @@ export default function Home() {
     }
   }, [location.state, navigate, location.pathname, checkAchievements]);
 
+  // Listen for workout completion events to update stats
+  useEffect(() => {
+    const handleWorkoutCompleted = (event) => {
+      if (event.detail) {
+        console.log('🏋️ HOME: Workout completed, stats will auto-refresh');
+        // RealTimeContext will handle the stats update automatically
+      }
+    };
+
+    window.addEventListener('workoutCompleted', handleWorkoutCompleted);
+    return () => window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
+  }, []);
+
   const features = [
     { icon: '🏋️', title: 'WORKOUT DOMINATION', desc: 'AI-powered training with real-time form analysis and performance optimization', color: 'blue' },
     { icon: '📊', title: 'PROGRESS ANALYTICS', desc: 'Advanced metrics with predictive insights and transformation visualization', color: 'purple' },
     { icon: '🎯', title: 'GOAL CRUSHING', desc: 'Smart goal setting with achievement tracking and milestone rewards', color: 'green' },
     { icon: '🔥', title: 'STREAK MASTER', desc: 'Maintain momentum with streak rewards and consistency challenges', color: 'orange' },
     { icon: '🏆', title: 'ACHIEVEMENT SYSTEM', desc: 'Unlock exclusive badges and level up your fitness journey', color: 'yellow' },
-    { icon: '👥', title: 'COMMUNITY POWER', desc: 'Connect with elite athletes worldwide and compete in challenges', color: 'pink' }
+    { icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track your meals, calories, and macros with smart food recognition and personalized recommendations', color: 'green' }
   ];
 
+  // REAL-TIME STREAK DATA - Use utility function for consistency across all pages
+  const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats?.currentStreak);
+  
   const quickStats = [
-    { label: 'Today\'s Workouts', value: stats?.todayWorkouts || 0, icon: '💪', color: 'blue' },
-    { label: 'Current Streak', value: currentStreak || 0, icon: '🔥', color: 'orange' },
-    { label: 'Total XP', value: currentXP || 0, icon: '⭐', color: 'yellow' },
-    { label: 'Achievements', value: `${unlockedCount}/${totalCount}`, icon: '🏆', color: 'purple' }
+    { 
+      label: 'Today\'s Workouts', 
+      value: stats?.todayWorkouts || 0, 
+      icon: '💪', 
+      color: 'blue', 
+      path: '/workouts',
+      subtitle: stats?.todayWorkouts > 0 ? `${stats.todayWorkouts} completed today!` : 'Start your first workout'
+    },
+    { 
+      label: 'Current Streak', 
+      value: realTimeCurrentStreak, 
+      icon: '🔥', 
+      color: 'orange', 
+      path: '/current-streak',
+      subtitle: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'
+    },
+    { 
+      label: 'Total XP', 
+      value: currentXP || 0, 
+      icon: '⭐', 
+      color: 'yellow', 
+      path: '/dashboard',
+      subtitle: currentXP > 0 ? `Level ${Math.floor(currentXP / 100) + 1}` : 'Earn XP by working out'
+    },
+    { 
+      label: 'Achievements', 
+      value: `${unlockedCount}/${totalCount}`, 
+      icon: '🏆', 
+      color: 'purple', 
+      path: '/achievements',
+      subtitle: unlockedCount > 0 ? `${completionPercentage}% complete` : 'Start earning achievements'
+    }
   ];
 
   const globalStats = [
@@ -181,222 +254,188 @@ export default function Home() {
                 <p className="text-slate-400">Real-time performance metrics</p>
               </div>
               
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {quickStats.map((stat, index) => (
-                  <div key={index} className="group relative overflow-hidden bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-6 hover:border-blue-400/40 transition-all duration-500 hover:scale-105 hover:shadow-xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10 text-center">
-                      <div className="text-3xl mb-2">{stat.icon}</div>
-                      <div className="text-2xl font-black text-blue-400 mb-1">{stat.value}</div>
-                      <div className="text-xs text-slate-300 uppercase tracking-wide">{stat.label}</div>
+                  <button
+                    key={index}
+                    onClick={() => navigate(stat.path)}
+                    className="card cursor-pointer hover:scale-105 transition-all duration-300 text-left relative hover:shadow-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-600 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <span className="text-lg sm:text-2xl">{stat.icon}</span>
+                      </div>
+                      <div className="min-w-0">
+                        <div className={`text-xl sm:text-2xl font-bold text-white ${
+                          stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''
+                        }`}>
+                          {stat.value}{stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? '🔥' : ''}
+                        </div>
+                        <div className="text-slate-400 text-xs sm:text-sm">{stat.label}</div>
+                        <div className="text-xs text-green-400">
+                          {stat.subtitle}
+                        </div>
+                      </div>
                     </div>
-                    <div className="absolute top-2 right-2 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse"></div>
-                  </div>
+                    <div className={`absolute top-2 right-2 text-xs text-${stat.color}-400/70`}>
+                      {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+                    </div>
+                    <div className={`absolute bottom-2 right-2 text-${stat.color}-400/50 text-xs`}>→</div>
+                  </button>
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* Premium Features Showcase - AURA++++ */}
-        <div className="mb-16" data-animate id="features">
-          <div className={`transform transition-all duration-1000 delay-300 ${isVisible['features'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text mb-4 font-heading tracking-tight">
-                ELITE FEATURES
+        {/* Enhanced Features Section with Real-time Indicators */}
+        <div className="mb-12" data-animate id="features">
+          <div className={`transform transition-all duration-1000 delay-400 ${isVisible['features'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-transparent bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text mb-2 font-heading">
+                ELITE FITNESS FEATURES
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 mx-auto rounded-full mb-4"></div>
-              <p className="text-lg text-slate-300 max-w-2xl mx-auto">Professional-grade tools that give you the competitive edge over other fitness apps</p>
-            </div>
-            
-            {/* Interactive Feature Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature, index) => {
-                const colorClasses = {
-                  blue: 'from-blue-500 to-blue-600 hover:border-blue-400/40 hover:shadow-blue-500/10',
-                  purple: 'from-purple-500 to-purple-600 hover:border-purple-400/40 hover:shadow-purple-500/10',
-                  green: 'from-green-500 to-green-600 hover:border-green-400/40 hover:shadow-green-500/10',
-                  orange: 'from-orange-500 to-orange-600 hover:border-orange-400/40 hover:shadow-orange-500/10',
-                  yellow: 'from-yellow-500 to-yellow-600 hover:border-yellow-400/40 hover:shadow-yellow-500/10',
-                  pink: 'from-pink-500 to-pink-600 hover:border-pink-400/40 hover:shadow-pink-500/10'
-                };
-                
-                return (
-                  <div 
-                    key={index}
-                    className={`group relative overflow-hidden bg-gradient-to-br from-slate-800/40 via-slate-700/20 to-slate-800/40 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-8 transition-all duration-700 hover:scale-105 hover:shadow-2xl cursor-pointer transform ${activeFeature === index ? 'scale-105 border-blue-500/60 shadow-2xl shadow-blue-500/20' : ''} ${colorClasses[feature.color]}`}
-                    onMouseEnter={() => setActiveFeature(index)}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10 text-center">
-                      <div className={`w-20 h-20 bg-gradient-to-br ${colorClasses[feature.color].split(' ')[0]} ${colorClasses[feature.color].split(' ')[1]} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                        <span className="text-3xl">{feature.icon}</span>
-                      </div>
-                      <h3 className="text-xl lg:text-2xl font-black text-white mb-4 font-heading tracking-tight">{feature.title}</h3>
-                      <p className="text-slate-300 font-medium leading-relaxed">{feature.desc}</p>
-                      
-                      {/* Progress indicator for active feature */}
-                      {activeFeature === index && (
-                        <div className="mt-4">
-                          <div className="w-full h-1 bg-slate-700 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full animate-pulse" style={{width: '100%'}}></div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Floating particles effect */}
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                      <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500/30 rounded-full animate-ping"></div>
-                      <div className="absolute bottom-4 left-4 w-1 h-1 bg-blue-500/20 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Global Impact Stats - Enhanced */}
-        <div className="mb-20" data-animate id="global-stats">
-          <div className={`transform transition-all duration-1000 delay-400 ${isVisible['global-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="text-center mb-12">
-              <h3 className="text-3xl md:text-4xl font-black text-transparent bg-gradient-to-r from-slate-200 via-white to-slate-200 bg-clip-text mb-4 font-heading">
-                GLOBAL DOMINATION
-              </h3>
-              <p className="text-lg text-slate-400 font-medium">Join the elite fitness revolution</p>
-            </div>
-            
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {globalStats.map((stat, index) => {
-                const colorClasses = {
-                  blue: 'text-blue-400 hover:border-blue-400/40 hover:shadow-blue-500/10 from-blue-500/5',
-                  purple: 'text-purple-400 hover:border-purple-400/40 hover:shadow-purple-500/10 from-purple-500/5',
-                  green: 'text-green-400 hover:border-green-400/40 hover:shadow-green-500/10 from-green-500/5',
-                  yellow: 'text-yellow-400 hover:border-yellow-400/40 hover:shadow-yellow-500/10 from-yellow-500/5'
-                };
-                
-                return (
-                  <div key={index} className={`group relative overflow-hidden bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-3xl p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl ${colorClasses[stat.color]}`}>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses[stat.color].split(' ')[5]} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                    <div className="relative z-10 text-center">
-                      <div className="text-2xl mb-2">{stat.icon}</div>
-                      <div className={`text-5xl md:text-6xl font-black mb-3 font-heading tracking-tighter ${colorClasses[stat.color].split(' ')[0]}`}>
-                        {stat.value}
-                      </div>
-                      <div className="text-slate-300 font-bold text-sm uppercase tracking-widest">{stat.label}</div>
-                      <div className={`text-xs mt-1 ${colorClasses[stat.color].split(' ')[0]}/70`}>{stat.sublabel}</div>
-                    </div>
-                    <div className={`absolute -top-2 -right-2 w-8 h-8 ${colorClasses[stat.color].split(' ')[0]}/20 rounded-full animate-ping`}></div>
-                    <div className={`absolute top-2 left-2 w-4 h-4 ${colorClasses[stat.color].split(' ')[0]}/30 rounded-full animate-pulse`} style={{animationDelay: '1s'}}></div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Premium CTA Section - AURA++++ */}
-        <div className="relative text-center px-4" data-animate id="cta">
-          <div className={`transform transition-all duration-1000 delay-500 ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 rounded-3xl blur-xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-3xl p-8 lg:p-12 shadow-2xl">
-              <div className="mb-6">
-                <div className="flex justify-center mb-4">
-                  <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-4 py-2 rounded-full border border-blue-400/30">
-                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    <span className="text-sm font-bold text-white">PREMIUM EXPERIENCE</span>
-                  </div>
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text mb-6 font-heading tracking-tight leading-tight">
-                  {isAuthenticated() ? 'UNLEASH YOUR POTENTIAL' : 'JOIN THE ELITE'}
-                </h2>
-                <p className="text-lg sm:text-xl lg:text-2xl text-slate-300 mb-8 font-medium max-w-3xl mx-auto leading-relaxed">
-                  {isAuthenticated() 
-                    ? 'Your transformation awaits. Access your personalized dashboard and dominate your fitness goals with AI-powered insights.' 
-                    : 'Transform your body, elevate your mind. Join thousands of elite athletes already crushing their goals with our premium platform.'}
-                </p>
+              <p className="text-slate-400">Professional-grade tools for serious athletes</p>
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-400">Real-time data synchronization</span>
               </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-                <button
-                  onClick={() => navigate(isAuthenticated() ? '/dashboard' : '/register')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white font-black text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6 rounded-2xl hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 border border-blue-400/30 w-full sm:w-auto"
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className={`
+                    card cursor-pointer hover:scale-105 transition-all duration-500 text-center relative overflow-hidden
+                    ${activeFeature === index ? 'ring-2 ring-blue-500 shadow-2xl shadow-blue-500/20' : ''}
+                  `}
+                  onMouseEnter={() => setActiveFeature(index)}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <span className="relative z-10 tracking-wide uppercase flex items-center justify-center gap-2">
-                    {isAuthenticated() ? '🚀 ENTER DASHBOARD' : '⚡ START DOMINATING'}
-                  </span>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
-                </button>
-                
-                {!isAuthenticated() && (
-                  <button
-                    onClick={() => navigate('/features')}
-                    className="group relative overflow-hidden bg-transparent text-white font-bold text-lg px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
-                  >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      📋 VIEW FEATURES
-                    </span>
-                  </button>
-                )}
-              </div>
-              
-              {!isAuthenticated() && (
-                <div className="text-center">
-                  <p className="text-sm text-slate-400 mb-2 font-medium">Free forever • No credit card required • Join 15K+ elite athletes</p>
-                  <div className="flex justify-center items-center gap-4 text-xs text-slate-500">
-                    <span>✓ Real-time Analytics</span>
-                    <span>✓ AI Coaching</span>
-                    <span>✓ Community Access</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Testimonials Section */}
-        <div className="mb-20" data-animate id="testimonials">
-          <div className={`transform transition-all duration-1000 delay-600 ${isVisible['testimonials'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="text-center mb-12">
-              <h3 className="text-2xl md:text-3xl font-black text-transparent bg-gradient-to-r from-slate-200 via-white to-slate-200 bg-clip-text mb-4 font-heading">
-                ELITE TESTIMONIALS
-              </h3>
-              <p className="text-slate-400">What our champions are saying</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name: 'Sarah M.', role: 'Professional Athlete', text: 'GymTracker revolutionized my training. The AI insights are incredible!', rating: 5 },
-                { name: 'Mike R.', role: 'Fitness Coach', text: 'Best fitness app I\'ve used. My clients love the real-time analytics.', rating: 5 },
-                { name: 'Emma L.', role: 'Fitness Enthusiast', text: 'Finally achieved my goals with this amazing platform. Highly recommended!', rating: 5 }
-              ].map((testimonial, index) => (
-                <div key={index} className="bg-gradient-to-br from-slate-800/40 via-slate-700/20 to-slate-800/40 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-6 hover:border-blue-400/40 transition-all duration-500">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <span key={i} className="text-yellow-400 text-lg">⭐</span>
-                    ))}
-                  </div>
-                  <p className="text-slate-300 mb-4 italic">"{testimonial.text}"</p>
-                  <div>
-                    <div className="font-bold text-white">{testimonial.name}</div>
-                    <div className="text-sm text-slate-400">{testimonial.role}</div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative z-10">
+                    <div className="text-4xl mb-4">{feature.icon}</div>
+                    <h3 className={`text-lg font-bold mb-3 text-${feature.color}-400`}>{feature.title}</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
+                    
+                    {/* Real-time indicator for streak feature */}
+                    {feature.title === 'STREAK MASTER' && (
+                      <div className="mt-3 flex items-center justify-center gap-2">
+                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                        <span className="text-xs text-orange-400">
+                          Current: {realTimeCurrentStreak} days
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Global Stats with Real-time Updates */}
+        <div className="mb-12" data-animate id="global-stats">
+          <div className={`transform transition-all duration-1000 delay-600 ${isVisible['global-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-transparent bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text mb-2 font-heading">
+                GLOBAL COMMUNITY STATS
+              </h2>
+              <p className="text-slate-400">Join thousands of elite athletes worldwide</p>
+            </div>
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              {globalStats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="card text-center hover:scale-105 transition-all duration-300"
+                >
+                  <div className="text-3xl mb-3">{stat.icon}</div>
+                  <div className={`text-2xl sm:text-3xl font-bold text-${stat.color}-400 mb-2`}>{stat.value}</div>
+                  <div className="text-white font-semibold text-sm mb-1">{stat.label}</div>
+                  <div className="text-slate-400 text-xs">{stat.sublabel}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="text-center" data-animate id="cta">
+          <div className={`transform transition-all duration-1000 delay-800 ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <h2 className="text-2xl md:text-3xl font-black text-transparent bg-gradient-to-r from-white via-green-100 to-white bg-clip-text mb-4 font-heading">
+              READY TO DOMINATE?
+            </h2>
+            <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
+              Join the elite community of athletes who track their progress with precision and achieve extraordinary results.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              {isAuthenticated() ? (
+                <>
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="btn bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:from-blue-700 hover:via-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-bold shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    🚀 GO TO DASHBOARD
+                  </button>
+                  <button
+                    onClick={() => navigate('/current-streak')}
+                    className="btn bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-8 py-4 text-lg font-bold shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    🔥 CHECK STREAK ({realTimeCurrentStreak})
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="btn bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 hover:from-green-700 hover:via-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-bold shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    🎆 START YOUR JOURNEY
+                  </button>
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="btn-secondary px-8 py-4 text-lg font-bold hover:scale-105 transition-all duration-300"
+                  >
+                    🔑 LOGIN
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
       
-      {/* Real-time Notifications */}
+      {/* Real-time Notification */}
       {notification && (
-        <RealTimeNotification
-          message={notification.message}
-          type={notification.type}
-          onClose={() => setNotification(null)}
-        />
+        <div className="fixed top-20 right-4 z-50 max-w-sm">
+          <div className={`
+            p-4 rounded-lg shadow-2xl border animate-bounce
+            ${
+              notification.type === 'workout' 
+                ? 'bg-green-600 border-green-500 text-white'
+                : notification.type === 'streak'
+                ? 'bg-orange-600 border-orange-500 text-white'
+                : 'bg-blue-600 border-blue-500 text-white'
+            }
+          `}>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">
+                {notification.type === 'workout' ? '🎉' : notification.type === 'streak' ? '🔥' : '✨'}
+              </span>
+              <div className="flex-1">
+                <div className="font-bold text-sm">{notification.message}</div>
+              </div>
+              <button 
+                onClick={() => setNotification(null)}
+                className="text-white hover:text-gray-200 ml-2"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

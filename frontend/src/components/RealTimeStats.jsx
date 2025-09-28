@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useStreak } from '../context/StreakContext';
+import { getRealTimeStreak } from '../utils/streakUtils';
 
 export default function RealTimeStats() {
   const [stats, setStats] = useState({
@@ -13,7 +15,11 @@ export default function RealTimeStats() {
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(false);
   const { user } = useAuth();
+  const { currentStreak } = useStreak();
   const navigate = useNavigate();
+  
+  // Get real-time streak using utility function (same as other pages)
+  const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats.currentStreak);
 
   const loadRealTimeStats = async () => {
     if (!user) return;
@@ -34,12 +40,21 @@ export default function RealTimeStats() {
         const data = await response.json();
         setIsOnline(true);
         
+        const serverStreak = data.currentStreak || 0;
+        const finalStreak = getRealTimeStreak(currentStreak, serverStreak);
+        
         setStats({
           totalWorkouts: data.totalWorkouts || 0,
           totalPlans: data.totalPlans || 0,
           totalMeals: data.totalMeals || 0,
-          currentStreak: data.currentStreak || 0,
+          currentStreak: finalStreak,
           xpPoints: data.xpPoints || 0
+        });
+        
+        console.log('🔥 REAL-TIME STATS: Server data loaded:', {
+          serverStreak,
+          contextStreak: currentStreak,
+          finalStreak
         });
       } else {
         // Fallback to localStorage
@@ -57,20 +72,25 @@ export default function RealTimeStats() {
 
   const loadLocalStats = () => {
     try {
-      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
       
-      // Get streak from localStorage
-      const streakKey = `gymtracker_streak_${user.id}`;
-      const streakData = JSON.parse(localStorage.getItem(streakKey) || '{}');
+      // Get streak using utility function for consistency
+      const localStreak = getRealTimeStreak(currentStreak, null);
       
       setStats({
-        totalWorkouts: workouts.filter(w => w.completed).length,
+        totalWorkouts: workouts.length,
         totalPlans: plans.length,
         totalMeals: meals.length,
-        currentStreak: streakData.currentStreak || 0,
-        xpPoints: (workouts.filter(w => w.completed).length * 100) + (plans.length * 50) + (meals.length * 25)
+        currentStreak: localStreak,
+        xpPoints: (workouts.length * 100) + (plans.length * 50) + (meals.length * 25)
+      });
+      
+      console.log('🔥 REAL-TIME STATS: Local data loaded:', {
+        contextStreak: currentStreak,
+        localStreak,
+        totalWorkouts: workouts.length
       });
     } catch (error) {
       console.error('Error loading local stats:', error);
@@ -88,15 +108,39 @@ export default function RealTimeStats() {
     loadRealTimeStats();
     
     // Listen for real-time updates
-    const handleWorkoutComplete = () => loadRealTimeStats();
+    const handleWorkoutComplete = () => {
+      console.log('🏋️ REAL-TIME STATS: Workout completed - refreshing stats');
+      loadRealTimeStats();
+    };
     const handlePlanCreated = () => loadRealTimeStats();
     const handleMealAdded = () => loadRealTimeStats();
-    const handleStreakUpdate = () => loadRealTimeStats();
+    
+    // REAL-TIME STREAK UPDATE HANDLER
+    const handleStreakUpdate = (event) => {
+      console.log('🔥 REAL-TIME STATS: Streak update received');
+      
+      if (event.detail && event.detail.currentStreak !== undefined) {
+        const streakData = event.detail;
+        const newStreak = streakData.currentStreak;
+        
+        // Update stats immediately with new streak
+        setStats(prev => ({
+          ...prev,
+          currentStreak: newStreak
+        }));
+        
+        console.log('✅ REAL-TIME STATS: Streak updated instantly:', newStreak);
+      }
+      
+      // Also refresh full stats
+      setTimeout(loadRealTimeStats, 500);
+    };
     
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('streakUpdated', handleStreakUpdate);
+    window.addEventListener('analyticsStreakUpdate', handleStreakUpdate);
     
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadRealTimeStats, 30000);
@@ -106,6 +150,7 @@ export default function RealTimeStats() {
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
       window.removeEventListener('streakUpdated', handleStreakUpdate);
+      window.removeEventListener('analyticsStreakUpdate', handleStreakUpdate);
       clearInterval(interval);
     };
   }, [user]);
@@ -167,7 +212,7 @@ export default function RealTimeStats() {
           },
           { 
             label: 'Current Streak', 
-            value: stats.currentStreak > 0 ? `${stats.currentStreak}🔥` : '0🔥', 
+            value: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak}🔥` : '0🔥', 
             color: 'text-orange-400',
             icon: '🔥',
             path: '/current-streak'
@@ -199,7 +244,7 @@ export default function RealTimeStats() {
                 (stat.label === 'Total Workouts' && stats.totalWorkouts > 0) ||
                 (stat.label === 'Workout Plans' && stats.totalPlans > 0) ||
                 (stat.label === 'XP Points' && stats.xpPoints > 0) ||
-                (stat.label === 'Current Streak' && stats.currentStreak > 0)
+                (stat.label === 'Current Streak' && realTimeCurrentStreak > 0)
                   ? 'text-green-400' 
                   : 'text-gray-400'
               }`}>
@@ -207,7 +252,7 @@ export default function RealTimeStats() {
                   stat.label === 'Total Workouts' ? stats.totalWorkouts :
                   stat.label === 'Workout Plans' ? stats.totalPlans :
                   stat.label === 'XP Points' ? stats.xpPoints :
-                  stats.currentStreak
+                  realTimeCurrentStreak
                 )}
               </div>
             </div>

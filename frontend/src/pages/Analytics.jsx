@@ -5,6 +5,8 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useStreak } from '../context/StreakContext';
+import { getRealTimeStreak } from '../utils/streakUtils';
 import AuthGuard from '../components/AuthGuard';
 import RealTimeAchievements from '../components/RealTimeAchievements';
 import RealTimeStats from '../components/RealTimeStats';
@@ -266,12 +268,25 @@ function AnalyticsHero() {
 }
 
 export default function Analytics() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { currentStreak } = useStreak();
   const [analyticsData, setAnalyticsData] = useState(null);
   const [realTimeStats, setRealTimeStats] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Start with false for instant display
   const [error, setError] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
+  
+  // Get real-time streak using utility function (same as Home and Dashboard)
+  const [realTimeCurrentStreak, setRealTimeCurrentStreak] = useState(() => {
+    return getRealTimeStreak(currentStreak, null);
+  });
+  
+  // Update streak when context changes
+  useEffect(() => {
+    const newStreak = getRealTimeStreak(currentStreak, realTimeStats?.currentStreak);
+    setRealTimeCurrentStreak(newStreak);
+    console.log('🔥 ANALYTICS: Streak updated:', { currentStreak, realTimeStats: realTimeStats?.currentStreak, newStreak });
+  }, [currentStreak, realTimeStats?.currentStreak]);
   
   const loadAnalyticsData = useCallback(async () => {
     try {
@@ -281,7 +296,7 @@ export default function Analytics() {
       setIsOnline(false);
       
       // Try backend in background without blocking UI
-      if (isAuthenticated && isAuthenticated() && onlineService) {
+      if (!authLoading && isAuthenticated && isAuthenticated() && onlineService) {
         try {
           const online = await Promise.race([
             onlineService.checkBackendStatus(),
@@ -343,12 +358,22 @@ export default function Analytics() {
   
   const loadOfflineData = () => {
     try {
-      const workouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
       
-      // Calculate real streak from workout dates
-      const calculateStreak = (workouts) => {
+      // Get real-time streak from StreakContext
+      const getRealtimeStreak = () => {
+        try {
+          const streakData = JSON.parse(localStorage.getItem('gymtracker_streak_data') || '{}');
+          return streakData.currentStreak || 0;
+        } catch {
+          return 0;
+        }
+      };
+      
+      // Calculate streak from workout dates as fallback
+      const calculateStreakFromWorkouts = (workouts) => {
         if (!workouts.length) return 0;
         const today = new Date();
         let streak = 0;
@@ -365,12 +390,41 @@ export default function Analytics() {
         return streak;
       };
       
+      // Use real-time streak data from utility (consistent with other pages)
+      const contextStreak = currentStreak || 0;
+      const realtimeStreak = getRealtimeStreak();
+      const workoutStreak = calculateStreakFromWorkouts(workouts);
+      const utilityStreak = getRealTimeStreak(contextStreak, null);
+      const finalStreak = Math.max(contextStreak, realtimeStreak, workoutStreak, utilityStreak);
+      
+      // Update both state variables
+      setRealTimeCurrentStreak(finalStreak);
+      const todayWorkouts = workouts.filter(w => 
+        new Date(w.completedAt).toDateString() === new Date().toDateString()
+      ).length;
+      
+      const weeklyWorkouts = workouts.filter(w => {
+        const workoutDate = new Date(w.completedAt);
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        return workoutDate >= weekAgo;
+      }).length;
+      
       setRealTimeStats({
         totalWorkouts: workouts.length,
         totalPlans: plans.length,
         totalMeals: meals.length,
-        currentStreak: calculateStreak(workouts),
-        xpPoints: workouts.length * 100 + plans.length * 50
+        currentStreak: finalStreak,
+        xpPoints: workouts.length * 100 + plans.length * 50,
+        todayWorkouts,
+        weeklyWorkouts
+      });
+      
+      console.log('🔥 ANALYTICS: Streak data loaded:', {
+        contextStreak,
+        realtimeStreak,
+        workoutStreak,
+        utilityStreak,
+        finalStreak
       });
       
       // Generate real chart data from actual workouts
@@ -440,7 +494,9 @@ export default function Analytics() {
         totalPlans: 0,
         totalMeals: 0,
         currentStreak: 0,
-        xpPoints: 0
+        xpPoints: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0
       });
       setAnalyticsData({
         stats: null,
@@ -486,6 +542,8 @@ export default function Analytics() {
     // Real-time event listeners for instant updates
     const handleWorkoutComplete = () => {
       console.log('🏋️ Workout completed - updating analytics');
+      // Reload stats immediately
+      loadOfflineData();
       loadAnalyticsData();
     };
     
@@ -499,14 +557,48 @@ export default function Analytics() {
       loadAnalyticsData();
     };
     
+    // REAL-TIME STREAK UPDATE HANDLER
+    const handleStreakUpdated = (event) => {
+      console.log('🔥 ANALYTICS: Real-time streak update received');
+      
+      if (event.detail && event.detail.currentStreak !== undefined) {
+        const streakData = event.detail;
+        
+        // Update real-time streak immediately
+        const newStreak = streakData.currentStreak;
+        setRealTimeCurrentStreak(newStreak);
+        
+        // Update real-time stats immediately
+        setRealTimeStats(prev => ({
+          ...prev,
+          currentStreak: newStreak,
+          totalCheckIns: streakData.totalCheckIns || prev?.totalCheckIns || 0,
+          longestStreak: streakData.longestStreak || prev?.longestStreak || 0
+        }));
+        
+        // Also refresh workout stats
+        loadOfflineData();
+        
+        console.log('✅ ANALYTICS: Streak stats updated instantly:', {
+          currentStreak: newStreak,
+          totalCheckIns: streakData.totalCheckIns
+        });
+      }
+      
+      // Refresh full data in background
+      setTimeout(loadAnalyticsData, 500);
+    };
+    
     // Listen for custom events
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
+    window.addEventListener('streakUpdated', handleStreakUpdated);
+    window.addEventListener('analyticsStreakUpdate', handleStreakUpdated);
     
     // Set up real-time refresh every 60 seconds for live data (optimized)
     const interval = setInterval(() => {
-      if (isAuthenticated && isAuthenticated()) {
+      if (!authLoading && isAuthenticated && isAuthenticated()) {
         loadAnalyticsData();
       }
     }, 60000);
@@ -515,6 +607,8 @@ export default function Analytics() {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
       window.removeEventListener('mealAdded', handleMealAdded);
       window.removeEventListener('planCreated', handlePlanCreated);
+      window.removeEventListener('streakUpdated', handleStreakUpdated);
+      window.removeEventListener('analyticsStreakUpdate', handleStreakUpdated);
       clearInterval(interval);
     };
   }, [loadAnalyticsData]);

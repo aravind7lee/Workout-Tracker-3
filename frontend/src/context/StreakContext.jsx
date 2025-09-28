@@ -1,4 +1,4 @@
-// BULLETPROOF Streak Context - NEVER LOSES DATA
+// BULLETPROOF Streak Context - NEVER LOSES DATA + REAL-TIME SYNC
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import api from '../utils/api';
@@ -8,11 +8,37 @@ const StreakContext = createContext();
 // Global streak storage key
 const STREAK_KEY = 'gymtracker_streak_data';
 
-// Save to localStorage immediately
+// Real-time event broadcaster for instant updates across all pages
+const broadcastStreakUpdate = (streakData) => {
+  // Dispatch custom event for real-time updates
+  window.dispatchEvent(new CustomEvent('streakUpdated', { 
+    detail: streakData 
+  }));
+  
+  // Also dispatch specific events for different components
+  window.dispatchEvent(new CustomEvent('dashboardStreakUpdate', { 
+    detail: streakData 
+  }));
+  
+  window.dispatchEvent(new CustomEvent('homeStreakUpdate', { 
+    detail: streakData 
+  }));
+  
+  window.dispatchEvent(new CustomEvent('analyticsStreakUpdate', { 
+    detail: streakData 
+  }));
+  
+  console.log('🔥 REAL-TIME: Streak update broadcasted to all pages:', streakData);
+};
+
+// Save to localStorage immediately + broadcast
 const saveStreakData = (data) => {
   try {
     localStorage.setItem(STREAK_KEY, JSON.stringify(data));
     console.log('✅ Streak data saved:', data);
+    
+    // Broadcast to all pages for instant updates
+    broadcastStreakUpdate(data);
   } catch (e) {
     console.error('Failed to save streak data:', e);
   }
@@ -69,7 +95,7 @@ export const StreakProvider = ({ children }) => {
     saveStreakData(newData);
   }, []);
 
-  // BULLETPROOF check-in - ALWAYS works
+  // BULLETPROOF check-in - ALWAYS works + REAL-TIME SYNC
   const updateStreak = useCallback(async () => {
     const today = new Date().toISOString().split('T')[0];
     const current = loadStreakData();
@@ -100,18 +126,43 @@ export const StreakProvider = ({ children }) => {
       lastCheckInDate: today,
       streakStartDate,
       canCheckIn: false,
-      message: `🔥 Day ${newStreak} - Streak Active!`
+      message: `🔥 Day ${newStreak} - Streak Active!`,
+      timestamp: new Date().toISOString()
     };
     
-    // Save immediately - NEVER lose this data
+    // Save immediately - NEVER lose this data + BROADCAST TO ALL PAGES
     updateStreakState(newData);
+    
+    // INSTANT REAL-TIME UPDATE - Broadcast immediately
+    broadcastStreakUpdate({
+      ...newData,
+      type: 'STREAK_UPDATED',
+      source: 'check-in'
+    });
     
     // Try to sync to API in background
     try {
       await api.post('/users/streak/check-in');
       console.log('✅ Synced to database');
+      
+      // Broadcast sync success
+      broadcastStreakUpdate({
+        ...newData,
+        type: 'STREAK_SYNCED',
+        source: 'database',
+        synced: true
+      });
     } catch (error) {
       console.warn('Database sync failed, but local data saved:', error.message);
+      
+      // Broadcast sync failure (but data is still saved locally)
+      broadcastStreakUpdate({
+        ...newData,
+        type: 'STREAK_SYNC_FAILED',
+        source: 'local',
+        synced: false,
+        error: error.message
+      });
     }
     
     return newData;
@@ -186,16 +237,28 @@ export const StreakProvider = ({ children }) => {
     validateStreak();
   }, [validateStreak]);
 
-  // Save data whenever it changes
+  // Save data whenever it changes + REAL-TIME BROADCAST
   useEffect(() => {
     saveStreakData(streakData);
+    
+    // Broadcast any streak data changes for real-time updates
+    if (streakData.currentStreak !== undefined) {
+      broadcastStreakUpdate({
+        ...streakData,
+        type: 'STREAK_DATA_CHANGED',
+        source: 'context'
+      });
+    }
   }, [streakData]);
 
   const value = {
     ...streakData,
     loading,
     updateStreak,
-    refreshStreak: fetchStreakData
+    refreshStreak: fetchStreakData,
+    // Real-time functions for external components
+    broadcastUpdate: broadcastStreakUpdate,
+    getLatestData: loadStreakData
   };
 
   return (

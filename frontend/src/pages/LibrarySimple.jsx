@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useRealTime } from '../context/RealTimeContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
 import QuickPlanModal from '../components/QuickPlanModal';
@@ -14,6 +15,7 @@ export default function LibrarySimple() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { isOnline: realTimeOnline } = useRealTime();
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get('search') || '';
   const [searchQuery, setSearchQuery] = useState(navbarSearch);
@@ -24,7 +26,7 @@ export default function LibrarySimple() {
   });
   
   // Basic states
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(realTimeOnline);
   const [userProgress, setUserProgress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lastSync, setLastSync] = useState(null);
@@ -117,14 +119,17 @@ export default function LibrarySimple() {
     };
   }, []);
   
+  // Update online status from real-time context
+  useEffect(() => {
+    setIsOnline(realTimeOnline);
+  }, [realTimeOnline]);
+  
   // Simple data fetching
   useEffect(() => {
     const initializeData = async () => {
       setLoading(true);
       try {
-        // Force online mode - always try MongoDB first
-        setIsOnline(true);
-        console.log('🚀 Exercise Library initialized in ONLINE MODE');
+        console.log('🚀 Exercise Library initialized in', isOnline ? 'ONLINE' : 'OFFLINE', 'MODE');
         
         if (isOnline && user) {
           // Fetch basic user progress
@@ -142,7 +147,7 @@ export default function LibrarySimple() {
     };
     
     initializeData();
-  }, [user]);
+  }, [user, isOnline]);
   
   // Handle workout completion message
   useEffect(() => {
@@ -423,7 +428,7 @@ export default function LibrarySimple() {
             <div className="flex items-center gap-3">
               <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
               <span className="text-white font-medium">
-                {isOnline ? ' LIVE Mode' : '❌ Connection Failed'}
+                {isOnline ? '🟢 LIVE Mode - Real-time Sync' : '🔴 OFFLINE Mode - Local Storage'}
               </span>
             </div>
             {lastSync && (
@@ -630,12 +635,79 @@ export default function LibrarySimple() {
                     + Add to Plan
                   </button>
                 </div>
-                <button
-                  onClick={() => trackExerciseView(exercise)}
-                  className="btn bg-purple-600 hover:bg-purple-700 text-white w-full text-sm"
-                >
-                  🎯 Start Workout
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => trackExerciseView(exercise)}
+                    className="btn bg-purple-600 hover:bg-purple-700 text-white flex-1 text-sm"
+                  >
+                    🎯 Start Workout
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Enhanced workout completion with real-time sync
+                      const workout = {
+                        id: Date.now(),
+                        exercise: exercise.name,
+                        name: exercise.name,
+                        category: exercise.category,
+                        difficulty: exercise.difficulty,
+                        completedAt: new Date().toISOString(),
+                        duration: Math.floor(Math.random() * 120) + 60, // 1-3 minutes
+                        caloriesBurned: Math.floor(Math.random() * 100) + 50, // 50-150 calories
+                        sets: exercise.sets ? parseInt(exercise.sets.split(' ')[0]) || 3 : 3,
+                        reps: exercise.sets ? parseInt(exercise.sets.split('/')[1]) || 12 : 12,
+                        userId: user?.id,
+                        savedOffline: !isOnline,
+                        notes: `Completed from Exercise Library`
+                      };
+                      
+                      // Save to localStorage with proper structure
+                      const existing = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+                      const updatedWorkouts = [workout, ...existing];
+                      localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
+                      
+                      // Show success message
+                      setShowSuccessNotification(`✅ ${exercise.name} completed! +${workout.caloriesBurned} calories`);
+                      
+                      // Trigger comprehensive real-time events
+                      window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: workout }));
+                      
+                      // Update real-time stats
+                      const todayWorkouts = updatedWorkouts.filter(w => 
+                        new Date(w.completedAt).toDateString() === new Date().toDateString()
+                      ).length;
+                      
+                      const weeklyWorkouts = updatedWorkouts.filter(w => {
+                        const workoutDate = new Date(w.completedAt);
+                        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                        return workoutDate >= weekAgo;
+                      }).length;
+                      
+                      window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
+                        detail: { 
+                          todayWorkouts,
+                          totalWorkouts: updatedWorkouts.length,
+                          weeklyWorkouts,
+                          totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
+                        }
+                      }));
+                      
+                      // Trigger streak update if applicable
+                      window.dispatchEvent(new CustomEvent('streakUpdated', { 
+                        detail: { 
+                          type: 'WORKOUT_COMPLETED',
+                          currentStreak: todayWorkouts,
+                          exercise: exercise.name
+                        }
+                      }));
+                      
+                      console.log('🎯 Workout completed from Library:', workout);
+                    }}
+                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm"
+                  >
+                    ✅ Complete
+                  </button>
+                </div>
               </div>
             </div>
           ))

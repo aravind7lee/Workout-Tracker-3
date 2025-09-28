@@ -4,13 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
+import { useRealTimeStreak } from '../hooks/useRealTimeStreak';
 import AuthGuard from '../components/AuthGuard';
 
 const CurrentStreak = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { theme } = useTheme();
-  const { currentStreak, longestStreak, totalCheckIns, canCheckIn, updateStreak, loading: streakLoading, streakStartDate, lastCheckInDate } = useStreak();
+  const { currentStreak: contextStreak, longestStreak: contextLongest, totalCheckIns: contextTotal } = useStreak();
+  
+  // Use real-time streak hook for instant updates
+  const {
+    currentStreak,
+    longestStreak, 
+    totalCheckIns,
+    canCheckIn,
+    updateStreak,
+    isLoading: streakLoading,
+    streakStartDate,
+    lastCheckInDate,
+    motivation,
+    forceSync
+  } = useRealTimeStreak();
   
   const [localData, setLocalData] = useState({
     milestones: [],
@@ -205,11 +220,7 @@ const CurrentStreak = () => {
   };
 
   const getStreakMotivation = () => {
-    if (currentStreak === 0) return "Ready to start your journey? 💪";
-    if (currentStreak < 7) return `${currentStreak} days strong! Building momentum! 🔥`;
-    if (currentStreak < 30) return `${currentStreak} days! You're on fire! 🚀`;
-    if (currentStreak < 100) return `${currentStreak} days! Absolutely crushing it! ⚡`;
-    return `${currentStreak} days! You're a legend! 👑`;
+    return motivation || "Ready to start your journey? 💪";
   };
 
   if (loading || streakLoading) {
@@ -246,6 +257,9 @@ const CurrentStreak = () => {
                 </button>
                 <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
                   Real-Time Streak Tracker
+                  <span className="ml-3 text-sm bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+                    🔴 LIVE
+                  </span>
                 </h1>
                 <p className="text-white/90 text-sm sm:text-base">
                   {getStreakMotivation()}
@@ -277,36 +291,56 @@ const CurrentStreak = () => {
 
           {/* Real-Time Check-in Button */}
           <div className="text-center mb-8">
-            <button
-              onClick={handleRealTimeCheckIn}
-              disabled={!canCheckIn || checkingIn}
-              className={`
-                px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl
-                ${
-                  canCheckIn && !checkingIn
-                    ? 'bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 hover:from-orange-600 hover:via-red-600 hover:to-pink-600 text-white animate-pulse'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                }
-              `}
-            >
-              {checkingIn ? (
-                <span className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing Check-in...
-                </span>
-              ) : canCheckIn ? (
-                currentStreak === 0 
-                  ? '🔥 START DAY 1 STREAK' 
-                  : `🔥 START DAY ${currentStreak + 1} STREAK`
-              ) : (
-                '✅ Checked In Today - Come Back Tomorrow!'
-              )}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button
+                onClick={handleRealTimeCheckIn}
+                disabled={!canCheckIn || checkingIn}
+                className={`
+                  px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl
+                  ${
+                    canCheckIn && !checkingIn
+                      ? 'bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 hover:from-orange-600 hover:via-red-600 hover:to-pink-600 text-white animate-pulse'
+                      : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                  }
+                `}
+              >
+                {checkingIn ? (
+                  <span className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing Check-in...
+                  </span>
+                ) : canCheckIn ? (
+                  currentStreak === 0 
+                    ? '🔥 START DAY 1 STREAK' 
+                    : `🔥 START DAY ${currentStreak + 1} STREAK`
+                ) : (
+                  '✅ Checked In Today - Come Back Tomorrow!'
+                )}
+              </button>
+              
+              <button
+                onClick={forceSync}
+                disabled={streakLoading}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 flex items-center gap-2"
+              >
+                {streakLoading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  '🔄'
+                )}
+                Sync Now
+              </button>
+            </div>
+            
             {!canCheckIn && (
               <p className="text-green-400 text-sm mt-3">
                 Streak secured for today! Return tomorrow to continue your journey! 🚀
               </p>
             )}
+            
+            <div className="mt-2 text-xs text-slate-400">
+              Real-time sync • Last updated: {new Date().toLocaleTimeString()}
+            </div>
           </div>
 
           {/* Real-Time Stats */}
