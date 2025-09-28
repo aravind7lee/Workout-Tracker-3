@@ -27,6 +27,7 @@ import XPPoints from './pages/XPPoints';
 import CurrentStreak from './pages/CurrentStreak';
 import Workouts from './pages/Workouts';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import ChromeErrorBoundary from './components/ChromeErrorBoundary';
 import ThemeErrorBoundary from './components/ThemeErrorBoundary';
@@ -417,6 +418,7 @@ export default function App() {
                       <Route path="/exercises/:id" element={<ExerciseDetail />} />
                     </Routes>
                     </main>
+                    <Footer />
                   </div>
                     </DemoProvider>
                   </WorkoutCompletionProvider>

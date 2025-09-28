@@ -4,17 +4,21 @@ import React, { createContext, useContext, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Always use dark theme
-  const theme = 'dark';
-
   // Apply dark theme to document on mount
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove('light');
-    root.classList.add('dark');
-    
-    // Remove any saved theme preference
-    localStorage.removeItem('theme');
+    try {
+      const root = document.documentElement;
+      root.classList.remove('light');
+      root.classList.add('dark');
+      
+      // Ensure body has dark theme
+      document.body.classList.add('dark');
+      
+      // Set data attribute
+      root.setAttribute('data-theme', 'dark');
+    } catch (error) {
+      // Silently handle any DOM errors
+    }
   }, []);
 
   const value = {
@@ -31,7 +35,8 @@ export const ThemeProvider = ({ children }) => {
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    // Return default theme instead of throwing error
+    return { theme: 'dark' };
   }
   return context;
 };
