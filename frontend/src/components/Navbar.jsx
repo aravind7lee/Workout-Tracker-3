@@ -183,7 +183,7 @@ export default function Navbar() {
               <img 
                 src={logo} 
                 alt="GymTracker Logo" 
-                className="h-10 w-auto object-contain transition-all duration-300 drop-shadow-lg"
+                className="h-32 w-auto object-contain transition-all duration-300 drop-shadow-lg"
               />
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md group-hover:opacity-40 transition-opacity duration-300"></div>
             </motion.div>
@@ -540,7 +540,7 @@ export default function Navbar() {
                       <img 
                         src={logo} 
                         alt="GymTracker Logo" 
-                        className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg"
+                        className="h-32 sm:h-36 w-auto object-contain drop-shadow-lg"
                       />
                       {demoService.isDemoMode() && (
                         <span className="px-2 py-1 text-xs bg-green-600 text-white rounded-full animate-pulse font-bold">
