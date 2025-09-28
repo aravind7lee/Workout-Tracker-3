@@ -73,7 +73,7 @@ export default function Contact() {
               {liveSupport ? '🔴 LIVE SUPPORT ACTIVE' : '❌ SUPPORT OFFLINE'}
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-heading text-white mb-4">ELITE FITNESS CONSULTATION</h1>
+          <h1 className="text-3xl md:text-4xl font-heading text-white mb-4">GRIND-X FITNESS CONSULTATION</h1>
           <p className="text-slate-400 font-body max-w-2xl mx-auto">
             Get personalized workout plans, nutrition guidance, and expert fitness advice from certified trainers. Real-time support for elite athletes.
           </p>

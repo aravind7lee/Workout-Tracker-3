@@ -209,7 +209,7 @@ export default function Forum() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-white mb-3 sm:mb-4 px-2">
-            ELITE ATHLETES FORUM
+            GRIND-X ATHLETES FORUM
           </h1>
           <p className="text-sm sm:text-base text-slate-400 font-body max-w-2xl mx-auto px-4 leading-relaxed">
             Connect with certified trainers, elite athletes, and fitness enthusiasts. Share your journey, get expert advice, and motivate each other.

@@ -88,7 +88,7 @@ export default function Footer() {
                     whileTap={{ scale: 0.98 }}
                     className="px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-300 font-body text-sm shadow-lg hover:shadow-cyan-500/25"
                   >
-                    {subscribed ? '✓ Subscribed' : 'Join Elite'}
+                    {subscribed ? '✓ Subscribed' : 'Join GRIND-X'}
                   </motion.button>
                 </form>
               </div>
@@ -169,7 +169,7 @@ export default function Footer() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-2">
               <div className="text-center sm:text-left">
                 <p className="text-xs text-slate-400 font-body">
-                  © 2024 GymTracker. Built for Elite Athletes Worldwide.
+                  © 2025 GRIND-X. 
                 </p>
                 <p className="text-xs text-slate-500 font-body mt-1">
                   Empowering fitness transformations globally
