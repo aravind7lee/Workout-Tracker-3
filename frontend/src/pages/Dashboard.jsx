@@ -6,6 +6,7 @@ import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
 import { useRealTimeDashboard } from '../hooks/useRealTimeDashboard';
+import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
 import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
@@ -15,6 +16,7 @@ import api from '../utils/api';
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated, loading: authLoading } = useAuth();
   const { stats, isOnline, loading: statsLoading, refreshStats } = useRealTime();
+  const { stats: workoutStats, refreshStats: refreshWorkoutStats } = useRealTimeWorkouts();
   const { currentStreak, longestStreak, totalCheckIns } = useStreak();
   
   // Get real-time streak using utility function (same as Home page)
@@ -320,6 +322,7 @@ const Dashboard = () => {
             >
               {planSyncStatus === 'syncing' ? '🔄 Syncing...' : '⚡ Force Sync'}
             </button>
+
             <button
               onClick={handleLogout}
               className="btn bg-red-600 hover:bg-red-700 text-white text-sm flex-1 sm:flex-none"
@@ -341,15 +344,15 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">💪</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{stats.totalWorkouts || 0}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
               <div className="text-xs text-green-400">
-                {stats.totalWorkouts > 0 ? `${stats.totalWorkouts} completed!` : 'Start your first workout'}
+                {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} completed!` : 'Start your first workout'}
               </div>
             </div>
           </div>
           <div className="absolute top-2 right-2 text-xs text-blue-400/70">
-            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+            {workoutStats?.lastUpdate ? '🔴 LIVE' : isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
           </div>
           <div className="absolute bottom-2 right-2 text-blue-400/50 text-xs">→</div>
         </button>
@@ -389,10 +392,10 @@ const Dashboard = () => {
               <span className="text-lg sm:text-2xl">📊</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{stats.weeklyGoal?.completed || 0}</div>
+              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
               <div className="text-xs text-green-400">
-                {stats.weeklyGoal?.completed > 0 ? `${stats.weeklyGoal.completed} this week!` : 'No workouts yet'}
+                {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} this week!` : 'No workouts yet'}
               </div>
             </div>
           </div>

@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
+import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
+import { workoutSync } from '../services/workoutSync';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import Hero from '../components/Hero';
 import RealTimeNotification from '../components/RealTimeNotification';
@@ -14,6 +16,7 @@ export default function Home() {
   const location = useLocation();
   const auth = useAuth();
   const { stats, isOnline } = useRealTime();
+  const { stats: workoutStats } = useRealTimeWorkouts();
   const { currentStreak } = useStreak();
   const { unlockedCount, totalCount, currentXP, completionPercentage, isOnline: achievementsOnline, checkAchievements } = useAchievements();
   const [notification, setNotification] = useState(null);
@@ -155,11 +158,11 @@ export default function Home() {
   const quickStats = [
     { 
       label: 'Today\'s Workouts', 
-      value: stats?.todayWorkouts || 0, 
+      value: workoutStats?.todayWorkouts || stats?.todayWorkouts || 0, 
       icon: '💪', 
       color: 'blue', 
       path: '/workouts',
-      subtitle: stats?.todayWorkouts > 0 ? `${stats.todayWorkouts} completed today!` : 'Start your first workout'
+      subtitle: (workoutStats?.todayWorkouts || stats?.todayWorkouts || 0) > 0 ? `${workoutStats?.todayWorkouts || stats?.todayWorkouts} completed today!` : 'Start your first workout'
     },
     { 
       label: 'Current Streak', 

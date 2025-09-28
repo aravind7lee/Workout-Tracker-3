@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
-// Simple fallback service
-const workoutCompletionService = {
-  async getCompletedWorkouts(userId) {
-    try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-      return workouts.filter(w => w.userId === userId);
-    } catch (error) {
-      return [];
-    }
-  }
-};
+import { workoutSync } from '../services/workoutSync';
+import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
+
 
 export default function CompletedWorkouts() {
   const { user } = useAuth();
@@ -24,6 +16,10 @@ export default function CompletedWorkouts() {
 
   // Load completed workouts
   useEffect(() => {
+    // Clean up fake workouts first
+    if (typeof window.cleanupFakeWorkouts === 'function') {
+      window.cleanupFakeWorkouts();
+    }
     loadCompletedWorkouts();
   }, [user, isOnline]);
 
@@ -33,20 +29,10 @@ export default function CompletedWorkouts() {
       if (event.detail) {
         console.log('🎯 CompletedWorkouts: Received workout completion event:', event.detail);
         
-        // Use the workout data as-is since it's already properly formatted
-        const newWorkout = event.detail;
-        
-        setCompletedWorkouts(prev => {
-          // Check if workout already exists to prevent duplicates
-          const exists = prev.some(w => w.id === newWorkout.id);
-          if (exists) {
-            console.log('⚠️ Workout already exists, skipping duplicate');
-            return prev;
-          }
-          
-          console.log('✅ Adding new workout to list:', newWorkout);
-          return [newWorkout, ...prev];
-        });
+        // Reload workouts from real-time sync service to ensure consistency
+        setTimeout(() => {
+          loadCompletedWorkouts();
+        }, 100);
       }
     };
 
@@ -84,19 +70,14 @@ export default function CompletedWorkouts() {
     try {
       setLoading(true);
       
-      // Always load from localStorage for consistency
-      const localWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      // Get workouts from real-time sync service
+      const workouts = realTimeWorkoutSync.getWorkoutHistory(365); // Get last year
+      setCompletedWorkouts(workouts);
       
-      // Filter by user if user is available
-      const userWorkouts = user?.id 
-        ? localWorkouts.filter(w => w.userId === user.id || !w.userId) // Include workouts without userId for backward compatibility
-        : localWorkouts;
-      
-      console.log('📋 Loaded workouts:', userWorkouts.length, 'total workouts');
-      setCompletedWorkouts(userWorkouts);
+      console.log('✅ Loaded real workouts from RealTimeWorkoutSync:', workouts.length);
       
     } catch (error) {
-      console.error('Error loading completed workouts:', error);
+      console.error('Error loading workouts:', error);
       setCompletedWorkouts([]);
     } finally {
       setLoading(false);
@@ -151,36 +132,51 @@ export default function CompletedWorkouts() {
     return date.toLocaleDateString();
   };
 
-  const deleteWorkout = (workoutId) => {
+  const deleteWorkout = async (workoutId) => {
     try {
-      const existing = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-      const updated = existing.filter(w => w.id !== workoutId);
-      localStorage.setItem('completedWorkouts', JSON.stringify(updated));
+      // Delete from localStorage first
+      const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
+      const updated = workouts.filter(w => w.id !== workoutId);
+      localStorage.setItem('workoutSync_workouts', JSON.stringify(updated));
+      
+      // Delete from MongoDB backend if available
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/workouts/${workoutId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            console.log('✅ Workout deleted from MongoDB');
+          } else {
+            console.warn('⚠️ MongoDB delete failed:', response.status);
+          }
+        }
+      } catch (apiError) {
+        console.warn('⚠️ MongoDB delete failed, local delete successful:', apiError.message);
+      }
+      
+      // Update UI immediately
       setCompletedWorkouts(updated);
       
-      // Trigger stats update
-      const todayWorkouts = updated.filter(w => 
-        new Date(w.completedAt).toDateString() === new Date().toDateString()
-      ).length;
+      // Update real-time sync
+      if (window.realTimeWorkoutSync) {
+        window.realTimeWorkoutSync.refreshStats();
+      }
       
-      const weeklyWorkouts = updated.filter(w => {
-        const workoutDate = new Date(w.completedAt);
-        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        return workoutDate >= weekAgo;
-      }).length;
-      
-      window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
-        detail: { 
-          todayWorkouts,
-          totalWorkouts: updated.length,
-          weeklyWorkouts,
-          totalCalories: updated.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
-        }
-      }));
+      // Broadcast stats update
+      window.dispatchEvent(new CustomEvent('realTimeStatsUpdate'));
       
       setDeleteConfirm(null);
+      console.log('🗑️ Workout deleted successfully');
     } catch (error) {
-      console.error('Error deleting workout:', error);
+      console.error('❌ Error deleting workout:', error);
+      setDeleteConfirm(null);
     }
   };
 

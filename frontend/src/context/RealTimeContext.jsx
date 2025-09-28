@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { onlineService } from '../services/onlineService';
+import { workoutSync } from '../services/workoutSync';
+import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
 import api from '../utils/api';
 
 const RealTimeContext = createContext();
@@ -38,40 +40,22 @@ export const RealTimeProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
 
-  // Load workout stats from localStorage
+  // Load workout stats using real-time workout sync service
   const loadWorkoutStats = useCallback(() => {
     try {
-      const completedWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-      const today = new Date().toDateString();
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      
-      const todayWorkouts = completedWorkouts.filter(w => 
-        new Date(w.completedAt).toDateString() === today
-      ).length;
-      
-      const weeklyWorkouts = completedWorkouts.filter(w => 
-        new Date(w.completedAt) >= weekAgo
-      ).length;
-      
-      const monthlyWorkouts = completedWorkouts.filter(w => 
-        new Date(w.completedAt) >= monthAgo
-      ).length;
-      
-      const totalCalories = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
-      const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
+      const realtimeStats = realTimeWorkoutSync.getStats();
       
       return {
-        workouts: todayWorkouts,
-        totalWorkouts: completedWorkouts.length,
-        todayWorkouts,
-        weeklyWorkouts,
-        monthlyWorkouts,
-        totalCalories,
-        totalDuration,
+        workouts: realtimeStats.todayWorkouts,
+        totalWorkouts: realtimeStats.totalWorkouts,
+        todayWorkouts: realtimeStats.todayWorkouts,
+        weeklyWorkouts: realtimeStats.weeklyWorkouts,
+        monthlyWorkouts: realtimeStats.monthlyWorkouts,
+        totalCalories: realtimeStats.totalCalories,
+        totalDuration: realtimeStats.totalDuration,
         isRealTime: true,
-        lastSync: new Date().toISOString(),
-        dataSource: 'localStorage'
+        lastSync: realtimeStats.lastUpdate || new Date().toISOString(),
+        dataSource: 'RealTimeWorkoutSync'
       };
     } catch (error) {
       console.error('Error loading workout stats:', error);
@@ -200,9 +184,29 @@ export const RealTimeProvider = ({ children }) => {
 
   // Initialize and load stats immediately
   useEffect(() => {
+    // Clean fake workouts first
+    realTimeWorkoutSync.cleanFakeWorkouts();
+    
     // Load local stats immediately
     const localStats = loadWorkoutStats();
     setStats(prev => ({ ...prev, ...localStats }));
+    
+    // Subscribe to real-time updates
+    const unsubscribe = realTimeWorkoutSync.subscribe((newStats) => {
+      setStats(prev => ({
+        ...prev,
+        workouts: newStats.todayWorkouts,
+        totalWorkouts: newStats.totalWorkouts,
+        todayWorkouts: newStats.todayWorkouts,
+        weeklyWorkouts: newStats.weeklyWorkouts,
+        monthlyWorkouts: newStats.monthlyWorkouts,
+        totalCalories: newStats.totalCalories,
+        totalDuration: newStats.totalDuration,
+        isRealTime: true,
+        lastSync: newStats.lastUpdate || new Date().toISOString(),
+        dataSource: 'RealTimeWorkoutSync'
+      }));
+    });
     
     // Then try to fetch from MongoDB
     if (isAuthenticated() && user) {
@@ -210,24 +214,25 @@ export const RealTimeProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
+    
+    return unsubscribe;
   }, [user, isAuthenticated, fetchRealTimeStats, loadWorkoutStats]);
 
   // Listen for real-time events + INSTANT STREAK UPDATES
   useEffect(() => {
-    const handleWorkoutCompleted = () => {
+    const handleWorkoutCompleted = (event) => {
       console.log('🏋️ Workout completed - refreshing all stats');
       
-      // Immediate stats refresh
-      const freshStats = loadWorkoutStats();
-      setStats(prev => ({
-        ...prev,
-        ...freshStats,
-        lastSync: new Date().toISOString(),
-        dataSource: 'Workout Completion',
-        isRealTime: true
-      }));
+      // If event has workout data, add it to real-time sync
+      if (event.detail && event.detail.workout) {
+        realTimeWorkoutSync.addCompletedWorkout(event.detail.workout);
+      } else {
+        // Force refresh if no workout data
+        realTimeWorkoutSync.refreshStats();
+      }
       
-      console.log('✅ Stats updated after workout completion:', freshStats);
+      // Stats will be updated automatically via subscription
+      console.log('✅ Workout completion processed by RealTimeWorkoutSync');
     };
 
     const handleMealAdded = () => {
@@ -274,7 +279,7 @@ export const RealTimeProvider = ({ children }) => {
     const handleWorkoutStatsUpdate = (event) => {
       console.log('💪 Real-time workout stats update received:', event.detail);
       
-      // Reload stats from localStorage immediately
+      // Reload stats from workout sync service immediately
       const freshStats = loadWorkoutStats();
       setStats(prev => ({
         ...prev,
@@ -284,7 +289,7 @@ export const RealTimeProvider = ({ children }) => {
         isRealTime: true
       }));
       
-      console.log('✅ INSTANT: Workout stats refreshed from localStorage:', freshStats);
+      console.log('✅ INSTANT: Workout stats refreshed from WorkoutSync:', freshStats);
     };
 
     // Real-time MongoDB sync handler
@@ -354,6 +359,15 @@ export const RealTimeProvider = ({ children }) => {
     console.log('💪 REAL-TIME: Workout stats updated:', freshStats);
   }, [loadWorkoutStats]);
 
+  // Add completed workout (for real-time updates)
+  const addCompletedWorkout = useCallback((workoutData) => {
+    const newWorkout = realTimeWorkoutSync.addCompletedWorkout(workoutData);
+    
+    // Stats will be updated automatically via subscription
+    console.log('✅ REAL-TIME: Workout added via RealTimeWorkoutSync:', newWorkout);
+    return newWorkout;
+  }, []);
+
   // Increment stat (for real-time updates)
   const incrementStat = useCallback((statName, increment = 1) => {
     setStats(prev => ({
@@ -389,6 +403,7 @@ export const RealTimeProvider = ({ children }) => {
     incrementStat,
     updateStreakStats,
     updateWorkoutStats,
+    addCompletedWorkout,
     loadWorkoutStats,
     fetchRealTimeStats
   };

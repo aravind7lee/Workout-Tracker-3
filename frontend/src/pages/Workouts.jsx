@@ -140,7 +140,7 @@ export default function Workouts() {
               </div>
             </div>
 
-            {/* Quick Stats */}
+            {/* Real-Time Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-4 relative">
                 <div className="text-2xl font-black text-blue-400">{stats?.todayWorkouts || 0}</div>

@@ -1,4 +1,5 @@
 import './utils/comprehensiveErrorHandler'; // Must be first to catch all errors
+import './utils/immediateCleanup'; // Clean fake workouts immediately
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
@@ -6,6 +7,7 @@ import { RealTimeProvider } from './context/RealTimeContext';
 import { StreakProvider } from './context/StreakContext';
 import { AchievementsProvider } from './context/AchievementsContext';
 import { WorkoutCompletionProvider } from './context/WorkoutCompletionContext';
+
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import LibrarySimple from './pages/LibrarySimple';
@@ -31,6 +33,7 @@ import ThemeErrorBoundary from './components/ThemeErrorBoundary';
 import DemoBanner from './components/DemoBanner';
 import DemoFloatingControls from './components/DemoFloatingControls';
 import DemoFeatureTracker from './components/DemoFeatureTracker';
+import WorkoutCompletionHandler from './components/WorkoutCompletionHandler';
 import { DemoProvider } from './context/DemoContext';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -39,6 +42,8 @@ import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
 import './utils/errorSuppression'; // Suppress import errors
 import { realTimeStreakSync } from './services/realTimeStreakSync'; // Initialize real-time streak sync
+import './utils/testWorkoutCompletion'; // Test utilities for real-time updates
+import './utils/cleanupFakeWorkouts'; // Cleanup fake workouts
 
 // Inline components to avoid module loading errors
 const Search = () => {
@@ -385,6 +390,7 @@ export default function App() {
                     <DemoBanner />
                     <DemoFloatingControls />
                     <DemoFeatureTracker />
+                    <WorkoutCompletionHandler />
                     <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                     <Routes>
                       <Route path="/" element={<Home />} />

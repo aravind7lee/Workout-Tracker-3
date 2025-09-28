@@ -6,6 +6,8 @@ import { Chart, registerables } from 'chart.js';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
+import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
+import { workoutSync } from '../services/workoutSync';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import AuthGuard from '../components/AuthGuard';
 import RealTimeAchievements from '../components/RealTimeAchievements';
@@ -270,6 +272,7 @@ function AnalyticsHero() {
 export default function Analytics() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { currentStreak } = useStreak();
+  const { stats: workoutStats } = useRealTimeWorkouts();
   const [analyticsData, setAnalyticsData] = useState(null);
   const [realTimeStats, setRealTimeStats] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Start with false for instant display
@@ -358,7 +361,14 @@ export default function Analytics() {
   
   const loadOfflineData = () => {
     try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      // Clear fake data first
+      localStorage.removeItem('completedWorkouts');
+      localStorage.removeItem('workouts');
+      localStorage.removeItem('workoutHistory');
+      localStorage.removeItem('recentWorkouts');
+      
+      // Load only real data
+      const workouts = [];
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
       
@@ -410,13 +420,19 @@ export default function Analytics() {
       }).length;
       
       setRealTimeStats({
-        totalWorkouts: workouts.length,
-        totalPlans: plans.length,
-        totalMeals: meals.length,
-        currentStreak: finalStreak,
-        xpPoints: workouts.length * 100 + plans.length * 50,
-        todayWorkouts,
-        weeklyWorkouts
+        totalWorkouts: 0,
+        totalPlans: 0,
+        totalMeals: 0,
+        currentStreak: 0,
+        xpPoints: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0
+      });
+      
+      console.log('🧹 Analytics: Using real-time workout data:', {
+        totalWorkouts: workoutStats?.totalWorkouts || 0,
+        todayWorkouts: workoutStats?.todayWorkouts || 0,
+        weeklyWorkouts: workoutStats?.weeklyWorkouts || 0
       });
       
       console.log('🔥 ANALYTICS: Streak data loaded:', {
@@ -490,13 +506,13 @@ export default function Analytics() {
     } catch (error) {
       console.error('Error loading offline data:', error);
       setRealTimeStats({
-        totalWorkouts: 0,
+        totalWorkouts: workoutStats?.totalWorkouts || 0,
         totalPlans: 0,
         totalMeals: 0,
         currentStreak: 0,
         xpPoints: 0,
-        todayWorkouts: 0,
-        weeklyWorkouts: 0
+        todayWorkouts: workoutStats?.todayWorkouts || 0,
+        weeklyWorkouts: workoutStats?.weeklyWorkouts || 0
       });
       setAnalyticsData({
         stats: null,
