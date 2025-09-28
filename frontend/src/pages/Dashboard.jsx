@@ -62,35 +62,43 @@ const Dashboard = () => {
         return;
       }
       
-      console.log('🚀 Loading REAL-TIME MongoDB dashboard data...');
+      console.log('🚀 Loading REAL-TIME dashboard data...');
       
-      // Load REAL-TIME workouts from MongoDB backend
-      const [completedWorkouts] = await Promise.allSettled([
-        api.get('/workouts')
-      ]);
+      // Get workouts from real-time sync service first
+      const localWorkouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
+      setRecentWorkouts(localWorkouts);
+      console.log('✅ Real-time workouts loaded:', localWorkouts.length);
       
-      // Set REAL completed workouts from MongoDB
-      if (completedWorkouts.status === 'fulfilled' && completedWorkouts.value?.data) {
-        const workouts = Array.isArray(completedWorkouts.value.data.workouts) ? completedWorkouts.value.data.workouts : 
-                        Array.isArray(completedWorkouts.value.data) ? completedWorkouts.value.data : [];
-        
-        // Only show completed workouts
-        const realCompletedWorkouts = workouts.filter(workout => 
-          workout.completed === true || workout.completedAt
-        );
-        setRecentWorkouts(realCompletedWorkouts);
-        console.log('✅ Real workouts loaded:', realCompletedWorkouts.length);
-      } else {
-        setRecentWorkouts([]);
-        console.log('⚠️ No workouts found or failed to load');
+      // Try to load from MongoDB backend as well
+      try {
+        const response = await api.get('/workouts');
+        if (response?.data) {
+          const mongoWorkouts = Array.isArray(response.data.workouts) ? response.data.workouts : 
+                               Array.isArray(response.data) ? response.data : [];
+          
+          const realCompletedWorkouts = mongoWorkouts.filter(workout => 
+            workout.completed === true || workout.completedAt
+          );
+          
+          // Combine and deduplicate
+          const allWorkouts = [...localWorkouts, ...realCompletedWorkouts];
+          const uniqueWorkouts = allWorkouts.filter((workout, index, self) => 
+            index === self.findIndex(w => w.id === workout.id || 
+              (w.exercise === workout.exercise && w.completedAt === workout.completedAt))
+          );
+          
+          setRecentWorkouts(uniqueWorkouts.slice(0, 10)); // Show latest 10
+          console.log('✅ Combined workouts loaded:', uniqueWorkouts.length);
+        }
+      } catch (apiError) {
+        console.warn('⚠️ MongoDB load failed, using local data:', apiError.message);
       }
-      
-      console.log('✅ Real-time MongoDB dashboard data loaded successfully');
       
     } catch (error) {
       console.error('❌ Dashboard load error:', error.message);
-      // Set empty states on error
-      setRecentWorkouts([]);
+      // Fallback to real-time sync data
+      const fallbackWorkouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
+      setRecentWorkouts(fallbackWorkouts);
     } finally {
       setLoading(false);
     }
@@ -112,33 +120,26 @@ const Dashboard = () => {
     
     // Listen for real-time events
     const handleWorkoutCompleted = (event) => {
-      const { workout, exercise, duration, sets, offline } = event.detail;
+      console.log('🏋️ Dashboard: Workout completed - refreshing data');
       
-      setCompletionData({ exercise, duration, sets, offline });
-      setShowCompletionMessage(true);
+      // Get fresh workouts from real-time sync
+      const freshWorkouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
+      setRecentWorkouts(freshWorkouts);
       
-      // Add REAL completed workout to the list
-      const newCompletedWorkout = {
-        id: workout.id || Date.now(),
-        planName: workout.title || workout.exerciseName || exercise,
-        exercises: workout.exercises || [{ exercise: workout.exerciseName || exercise }],
-        duration: Math.floor(duration / 60) || workout.durationMinutes,
-        completedAt: new Date(),
-        completed: true,
-        synced: !offline,
-        xpEarned: (sets * 10) + 50
-      };
+      // Show completion message if event has details
+      if (event.detail) {
+        const { workout, exercise, duration, sets, offline } = event.detail;
+        setCompletionData({ exercise, duration, sets, offline });
+        setShowCompletionMessage(true);
+        setTimeout(() => setShowCompletionMessage(false), 5000);
+      }
       
-      setRecentWorkouts(prev => [newCompletedWorkout, ...prev]);
-      
-      // Refresh real-time stats
+      // Refresh stats and check achievements
       refreshStats();
-      
-      // Check for new achievements
       checkAchievements();
       
-      setTimeout(() => setShowCompletionMessage(false), 5000);
-      setTimeout(() => loadDashboardData(), 2000);
+      // Full refresh after short delay
+      setTimeout(() => loadDashboardData(), 1000);
     };
     
     // REAL-TIME STREAK UPDATE HANDLER - INSTANT UPDATES
@@ -688,12 +689,10 @@ const Dashboard = () => {
               <div key={workout.id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-4 border-green-500">
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-white text-sm sm:text-base truncate">
-                    {workout.planName || workout.exerciseName || 'Workout Session'}
+                    {workout.exercise || workout.planName || workout.exerciseName || 'Workout Session'}
                   </div>
                   <div className="text-xs sm:text-sm text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
                     <span>{workout.exercises?.length || 1} exercise{(workout.exercises?.length || 1) !== 1 ? 's' : ''}</span>
-                    <span>•</span>
-                    <span>{workout.duration || 0} min</span>
                     <span>•</span>
                     <span className="text-green-400 font-medium">✓ Completed</span>
                     {workout.synced && <span className="text-blue-400">☁️ Synced</span>}
@@ -712,7 +711,7 @@ const Dashboard = () => {
                     onClick={() => {
                       const workoutId = workout.planId || workout.id;
                       if (workoutId) {
-                        console.log('🔄 Repeating workout:', workout.planName, 'ID:', workoutId);
+                        console.log('🔄 Repeating workout:', workout.exercise || workout.planName, 'ID:', workoutId);
                         navigate(`/workout/${workoutId}`);
                       } else {
                         console.warn('⚠️ Workout ID missing, redirecting to plans');
@@ -720,7 +719,7 @@ const Dashboard = () => {
                       }
                     }}
                     className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
-                    title={`Repeat workout: ${workout.planName || 'Workout Session'}`}
+                    title={`Repeat workout: ${workout.exercise || workout.planName || 'Workout Session'}`}
                   >
                     🔄 Repeat
                   </button>
