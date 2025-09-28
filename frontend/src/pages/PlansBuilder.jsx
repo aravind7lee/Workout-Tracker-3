@@ -964,29 +964,6 @@ export default function PlansBuilder() {
           )}
         </div>
       </div>
-      
-      {/* Professional Footer */}
-      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border border-slate-700 rounded-lg">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-xl sm:text-2xl">🏆</span>
-            <span className="text-base sm:text-lg font-semibold text-white">Professional Gym Tracker</span>
-            <span className="text-xl sm:text-2xl">🏆</span>
-          </div>
-          <div className="text-xs sm:text-sm text-slate-400 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-4">
-            <span>✅ Real-time MongoDB sync</span>
-            <span className="hidden sm:inline">•</span>
-            <span>💪 Professional-level tracking</span>
-            <span className="hidden sm:inline">•</span>
-            <span>📱 Cross-device availability</span>
-            <span className="hidden sm:inline">•</span>
-            <span>🔥 Gym-quality experience</span>
-          </div>
-          <div className="mt-2 text-xs text-slate-500">
-            Built for serious athletes and fitness enthusiasts
-          </div>
-        </div>
-      </div>
       </div>
     </div>
   );

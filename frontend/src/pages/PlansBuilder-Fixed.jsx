@@ -623,19 +623,7 @@ export default function PlansBuilder() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 p-6 bg-slate-800 border border-slate-700 rounded-lg text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-2xl">🏆</span>
-            <span className="text-lg font-semibold">Professional Gym Tracker</span>
-            <span className="text-2xl">🏆</span>
-          </div>
-          <div className="text-sm text-slate-400 flex items-center justify-center gap-4">
-            <span>✅ Real-time MongoDB sync</span>
-            <span>💪 Professional tracking</span>
-            <span>📱 Cross-device availability</span>
-          </div>
-        </div>
+      
       </div>
     </div>
   );

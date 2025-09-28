@@ -198,30 +198,59 @@ export default function Forum() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-white font-body">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3 sm:mb-4">
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-xs sm:text-sm font-medium text-white font-body text-center">
               🔴 LIVE COMMUNITY • {liveUsers.toLocaleString()} ATHLETES ONLINE
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-heading text-white mb-4">ELITE ATHLETES FORUM</h1>
-          <p className="text-slate-400 font-body max-w-2xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-white mb-3 sm:mb-4 px-2">
+            ELITE ATHLETES FORUM
+          </h1>
+          <p className="text-sm sm:text-base text-slate-400 font-body max-w-2xl mx-auto px-4 leading-relaxed">
             Connect with certified trainers, elite athletes, and fitness enthusiasts. Share your journey, get expert advice, and motivate each other.
           </p>
-          <div className="mt-4 text-xs text-slate-500 font-body">
-            Live Updates • {currentTime.toLocaleTimeString()} • Real-time Discussions
+          <div className="mt-3 sm:mt-4 text-xs text-slate-500 font-body flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+            <span>Live Updates</span>
+            <span className="hidden sm:inline">•</span>
+            <span>{currentTime.toLocaleTimeString()}</span>
+            <span className="hidden sm:inline">•</span>
+            <span>Real-time Discussions</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Categories */}
-            <div className="card">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+            {/* Mobile Categories Horizontal Scroll */}
+            <div className="lg:hidden">
+              <div className="card">
+                <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">CATEGORIES</h3>
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {categories.map((category) => (
+                    <button
+                      key={category.name}
+                      onClick={() => setActiveFilter(category.name.toLowerCase())}
+                      className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 font-body text-sm ${
+                        activeFilter === category.name.toLowerCase()
+                          ? 'bg-cyan-600/20 border border-cyan-500/30 text-cyan-400'
+                          : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-base">{category.icon}</span>
+                      <span className="font-medium whitespace-nowrap">{category.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Categories */}
+            <div className="hidden lg:block card">
               <h3 className="text-lg font-heading text-white mb-4">CATEGORIES</h3>
               <div className="space-y-2">
                 {categories.map((category) => (
@@ -241,8 +270,39 @@ export default function Forum() {
               </div>
             </div>
 
-            {/* Filters */}
-            <div className="card">
+            {/* Mobile Filters */}
+            <div className="lg:hidden">
+              <div className="card">
+                <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">FILTERS</h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setActiveFilter('trending')}
+                    className={`flex-1 flex items-center justify-center gap-2 p-2 sm:p-3 rounded-lg transition-all duration-300 font-body text-sm ${
+                      activeFilter === 'trending'
+                        ? 'bg-orange-600/20 border border-orange-500/30 text-orange-400'
+                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-base">🔥</span>
+                    <span className="font-medium">Trending</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveFilter('recent')}
+                    className={`flex-1 flex items-center justify-center gap-2 p-2 sm:p-3 rounded-lg transition-all duration-300 font-body text-sm ${
+                      activeFilter === 'recent'
+                        ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400'
+                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-base">⏰</span>
+                    <span className="font-medium">Recent</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Filters */}
+            <div className="hidden lg:block card">
               <h3 className="text-lg font-heading text-white mb-4">FILTERS</h3>
               <div className="space-y-2">
                 <button
@@ -272,26 +332,26 @@ export default function Forum() {
 
             {/* Live Stats */}
             <div className="card">
-              <h3 className="text-lg font-heading text-white mb-4">LIVE STATS</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-body text-sm">Online Now</span>
-                  <span className="text-green-400 font-bold font-body">{liveUsers.toLocaleString()}</span>
+              <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">LIVE STATS</h3>
+              <div className="grid grid-cols-3 lg:grid-cols-1 gap-3 lg:gap-0 lg:space-y-3">
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
+                  <span className="text-slate-400 font-body text-xs sm:text-sm">Online Now</span>
+                  <span className="text-green-400 font-bold font-body text-sm sm:text-base">{liveUsers.toLocaleString()}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-body text-sm">Total Posts</span>
-                  <span className="text-blue-400 font-bold font-body">{totalPosts}</span>
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
+                  <span className="text-slate-400 font-body text-xs sm:text-sm">Total Posts</span>
+                  <span className="text-blue-400 font-bold font-body text-sm sm:text-base">{totalPosts}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-body text-sm">User Posts</span>
-                  <span className="text-purple-400 font-bold font-body">{posts.filter(p => !p._id.startsWith('expert_')).length}</span>
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
+                  <span className="text-slate-400 font-body text-xs sm:text-sm">User Posts</span>
+                  <span className="text-purple-400 font-bold font-body text-sm sm:text-base">{posts.filter(p => !p._id.startsWith('expert_')).length}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
             {/* Success Message */}
             {postSuccess && (
               <motion.div
@@ -311,35 +371,41 @@ export default function Forum() {
               </motion.div>
             )}
 
-            {/* Create Post */}
+            {/* Create Post - SHARE YOUR FITNESS JOURNEY */}
             {isAuthenticated() ? (
               <div className="card">
-                <h3 className="text-lg font-heading text-white mb-4">SHARE YOUR FITNESS JOURNEY</h3>
-                <div className="bg-blue-600/10 border border-blue-500/20 rounded-lg p-3 mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-blue-400 text-sm">🔴</span>
-                    <span className="text-blue-400 font-semibold text-sm font-body">REAL-TIME POSTING</span>
+                <h3 className="text-base sm:text-lg lg:text-xl font-heading text-white mb-3 sm:mb-4 text-center sm:text-left">
+                  SHARE YOUR FITNESS JOURNEY
+                </h3>
+                <div className="bg-blue-600/10 border border-blue-500/20 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 text-sm">🔴</span>
+                      <span className="text-blue-400 font-semibold text-xs sm:text-sm font-body">REAL-TIME POSTING</span>
+                    </div>
                   </div>
-                  <p className="text-slate-300 text-xs font-body">
+                  <p className="text-slate-300 text-xs sm:text-sm font-body leading-relaxed">
                     Your journey will be instantly visible to all {liveUsers.toLocaleString()} online athletes and stored permanently in our community.
                   </p>
                 </div>
-                <form onSubmit={handleSubmit}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm sm:text-base">
                       {user?.name?.charAt(0) || 'U'}
                     </div>
-                    <div>
-                      <div className="font-semibold text-white font-body text-sm">{user?.name || 'Elite Athlete'}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-white font-body text-sm sm:text-base truncate">
+                        {user?.name || 'Elite Athlete'}
+                      </div>
                       <div className="text-xs text-slate-400 font-body">Member • Online Now</div>
                     </div>
                   </div>
                   
-                  <div className="mb-4">
+                  <div className="w-full">
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="px-3 py-2 bg-slate-800/60 border border-slate-600/50 rounded-lg text-white font-body text-sm focus:outline-none focus:border-cyan-500/50"
+                      className="w-full px-3 py-2 sm:py-3 bg-slate-800/60 border border-slate-600/50 rounded-lg text-white font-body text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20"
                     >
                       {categories.map(cat => (
                         <option key={cat.name} value={cat.name}>{cat.icon} {cat.name}</option>
@@ -347,29 +413,32 @@ export default function Forum() {
                     </select>
                   </div>
                   
-                  <textarea
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    placeholder="Share your workout achievements, nutrition discoveries, transformation milestones, training tips, or motivational stories. Your journey inspires others! 💪"
-                    className="w-full p-4 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 font-body resize-none"
-                    rows={4}
-                    maxLength={500}
-                  />
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-xs text-slate-500 font-body">
-                      {newPost.length}/500 characters
-                    </span>
-                    <span className="text-xs text-green-400 font-body">
-                      ✓ Auto-saved • Visible to all users
-                    </span>
+                  <div className="w-full">
+                    <textarea
+                      value={newPost}
+                      onChange={(e) => setNewPost(e.target.value)}
+                      placeholder="Share your workout achievements, nutrition discoveries, transformation milestones, training tips, or motivational stories. Your journey inspires others! 💪"
+                      className="w-full p-3 sm:p-4 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 font-body resize-none text-sm sm:text-base"
+                      rows={window.innerWidth < 640 ? 3 : 4}
+                      maxLength={500}
+                    />
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2">
+                      <span className="text-xs text-slate-500 font-body">
+                        {newPost.length}/500 characters
+                      </span>
+                      <span className="text-xs text-green-400 font-body">
+                        ✓ Auto-saved • Visible to all users
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-end mt-4">
+                  
+                  <div className="flex justify-center sm:justify-end">
                     <motion.button
                       type="submit"
                       disabled={!newPost.trim()}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 font-body"
+                      className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 font-body text-sm sm:text-base"
                     >
                       🚀 Share Journey
                     </motion.button>
@@ -378,22 +447,22 @@ export default function Forum() {
               </div>
             ) : (
               <div className="card bg-slate-800/40 border border-slate-600/30">
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-4">🔒</div>
-                  <h3 className="text-lg font-heading text-white mb-2">JOIN THE COMMUNITY</h3>
-                  <p className="text-slate-400 font-body mb-4">
+                <div className="text-center py-6 sm:py-8 px-4">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🔒</div>
+                  <h3 className="text-base sm:text-lg font-heading text-white mb-2">JOIN THE COMMUNITY</h3>
+                  <p className="text-sm sm:text-base text-slate-400 font-body mb-4 leading-relaxed">
                     Login to share your fitness journey with {liveUsers.toLocaleString()} elite athletes worldwide
                   </p>
-                  <div className="flex gap-3 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xs mx-auto">
                     <button 
                       onClick={() => window.location.href = '/login'}
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-body transition-colors"
+                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-body transition-colors text-sm sm:text-base"
                     >
                       Login
                     </button>
                     <button 
                       onClick={() => window.location.href = '/register'}
-                      className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-body transition-colors"
+                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-body transition-colors text-sm sm:text-base"
                     >
                       Sign Up
                     </button>
@@ -404,18 +473,18 @@ export default function Forum() {
 
             {/* Posts Feed */}
             {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-slate-400 font-body">Loading community posts...</p>
+              <div className="text-center py-8 sm:py-12">
+                <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto mb-3 sm:mb-4"></div>
+                <p className="text-sm sm:text-base text-slate-400 font-body">Loading community posts...</p>
               </div>
             ) : (
               <AnimatePresence>
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {filteredPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="text-4xl mb-4">📝</div>
-                      <h3 className="text-lg font-heading text-white mb-2">NO POSTS YET</h3>
-                      <p className="text-slate-400 font-body">
+                    <div className="text-center py-8 sm:py-12 px-4">
+                      <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📝</div>
+                      <h3 className="text-base sm:text-lg font-heading text-white mb-2">NO POSTS YET</h3>
+                      <p className="text-sm sm:text-base text-slate-400 font-body">
                         Be the first to share your fitness journey in this category!
                       </p>
                     </div>
@@ -434,26 +503,28 @@ export default function Forum() {
                       </div>
                     )}
                     
-                    <div className="flex items-start gap-4">
-                      <div className="relative">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="relative flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
                           {post.user.avatar}
                         </div>
                         {post.user.verified && (
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center">
                             <span className="text-white text-xs">✓</span>
                           </div>
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-white font-body">{post.user.name}</h4>
+                        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
+                          <h4 className="font-semibold text-white font-body text-sm sm:text-base truncate">
+                            {post.user.name}
+                          </h4>
                           {post.user.verified && <span className="text-blue-400 text-xs">✓</span>}
                           <span className="px-2 py-1 bg-slate-700/50 rounded-full text-xs text-slate-300 font-body">
                             {post.user.level}
                           </span>
-                          <span className="text-xs text-slate-500 font-body">• {post.timestamp}</span>
+                          <span className="text-xs text-slate-500 font-body hidden sm:inline">• {post.timestamp}</span>
                           <span className={`px-2 py-1 rounded-full text-xs font-body ${
                             post.category === 'Strength' ? 'bg-red-600/20 text-red-400' :
                             post.category === 'Cardio' ? 'bg-green-600/20 text-green-400' :
@@ -465,34 +536,41 @@ export default function Forum() {
                           </span>
                         </div>
                         
-                        <p className="text-slate-300 mb-4 font-body leading-relaxed">{post.content}</p>
+                        <div className="sm:hidden text-xs text-slate-500 font-body mb-2">
+                          {post.timestamp}
+                        </div>
                         
-                        <div className="flex items-center gap-6">
+                        <p className="text-slate-300 mb-3 sm:mb-4 font-body leading-relaxed text-sm sm:text-base">
+                          {post.content}
+                        </p>
+                        
+                        <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
                           <motion.button 
                             onClick={() => handleLike(post._id)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            className={`flex items-center gap-2 transition-colors font-body ${
+                            className={`flex items-center gap-1 sm:gap-2 transition-colors font-body ${
                               post.liked ? 'text-red-400' : 'text-slate-400 hover:text-red-400'
                             }`}
                           >
-                            <span>{post.liked ? '❤️' : '🤍'}</span>
-                            <span className="text-sm font-semibold">{post.likes}</span>
+                            <span className="text-sm sm:text-base">{post.liked ? '❤️' : '🤍'}</span>
+                            <span className="text-xs sm:text-sm font-semibold">{post.likes}</span>
                           </motion.button>
                           
-                          <button className="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-body">
-                            <span>💬</span>
-                            <span className="text-sm">{post.replies} replies</span>
+                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-blue-400 transition-colors font-body">
+                            <span className="text-sm sm:text-base">💬</span>
+                            <span className="text-xs sm:text-sm">{post.replies}</span>
+                            <span className="hidden sm:inline text-xs sm:text-sm">replies</span>
                           </button>
                           
-                          <button className="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors font-body">
-                            <span>🔄</span>
-                            <span className="text-sm">Share</span>
+                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-green-400 transition-colors font-body">
+                            <span className="text-sm sm:text-base">🔄</span>
+                            <span className="hidden sm:inline text-xs sm:text-sm">Share</span>
                           </button>
                           
-                          <button className="flex items-center gap-2 text-slate-400 hover:text-yellow-400 transition-colors font-body ml-auto">
-                            <span>⭐</span>
-                            <span className="text-sm">Save</span>
+                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-yellow-400 transition-colors font-body ml-auto">
+                            <span className="text-sm sm:text-base">⭐</span>
+                            <span className="hidden sm:inline text-xs sm:text-sm">Save</span>
                           </button>
                         </div>
                       </div>
@@ -507,23 +585,23 @@ export default function Forum() {
             {/* Community Stats */}
             <div className="text-center">
               <div className="card bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20">
-                <div className="text-center">
-                  <h3 className="text-lg font-heading text-white mb-4">COMMUNITY IMPACT</h3>
-                  <div className="grid grid-cols-3 gap-4">
+                <div className="text-center px-2 sm:px-4">
+                  <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">COMMUNITY IMPACT</h3>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
                     <div>
-                      <div className="text-2xl font-bold text-blue-400 font-body">{totalPosts}</div>
+                      <div className="text-lg sm:text-2xl font-bold text-blue-400 font-body">{totalPosts}</div>
                       <div className="text-xs text-slate-400 font-body">Total Journeys</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-green-400 font-body">{posts.reduce((sum, p) => sum + p.likes, 0)}</div>
+                      <div className="text-lg sm:text-2xl font-bold text-green-400 font-body">{posts.reduce((sum, p) => sum + p.likes, 0)}</div>
                       <div className="text-xs text-slate-400 font-body">Total Likes</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-purple-400 font-body">{liveUsers.toLocaleString()}</div>
+                      <div className="text-lg sm:text-2xl font-bold text-purple-400 font-body">{liveUsers.toLocaleString()}</div>
                       <div className="text-xs text-slate-400 font-body">Active Users</div>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-500 font-body mt-4">
+                  <p className="text-xs sm:text-sm text-slate-500 font-body mt-3 sm:mt-4 leading-relaxed">
                     Every journey shared inspires others to achieve their fitness goals
                   </p>
                 </div>

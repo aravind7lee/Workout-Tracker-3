@@ -567,30 +567,6 @@ const ProfileAdvanced = () => {
         </div>
       )}
 
-
-
-      {/* Professional Footer */}
-      <div className="card bg-gradient-to-r from-slate-800/60 to-slate-900/60">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-2xl">🏆</span>
-            <span className="text-lg font-semibold text-white">Professional Gym Tracker</span>
-            <span className="text-2xl">🏆</span>
-          </div>
-          <div className="text-sm text-slate-400 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-4">
-            <span>✅ Real-time MongoDB sync</span>
-            <span className="hidden sm:inline">•</span>
-            <span>💪 Professional-level tracking</span>
-            <span className="hidden sm:inline">•</span>
-            <span>📱 Cross-device availability</span>
-            <span className="hidden sm:inline">•</span>
-            <span>🔥 Gym-quality experience</span>
-          </div>
-          <div className="mt-2 text-xs text-slate-500">
-            Your progress is automatically saved and synced across all devices
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

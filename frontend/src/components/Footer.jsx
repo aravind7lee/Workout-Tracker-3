@@ -57,12 +57,12 @@ export default function Footer() {
             <div className="sm:col-span-2 lg:col-span-2">
               <div className="flex items-center mb-4 sm:mb-6">
                 <div className="relative">
-                  <img src={logo} alt="GymTracker" className="h-8 sm:h-10 w-auto object-contain drop-shadow-lg" />
+                  <img src={logo} alt="GymTracker" className="h-32 sm:h-36 w-auto object-contain drop-shadow-lg" />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md"></div>
                 </div>
-                <div className="ml-3">
-                  <h3 className="text-base sm:text-lg font-heading text-white">GYMTRACKER</h3>
-                  <p className="text-xs text-slate-400 font-body">Elite Fitness Tracking</p>
+                <div className="ml-6">
+                  <h3 className="text-xl sm:text-2xl font-heading text-white">GYMTRACKER</h3>
+                  <p className="text-sm text-slate-400 font-body">Fitness Tracking App</p>
                 </div>
               </div>
               

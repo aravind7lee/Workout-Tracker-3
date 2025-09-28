@@ -743,6 +743,16 @@ body {
   background: rgba(71, 85, 105, 0.7);
 }
 
+/* Hide scrollbar utility for mobile horizontal scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 /* Premium Home Page Styles */
 .glassmorphism {
   background: rgba(255, 255, 255, 0.05);
@@ -1436,6 +1446,23 @@ body {
     min-width: 160px;
     min-height: 48px;
   }
+  
+  /* Forum mobile optimizations */
+  .forum-mobile-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .forum-mobile-text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .forum-mobile-button {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
 }
 
 /* Tablet adjustments */
@@ -1443,6 +1470,23 @@ body {
   .hero-image-container {
     height: 100vh;
     height: 100dvh;
+  }
+  
+  /* Forum tablet optimizations */
+  .forum-tablet-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .forum-tablet-text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  
+  .forum-tablet-button {
+    min-height: 48px;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
   }
 }
 
@@ -1452,6 +1496,23 @@ body {
     height: 100vh;
     min-height: 800px; /* Minimum height for very wide screens */
   }
+  
+  /* Forum desktop optimizations */
+  .forum-desktop-grid {
+    grid-template-columns: 1fr 3fr;
+    gap: 2rem;
+  }
+  
+  .forum-desktop-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .forum-desktop-button {
+    min-height: 52px;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
 }
 
 /* Mobile-specific image positioning for proper subject display */
@@ -1460,6 +1521,27 @@ body {
     object-position: 40% center; /* Focus on the left-center where the man is positioned */
     object-fit: cover;
   }
+  
+  /* Forum mobile post adjustments */
+  .forum-post-mobile {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .forum-post-mobile .user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .forum-post-mobile .post-content {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .forum-post-mobile .post-actions {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
@@ -1467,12 +1549,52 @@ body {
     object-position: 45% center; /* Slightly adjust for tablet */
     object-fit: cover;
   }
+  
+  /* Forum tablet post adjustments */
+  .forum-post-tablet {
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .forum-post-tablet .user-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  
+  .forum-post-tablet .post-content {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  
+  .forum-post-tablet .post-actions {
+    gap: 1rem;
+  }
 }
 
 @media (min-width: 769px) {
   .hero-image-container img {
     object-position: center center; /* Center for desktop */
     object-fit: cover;
+  }
+  
+  /* Forum desktop post adjustments */
+  .forum-post-desktop {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .forum-post-desktop .user-avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .forum-post-desktop .post-content {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .forum-post-desktop .post-actions {
+    gap: 1.5rem;
   }
 }
 
@@ -1516,5 +1638,44 @@ body {
 @media (max-width: 640px) {
   .hero-image-container::before {
     padding-bottom: 177.78%; /* 9:16 aspect ratio for mobile portrait */
+  }
+}
+
+/* Forum responsive enhancements */
+@media (max-width: 640px) {
+  .forum-mobile-spacing {
+    padding: 1rem 0.75rem;
+  }
+  
+  .forum-card-mobile {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .forum-text-mobile {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .forum-tablet-spacing {
+    padding: 1.5rem 1rem;
+  }
+  
+  .forum-card-tablet {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .forum-desktop-spacing {
+    padding: 2rem 1.5rem;
+  }
+  
+  .forum-card-desktop {
+    padding: 1.5rem;
+    border-radius: 16px;
   }
 }
