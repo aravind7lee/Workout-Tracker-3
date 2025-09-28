@@ -40,6 +40,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [completionData, setCompletionData] = useState(null);
+  const [showAllWorkouts, setShowAllWorkouts] = useState(false);
 
   const navigate = useNavigate();
 
@@ -87,7 +88,7 @@ const Dashboard = () => {
               (w.exercise === workout.exercise && w.completedAt === workout.completedAt))
           );
           
-          setRecentWorkouts(uniqueWorkouts.slice(0, 10)); // Show latest 10
+          setRecentWorkouts(uniqueWorkouts); // Show all workouts
           console.log('✅ Combined workouts loaded:', uniqueWorkouts.length);
         }
       } catch (apiError) {
@@ -643,12 +644,22 @@ const Dashboard = () => {
       <div className="card">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-white">Recent Workouts</h2>
-          <button
-            onClick={() => navigate('/my-plans')}
-            className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
-          >
-            🏋️ Start Workout
-          </button>
+          <div className="flex gap-2">
+            {recentWorkouts.length > 5 && (
+              <button
+                onClick={() => setShowAllWorkouts(!showAllWorkouts)}
+                className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+              >
+                {showAllWorkouts ? 'Show Less' : `Show More (${recentWorkouts.length})`}
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/my-plans')}
+              className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
+            >
+              🏋️ Start Workout
+            </button>
+          </div>
         </div>
         {!recentWorkouts || recentWorkouts.length === 0 ? (
           <div className="text-center py-6 sm:py-8">
@@ -685,7 +696,7 @@ const Dashboard = () => {
                 {recentWorkouts.length} completed workout{recentWorkouts.length !== 1 ? 's' : ''}
               </span>
             </div>
-            {recentWorkouts.slice(0, 5).map((workout, index) => (
+            {(showAllWorkouts ? recentWorkouts : recentWorkouts.slice(0, 5)).map((workout, index) => (
               <div key={workout.id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-4 border-green-500">
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-white text-sm sm:text-base truncate">
