@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useStreak } from '../context/StreakContext';
+import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
 import { getRealTimeStreak } from '../utils/streakUtils';
 
 export default function RealTimeStats() {
@@ -16,6 +17,7 @@ export default function RealTimeStats() {
   const [isOnline, setIsOnline] = useState(false);
   const { user } = useAuth();
   const { currentStreak } = useStreak();
+  const { stats: workoutStats } = useRealTimeWorkouts();
   const navigate = useNavigate();
   
   // Get real-time streak using utility function (same as other pages)
@@ -44,7 +46,7 @@ export default function RealTimeStats() {
         const finalStreak = getRealTimeStreak(currentStreak, serverStreak);
         
         setStats({
-          totalWorkouts: data.totalWorkouts || 0,
+          totalWorkouts: Math.max(data.totalWorkouts || 0, workoutStats?.totalWorkouts || 0),
           totalPlans: data.totalPlans || 0,
           totalMeals: data.totalMeals || 0,
           currentStreak: finalStreak,
@@ -72,30 +74,34 @@ export default function RealTimeStats() {
 
   const loadLocalStats = () => {
     try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
       
       // Get streak using utility function for consistency
       const localStreak = getRealTimeStreak(currentStreak, null);
       
+      // Use real-time workout stats
+      const currentStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
+      const totalWorkouts = currentStats.totalWorkouts || 0;
+      
       setStats({
-        totalWorkouts: workouts.length,
+        totalWorkouts,
         totalPlans: plans.length,
         totalMeals: meals.length,
         currentStreak: localStreak,
-        xpPoints: (workouts.length * 100) + (plans.length * 50) + (meals.length * 25)
+        xpPoints: (totalWorkouts * 100) + (plans.length * 50) + (meals.length * 25)
       });
       
-      console.log('🔥 REAL-TIME STATS: Local data loaded:', {
+      console.log('🔥 REAL-TIME STATS: Local data loaded with real-time workouts:', {
         contextStreak: currentStreak,
         localStreak,
-        totalWorkouts: workouts.length
+        totalWorkouts
       });
     } catch (error) {
       console.error('Error loading local stats:', error);
+      const currentStats = window.realTimeWorkoutSync?.getStats() || {};
       setStats({
-        totalWorkouts: 0,
+        totalWorkouts: currentStats.totalWorkouts || 0,
         totalPlans: 0,
         totalMeals: 0,
         currentStreak: 0,
@@ -104,12 +110,31 @@ export default function RealTimeStats() {
     }
   };
 
+  // Update stats when workoutStats change
+  useEffect(() => {
+    const currentStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
+    if (currentStats.totalWorkouts !== undefined) {
+      setStats(prev => ({
+        ...prev,
+        totalWorkouts: currentStats.totalWorkouts,
+        xpPoints: (currentStats.totalWorkouts * 100) + (prev.totalPlans * 50) + (prev.totalMeals * 25)
+      }));
+    }
+  }, [workoutStats]);
+
   useEffect(() => {
     loadRealTimeStats();
     
     // Listen for real-time updates
     const handleWorkoutComplete = () => {
       console.log('🏋️ REAL-TIME STATS: Workout completed - refreshing stats');
+      // Update stats immediately with real-time data
+      const currentStats = window.realTimeWorkoutSync?.getStats() || {};
+      setStats(prev => ({
+        ...prev,
+        totalWorkouts: currentStats.totalWorkouts || prev.totalWorkouts,
+        xpPoints: ((currentStats.totalWorkouts || prev.totalWorkouts) * 100) + (prev.totalPlans * 50) + (prev.totalMeals * 25)
+      }));
       loadRealTimeStats();
     };
     const handlePlanCreated = () => loadRealTimeStats();

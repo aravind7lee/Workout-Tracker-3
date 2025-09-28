@@ -505,14 +505,15 @@ export default function Analytics() {
       });
     } catch (error) {
       console.error('Error loading offline data:', error);
+      const currentWorkoutStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
       setRealTimeStats({
-        totalWorkouts: workoutStats?.totalWorkouts || 0,
+        totalWorkouts: currentWorkoutStats.totalWorkouts || 0,
         totalPlans: 0,
         totalMeals: 0,
         currentStreak: 0,
         xpPoints: 0,
-        todayWorkouts: workoutStats?.todayWorkouts || 0,
-        weeklyWorkouts: workoutStats?.weeklyWorkouts || 0
+        todayWorkouts: currentWorkoutStats.todayWorkouts || 0,
+        weeklyWorkouts: currentWorkoutStats.weeklyWorkouts || 0
       });
       setAnalyticsData({
         stats: null,
@@ -558,7 +559,15 @@ export default function Analytics() {
     // Real-time event listeners for instant updates
     const handleWorkoutComplete = () => {
       console.log('🏋️ Workout completed - updating analytics');
-      // Reload stats immediately
+      // Get fresh stats from real-time sync
+      const freshStats = window.realTimeWorkoutSync?.getStats() || {};
+      setRealTimeStats(prev => ({
+        ...prev,
+        totalWorkouts: freshStats.totalWorkouts || 0,
+        todayWorkouts: freshStats.todayWorkouts || 0,
+        weeklyWorkouts: freshStats.weeklyWorkouts || 0
+      }));
+      // Also reload full data
       loadOfflineData();
       loadAnalyticsData();
     };
