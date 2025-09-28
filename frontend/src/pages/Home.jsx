@@ -424,14 +424,14 @@ export default function Home() {
               
               {/* Logo */}
               <img 
-                src="/src/assets/logo.png" 
+                src="/logo.png" 
                 alt="Workout Tracker Logo" 
                 className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto object-contain filter drop-shadow-2xl"
                 style={{ 
                   filter: `brightness(1.3) contrast(1.2) drop-shadow(0 0 20px rgba(59,130,246,0.4))`,
                   transform: `scale(${0.8 + (loadingProgress / 100) * 0.3})`
                 }}
-                onError={(e) => { e.target.src = '/src/logo.png'; }}
+                onLoad={() => console.log('Logo loaded successfully')}
               />
               
               {/* Orbiting Dots */}
@@ -539,23 +539,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Stats */}
-        {isAuthenticated() && (
-          <section data-animate data-id="quick-stats" id="quick-stats" className="mb-12">
-            <div className={`transition-all duration-700 delay-150 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-              <div className="text-center mb-6">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white mb-2">YOUR ELITE STATUS</h2>
-                <p className="text-sm sm:text-base text-slate-400">Real-time performance metrics, personalized for you</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                {quickStats.map((stat, i) => (
-                  <StatCard key={`stat-${i}`} stat={stat} />
-                ))}
-              </div>
+        {/* Quick Stats - Always show for demo purposes */}
+        <section data-animate data-id="quick-stats" id="quick-stats" className="mb-12">
+          <div className={`transition-all duration-700 delay-150 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="text-center mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white mb-2">YOUR ELITE STATUS</h2>
+              <p className="text-sm sm:text-base text-slate-400">Real-time performance metrics, personalized for you</p>
             </div>
-          </section>
-        )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {quickStats.map((stat, i) => (
+                <StatCard key={`stat-${i}`} stat={stat} />
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Features */}
         <section data-animate data-id="features" id="features" className="mb-12">

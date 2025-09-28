@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
 import { demoService } from '../services/demoService';
 
-import logo from '../assets/logo.png';
+const logo = '/logo.png';
 
 
 export default function Navbar() {

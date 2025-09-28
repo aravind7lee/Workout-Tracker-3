@@ -3,6 +3,7 @@ import express from 'express';
 import User from '../models/User.js';
 import Workout from '../models/Workout.js';
 import Meal from '../models/Meal.js';
+import Plan from '../models/Plan.js';
 import auth from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
 import { settingsLimiter } from '../middleware/rateLimiter.js';
@@ -156,69 +157,102 @@ router.put('/profile-picture', auth, async (req, res) => {
 // Get user stats with real-time MongoDB data
 router.get('/stats', auth, async (req, res) => {
   try {
-    const [workouts, meals, plans, user] = await Promise.all([
-      Workout.find({ userId: req.user.id }),
-      Meal.find({ userId: req.user.id }),
-      Plan.find({ userId: req.user.id }),
-      User.findById(req.user.id)
+    // Validate user ID
+    if (!req.user?.id) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    // Use Promise.allSettled for better error handling
+    const results = await Promise.allSettled([
+      Workout.find({ userId: req.user.id }).lean(),
+      Meal.find({ userId: req.user.id }).lean(),
+      Plan.find({ userId: req.user.id }).lean(),
+      User.findById(req.user.id).lean()
     ]);
+
+    // Extract results with fallbacks
+    const workouts = results[0].status === 'fulfilled' ? results[0].value || [] : [];
+    const meals = results[1].status === 'fulfilled' ? results[1].value || [] : [];
+    const plans = results[2].status === 'fulfilled' ? results[2].value || [] : [];
+    const user = results[3].status === 'fulfilled' ? results[3].value : null;
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     
-    // Calculate real-time stats
-    const completedWorkouts = workouts.filter(w => w.completed);
+    // Calculate real-time stats with null checks
+    const completedWorkouts = workouts.filter(w => w && w.completed) || [];
     const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
     const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
     
     // Get real streak from user model or calculate from workouts
     let currentStreak = user.currentStreak || 0;
-    if (!user.currentStreak) {
-      currentStreak = calculateStreak(completedWorkouts);
-      // Update user with calculated streak
-      await User.findByIdAndUpdate(req.user.id, { currentStreak });
+    if (!user.currentStreak && completedWorkouts.length > 0) {
+      try {
+        currentStreak = calculateStreak(completedWorkouts);
+        // Update user with calculated streak (non-blocking)
+        User.findByIdAndUpdate(req.user.id, { currentStreak }).catch(err => 
+          console.warn('Failed to update streak:', err.message)
+        );
+      } catch (streakError) {
+        console.warn('Streak calculation failed:', streakError.message);
+        currentStreak = 0;
+      }
     }
     
     // Calculate XP from user model or from activities
     const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
     const userXP = user.xpPoints || calculatedXP;
     
-    // Update user XP if it's different from calculated
+    // Update user XP if it's different from calculated (non-blocking)
     if (user.xpPoints !== calculatedXP) {
-      await User.findByIdAndUpdate(req.user.id, { xpPoints: calculatedXP });
+      User.findByIdAndUpdate(req.user.id, { xpPoints: calculatedXP }).catch(err => 
+        console.warn('Failed to update XP:', err.message)
+      );
     }
     
     // Get today's workouts for daily stats
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayWorkouts = completedWorkouts.filter(w => {
-      const workoutDate = new Date(w.createdAt);
-      workoutDate.setHours(0, 0, 0, 0);
-      return workoutDate.getTime() === today.getTime();
+      try {
+        const workoutDate = new Date(w.createdAt);
+        workoutDate.setHours(0, 0, 0, 0);
+        return workoutDate.getTime() === today.getTime();
+      } catch {
+        return false;
+      }
     });
     
     // Get this week's workouts
     const weekStart = new Date(today);
     weekStart.setDate(today.getDate() - today.getDay());
     const weekWorkouts = completedWorkouts.filter(w => {
-      const workoutDate = new Date(w.createdAt);
-      return workoutDate >= weekStart;
+      try {
+        const workoutDate = new Date(w.createdAt);
+        return workoutDate >= weekStart;
+      } catch {
+        return false;
+      }
     });
     
     const stats = {
-      totalWorkouts: completedWorkouts.length,
-      todayWorkouts: todayWorkouts.length,
-      weeklyWorkouts: weekWorkouts.length,
-      totalMeals: meals.length,
-      totalPlans: plans.length,
+      totalWorkouts: completedWorkouts.length || 0,
+      todayWorkouts: todayWorkouts.length || 0,
+      weeklyWorkouts: weekWorkouts.length || 0,
+      totalMeals: meals.length || 0,
+      totalPlans: plans.length || 0,
       totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
-      currentStreak,
-      xpPoints: calculatedXP,
-      totalCaloriesBurned,
-      totalDuration: Math.round(totalDuration / 60),
+      currentStreak: currentStreak || 0,
+      xpPoints: calculatedXP || 0,
+      totalCaloriesBurned: totalCaloriesBurned || 0,
+      totalDuration: Math.round((totalDuration || 0) / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
-      longestStreak: user.longestStreak || currentStreak,
+      longestStreak: user.longestStreak || currentStreak || 0,
       totalCheckIns: user.totalCheckIns || 0,
-      joinDate: user.createdAt,
+      joinDate: user.createdAt || new Date(),
       lastActive: new Date(),
-      membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24)),
+      membershipDays: user.createdAt ? Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24)) : 0,
       isRealTime: true,
       lastSync: new Date().toISOString(),
       dataSource: 'MongoDB',
@@ -230,7 +264,33 @@ router.get('/stats', auth, async (req, res) => {
     res.json(stats);
   } catch (error) {
     console.error('Real-time stats error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    
+    // Return safe fallback stats instead of 500 error
+    const fallbackStats = {
+      totalWorkouts: 0,
+      todayWorkouts: 0,
+      weeklyWorkouts: 0,
+      totalMeals: 0,
+      totalPlans: 0,
+      totalExercises: 0,
+      currentStreak: 0,
+      xpPoints: 0,
+      totalCaloriesBurned: 0,
+      totalDuration: 0,
+      averageWorkoutDuration: 0,
+      longestStreak: 0,
+      totalCheckIns: 0,
+      joinDate: new Date(),
+      lastActive: new Date(),
+      membershipDays: 0,
+      isRealTime: false,
+      lastSync: new Date().toISOString(),
+      dataSource: 'Fallback',
+      syncTimestamp: Date.now(),
+      error: 'Failed to load stats'
+    };
+    
+    res.json(fallbackStats);
   }
 });
 
@@ -458,50 +518,61 @@ router.get('/achievements', auth, async (req, res) => {
   }
 });
 
-// Enhanced streak calculation with better logic
+// Enhanced streak calculation with better logic and error handling
 function calculateStreak(workouts) {
-  if (!workouts.length) return 0;
-  
-  // Get unique workout dates (only completed workouts)
-  const workoutDates = [...new Set(
-    workouts
-      .filter(w => w.completed)
-      .map(w => {
-        const date = new Date(w.createdAt);
-        date.setHours(0, 0, 0, 0);
-        return date.getTime();
-      })
-  )].sort((a, b) => b - a); // Sort descending (most recent first)
-  
-  if (!workoutDates.length) return 0;
-  
-  let streak = 0;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayTime = today.getTime();
-  
-  const yesterday = new Date(todayTime - 24 * 60 * 60 * 1000);
-  const yesterdayTime = yesterday.getTime();
-  
-  // Check if streak is current (today or yesterday)
-  const mostRecentWorkout = workoutDates[0];
-  if (mostRecentWorkout !== todayTime && mostRecentWorkout !== yesterdayTime) {
-    return 0; // Streak is broken
-  }
-  
-  // Count consecutive days
-  let expectedDate = mostRecentWorkout;
-  
-  for (const workoutTime of workoutDates) {
-    if (workoutTime === expectedDate) {
-      streak++;
-      expectedDate -= 24 * 60 * 60 * 1000; // Move to previous day
-    } else {
-      break; // Gap found, streak ends
+  try {
+    if (!workouts || !Array.isArray(workouts) || !workouts.length) return 0;
+    
+    // Get unique workout dates (only completed workouts)
+    const workoutDates = [...new Set(
+      workouts
+        .filter(w => w && w.completed && w.createdAt)
+        .map(w => {
+          try {
+            const date = new Date(w.createdAt);
+            if (isNaN(date.getTime())) return null;
+            date.setHours(0, 0, 0, 0);
+            return date.getTime();
+          } catch {
+            return null;
+          }
+        })
+        .filter(date => date !== null)
+    )].sort((a, b) => b - a); // Sort descending (most recent first)
+    
+    if (!workoutDates.length) return 0;
+    
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayTime = today.getTime();
+    
+    const yesterday = new Date(todayTime - 24 * 60 * 60 * 1000);
+    const yesterdayTime = yesterday.getTime();
+    
+    // Check if streak is current (today or yesterday)
+    const mostRecentWorkout = workoutDates[0];
+    if (mostRecentWorkout !== todayTime && mostRecentWorkout !== yesterdayTime) {
+      return 0; // Streak is broken
     }
+    
+    // Count consecutive days
+    let expectedDate = mostRecentWorkout;
+    
+    for (const workoutTime of workoutDates) {
+      if (workoutTime === expectedDate) {
+        streak++;
+        expectedDate -= 24 * 60 * 60 * 1000; // Move to previous day
+      } else {
+        break; // Gap found, streak ends
+      }
+    }
+    
+    return Math.max(0, streak);
+  } catch (error) {
+    console.warn('Streak calculation error:', error.message);
+    return 0;
   }
-  
-  return streak;
 }
 
 // Get user settings with improved error handling and rate limiting
