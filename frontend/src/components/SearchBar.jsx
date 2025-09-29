@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import nutritionApi from '../services/nutritionApi';
+import foodCategoriesService from '../services/foodCategoriesService';
 
 export default function SearchBar({ isMobile = false, onClose = () => {} }) {
   const [query, setQuery] = useState('');
@@ -14,7 +15,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
   const searchRef = useRef(null);
 
   // Get all searchable data
-  const getAllData = () => {
+  const getAllData = async () => {
     const exercises = [];
     const plans = [];
     const meals = [];
@@ -50,58 +51,42 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
       console.error('Error loading plans:', error);
     }
 
-    // Get comprehensive food items from nutrition database
-    const comprehensiveFoodItems = [
-      // Animal Proteins
-      'Chicken Breast', 'Chicken Thigh', 'Turkey Breast', 'Salmon Atlantic', 'Tuna Canned Water', 'Sardines Canned', 'Mackerel Cooked',
-      'Beef Steak Lean', 'Ground Beef Lean', 'Pork Loin Roasted', 'Egg Large Whole', 'Egg Whites', 'Greek Yogurt Plain Nonfat',
-      'Cottage Cheese Low Fat', 'Whey Protein Isolate',
-      
-      // Plant Proteins
-      'Lentils Cooked', 'Chickpeas Cooked', 'Black Beans Cooked', 'Kidney Beans Cooked', 'Tofu Firm', 'Tempeh',
-      'Edamame Shelled', 'Quinoa Cooked', 'Oats Rolled Raw', 'Almonds', 'Peanut Butter', 'Chia Seeds', 'Hemp Seeds', 'Seitan Cooked',
-      
-      // Carbohydrates
-      'White Rice Cooked', 'Brown Rice Cooked', 'Oats Cooked', 'Whole Wheat Bread', 'White Bread', 'Pasta Cooked',
-      'Roti Chapati', 'Potato Boiled', 'Sweet Potato Baked', 'Corn Kernels Cooked', 'Banana Medium', 'Apple Medium', 'Pineapple Chunks',
-      
-      // Dairy & Alternatives
-      'Greek Yogurt', 'Skimmed Milk', 'Whole Milk', 'Cottage Cheese', 'Cheese Slice', 'Whey Protein', 'Soy Milk', 'Almond Milk',
-      
-      // Vegetables
-      'Broccoli', 'Spinach', 'Kale', 'Carrots', 'Bell Pepper', 'Tomatoes', 'Onions', 'Cauliflower',
-      
-      // Fruits
-      'Apple', 'Banana', 'Orange', 'Blueberries', 'Strawberries', 'Grapes', 'Mango', 'Pineapple', 'Papaya', 'Watermelon',
-      
-      // Nuts & Seeds
-      'Almonds', 'Walnuts', 'Cashews', 'Peanuts', 'Chia Seeds', 'Flax Seeds', 'Pumpkin Seeds', 'Sunflower Seeds',
-      
-      // Snacks & Condiments
-      'Almond Butter', 'Dark Chocolate', 'Protein Bar', 'Honey', 'Olive Oil', 'Coconut Oil', 'Butter',
-      
-      // Beverages
-      'Black Coffee', 'Green Tea', 'Black Tea', 'Fresh Orange Juice', 'Smoothie', 'Sports Drink',
-      
-      // Common Foods
-      'Rice', 'Chicken', 'Eggs', 'Milk', 'Bread', 'Pasta', 'Oats', 'Salmon', 'Tuna', 'Beef', 'Pork', 'Turkey',
-      'Yogurt', 'Cheese', 'Nuts', 'Seeds', 'Vegetables', 'Fruits', 'Beans', 'Lentils', 'Tofu', 'Fish', 'Meat'
-    ];
-    
-    comprehensiveFoodItems.forEach((food, index) => {
-      meals.push({
-        id: `food-${index}`,
-        type: 'meal',
-        title: food,
-        description: `Nutritional information available`,
-        icon: '🍽️'
+    // Get comprehensive food items from food categories service
+    try {
+      const foodCategories = await foodCategoriesService.getFoodCategories();
+      Object.values(foodCategories).forEach(category => {
+        if (category.foods) {
+          category.foods.forEach((food, index) => {
+            meals.push({
+              id: `${category.title.toLowerCase().replace(/\s+/g, '-')}-${index}`,
+              type: 'meal',
+              title: food.name,
+              description: `${food.calories} cal • ${food.protein}g protein • ${food.carbs}g carbs • ${food.fat}g fat`,
+              icon: '🍽️',
+              foodData: food
+            });
+          });
+        }
       });
-    });
+    } catch (error) {
+      console.log('Failed to load food categories, using fallback');
+    }
 
     return [...exercises, ...plans, ...meals];
   };
+  
+  // Wrapper to handle async getAllData
+  const getAllDataSync = () => {
+    const [data, setData] = useState([]);
+    
+    useEffect(() => {
+      getAllData().then(setData);
+    }, []);
+    
+    return data;
+  };
 
-  // Enhanced search function with real-time nutrition data
+  // Enhanced search function with comprehensive food database
   const performSearch = async (searchQuery) => {
     if (!searchQuery.trim()) {
       setResults([]);
@@ -111,82 +96,71 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
     setIsSearching(true);
     
     try {
-      const allItems = getAllData();
       const searchTerm = searchQuery.toLowerCase();
+      let allResults = [];
       
-      // Enhanced search terms
-      const searchTerms = [
-        'workout', 'exercise', 'training', 'fitness',
-        'meal', 'food', 'nutrition', 'diet', 'recipe',
-        'plan', 'routine', 'program', 'schedule'
-      ];
-      
-      const isGeneralSearch = searchTerms.some(term => searchTerm.includes(term));
-      
-      // Filter all items
-      const filtered = allItems.filter(item => {
+      // Search in local data (exercises, plans, food database)
+      const allItems = await getAllData();
+      const localResults = allItems.filter(item => {
         return (
           item.title.toLowerCase().includes(searchTerm) ||
           item.description.toLowerCase().includes(searchTerm) ||
-          item.category?.toLowerCase().includes(searchTerm) ||
-          item.type.toLowerCase().includes(searchTerm) ||
-          (isGeneralSearch && (
-            (searchTerm.includes('workout') || searchTerm.includes('exercise') || searchTerm.includes('training')) && item.type === 'exercise' ||
-            (searchTerm.includes('meal') || searchTerm.includes('food') || searchTerm.includes('nutrition')) && item.type === 'meal' ||
-            (searchTerm.includes('plan') || searchTerm.includes('routine') || searchTerm.includes('program')) && item.type === 'plan'
-          ))
+          item.category?.toLowerCase().includes(searchTerm)
         );
       });
       
-      // For food searches, also try to get real-time nutrition data
-      if (searchTerm.length > 2 && (isGeneralSearch && searchTerm.includes('food') || searchTerm.includes('nutrition') || !isGeneralSearch)) {
+      allResults = [...localResults];
+      
+      // For food searches, also try real-time nutrition API
+      if (searchTerm.length > 2) {
         try {
           const nutritionResult = await nutritionApi.lookupFood(searchQuery);
           if (nutritionResult.success && nutritionResult.data) {
-            // Add real-time nutrition result at the top
-            filtered.unshift({
-              id: `nutrition-${Date.now()}`,
-              type: 'meal',
-              title: nutritionResult.data.parsedName || nutritionResult.data.name,
-              description: `${nutritionResult.data.calories} cal • ${nutritionResult.data.protein}g protein • Real-time data`,
-              icon: '🍽️',
-              nutritionData: nutritionResult.data
-            });
+            // Check if this food is already in results to avoid duplicates
+            const existingFood = allResults.find(item => 
+              item.title.toLowerCase() === (nutritionResult.data.parsedName || nutritionResult.data.name).toLowerCase()
+            );
+            
+            if (!existingFood) {
+              allResults.unshift({
+                id: `api-${Date.now()}`,
+                type: 'meal',
+                title: nutritionResult.data.parsedName || nutritionResult.data.name,
+                description: `${nutritionResult.data.calories} cal • ${nutritionResult.data.protein}g protein • ${nutritionResult.data.carbs}g carbs • ${nutritionResult.data.fat}g fat • API`,
+                icon: '🍽️',
+                nutritionData: nutritionResult.data
+              });
+            }
           }
         } catch (error) {
-          console.log('Real-time nutrition lookup failed, using database results');
+          console.log('API lookup failed, using database results');
         }
       }
       
       // Sort by relevance
-      const sorted = filtered.sort((a, b) => {
+      const sorted = allResults.sort((a, b) => {
         const aTitle = a.title.toLowerCase();
         const bTitle = b.title.toLowerCase();
         
-        // Prioritize exact matches
+        // Exact matches first
         if (aTitle === searchTerm && bTitle !== searchTerm) return -1;
         if (bTitle === searchTerm && aTitle !== searchTerm) return 1;
         
-        // Prioritize starts with
+        // Starts with matches next
         if (aTitle.startsWith(searchTerm) && !bTitle.startsWith(searchTerm)) return -1;
         if (bTitle.startsWith(searchTerm) && !aTitle.startsWith(searchTerm)) return 1;
         
-        // Prioritize nutrition data (real-time results)
+        // API results (more accurate) before database results
         if (a.nutritionData && !b.nutritionData) return -1;
         if (b.nutritionData && !a.nutritionData) return 1;
         
         return aTitle.localeCompare(bTitle);
       });
       
-      setResults(sorted.slice(0, 25)); // Show more results
+      setResults(sorted.slice(0, 20));
     } catch (error) {
       console.error('Search error:', error);
-      // Fallback to basic search
-      const allItems = getAllData();
-      const filtered = allItems.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setResults(filtered.slice(0, 20));
+      setResults([]);
     }
     
     setIsSearching(false);
