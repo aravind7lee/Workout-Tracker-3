@@ -84,7 +84,7 @@ export default function WorkoutPlanBuilderHeader() {
               transition={{ duration: 1, delay: 0.3 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 drop-shadow-2xl"
               style={{
-                color: 'var(--color-text-primary, #FFFFFF)',
+                color: '#f59e0b',
                 textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6)'
               }}
             >

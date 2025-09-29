@@ -488,8 +488,9 @@ export default function PlansBuilder() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight"
+                  className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight"
                   style={{
+                    color: '#f59e0b',
                     textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                     fontWeight: '700'
                   }}

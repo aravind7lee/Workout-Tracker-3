@@ -345,6 +345,7 @@ export default function LibrarySimple() {
               >
                 <motion.h1 
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 hero-text-contrast leading-tight"
+                  style={{ color: '#f59e0b' }}
                   variants={{
                     hidden: { opacity: 0, y: 12 },
                     visible: { 
@@ -417,63 +418,23 @@ export default function LibrarySimple() {
       {/* Main Content Area */}
       <div className="relative bg-slate-900 pt-12 pb-12">
         <div className="container mx-auto px-4 max-w-7xl space-y-6 sm:space-y-8">
-      {/* Status Bar - positioned below hero */}
-      <div className="mb-8">
-        <div className="card p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
-              <span className="text-white font-medium">
-                {isOnline ? '🟢 LIVE Mode - Real-time Sync' : '🔴 OFFLINE Mode - Local Storage'}
-              </span>
-            </div>
-            {lastSync && (
-              <div className="text-xs text-slate-400">
-                Last sync: {lastSync.toLocaleTimeString()}
-              </div>
-            )}
-          </div>
-          
-          {user && userProgress && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-xl font-bold text-blue-400">{userProgress.workouts || 0}</div>
-                <div className="text-xs text-slate-400">Total Workouts</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-green-400">{userProgress.streak || 0}</div>
-                <div className="text-xs text-slate-400">Day Streak</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-purple-400">{userProgress.xpPoints || 0}</div>
-                <div className="text-xs text-slate-400">XP Points</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-orange-400">
-                  {userProgress.weeklyGoal?.completed || 0}/{userProgress.weeklyGoal?.target || 4}
-                </div>
-                <div className="text-xs text-slate-400">Weekly Goal</div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+
       
       {/* Search and Filters */}
       <div id="search-filters" className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
-        <div className="relative">
+        <div className="relative max-w-2xl mx-auto">
           <input 
             value={searchQuery} 
             onChange={e => setSearchQuery(e.target.value)} 
-            className="w-full p-3 sm:p-4 pl-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base" 
+            className="w-full p-4 pl-14 pr-6 rounded-xl bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-lg" 
             placeholder="Search exercises by name, type, or muscle group..." 
           />
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400">
+          <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg">
             🔍
           </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
           <select 
             value={filters.category} 
             onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}

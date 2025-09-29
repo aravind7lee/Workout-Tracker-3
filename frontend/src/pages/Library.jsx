@@ -429,7 +429,8 @@ export default function Library() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white px-4 max-w-4xl mx-auto">
                 <motion.h1 
-                  className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-2xl leading-tight"
+                  className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl leading-tight"
+                  style={{ color: '#f59e0b' }}
                   initial={{ y: 12, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}

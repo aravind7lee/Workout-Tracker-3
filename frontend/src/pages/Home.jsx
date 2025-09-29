@@ -360,29 +360,54 @@ export default function Home() {
       <button
         onClick={() => handleNav(stat.path)}
         aria-label={`Open ${stat.label}`}
-        className="relative group p-3 sm:p-4 rounded-2xl bg-slate-800/60 border border-slate-600/30 hover:shadow-xl hover:bg-slate-800/80 transform transition-all duration-300 text-left w-full hover:scale-105 active:scale-95"
+        className="relative group transform transition-all duration-500 text-left w-full hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
       >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className={`flex items-center justify-center rounded-lg p-2 sm:p-3 ${c.bgSoft} ${c.border ? c.border : ''}`}>
-            <div className="text-xl sm:text-2xl">{stat.icon}</div>
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className={`text-base sm:text-lg lg:text-2xl font-extrabold text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''}`}>
-              {typeof stat.value === 'number' ? count : stat.value}
-              {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && <span className="ml-1">🔥</span>}
+        {/* Glow Effect */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+        
+        {/* Main Card */}
+        <div className="relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl group-hover:border-white/20 group-hover:shadow-3xl transition-all duration-500">
+          {/* Icon and Value Section */}
+          <div className="flex items-start justify-between mb-3 sm:mb-4">
+            <div className={`flex items-center justify-center rounded-xl sm:rounded-2xl p-3 sm:p-4 bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <div className="text-xl sm:text-2xl lg:text-3xl">{stat.icon}</div>
             </div>
-            <div className="text-xs text-slate-400 truncate">{stat.label}</div>
-            <div className="text-xs mt-1 text-green-400 line-clamp-1">{stat.subtitle}</div>
+            
+            {/* Live Indicator */}
+            <div className="flex flex-col items-end gap-1">
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${c.text} bg-gradient-to-r ${c.bgSoft} border ${c.border}`}>
+                <div className={`w-1.5 h-1.5 rounded-full ${isOnline && stats?.isRealTime ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
+                {isOnline && stats?.isRealTime ? 'LIVE' : 'OFF'}
+              </span>
+            </div>
           </div>
+          
+          {/* Stats Display */}
+          <div className="space-y-1 sm:space-y-2">
+            <div className={`text-xl sm:text-2xl lg:text-3xl font-black text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''} group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:${c.text.replace('text-', 'from-')} group-hover:to-white transition-all duration-300`}>
+              {typeof stat.value === 'number' ? count : stat.value}
+              {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && <span className="ml-1 sm:ml-2 animate-bounce">🔥</span>}
+            </div>
+            
+            <div className="text-xs sm:text-sm font-semibold text-slate-300 group-hover:text-white transition-colors duration-300">
+              {stat.label}
+            </div>
+            
+            <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors duration-300 line-clamp-1">
+              {stat.subtitle}
+            </div>
+          </div>
+          
+          {/* Action Arrow */}
+          <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 text-slate-500 group-hover:text-white transition-all duration-300 transform group-hover:translate-x-1">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
+          
+          {/* Decorative Elements */}
+          <div className={`absolute -top-2 -right-2 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${c.bg}/10 rounded-full blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
         </div>
-
-        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 text-xs">
-          <span className={`inline-block px-1.5 py-0.5 sm:px-2 rounded text-xs ${c.text} font-semibold`}>
-            {isOnline && stats?.isRealTime ? 'LIVE' : 'OFF'}
-          </span>
-        </div>
-
-        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 text-slate-400 text-xs group-hover:text-white transition-colors">→</div>
       </button>
     );
   };
@@ -397,26 +422,53 @@ export default function Home() {
         tabIndex={0}
         role="button"
         aria-pressed={isActive}
-        className={`relative p-4 sm:p-6 rounded-2xl border border-slate-700/40 bg-slate-900/50 backdrop-blur-sm transform transition-all duration-400 focus:outline-none focus:ring-2 cursor-pointer group ${isActive ? `${c.ring} scale-105 shadow-2xl bg-slate-800/70` : 'hover:scale-102 hover:bg-slate-800/60 hover:border-slate-600/60'}`}
+        className={`relative group cursor-pointer transform transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-white/20 ${isActive ? 'scale-105' : 'hover:scale-102'}`}
       >
-        <div className="mb-3 sm:mb-4 text-3xl sm:text-4xl transition-transform duration-300 group-hover:scale-110">{feature.icon}</div>
-        <h3 className={`font-bold text-base sm:text-lg mb-2 ${c.text} transition-colors duration-300`}>{feature.title}</h3>
-        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed min-h-[40px] sm:min-h-[48px] group-hover:text-slate-300 transition-colors duration-300">{feature.desc}</p>
-
-        {feature.title === 'STREAK MASTER' && (
-          <div className="mt-3 sm:mt-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
-            <span className="text-xs text-orange-400 font-medium">Current: {realTimeCurrentStreak} days</span>
-          </div>
-        )}
-
-        {/* Enhanced accent with better positioning */}
-        <div className={`absolute -right-8 -top-8 w-32 h-32 sm:-right-10 sm:-top-10 sm:w-40 sm:h-40 rounded-full ${c.bgSoft} blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-400 pointer-events-none`} />
+        {/* Glow Effect */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500 ${isActive ? 'opacity-40' : ''}`} />
         
-        {/* Active indicator */}
-        {isActive && (
-          <div className="absolute top-3 right-3 w-2 h-2 bg-white rounded-full animate-ping" />
-        )}
+        {/* Main Card */}
+        <div className={`relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-500 ${isActive ? 'border-white/30 shadow-3xl' : 'border-white/10 hover:border-white/20'}`}>
+          {/* Icon */}
+          <div className="mb-4 sm:mb-6">
+            <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110 ${isActive ? 'scale-110' : ''}`}>
+              <span className="text-2xl sm:text-3xl">{feature.icon}</span>
+            </div>
+          </div>
+          
+          {/* Content */}
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className={`font-black text-base sm:text-lg transition-all duration-300 ${isActive ? `text-transparent bg-clip-text bg-gradient-to-r ${c.text.replace('text-', 'from-')} to-white` : `${c.text} group-hover:text-white`}`}>
+              {feature.title}
+            </h3>
+            
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed min-h-[48px] sm:min-h-[60px] group-hover:text-slate-300 transition-colors duration-300">
+              {feature.desc}
+            </p>
+            
+            {/* Special Streak Display */}
+            {feature.title === 'STREAK MASTER' && (
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-400/20 rounded-lg sm:rounded-xl">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-orange-400 to-red-400 animate-pulse" />
+                <span className="text-xs sm:text-sm font-semibold text-orange-300">
+                  Current: <span className="text-white">{realTimeCurrentStreak}</span> days
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Active Indicator */}
+          {isActive && (
+            <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-white to-blue-200 rounded-full animate-ping" />
+              <div className="absolute inset-0 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full" />
+            </div>
+          )}
+          
+          {/* Decorative Elements */}
+          <div className={`absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br ${c.bg}/10 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 ${isActive ? 'opacity-30' : ''}`} />
+          <div className={`absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-tr ${c.bg}/5 rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+        </div>
       </div>
     );
   };
@@ -424,11 +476,37 @@ export default function Home() {
   const GlobalStat = ({ stat }) => {
     const c = colorClasses[stat.color] || colorClasses.blue;
     return (
-      <div className="p-4 sm:p-6 rounded-2xl bg-slate-800/50 border border-slate-700/30 text-center hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 group">
-        <div className="text-2xl sm:text-3xl mb-2 sm:mb-3 transition-transform duration-300 group-hover:scale-110">{stat.icon}</div>
-        <div className={`text-xl sm:text-2xl font-extrabold ${c.text} mb-1 transition-colors duration-300`}>{stat.value}</div>
-        <div className="text-white font-semibold text-xs sm:text-sm mb-1">{stat.label}</div>
-        <div className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300">{stat.sublabel}</div>
+      <div className="relative group transform transition-all duration-500 hover:scale-105">
+        {/* Glow Effect */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+        
+        {/* Main Card */}
+        <div className="relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-white/20 group-hover:shadow-3xl transition-all duration-500">
+          {/* Icon */}
+          <div className="mb-4 sm:mb-6">
+            <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+              <span className="text-2xl sm:text-3xl">{stat.icon}</span>
+            </div>
+          </div>
+          
+          {/* Value */}
+          <div className={`text-2xl sm:text-3xl lg:text-4xl font-black mb-2 transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:${c.text.replace('text-', 'from-')} group-hover:to-white ${c.text}`}>
+            {stat.value}
+          </div>
+          
+          {/* Label */}
+          <div className="text-white font-bold text-xs sm:text-sm mb-1 sm:mb-2 group-hover:text-slate-100 transition-colors duration-300">
+            {stat.label}
+          </div>
+          
+          {/* Sublabel */}
+          <div className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300 font-medium">
+            {stat.sublabel}
+          </div>
+          
+          {/* Decorative Elements */}
+          <div className={`absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${c.bg}/10 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
+        </div>
       </div>
     );
   };
@@ -437,7 +515,7 @@ export default function Home() {
      Main render
      -------------------------- */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black relative overflow-hidden">
       {/* PREMIUM GYM LOADING SCREEN */}
       {isLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-black to-slate-900">
@@ -507,22 +585,35 @@ export default function Home() {
           </div>
         </div>
       )}
-      {/* Background accents */}
+      {/* Enhanced Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-44 -right-36 w-96 h-96 bg-blue-500/8 rounded-full blur-3xl animate-slow-pulse" />
+        {/* Primary Gradient Orbs */}
+        <div className="absolute -top-64 -right-64 w-[800px] h-[800px] bg-gradient-to-br from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-3xl animate-slow-pulse" />
         <div 
-          className="absolute -bottom-44 -left-36 w-96 h-96 bg-purple-500/8 rounded-full blur-3xl animate-slow-pulse" 
+          className="absolute -top-32 left-1/2 transform -translate-x-1/2 w-[400px] h-[400px] bg-gradient-to-tr from-purple-500/8 via-pink-500/5 to-transparent rounded-full blur-3xl animate-slow-pulse" 
           style={{ animationDelay: '2s' }} 
         />
         <div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-green-500/5 rounded-full blur-3xl animate-slow-pulse" 
-          style={{ animationDelay: '3.5s' }} 
+          className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-gradient-to-bl from-orange-500/8 via-red-500/5 to-transparent rounded-full blur-3xl animate-slow-pulse" 
+          style={{ animationDelay: '4s' }} 
         />
-
-        {/* particles */}
-        <div className="absolute top-24 left-12 w-2 h-2 bg-blue-400/30 rounded-full animate-bounce" />
-        <div className="absolute top-48 right-24 w-1 h-1 bg-purple-400/40 rounded-full animate-ping" />
-        <div className="absolute bottom-36 left-1/4 w-3 h-3 bg-green-400/20 rounded-full animate-pulse" />
+        
+        {/* Secondary Accent Orbs */}
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-gradient-to-r from-green-500/6 to-teal-500/4 rounded-full blur-2xl animate-slow-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-l from-yellow-500/8 to-orange-500/6 rounded-full blur-2xl animate-slow-pulse" style={{ animationDelay: '3s' }} />
+        
+        {/* Animated Particles */}
+        <div className="absolute top-32 left-16 w-3 h-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-bounce opacity-60" />
+        <div className="absolute top-64 right-32 w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-ping opacity-50" />
+        <div className="absolute bottom-48 left-1/4 w-4 h-4 bg-gradient-to-r from-green-400 to-teal-400 rounded-full animate-pulse opacity-40" />
+        <div className="absolute top-1/2 right-16 w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute bottom-32 right-1/4 w-3 h-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-ping opacity-30" style={{ animationDelay: '2.5s' }} />
+        
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
+          backgroundSize: '50px 50px'
+        }} />
       </div>
 
       {/* Hero (parallax) */}
@@ -530,49 +621,89 @@ export default function Home() {
         <Hero />
       </div>
 
-      <div className={`container mx-auto px-4 py-8 relative z-10 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {/* Status Bar */}
-        <section data-animate data-id="status-bar" id="status-bar" className="mb-8">
+      <div className={`container mx-auto px-3 sm:px-4 py-3 sm:py-4 relative z-10 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-6 sm:space-y-8`}>
+        {/* Enhanced Status Bar */}
+        <section data-animate data-id="status-bar" id="status-bar" className="mb-6 sm:mb-10">
           <div className={`transition-all duration-700 transform ${isVisible['status-bar'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="bg-gradient-to-r from-slate-800/80 via-slate-700/60 to-slate-800/80 backdrop-blur-xl border border-slate-600/20 rounded-2xl p-4 shadow-2xl">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`} />
-                    <span className="text-sm font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
+            <div className="relative group">
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl sm:rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+              
+              {/* Main Card */}
+              <div className="relative bg-gradient-to-r from-slate-900/95 via-slate-800/90 to-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 w-full sm:w-auto">
+                    {/* Status Indicator */}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="relative">
+                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-500'} shadow-lg`} />
+                        {isOnline && <div className="absolute inset-0 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-400 animate-ping opacity-75" />}
+                      </div>
+                      <span className="text-xs sm:text-sm font-black text-white tracking-wider">
+                        {isOnline ? '🟢 LIVE SYNC' : '🔴 OFFLINE'}
+                      </span>
+                    </div>
+
+                    {/* Real-time Clock */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 text-base sm:text-lg">⏰</span>
+                      <div className="text-xs sm:text-sm text-white font-mono bg-slate-800/50 px-2 sm:px-3 py-1 rounded-lg border border-slate-700/50" aria-live="polite">
+                        {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      </div>
+                    </div>
+
+                    {/* Server Status */}
+                    <div className="hidden md:flex items-center gap-2 text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                        <span className="text-green-400 font-semibold">Server Online</span>
+                      </div>
+                      <span className="text-slate-500">•</span>
+                      <span className="text-slate-400">Latency: <span className="text-green-400 font-semibold">12ms</span></span>
+                    </div>
                   </div>
 
-                  <div className="text-sm text-slate-300 font-mono" aria-live="polite">
-                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  {/* Live Users Counter */}
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2">
+                      <span className="text-blue-400 text-lg sm:text-xl animate-pulse">👥</span>
+                      <div className="flex flex-col">
+                        <span className="font-black text-white text-sm sm:text-lg tabular-nums">{liveUsers.toLocaleString()}</span>
+                        <span className="text-xs text-blue-300 font-medium hidden sm:block">ELITE ATHLETES ONLINE</span>
+                        <span className="text-xs text-blue-300 font-medium sm:hidden">ONLINE</span>
+                      </div>
+                    </div>
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-green-400 to-blue-400 rounded-full animate-ping shadow-lg" />
                   </div>
-
-                  <div className="hidden sm:block text-xs text-slate-400">
-                    Server: Online • Latency: 12ms
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-slate-300 flex items-center gap-2">
-                    <span className="text-blue-400">👥</span>
-                    <span className="font-bold text-blue-400 tabular-nums">{liveUsers.toLocaleString()}</span>
-                    <span>users online</span>
-                  </div>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Quick Stats - Always show for demo purposes */}
-        <section data-animate data-id="quick-stats" id="quick-stats" className="mb-12">
+        {/* Enhanced Quick Stats */}
+        <section data-animate data-id="quick-stats" id="quick-stats" className="mb-10 sm:mb-16">
           <div className={`transition-all duration-700 delay-150 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="text-center mb-6">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white mb-2">YOUR ELITE STATUS</h2>
-              <p className="text-sm sm:text-base text-slate-400">Real-time performance metrics, personalized for you</p>
+            <div className="text-center mb-6 sm:mb-10">
+              <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-blue-400 uppercase">Performance Dashboard</span>
+                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+              </div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black mb-3 sm:mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200">
+                  YOUR
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-2 sm:ml-3">
+                  STATUS
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-4">
+                Real-time performance metrics, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">personalized for champions</span>
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {quickStats.map((stat, i) => (
                 <StatCard key={`stat-${i}`} stat={stat} />
               ))}
@@ -580,56 +711,421 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Features */}
-        <section data-animate data-id="features" id="features" className="mb-12">
+        {/* Enhanced Features Section */}
+        <section data-animate data-id="features" id="features" className="mb-10 sm:mb-16">
           <div className={`transition-all duration-700 delay-300 transform ${isVisible['features'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white mb-2">ELITE FITNESS FEATURES</h2>
-              <p className="text-sm sm:text-base text-slate-400">Professional-grade tools for serious athletes</p>
-              <div className="flex items-center justify-center gap-2 mt-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-xs text-green-400">Real-time data synchronization</span>
+            <div className="text-center mb-8 sm:mb-12">
+              <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-purple-400 uppercase">Elite Arsenal</span>
+                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
+              </div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black mb-3 sm:mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">
+                  GRIND-X FITNESS
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 ml-2 sm:ml-3">
+                  FEATURES
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-3 sm:mb-4 px-4">
+                Professional-grade tools for <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">serious athletes</span>
+              </p>
+              <div className="flex items-center justify-center gap-2 sm:gap-3">
+                <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full animate-pulse" />
+                <span className="text-xs sm:text-sm text-green-400 font-medium">Real-time data synchronization</span>
+                <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-ping" />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {features.map((f, idx) => <FeatureCard key={f.id} feature={f} index={idx} />)}
             </div>
           </div>
         </section>
 
-        {/* Global Community Stats */}
-        <section data-animate data-id="global-stats" id="global-stats" className="mb-12">
+        {/* Enhanced Global Community Stats */}
+        <section data-animate data-id="global-stats" id="global-stats" className="mb-16">
           <div className={`transition-all duration-700 delay-450 transform ${isVisible['global-stats'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-white mb-2">GLOBAL COMMUNITY STATS</h2>
-              <p className="text-sm sm:text-base text-slate-400">Join thousands of elite athletes worldwide</p>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.3em] text-green-400 uppercase">Global Network</span>
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-200 to-teal-200">
+                  GLOBAL COMMUNITY
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-green-200 to-blue-200 ml-3">
+                  STATS
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Join thousands of <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-400 font-semibold">elite athletes worldwide</span>
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {globalStats.map((s, i) => <GlobalStat key={`global-${i}`} stat={s} />)}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section data-animate data-id="cta" id="cta" className="text-center">
-          <div className={`transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-green-100 to-white mb-4">READY TO DOMINATE?</h2>
-            <p className="text-sm sm:text-base text-slate-400 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">Join the elite community of athletes who track their progress with precision and achieve extraordinary results.</p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+        {/* Progress Tracking Features */}
+        <section data-animate data-id="progress" id="progress" className="mb-16 relative overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-full blur-3xl animate-slow-pulse" />
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-gradient-to-tr from-blue-500/10 via-cyan-500/10 to-green-500/10 rounded-full blur-3xl animate-slow-pulse" style={{ animationDelay: '2s' }} />
+          </div>
+          <div className={`transition-all duration-700 delay-500 transform ${isVisible['progress'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-white mb-2">PROGRESS TRACKING</h2>
+              <p className="text-sm sm:text-base text-slate-400">Advanced analytics to monitor your fitness journey</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+              {[
+                {
+                  name: "Sarah M.",
+                  achievement: "Lost 30lbs in 4 months",
+                  quote: "The real-time tracking kept me motivated every single day. Best fitness app I've ever used!",
+                  streak: 127,
+                  workouts: 89,
+                  avatar: "👩‍💼"
+                },
+                {
+                  name: "Mike R.",
+                  achievement: "Gained 15lbs muscle",
+                  quote: "The analytics helped me optimize my workouts. I can see exactly what works for my body.",
+                  streak: 95,
+                  workouts: 156,
+                  avatar: "👨‍💻"
+                },
+                {
+                  name: "Alex K.",
+                  achievement: "Marathon PR: 3:15",
+                  quote: "The streak system is addictive in the best way. 200+ days and counting!",
+                  streak: 203,
+                  workouts: 278,
+                  avatar: "🏃‍♂️"
+                }
+              ].map((story, i) => (
+                <div key={i} className="relative group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 h-full flex flex-col">
+                  {/* Card Background with Gradient Border */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-3xl blur-sm opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+                  <div className="absolute inset-0.5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl" />
+                  
+                  {/* Main Card Content */}
+                  <div className="relative bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-orange-500/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex-1 flex flex-col group-hover:border-white/20 transition-all duration-500">
+                    {/* Verified Badge */}
+                    <div className="absolute top-4 right-4">
+                      <div className="flex items-center gap-1 px-2 py-1 bg-green-500/20 border border-green-400/30 rounded-full">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                        <span className="text-xs text-green-400 font-medium">VERIFIED</span>
+                      </div>
+                    </div>
+
+                    {/* Profile Section */}
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="relative w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-2xl flex items-center justify-center text-2xl shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        {story.avatar}
+                        <div className="absolute inset-0 bg-white/10 rounded-2xl" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-bold text-lg mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-purple-200 transition-all duration-300">
+                          {story.name}
+                        </h3>
+                        <p className="text-slate-400 text-sm mb-2">Elite Athlete</p>
+                        <div className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full text-xs font-bold text-white shadow-lg">
+                          <span>🏆</span>
+                          {story.achievement}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quote */}
+                    <blockquote className="text-slate-200 leading-relaxed mb-6 text-sm group-hover:text-white transition-colors duration-300 relative flex-1">
+                      <span className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 absolute -top-2 -left-2 font-serif">"</span>
+                      <span className="relative z-10 italic">{story.quote}</span>
+                    </blockquote>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(5)].map((_, idx) => (
+                        <span key={idx} className="text-yellow-400 text-lg animate-pulse" style={{ animationDelay: `${idx * 0.1}s` }}>⭐</span>
+                      ))}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex justify-between items-center pt-4 border-t border-white/10 mt-auto">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <span className="text-orange-400 text-lg">🔥</span>
+                          <span className="text-white font-bold text-sm">{story.streak}</span>
+                          <span className="text-slate-400 text-xs">days</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-blue-400 text-lg">💪</span>
+                          <span className="text-white font-bold text-sm">{story.workouts}</span>
+                          <span className="text-slate-400 text-xs">workouts</span>
+                        </div>
+                      </div>
+                      
+                      {/* Floating Action */}
+                      <button className="opacity-0 group-hover:opacity-100 transition-all duration-300 px-3 py-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full text-xs font-bold text-white shadow-lg hover:scale-110 active:scale-95">
+                        View Story
+                      </button>
+                    </div>
+
+                    {/* Decorative Elements */}
+                    <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+                    <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-15 group-hover:opacity-30 transition-opacity duration-500" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Quick Actions */}
+        <section data-animate data-id="quick-actions" id="quick-actions" className="mb-16">
+          <div className={`transition-all duration-700 delay-550 transform ${isVisible['quick-actions'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.3em] text-orange-400 uppercase">Quick Access</span>
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-orange-200 to-yellow-200">
+                  QUICK
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-orange-200 to-red-200 ml-3">
+                  ACTIONS
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Jump straight into your <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 font-semibold">fitness routine</span>
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+              {[
+                { icon: '📋', label: 'My Plans', path: '/my-plans', color: 'blue' },
+                { icon: '📊', label: 'View Progress', path: '/analytics', color: 'purple' },
+                { icon: '🥗', label: 'Log Meal', path: '/nutrition', color: 'green' },
+                { icon: '📚', label: 'Exercise Library', path: '/library', color: 'orange' }
+              ].map((action, i) => {
+                const c = colorClasses[action.color] || colorClasses.blue;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => navigate(action.path)}
+                    className="relative group transform transition-all duration-500 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/20"
+                  >
+                    {/* Glow Effect */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-2xl sm:rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+                    
+                    {/* Main Card */}
+                    <div className={`relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-white/20 group-hover:shadow-3xl transition-all duration-500`}>
+                      {/* Icon */}
+                      <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg mb-3 sm:mb-4 transition-transform duration-300 group-hover:scale-110`}>
+                        <span className="text-2xl sm:text-3xl">{action.icon}</span>
+                      </div>
+                      
+                      {/* Label */}
+                      <div className={`${c.text} font-bold text-xs sm:text-sm group-hover:text-white transition-colors duration-300`}>
+                        {action.label}
+                      </div>
+                      
+                      {/* Decorative Elements */}
+                      <div className={`absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${c.bg}/10 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Workout Categories */}
+        <section data-animate data-id="categories" id="categories" className="mb-12">
+          <div className={`transition-all duration-700 delay-700 transform ${isVisible['categories'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.2em] text-blue-400 uppercase">Track Everything</span>
+                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200">
+                  WORKOUT
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-3">
+                  CATEGORIES
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Track any type of workout with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">detailed analytics</span>
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+              {[
+                {
+                  title: "STRENGTH TRAINING",
+                  exercises: "50+ Exercises",
+                  tracking: "Sets, Reps, Weight",
+                  description: "Track your strength gains with detailed weight progression and performance analytics.",
+                  features: ["Weight tracking", "Rep counting", "Progress charts", "PR notifications"],
+                  gradient: "from-red-500 via-orange-500 to-yellow-500",
+                  bgGradient: "from-red-500/5 via-orange-500/5 to-yellow-500/5",
+                  icon: "🏋️"
+                },
+                {
+                  title: "CARDIO WORKOUTS",
+                  exercises: "30+ Activities",
+                  tracking: "Time, Distance, Calories",
+                  description: "Monitor your cardio sessions with heart rate zones and endurance metrics.",
+                  features: ["Time tracking", "Distance logs", "Calorie burn", "Heart rate zones"],
+                  gradient: "from-blue-500 via-purple-500 to-pink-500",
+                  bgGradient: "from-blue-500/5 via-purple-500/5 to-pink-500/5",
+                  icon: "🏃",
+                  popular: true
+                },
+                {
+                  title: "BODYWEIGHT TRAINING",
+                  exercises: "40+ Movements",
+                  tracking: "Reps, Duration, Form",
+                  description: "Perfect for home workouts with detailed form tracking and progression monitoring.",
+                  features: ["Rep counting", "Duration timer", "Form notes", "Difficulty scaling"],
+                  gradient: "from-green-500 via-teal-500 to-cyan-500",
+                  bgGradient: "from-green-500/5 via-teal-500/5 to-cyan-500/5",
+                  icon: "🤸"
+                }
+              ].map((category, i) => (
+                <div key={i} className="relative group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 h-full flex flex-col">
+                  {category.popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold px-4 py-1 rounded-full shadow-lg">
+                        ⭐ MOST TRACKED
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} rounded-3xl blur-sm opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
+                  <div className="absolute inset-0.5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl" />
+                  
+                  <div className={`relative bg-gradient-to-br ${category.bgGradient} backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex-1 flex flex-col group-hover:border-white/20 transition-all duration-500`}>
+                    <div className="text-center mb-6">
+                      <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{category.icon}</div>
+                      <h3 className={`text-xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r ${category.gradient}`}>
+                        {category.title}
+                      </h3>
+                      <div className="flex justify-center gap-4 text-sm">
+                        <span className="text-slate-400">{category.exercises}</span>
+                        <span className="text-slate-400">•</span>
+                        <span className="text-blue-400 font-semibold">{category.tracking}</span>
+                      </div>
+                    </div>
+                    
+                    <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-1 text-center">
+                      {category.description}
+                    </p>
+                    
+                    <div className="space-y-2 mb-6">
+                      {category.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm">
+                          <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${category.gradient}`} />
+                          <span className="text-slate-300">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <button className={`w-full py-3 bg-gradient-to-r ${category.gradient} text-white font-bold rounded-xl hover:scale-105 active:scale-95 transition-transform duration-300 shadow-lg mt-auto`}>
+                      Start Tracking
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Equipment Tracking */}
+        <section data-animate data-id="equipment" id="equipment" className="mb-12 relative z-20">
+          <div className={`transition-all duration-700 delay-750 transform ${isVisible['equipment'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-white mb-2">EQUIPMENT TRACKING</h2>
+              <p className="text-sm sm:text-base text-slate-400">Track workouts with any equipment • From home to commercial gym</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+              {[
+                { name: 'Barbells', icon: '🏋️', count: '50+ exercises' },
+                { name: 'Dumbbells', icon: '💪', count: '80+ exercises' },
+                { name: 'Machines', icon: '⚙️', count: '120+ exercises' },
+                { name: 'Cardio', icon: '🏃', count: '30+ exercises' },
+                { name: 'Bodyweight', icon: '🤸', count: '60+ exercises' },
+                { name: 'Cables', icon: '🔗', count: '40+ exercises' }
+              ].map((equipment, i) => (
+                <div key={i} className="group p-6 bg-slate-800/50 border border-slate-700/30 rounded-2xl hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 text-center relative z-30">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">{equipment.icon}</div>
+                  <h3 className="text-white font-bold text-sm mb-1">{equipment.name}</h3>
+                  <p className="text-slate-400 text-xs">{equipment.count}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced CTA Section */}
+        <section data-animate data-id="cta" id="cta" className="text-center relative">
+          {/* Background Effects */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-br from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-slow-pulse" />
+            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-gradient-to-tl from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-full blur-3xl animate-slow-pulse" style={{ animationDelay: '2s' }} />
+          </div>
+          
+          <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="mb-12">
+              <div className="inline-flex items-center gap-3 mb-6">
+                <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+                <span className="text-xs font-bold tracking-[0.3em] text-green-400 uppercase">Join The Elite</span>
+                <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+              </div>
+              
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-200 to-cyan-200">
+                  READY TO
+                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-3">
+                  DOMINATE?
+                </span>
+              </h2>
+              
+              <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4">
+                Join the elite community of athletes who track their progress with <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 font-semibold">precision</span> and achieve <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-semibold">extraordinary results</span>.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
               {isAuthenticated() ? (
                 <>
                   <button 
                     onClick={() => navigate('/dashboard')} 
-                    className="px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:scale-105 hover:shadow-2xl active:scale-95 transform transition-all duration-300 text-white shadow-xl"
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400/50 hover:shadow-3xl"
                   >
                     🚀 GO TO DASHBOARD
                   </button>
+                  
                   <button 
                     onClick={() => navigate('/current-streak')} 
-                    className="px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-bold bg-gradient-to-r from-orange-600 to-red-600 hover:scale-105 hover:shadow-2xl active:scale-95 transform transition-all duration-300 text-white shadow-xl"
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-400/50 hover:shadow-3xl"
                   >
                     🔥 CHECK STREAK ({realTimeCurrentStreak})
                   </button>
@@ -638,13 +1134,14 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => navigate('/register')} 
-                    className="px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 hover:scale-105 hover:shadow-2xl active:scale-95 transform transition-all duration-300 text-white shadow-xl"
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400/50 hover:shadow-3xl"
                   >
                     🎆 START YOUR JOURNEY
                   </button>
+                  
                   <button 
                     onClick={() => navigate('/login')} 
-                    className="px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-bold border border-slate-700 text-white hover:scale-105 hover:bg-slate-800/50 hover:border-slate-600 active:scale-95 transform transition-all duration-300"
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-white/20 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/20 hover:border-white/40 hover:shadow-3xl"
                   >
                     🔑 LOGIN
                   </button>
@@ -696,12 +1193,23 @@ export default function Home() {
       <style>
         {`
           @keyframes slow-pulse {
-            0% { transform: scale(1); opacity: 0.85; }
-            50% { transform: scale(1.03); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.85; }
+            0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            25% { transform: scale(1.02) rotate(0.5deg); opacity: 0.9; }
+            50% { transform: scale(1.05) rotate(0deg); opacity: 1; }
+            75% { transform: scale(1.02) rotate(-0.5deg); opacity: 0.9; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
           }
           .animate-slow-pulse { 
-            animation: slow-pulse 8s ease-in-out infinite; 
+            animation: slow-pulse 12s ease-in-out infinite; 
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(-5px) rotate(-1deg); }
+          }
+          .animate-float {
+            animation: float 6s ease-in-out infinite;
           }
           
           @keyframes shrink {

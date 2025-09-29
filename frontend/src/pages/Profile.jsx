@@ -299,7 +299,7 @@ const Profile = () => {
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-white flex items-center gap-3">
+            <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-3" style={{ color: '#f59e0b' }}>
               💼 My Profile
               <span className={`text-xs px-3 py-1 rounded-full border ${
                 isOnline 
@@ -348,7 +348,7 @@ const Profile = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div className="card">
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: '#f59e0b' }}>
               🖼️ Profile Picture
               <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
                 CLOUDINARY
@@ -378,7 +378,7 @@ const Profile = () => {
         >
           <div className="card">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+              <h2 className="text-xl font-semibold flex items-center gap-2" style={{ color: '#f59e0b' }}>
                 📝 Profile Information
                 {user?.synced === false && (
                   <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full border border-yellow-500/30">

@@ -15,6 +15,7 @@ const DashboardHero = () => {
   
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // LQIP for Dashboard
   const DASHBOARD_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
@@ -46,7 +47,10 @@ const DashboardHero = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
+    img.onload = () => {
+      setImageLoaded(true);
+      setTimeout(() => setIsVisible(true), 100);
+    };
     img.onerror = () => setImageError(true);
     img.src = dashboardHeaderImg;
     img.loading = 'eager';
@@ -57,7 +61,7 @@ const DashboardHero = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0"
+      className="dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0 bg-slate-900"
       role="banner"
       aria-label="Dashboard header section"
     >
@@ -89,29 +93,42 @@ const DashboardHero = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-slate-900"></div>
       )}
 
-      {/* Background Overlay - Semantic Token */}
-      <div className="absolute inset-0 hero-overlay"></div>
+      {/* Light Background Overlay */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(15,23,42,0.15) 50%, rgba(0,0,0,0.2) 100%)'
+        }}
+      ></div>
 
-      {/* Particle Effects */}
+      {/* Enhanced Particle Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full"
+            className="absolute rounded-full"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              background: i % 2 === 0 
+                ? 'linear-gradient(135deg, rgba(255,255,255,0.3), rgba(186,230,253,0.2))'
+                : 'linear-gradient(135deg, rgba(125,211,252,0.4), rgba(56,189,248,0.2))'
+            }}
             initial={{ 
               x: Math.random() * 100 + '%',
               y: Math.random() * 100 + '%',
               opacity: 0
             }}
             animate={{
-              y: [null, '-20px', '20px'],
-              opacity: [0, 0.6, 0],
-              rotate: 360
+              y: [null, '-30px', '30px'],
+              opacity: [0, 0.8, 0],
+              rotate: 360,
+              scale: [1, 1.2, 1]
             }}
             transition={{
-              duration: 4 + Math.random() * 2,
+              duration: 5 + Math.random() * 3,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: Math.random() * 3,
               ease: "easeInOut"
             }}
           />
@@ -119,24 +136,22 @@ const DashboardHero = () => {
       </div>
 
       {/* Content - Only show after image loads */}
-      {imageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center text-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+      {imageLoaded && isVisible && (
+        <div className="absolute inset-0 flex items-center justify-center text-center px-6 sm:px-8 lg:px-12">
+          <div className="max-w-5xl mx-auto">
              <motion.div 
-                        className="text-center max-w-4xl w-full"
+                        className="text-center max-w-5xl w-full space-y-2"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                       >
              <motion.h1 
-                       className={`font-heading font-bold mb-4 drop-shadow-2xl ${
-                         theme === 'dark' ? 'text-white' : 'text-white'
-                       } text-3xl sm:text-4xl md:text-5xl lg:text-6xl`}
+                       className="font-heading font-black mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tight"
                        variants={itemVariants}
                        style={{
-                         textShadow: theme === 'dark' 
-                           ? '0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)'
-                           : '0 4px 12px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.7)'
+                         color: '#00d4ff',
+                         textShadow: '0 8px 32px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2)',
+                         filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))'
                        }}
                      >
                        Dashboard
@@ -146,7 +161,12 @@ const DashboardHero = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-              className="text-lg sm:text-xl md:text-2xl font-medium max-w-2xl mx-auto hero-text-secondary font-body"
+              className="text-lg sm:text-xl md:text-2xl font-semibold max-w-3xl mx-auto font-body leading-relaxed"
+              style={{
+                color: '#f1f5f9',
+                textShadow: '0 4px 12px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4)',
+                letterSpacing: '0.025em'
+              }}
             >
               Track your progress, view stats, and manage your workouts effortlessly.
             </motion.p>
@@ -156,11 +176,33 @@ const DashboardHero = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 inline-block px-6 py-3 rounded-full hero-card"
+              className="mt-8 inline-block"
             >
-              <div className="flex items-center gap-2 text-sm font-medium hero-text-primary">
-                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-success)' }}></div>
-                <span className="font-body">Real-time tracking active</span>
+              <div 
+                className="px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 shadow-2xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)'
+                }}
+              >
+                <div className="flex items-center gap-3 text-base font-semibold">
+                  <div 
+                    className="w-3 h-3 rounded-full animate-pulse shadow-lg"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      boxShadow: '0 0 12px rgba(16, 185, 129, 0.6)'
+                    }}
+                  ></div>
+                  <span 
+                    className="font-body tracking-wide"
+                    style={{
+                      color: '#f8fafc',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                    }}
+                  >
+                    Real-time tracking active
+                  </span>
+                </div>
               </div>
             </motion.div>
             </motion.div>
@@ -168,8 +210,19 @@ const DashboardHero = () => {
         </div>
       )}
 
-      {/* Bottom Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-slate-900 to-transparent"></div>
+      {/* Subtle Accent Elements */}
+      <div className="absolute top-1/4 left-8 w-1 h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent rounded-full hidden lg:block"></div>
+      <div className="absolute top-1/3 right-12 w-1 h-12 bg-gradient-to-b from-transparent via-blue-300/30 to-transparent rounded-full hidden lg:block"></div>
+      <div className="absolute bottom-1/4 left-16 w-2 h-2 bg-white/30 rounded-full hidden lg:block animate-pulse"></div>
+      <div className="absolute bottom-1/3 right-8 w-1.5 h-1.5 bg-blue-200/40 rounded-full hidden lg:block animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+      {/* Enhanced Bottom Fade */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-12"
+        style={{
+          background: 'linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.8) 40%, transparent 100%)'
+        }}
+      ></div>
     </motion.div>
   );
 };

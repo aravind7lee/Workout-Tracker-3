@@ -2,28 +2,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Bell, User, Menu, X, Settings, LogOut, UserCircle, Clock, Zap } from 'lucide-react';
+import { User, Menu, X, Settings, LogOut, UserCircle, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useRealTimeSearch } from '../hooks/useRealTimeSearch';
+import SearchBar from './SearchBar';
 import { demoService } from '../services/demoService';
 
 const logo = '/logo.png';
 
-
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchExpanded, setSearchExpanded] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [notifications] = useState(3); // Mock notification count
-  
-  const { searchQuery, setSearchQuery, searchResults, isSearching, clearSearch } = useRealTimeSearch();
   
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
-  const searchRef = useRef(null);
   const profileRef = useRef(null);
 
   const navLinks = [
@@ -69,10 +62,6 @@ export default function Navbar() {
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchExpanded(false);
-        setShowSearchResults(false);
-      }
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setShowProfileDropdown(false);
       }
@@ -87,9 +76,6 @@ export default function Navbar() {
       if (event.key === 'Escape') {
         if (isOpen) {
           setIsOpen(false);
-        } else if (searchExpanded) {
-          setSearchExpanded(false);
-          setShowSearchResults(false);
         } else if (showProfileDropdown) {
           setShowProfileDropdown(false);
         }
@@ -98,56 +84,7 @@ export default function Navbar() {
     
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, searchExpanded, showProfileDropdown]);
-
-  // Show search results when there's a query
-  useEffect(() => {
-    setShowSearchResults(searchQuery.length > 0 && searchExpanded);
-  }, [searchQuery, searchExpanded]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-      clearSearch();
-      setSearchExpanded(false);
-      setShowSearchResults(false);
-    }
-  };
-
-  const handleSearchResultClick = (result) => {
-    // Navigate to existing pages with search parameters
-    switch (result.type) {
-      case 'exercise':
-        navigate(`/library?search=${encodeURIComponent(result.title)}`);
-        break;
-      case 'meal':
-        navigate(`/nutrition?search=${encodeURIComponent(result.title)}`);
-        break;
-      case 'plan':
-        if (result.id) {
-          navigate(`/my-plans?highlight=${result.id}`);
-        } else {
-          navigate(`/my-plans?search=${encodeURIComponent(result.title)}`);
-        }
-        break;
-      default:
-        navigate(`/library?search=${encodeURIComponent(result.title)}`);
-    }
-    clearSearch();
-    setSearchExpanded(false);
-    setShowSearchResults(false);
-  };
-
-  const getResultTypeColor = (type) => {
-    switch (type) {
-      case 'workout': return 'text-blue-400';
-      case 'meal': return 'text-green-400';
-      case 'plan': return 'text-purple-400';
-      case 'exercise': return 'text-orange-400';
-      default: return 'text-slate-400';
-    }
-  };
+  }, [isOpen, showProfileDropdown]);
 
   const handleLogout = () => {
     logout();
@@ -222,152 +159,15 @@ export default function Navbar() {
           {/* Right Section */}
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
             
-            {/* Search Bar */}
-            <div ref={searchRef} className="relative hidden lg:block">
-              <AnimatePresence>
-                {searchExpanded ? (
-                  <motion.div
-                    initial={{ width: 40, opacity: 0 }}
-                    animate={{ width: 320, opacity: 1 }}
-                    exit={{ width: 40, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative"
-                  >
-                    <form onSubmit={handleSearch} className="flex items-center">
-                      <div className="relative w-full">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search workouts, meals, plans..."
-                          className="w-full pl-10 pr-10 py-2 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
-                          autoFocus
-                        />
-                        {isSearching && (
-                          <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                            <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchExpanded(false);
-                            setShowSearchResults(false);
-                            clearSearch();
-                          }}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    </form>
-                    
-                    {/* Search Results Dropdown */}
-                    <AnimatePresence>
-                      {showSearchResults && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 right-0 mt-2 rounded-xl shadow-2xl py-2 max-h-80 overflow-y-auto z-50"
-                          style={{
-                            background: 'var(--bg-soft)',
-                            border: '1px solid var(--panel-border)',
-                            backdropFilter: 'blur(20px)'
-                          }}
-                        >
-                          {searchResults.length > 0 ? (
-                            <>
-                              <div className="px-4 py-2 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)', borderBottom: '1px solid var(--panel-border)' }}>
-                                Search Results ({searchResults.length})
-                              </div>
-                              {searchResults.map((result) => (
-                                <motion.button
-                                  key={result.id}
-                                  onClick={() => handleSearchResultClick(result)}
-                                  whileHover={{ backgroundColor: 'rgba(71, 85, 105, 0.3)' }}
-                                  className="w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors"
-                                  style={{ background: 'transparent' }}
-                                  onMouseEnter={(e) => {
-                                    e.target.style.background = 'var(--bg-accent)';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.target.style.background = 'transparent';
-                                  }}
-                                >
-                                  <div className="text-2xl">{result.icon}</div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-medium truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
-                                    <div className="text-sm truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
-                                  </div>
-                                  <div className={`text-xs px-2 py-1 rounded-full capitalize ${getResultTypeColor(result.type)}`} style={{ background: 'var(--bg-accent)' }}>
-                                    {result.type}
-                                  </div>
-                                </motion.button>
-                              ))}
-                              {searchQuery && (
-                                <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--panel-border)' }}>
-                                  <button
-                                    onClick={handleSearch}
-                                    className="w-full flex items-center space-x-3 px-4 py-2 transition-colors"
-                                    style={{ color: 'var(--accent)', background: 'transparent' }}
-                                    onMouseEnter={(e) => {
-                                      e.target.style.background = 'var(--bg-accent)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.target.style.background = 'transparent';
-                                    }}
-                                  >
-                                    <Search size={16} />
-                                    <span>Search for "{searchQuery}"</span>
-                                  </button>
-                                </div>
-                              )}
-                            </>
-                          ) : searchQuery && !isSearching ? (
-                            <div className="px-4 py-8 text-center">
-                              <div className="mb-2" style={{ color: 'var(--muted)' }}>No results found</div>
-                              <div className="text-sm" style={{ color: 'var(--muted)' }}>Try searching for workouts, meals, or plans</div>
-                            </div>
-                          ) : null}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setSearchExpanded(true)}
-                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200"
-                  >
-                    <Search size={20} />
-                  </motion.button>
-                )}
-              </AnimatePresence>
+            {/* Desktop Search Bar */}
+            <div className="hidden lg:block">
+              <SearchBar isMobile={false} />
             </div>
 
-            {/* Notifications */}
-            {isAuthenticated() && (
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="relative p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200"
-              >
-                <Bell size={20} />
-                {notifications > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold"
-                  >
-                    {notifications}
-                  </motion.span>
-                )}
-              </motion.button>
-            )}
+            {/* Mobile Search */}
+            <div className="lg:hidden">
+              <SearchBar isMobile={true} />
+            </div>
 
             {/* Profile Dropdown */}
             {isAuthenticated() && user ? (
@@ -488,8 +288,6 @@ export default function Navbar() {
               </div>
             )}
 
-
-
             {/* Mobile Menu Button */}
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -560,96 +358,6 @@ export default function Navbar() {
                     <X size={20} />
                   </button>
                 </div>
-
-                {/* Mobile Search */}
-                <div className="mb-4 sm:mb-6">
-                  <form onSubmit={handleSearch}>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-300" size={18} />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search workouts, meals, plans..."
-                        className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none transition-all duration-300 text-base"
-                        style={{
-                          background: 'var(--bg-soft)',
-                          border: '2px solid var(--panel-border)',
-                          color: 'var(--text)'
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
-                        onBlur={(e) => e.target.style.borderColor = 'var(--panel-border)'}
-                      />
-                      {isSearching && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                        </div>
-                      )}
-                    </div>
-                  </form>
-                  
-                  {/* Mobile Search Results */}
-                  {searchQuery && (
-                    <div className="mt-3 rounded-xl p-2 max-h-48 sm:max-h-60 overflow-y-auto" style={{ background: 'var(--bg-soft)', border: '1px solid var(--panel-border)' }}>
-                      {searchResults.length > 0 ? (
-                        <>
-                          <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2" style={{ color: 'var(--muted)' }}>
-                            Results ({searchResults.length})
-                          </div>
-                          {searchResults.map((result) => (
-                            <button
-                              key={result.id}
-                              onClick={() => {
-                                handleSearchResultClick(result);
-                                setIsOpen(false);
-                              }}
-                              className="w-full flex items-center space-x-3 px-2 py-2 text-left rounded-lg transition-colors"
-                              style={{ background: 'transparent' }}
-                              onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
-                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                            >
-                              <div className="text-lg">{result.icon}</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="font-medium text-sm truncate" style={{ color: 'var(--heading)' }}>{result.title}</div>
-                                <div className="text-xs truncate" style={{ color: 'var(--muted)' }}>{result.description}</div>
-                              </div>
-                              <div className={`text-xs px-2 py-1 rounded-full bg-slate-700/50 ${getResultTypeColor(result.type)} capitalize`}>
-                                {result.type}
-                              </div>
-                            </button>
-                          ))}
-                          <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--panel-border)' }}>
-                            <button
-                              onClick={() => {
-                                handleSearch({ preventDefault: () => {} });
-                                setIsOpen(false);
-                              }}
-                              className="w-full flex items-center space-x-3 px-2 py-2 transition-colors rounded-lg"
-                              style={{ color: 'var(--accent)', background: 'transparent' }}
-                              onMouseEnter={(e) => e.target.style.background = 'var(--bg-accent)'}
-                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                            >
-                              <Search size={16} />
-                              <span>View all results for "{searchQuery}"</span>
-                            </button>
-                          </div>
-                        </>
-                      ) : !isSearching ? (
-                        <div className="px-2 py-4 text-center">
-                          <div className="text-sm" style={{ color: 'var(--muted)' }}>No results found</div>
-                          <div className="text-xs mt-1" style={{ color: 'var(--muted)' }}>Try different keywords</div>
-                        </div>
-                      ) : (
-                        <div className="px-2 py-4 text-center">
-                          <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-                          <div className="text-xs mt-2" style={{ color: 'var(--muted)' }}>Searching...</div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-
 
                 {/* Mobile Navigation Links */}
                 <div className="space-y-1 sm:space-y-2 mb-4 sm:mb-6">

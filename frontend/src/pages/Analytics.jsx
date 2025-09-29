@@ -192,11 +192,10 @@ function AnalyticsHero() {
             animate="visible"
           >
           <motion.h1 
-            className={`font-bold mb-4 drop-shadow-2xl ${
-              theme === 'dark' ? 'text-white' : 'text-white'
-            } text-3xl sm:text-4xl md:text-5xl lg:text-6xl`}
+            className="font-bold mb-4 drop-shadow-2xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
             variants={itemVariants}
             style={{
+              color: '#f59e0b',
               textShadow: theme === 'dark' 
                 ? '0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)'
                 : '0 4px 12px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.7)'

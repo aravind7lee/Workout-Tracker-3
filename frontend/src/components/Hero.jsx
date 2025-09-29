@@ -120,7 +120,8 @@ export default function Hero() {
 
               {/* Subtitle */}
               <motion.p 
-                className="text-sm sm:text-base md:text-lg hero-text-secondary mb-4 sm:mb-6 drop-shadow-md max-w-2xl mx-auto leading-relaxed px-2 font-body"
+                className="text-sm sm:text-base md:text-lg font-bold mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed px-2 font-body"
+                style={{ color: '#ffffff', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
                 variants={itemVariants}
               >
                 Track workouts, monitor progress, and achieve your fitness goals efficiently.
