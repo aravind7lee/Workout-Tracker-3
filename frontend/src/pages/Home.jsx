@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 import { useAchievements } from '../context/AchievementsContext';
-import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
+import { workoutSync } from '../services/workoutSync';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import Hero from '../components/Hero';
 
@@ -15,7 +15,6 @@ export default function Home() {
   const location = useLocation();
   const auth = useAuth();
   const { stats, isOnline } = useRealTime();
-  const { stats: workoutStats } = useRealTimeWorkouts();
   const { currentStreak } = useStreak();
   const {
     unlockedCount,
@@ -35,6 +34,7 @@ export default function Home() {
   const [liveUsers, setLiveUsers] = useState(2847);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const observerRef = useRef(null);
   const mountedRef = useRef(true);
 
@@ -99,18 +99,28 @@ export default function Home() {
     { id: 'nutrition', icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track meals, calories, and macros with smart food recognition', color: 'green' }
   ]), []);
 
-  // Quick stats (personalized)
+  // Quick stats (personalized) - Use RealTimeContext stats like Dashboard/Analytics
   const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats?.currentStreak);
-  const todayWorkouts = workoutStats?.todayWorkouts ?? stats?.todayWorkouts ?? 0;
+  
+  // Recalculate stats when refreshTrigger changes
+  const totalWorkouts = useMemo(() => {
+    return stats?.totalWorkouts ?? 0;
+  }, [stats?.totalWorkouts, refreshTrigger]);
+  
+  const todayWorkouts = useMemo(() => {
+    return stats?.todayWorkouts ?? 0;
+  }, [stats?.todayWorkouts, refreshTrigger]);
+  
+  console.log('🏠 HOME: RealTime stats (trigger:', refreshTrigger, '):', { totalWorkouts, todayWorkouts, stats });
 
   const quickStats = [
     {
-      label: "Today's Workouts",
-      value: todayWorkouts,
+      label: "Total Workouts",
+      value: totalWorkouts,
       icon: '💪',
       color: 'blue',
       path: '/workouts',
-      subtitle: todayWorkouts > 0 ? `${todayWorkouts} completed today!` : 'Start your first workout'
+      subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'Start your first workout'
     },
     {
       label: 'Current Streak',
@@ -253,17 +263,32 @@ export default function Home() {
       setNotification({ type: 'workout', message: msg });
       // Refresh achievements/stats
       try { checkAchievements(); } catch (err) { /* ignore */ }
+      // Force re-render to update workout stats
+      setRefreshTrigger(prev => prev + 1);
+      setCurrentTime(new Date());
       setTimeout(() => setNotification(null), 4200);
     };
 
+    // Listen for real-time workout updates
+    const onRealTimeStatsUpdate = (event) => {
+      console.log('🏠 HOME: Real-time stats update received:', event.detail);
+      // Force component re-render to get fresh workout stats
+      setRefreshTrigger(prev => prev + 1);
+      setCurrentTime(new Date());
+    };
+    
     window.addEventListener('homeStreakUpdate', onStreak);
     window.addEventListener('streakUpdated', onStreak);
     window.addEventListener('workoutCompleted', onWorkout);
+    window.addEventListener('realTimeStatsUpdate', onRealTimeStatsUpdate);
+    window.addEventListener('analyticsWorkoutUpdate', onRealTimeStatsUpdate);
 
     return () => {
       window.removeEventListener('homeStreakUpdate', onStreak);
       window.removeEventListener('streakUpdated', onStreak);
       window.removeEventListener('workoutCompleted', onWorkout);
+      window.removeEventListener('realTimeStatsUpdate', onRealTimeStatsUpdate);
+      window.removeEventListener('analyticsWorkoutUpdate', onRealTimeStatsUpdate);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkAchievements, realTimeCurrentStreak]);

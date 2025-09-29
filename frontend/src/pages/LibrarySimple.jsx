@@ -248,11 +248,7 @@ export default function LibrarySimple() {
             transition={{ duration: 0.3 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
-            {/* Mobile loading indicator */}
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white/70 text-sm">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin"></div>
-              <span className="hidden sm:inline">Loading...</span>
-            </div>
+
           </motion.div>
         ) : imageError ? (
           // Fallback content if image fails to load
@@ -823,15 +819,7 @@ export default function LibrarySimple() {
         />
       )}
       
-      {/* Loading Overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="card p-6 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <div className="text-white">Loading...</div>
-          </div>
-        </div>
-      )}
+
       
       {/* Success Notification */}
       {showSuccessNotification && (

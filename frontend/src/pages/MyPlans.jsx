@@ -190,16 +190,7 @@ export default function MyPlans() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="loading-text muted-text">Loading your plans...</p>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <AuthGuard>
@@ -226,7 +217,6 @@ export default function MyPlans() {
                 <div className="flex items-center gap-1 text-xs">
                   {syncStatus === 'syncing' && (
                     <>
-                      <div className="animate-spin w-3 h-3 border border-blue-500 border-t-transparent rounded-full"></div>
                       <span className="text-blue-500 dark:text-blue-400">Syncing...</span>
                     </>
                   )}

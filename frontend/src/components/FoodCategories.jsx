@@ -155,6 +155,31 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
         { name: 'Apple medium', serving: '1 medium', calories: 85, protein: 0.4, carbs: 22, fat: 0.3, fiber: 4 },
         { name: 'Pineapple chunks', serving: '1 cup', calories: 82, protein: 0.9, carbs: 21.6, fat: 0.2, fiber: 2.3 }
       ]
+    },
+    supplements: {
+      icon: '🥤',
+      title: 'Supplements',
+      foods: [
+        // Protein Powders
+        { name: 'Whey Protein Isolate', serving: '1 scoop (30g)', calories: 110, protein: 25, carbs: 1, fat: 0.5, fiber: 0, type: 'protein' },
+        { name: 'Whey Protein Concentrate', serving: '1 scoop (30g)', calories: 120, protein: 22, carbs: 3, fat: 2, fiber: 0, type: 'protein' },
+        { name: 'Casein Protein', serving: '1 scoop (30g)', calories: 120, protein: 24, carbs: 2, fat: 1, fiber: 0, type: 'protein' },
+        { name: 'Soy Protein Powder', serving: '1 scoop (30g)', calories: 120, protein: 23, carbs: 3, fat: 1.5, fiber: 0, type: 'protein' },
+        { name: 'Pea Protein Powder', serving: '1 scoop (30g)', calories: 120, protein: 21, carbs: 2, fat: 2, fiber: 0, type: 'protein' },
+        
+        // Performance & Recovery
+        { name: 'Creatine Monohydrate', serving: '5g', calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, type: 'performance', description: 'ATP & Strength Booster' },
+        { name: 'BCAA', serving: '5g', calories: 20, protein: 5, carbs: 0, fat: 0, fiber: 0, type: 'recovery', description: 'Muscle Recovery' },
+        { name: 'Pre-Workout', serving: '1 scoop', calories: 10, protein: 0, carbs: 2, fat: 0, fiber: 0, type: 'performance', description: 'Energy & Focus' },
+        { name: 'Glutamine', serving: '5g', calories: 20, protein: 5, carbs: 0, fat: 0, fiber: 0, type: 'recovery', description: 'Recovery & Gut Health' },
+        
+        // Vitamins & Minerals
+        { name: 'Multivitamin', serving: '1 tablet', calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, type: 'vitamin', description: '100% DV Nutrients' },
+        { name: 'Vitamin D3', serving: '1 capsule (1000 IU)', calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, type: 'vitamin', description: 'Bone & Immune Health' },
+        { name: 'Omega-3 Fish Oil', serving: '1 softgel (1000mg)', calories: 10, protein: 0, carbs: 0, fat: 1, fiber: 0, type: 'vitamin', description: 'EPA & DHA ~300mg' },
+        { name: 'Calcium Supplement', serving: '1 tablet', calories: 5, protein: 0, carbs: 0, fat: 0, fiber: 0, type: 'mineral', description: '~500mg Calcium' },
+        { name: 'Magnesium', serving: '1 capsule', calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, type: 'mineral', description: '~250mg Magnesium' }
+      ]
     }
   };
 
@@ -237,14 +262,25 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
             >
               <div className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary">{food.name}</div>
               <div className="text-xs text-light-text-muted dark:text-dark-text-muted mt-1">{food.serving}</div>
-              {food.calories && (
+              {/* Smart nutrition display based on supplement type */}
+              {activeCategory === 'supplements' ? (
+                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
+                  {food.type === 'protein' ? (
+                    `${food.calories} cal • ${food.protein}g protein`
+                  ) : food.description ? (
+                    food.calories > 0 ? `${food.calories} cal • ${food.description}` : food.description
+                  ) : (
+                    food.calories > 0 ? `${food.calories} cal` : 'Supplement'
+                  )}
+                </div>
+              ) : food.calories ? (
                 <div className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
                   {food.calories} cal • {food.protein}g protein
                 </div>
-              )}
+              ) : null}
               
               {/* Nutrition Tooltip */}
-              {hoveredFood === food && food.calories && (
+              {hoveredFood === food && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -252,12 +288,26 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 >
                   <div className="text-light-text-primary dark:text-dark-text-primary font-medium mb-1">{food.name}</div>
                   <div className="text-light-text-secondary dark:text-dark-text-secondary">
-                    <span className="text-orange-600 dark:text-orange-400">{food.calories}</span> cal • 
-                    <span className="text-blue-600 dark:text-blue-400">{food.protein}g</span> protein • 
-                    <span className="text-green-600 dark:text-green-400">{food.carbs}g</span> carbs • 
-                    <span className="text-yellow-600 dark:text-yellow-400">{food.fat}g</span> fat
-                    {food.fiber > 0 && (
-                      <> • <span className="text-purple-600 dark:text-purple-400">{food.fiber}g</span> fiber</>
+                    {activeCategory === 'supplements' ? (
+                      <>
+                        {food.description && (
+                          <div className="text-purple-600 dark:text-purple-400 mb-1">{food.description}</div>
+                        )}
+                        {food.calories > 0 && <><span className="text-orange-600 dark:text-orange-400">{food.calories}</span> cal</>}
+                        {food.protein > 0 && <>{food.calories > 0 ? ' • ' : ''}<span className="text-blue-600 dark:text-blue-400">{food.protein}g</span> protein</>}
+                        {food.carbs > 0 && <> • <span className="text-green-600 dark:text-green-400">{food.carbs}g</span> carbs</>}
+                        {food.fat > 0 && <> • <span className="text-yellow-600 dark:text-yellow-400">{food.fat}g</span> fat</>}
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-orange-600 dark:text-orange-400">{food.calories}</span> cal • 
+                        <span className="text-blue-600 dark:text-blue-400">{food.protein}g</span> protein • 
+                        <span className="text-green-600 dark:text-green-400">{food.carbs}g</span> carbs • 
+                        <span className="text-yellow-600 dark:text-yellow-400">{food.fat}g</span> fat
+                        {food.fiber > 0 && (
+                          <> • <span className="text-purple-600 dark:text-purple-400">{food.fiber}g</span> fiber</>
+                        )}
+                      </>
                     )}
                   </div>
                 </motion.div>

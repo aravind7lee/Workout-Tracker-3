@@ -1,12 +1,17 @@
 // FIXED Plan Builder - No Theme System Errors
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { planService } from '../services/planService';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import { realTimePlanService } from '../services/realTimePlanService';
 import PlanBuilderHeader from '../assets/PlanBuilderheader.jpg';
+import Particles from '@tsparticles/react';
+import { loadSlim } from '@tsparticles/slim';
+import PremiumSkeletonLoader from '../components/PremiumSkeletonLoader';
+import '../styles/plan-builder-header.css';
 
 export default function PlansBuilder() {
   const navigate = useNavigate();
@@ -27,8 +32,19 @@ export default function PlansBuilder() {
   });
   const [autoSave, setAutoSave] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [particlesReady, setParticlesReady] = useState(false);
   const autoSaveTimer = useRef(null);
   const syncInterval = useRef(null);
+  
+  // Particles configuration
+  const particlesLoaded = useCallback(async container => {
+    console.log(container);
+  }, []);
+
+  const initParticles = useCallback(async engine => {
+    await loadSlim(engine);
+    setParticlesReady(true);
+  }, []);
   
   // Use dark theme always
   const theme = 'dark';
@@ -408,57 +424,164 @@ export default function PlansBuilder() {
 
   return (
     <div className="space-y-0">
-      {/* Hero Header Section - Full Viewport Height */}
+      {/* Enhanced Premium Header Section */}
       <div className="relative w-full h-screen overflow-hidden">
-        {/* Hero Image - Plan Builder Header */}
+        {/* Premium Skeleton Loader */}
+        <AnimatePresence>
+          {!imageLoaded && <PremiumSkeletonLoader />}
+        </AnimatePresence>
+
+        {/* Hero Image - Clear and Vibrant */}
         <img
           src={PlanBuilderHeader}
-          alt="Plan Builder - Professional gym workout planning background"
+          alt="Plan Builder - Professional gym workout planning with modern equipment and premium atmosphere"
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300"
-          style={{ opacity: imageLoaded ? 1 : 0 }}
+          style={{ 
+            opacity: imageLoaded ? 1 : 0,
+            filter: 'brightness(1.1) contrast(1.05) saturate(1.1)'
+          }}
           onLoad={() => setImageLoaded(true)}
+          fetchPriority="high"
+          decoding="async"
         />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
-        
-        {/* Overlay Content */}
-        <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg mb-4">
-              PLAN BUILDER
-            </h1>
-            <p className="text-xl text-neutral-100 mb-8">
-              CREATE PROFESSIONAL WORKOUT PLANS • DOMINATE YOUR FITNESS JOURNEY
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button 
-                onClick={() => navigate('/my-plans')}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
-              >
-                📋 View Plans
-              </button>
-              <button 
-                onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-6 py-3 bg-slate-800/80 hover:bg-slate-700/90 text-white border border-slate-600 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
-              >
-                🏋️ Build Plan
-              </button>
-            </div>
-            
-            <div className="mt-6">
-              <div className="bg-white/15 backdrop-blur-md border border-white/30 rounded-full px-4 py-2 text-sm text-white/90 inline-block">
-                <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  <span>Professional Gym Tracker</span>
-                  <span className="text-yellow-400">✨</span>
-                </span>
-              </div>
-            </div>
+        {/* Optimized Particles */}
+        {particlesReady && (
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+            <Particles
+              id="planBuilderParticles"
+              init={initParticles}
+              loaded={particlesLoaded}
+              options={{
+                background: { color: { value: "transparent" } },
+                fpsLimit: 60,
+                interactivity: { events: { onClick: { enable: false }, onHover: { enable: false } } },
+                particles: {
+                  color: { value: ["#3b82f6", "#10b981"] },
+                  links: { enable: false },
+                  move: { enable: true, speed: 0.5, direction: "none" },
+                  number: { value: 15 },
+                  opacity: { value: 0.4 },
+                  size: { value: 2 }
+                }
+              }}
+            />
           </div>
-        </div>
+        )}
+        
+        {/* Light Gradient Overlay - Preserve Image Clarity */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
+        
+        {/* Content Overlay - Ultra Smooth */}
+        <AnimatePresence>
+          {imageLoaded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="absolute inset-0 flex items-center justify-center text-center px-4 sm:px-6"
+            >
+              <div className="max-w-3xl mx-auto">
+                {/* Main Title - Reduced Size */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight"
+                  style={{
+                    textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+                    fontWeight: '700'
+                  }}
+                >
+                  PLAN BUILDER
+                </motion.h1>
+                
+                {/* Subtitle - Reduced Size */}
+                <motion.p
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="text-base sm:text-lg text-white/90 mb-6 max-w-2xl mx-auto font-medium"
+                  style={{
+                    textShadow: '0 1px 4px rgba(0,0,0,0.7)'
+                  }}
+                >
+                  CREATE PROFESSIONAL WORKOUT PLANS
+                </motion.p>
+                
+                {/* CTA Buttons - Reduced Size */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6"
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
+                    onClick={() => navigate('/my-plans')}
+                    className="px-6 py-3 text-white rounded-lg font-medium text-sm shadow-lg transition-all duration-200"
+                    style={{
+                      background: 'linear-gradient(to right, #f97316, #dc2626)',
+                      boxShadow: '0 4px 14px 0 rgba(249, 115, 22, 0.39)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'linear-gradient(to right, #ea580c, #b91c1c)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'linear-gradient(to right, #f97316, #dc2626)';
+                    }}
+                  >
+                    📋 View Plans
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
+                    onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-6 py-3 text-white rounded-lg font-medium text-sm shadow-lg transition-all duration-200"
+                    style={{
+                      background: 'linear-gradient(to right, #2563eb, #7c3aed)',
+                      boxShadow: '0 4px 14px 0 rgba(37, 99, 235, 0.39)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'linear-gradient(to right, #1d4ed8, #6d28d9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)';
+                    }}
+                  >
+                    🏋️ Build Plan
+                  </motion.button>
+                </motion.div>
+                
+                {/* Status Badge - Reduced Size */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.4 }}
+                  className="flex justify-center"
+                >
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-xs">
+                    <span className="flex items-center gap-2 text-white/90">
+                      <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                      <span>Professional Tracker</span>
+                      <span className="text-yellow-400">✨</span>
+                    </span>
+                  </div>
+                </motion.div>
+                
+                {/* Accessibility Enhancement - Screen Reader Info */}
+                <div className="sr-only">
+                  Plan Builder page for creating professional workout plans. 
+                  Navigate to view existing plans or scroll down to build a new plan.
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       
       {/* Main Content */}

@@ -83,7 +83,7 @@ export const safeLoad = (callback) => {
 // Safe import function
 export const safeImport = async (modulePath) => {
   try {
-    return await import(modulePath);
+    return await import(/* @vite-ignore */ modulePath);
   } catch (error) {
     return null;
   }

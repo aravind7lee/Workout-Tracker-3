@@ -6,7 +6,7 @@ import { Chart, registerables } from 'chart.js';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
-import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
+import { useRealTime } from '../context/RealTimeContext';
 import { workoutSync } from '../services/workoutSync';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import AuthGuard from '../components/AuthGuard';
@@ -272,24 +272,13 @@ function AnalyticsHero() {
 export default function Analytics() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { currentStreak } = useStreak();
-  const { stats: workoutStats } = useRealTimeWorkouts();
+  const { stats, isOnline, refreshStats } = useRealTime();
   const [analyticsData, setAnalyticsData] = useState(null);
-  const [realTimeStats, setRealTimeStats] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Start with false for instant display
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isOnline, setIsOnline] = useState(false);
   
-  // Get real-time streak using utility function (same as Home and Dashboard)
-  const [realTimeCurrentStreak, setRealTimeCurrentStreak] = useState(() => {
-    return getRealTimeStreak(currentStreak, null);
-  });
-  
-  // Update streak when context changes
-  useEffect(() => {
-    const newStreak = getRealTimeStreak(currentStreak, realTimeStats?.currentStreak);
-    setRealTimeCurrentStreak(newStreak);
-    console.log('🔥 ANALYTICS: Streak updated:', { currentStreak, realTimeStats: realTimeStats?.currentStreak, newStreak });
-  }, [currentStreak, realTimeStats?.currentStreak]);
+  // Get real-time streak from RealTimeContext (same as Home and Dashboard)
+  const realTimeCurrentStreak = stats.currentStreak || stats.streak || currentStreak || 0;
   
   const loadAnalyticsData = useCallback(async () => {
     try {
@@ -329,14 +318,8 @@ export default function Analytics() {
             ]);
             
             if (analytics) {
-              // Update with backend data seamlessly
-              setRealTimeStats({
-                totalWorkouts: analytics.totalWorkouts || 0,
-                totalPlans: plans?.length || 0,
-                totalMeals: analytics.totalMeals || 0,
-                currentStreak: analytics.currentStreak || 0,
-                xpPoints: analytics.xpPoints || 0
-              });
+              // Backend data is handled by RealTimeContext
+              console.log('📊 Backend analytics data available:', analytics);
               
               setAnalyticsData({
                 stats: analytics,
@@ -400,47 +383,26 @@ export default function Analytics() {
         return streak;
       };
       
-      // Use real-time streak data from utility (consistent with other pages)
+      // Use real-time streak data from RealTimeContext (consistent with other pages)
       const contextStreak = currentStreak || 0;
       const realtimeStreak = getRealtimeStreak();
       const workoutStreak = calculateStreakFromWorkouts(workouts);
       const utilityStreak = getRealTimeStreak(contextStreak, null);
       const finalStreak = Math.max(contextStreak, realtimeStreak, workoutStreak, utilityStreak);
       
-      // Update both state variables
-      setRealTimeCurrentStreak(finalStreak);
-      const todayWorkouts = workouts.filter(w => 
-        new Date(w.completedAt).toDateString() === new Date().toDateString()
-      ).length;
-      
-      const weeklyWorkouts = workouts.filter(w => {
-        const workoutDate = new Date(w.completedAt);
-        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        return workoutDate >= weekAgo;
-      }).length;
-      
-      setRealTimeStats({
-        totalWorkouts: 0,
-        totalPlans: 0,
-        totalMeals: 0,
-        currentStreak: 0,
-        xpPoints: 0,
-        todayWorkouts: 0,
-        weeklyWorkouts: 0
+      console.log('🧹 Analytics: Using RealTimeContext stats:', {
+        totalWorkouts: stats.totalWorkouts || 0,
+        todayWorkouts: stats.todayWorkouts || 0,
+        weeklyWorkouts: stats.weeklyWorkouts || 0
       });
       
-      console.log('🧹 Analytics: Using real-time workout data:', {
-        totalWorkouts: workoutStats?.totalWorkouts || 0,
-        todayWorkouts: workoutStats?.todayWorkouts || 0,
-        weeklyWorkouts: workoutStats?.weeklyWorkouts || 0
-      });
-      
-      console.log('🔥 ANALYTICS: Streak data loaded:', {
+      console.log('🔥 ANALYTICS: Streak data loaded (using RealTimeContext):', {
         contextStreak,
         realtimeStreak,
         workoutStreak,
         utilityStreak,
-        finalStreak
+        finalStreak,
+        realTimeContextStreak: stats.currentStreak
       });
       
       // Generate real chart data from actual workouts
@@ -505,16 +467,6 @@ export default function Analytics() {
       });
     } catch (error) {
       console.error('Error loading offline data:', error);
-      const currentWorkoutStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
-      setRealTimeStats({
-        totalWorkouts: currentWorkoutStats.totalWorkouts || 0,
-        totalPlans: 0,
-        totalMeals: 0,
-        currentStreak: 0,
-        xpPoints: 0,
-        todayWorkouts: currentWorkoutStats.todayWorkouts || 0,
-        weeklyWorkouts: currentWorkoutStats.weeklyWorkouts || 0
-      });
       setAnalyticsData({
         stats: null,
         caloriesTrend: null,
@@ -558,17 +510,7 @@ export default function Analytics() {
     
     // Real-time event listeners for instant updates
     const handleWorkoutComplete = () => {
-      console.log('🏋️ Workout completed - updating analytics');
-      // Get fresh stats from real-time sync
-      const freshStats = window.realTimeWorkoutSync?.getStats() || {};
-      setRealTimeStats(prev => ({
-        ...prev,
-        totalWorkouts: freshStats.totalWorkouts || 0,
-        todayWorkouts: freshStats.todayWorkouts || 0,
-        weeklyWorkouts: freshStats.weeklyWorkouts || 0
-      }));
-      // Also reload full data
-      loadOfflineData();
+      console.log('🏋️ Workout completed - RealTimeContext will handle updates');
       loadAnalyticsData();
     };
     
@@ -587,27 +529,13 @@ export default function Analytics() {
       console.log('🔥 ANALYTICS: Real-time streak update received');
       
       if (event.detail && event.detail.currentStreak !== undefined) {
-        const streakData = event.detail;
-        
-        // Update real-time streak immediately
-        const newStreak = streakData.currentStreak;
-        setRealTimeCurrentStreak(newStreak);
-        
-        // Update real-time stats immediately
-        setRealTimeStats(prev => ({
-          ...prev,
-          currentStreak: newStreak,
-          totalCheckIns: streakData.totalCheckIns || prev?.totalCheckIns || 0,
-          longestStreak: streakData.longestStreak || prev?.longestStreak || 0
-        }));
+        // RealTimeContext handles streak updates automatically
+        console.log('🔥 ANALYTICS: Streak update handled by RealTimeContext');
         
         // Also refresh workout stats
         loadOfflineData();
         
-        console.log('✅ ANALYTICS: Streak stats updated instantly:', {
-          currentStreak: newStreak,
-          totalCheckIns: streakData.totalCheckIns
-        });
+        console.log('✅ ANALYTICS: Using RealTimeContext for streak updates');
       }
       
       // Refresh full data in background
@@ -639,10 +567,11 @@ export default function Analytics() {
   }, [loadAnalyticsData]);
   
   const refresh = () => {
+    refreshStats();
     loadAnalyticsData();
   };
 
-  const stats = analyticsData?.stats;
+  const analyticsStats = analyticsData?.stats;
   const caloriesData = analyticsData?.caloriesTrend;
   const frequencyData = analyticsData?.workoutFrequency;
   const muscleData = analyticsData?.muscleDistribution;
@@ -749,11 +678,7 @@ export default function Analytics() {
         <div className="card">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Calories</h3>
           <div className="h-48 sm:h-64">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              </div>
-            ) : caloriesData ? (
+            {caloriesData ? (
               <Line data={caloriesData} options={chartOptions} />
             ) : (
               <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
@@ -764,11 +689,7 @@ export default function Analytics() {
         <div className="card">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">Weekly Workouts</h3>
           <div className="h-48 sm:h-64">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
-              </div>
-            ) : frequencyData ? (
+            {frequencyData ? (
               <Bar data={frequencyData} options={chartOptions} />
             ) : (
               <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
@@ -782,11 +703,7 @@ export default function Analytics() {
         <div className="card lg:col-span-1">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">Muscle Groups</h3>
           <div className="h-48 sm:h-64">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-              </div>
-            ) : muscleData ? (
+            {muscleData ? (
               <Doughnut data={muscleData} options={doughnutOptions} />
             ) : (
               <div className="flex items-center justify-center h-full text-slate-400">No data available</div>

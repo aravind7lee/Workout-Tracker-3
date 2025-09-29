@@ -880,18 +880,7 @@ export default function Library() {
         />
       )}
       
-      {/* Loading Overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="card p-6 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <div className="text-white mb-2">Loading real-time data...</div>
-            <div className="text-xs text-slate-400">
-              {isOnline ? 'Syncing with server...' : 'Loading cached data...'}
-            </div>
-          </div>
-        </div>
-      )}
+
       
       {/* Sync Status Indicator */}
       {user && (() => {
@@ -899,7 +888,6 @@ export default function Library() {
           const syncStatus = realTimeSyncService.getSyncStatus();
           return syncStatus && syncStatus.syncInProgress && (
             <div className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-40">
-              <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
               <span className="text-sm">Syncing...</span>
             </div>
           );

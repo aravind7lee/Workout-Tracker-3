@@ -232,24 +232,7 @@ const Profile = () => {
     navigate('/login');
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400 text-lg">Loading your profile...</p>
-          <p className="text-slate-500 text-sm mt-2">
-            {isOnline ? 'Syncing with MongoDB...' : 'Loading from cache...'}
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
+
 
   if (error && !user) {
     return (

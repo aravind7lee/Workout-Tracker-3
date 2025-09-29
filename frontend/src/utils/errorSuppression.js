@@ -48,7 +48,7 @@ export const suppressError = (error) => {
 
 export const safeImport = async (modulePath) => {
   try {
-    return await import(modulePath);
+    return await import(/* @vite-ignore */ modulePath);
   } catch (error) {
     console.log(`Module ${modulePath} not found, using fallback`);
     return null;
