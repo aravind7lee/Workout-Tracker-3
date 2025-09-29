@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { exerciseLibrary } from '../data/exerciseLibrary';
+import nutritionApi from '../services/nutritionApi';
 
 export default function SearchBar({ isMobile = false, onClose = () => {} }) {
   const [query, setQuery] = useState('');
@@ -49,27 +50,58 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
       console.error('Error loading plans:', error);
     }
 
-    // Get meals from localStorage
-    try {
-      const recentMeals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      recentMeals.forEach(meal => {
-        meals.push({
-          id: meal._id || meal.id,
-          type: 'meal',
-          title: meal.parsedName || meal.name,
-          description: `${Math.round(meal.calories || 0)} cal • ${Math.round(meal.protein || 0)}g protein`,
-          icon: '🍽️',
-          calories: meal.calories
-        });
+    // Get comprehensive food items from nutrition database
+    const comprehensiveFoodItems = [
+      // Animal Proteins
+      'Chicken Breast', 'Chicken Thigh', 'Turkey Breast', 'Salmon Atlantic', 'Tuna Canned Water', 'Sardines Canned', 'Mackerel Cooked',
+      'Beef Steak Lean', 'Ground Beef Lean', 'Pork Loin Roasted', 'Egg Large Whole', 'Egg Whites', 'Greek Yogurt Plain Nonfat',
+      'Cottage Cheese Low Fat', 'Whey Protein Isolate',
+      
+      // Plant Proteins
+      'Lentils Cooked', 'Chickpeas Cooked', 'Black Beans Cooked', 'Kidney Beans Cooked', 'Tofu Firm', 'Tempeh',
+      'Edamame Shelled', 'Quinoa Cooked', 'Oats Rolled Raw', 'Almonds', 'Peanut Butter', 'Chia Seeds', 'Hemp Seeds', 'Seitan Cooked',
+      
+      // Carbohydrates
+      'White Rice Cooked', 'Brown Rice Cooked', 'Oats Cooked', 'Whole Wheat Bread', 'White Bread', 'Pasta Cooked',
+      'Roti Chapati', 'Potato Boiled', 'Sweet Potato Baked', 'Corn Kernels Cooked', 'Banana Medium', 'Apple Medium', 'Pineapple Chunks',
+      
+      // Dairy & Alternatives
+      'Greek Yogurt', 'Skimmed Milk', 'Whole Milk', 'Cottage Cheese', 'Cheese Slice', 'Whey Protein', 'Soy Milk', 'Almond Milk',
+      
+      // Vegetables
+      'Broccoli', 'Spinach', 'Kale', 'Carrots', 'Bell Pepper', 'Tomatoes', 'Onions', 'Cauliflower',
+      
+      // Fruits
+      'Apple', 'Banana', 'Orange', 'Blueberries', 'Strawberries', 'Grapes', 'Mango', 'Pineapple', 'Papaya', 'Watermelon',
+      
+      // Nuts & Seeds
+      'Almonds', 'Walnuts', 'Cashews', 'Peanuts', 'Chia Seeds', 'Flax Seeds', 'Pumpkin Seeds', 'Sunflower Seeds',
+      
+      // Snacks & Condiments
+      'Almond Butter', 'Dark Chocolate', 'Protein Bar', 'Honey', 'Olive Oil', 'Coconut Oil', 'Butter',
+      
+      // Beverages
+      'Black Coffee', 'Green Tea', 'Black Tea', 'Fresh Orange Juice', 'Smoothie', 'Sports Drink',
+      
+      // Common Foods
+      'Rice', 'Chicken', 'Eggs', 'Milk', 'Bread', 'Pasta', 'Oats', 'Salmon', 'Tuna', 'Beef', 'Pork', 'Turkey',
+      'Yogurt', 'Cheese', 'Nuts', 'Seeds', 'Vegetables', 'Fruits', 'Beans', 'Lentils', 'Tofu', 'Fish', 'Meat'
+    ];
+    
+    comprehensiveFoodItems.forEach((food, index) => {
+      meals.push({
+        id: `food-${index}`,
+        type: 'meal',
+        title: food,
+        description: `Nutritional information available`,
+        icon: '🍽️'
       });
-    } catch (error) {
-      console.error('Error loading meals:', error);
-    }
+    });
 
     return [...exercises, ...plans, ...meals];
   };
 
-  // Search function
+  // Enhanced search function with real-time nutrition data
   const performSearch = async (searchQuery) => {
     if (!searchQuery.trim()) {
       setResults([]);
@@ -78,11 +110,8 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
 
     setIsSearching(true);
     
-    // Simulate search delay
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const allItems = getAllData();
-    const filtered = allItems.filter(item => {
+    try {
+      const allItems = getAllData();
       const searchTerm = searchQuery.toLowerCase();
       
       // Enhanced search terms
@@ -94,42 +123,80 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
       
       const isGeneralSearch = searchTerms.some(term => searchTerm.includes(term));
       
-      return (
-        item.title.toLowerCase().includes(searchTerm) ||
-        item.description.toLowerCase().includes(searchTerm) ||
-        item.category?.toLowerCase().includes(searchTerm) ||
-        item.type.toLowerCase().includes(searchTerm) ||
-        (isGeneralSearch && (
-          (searchTerm.includes('workout') || searchTerm.includes('exercise') || searchTerm.includes('training')) && item.type === 'exercise' ||
-          (searchTerm.includes('meal') || searchTerm.includes('food') || searchTerm.includes('nutrition')) && item.type === 'meal' ||
-          (searchTerm.includes('plan') || searchTerm.includes('routine') || searchTerm.includes('program')) && item.type === 'plan'
-        ))
+      // Filter all items
+      const filtered = allItems.filter(item => {
+        return (
+          item.title.toLowerCase().includes(searchTerm) ||
+          item.description.toLowerCase().includes(searchTerm) ||
+          item.category?.toLowerCase().includes(searchTerm) ||
+          item.type.toLowerCase().includes(searchTerm) ||
+          (isGeneralSearch && (
+            (searchTerm.includes('workout') || searchTerm.includes('exercise') || searchTerm.includes('training')) && item.type === 'exercise' ||
+            (searchTerm.includes('meal') || searchTerm.includes('food') || searchTerm.includes('nutrition')) && item.type === 'meal' ||
+            (searchTerm.includes('plan') || searchTerm.includes('routine') || searchTerm.includes('program')) && item.type === 'plan'
+          ))
+        );
+      });
+      
+      // For food searches, also try to get real-time nutrition data
+      if (searchTerm.length > 2 && (isGeneralSearch && searchTerm.includes('food') || searchTerm.includes('nutrition') || !isGeneralSearch)) {
+        try {
+          const nutritionResult = await nutritionApi.lookupFood(searchQuery);
+          if (nutritionResult.success && nutritionResult.data) {
+            // Add real-time nutrition result at the top
+            filtered.unshift({
+              id: `nutrition-${Date.now()}`,
+              type: 'meal',
+              title: nutritionResult.data.parsedName || nutritionResult.data.name,
+              description: `${nutritionResult.data.calories} cal • ${nutritionResult.data.protein}g protein • Real-time data`,
+              icon: '🍽️',
+              nutritionData: nutritionResult.data
+            });
+          }
+        } catch (error) {
+          console.log('Real-time nutrition lookup failed, using database results');
+        }
+      }
+      
+      // Sort by relevance
+      const sorted = filtered.sort((a, b) => {
+        const aTitle = a.title.toLowerCase();
+        const bTitle = b.title.toLowerCase();
+        
+        // Prioritize exact matches
+        if (aTitle === searchTerm && bTitle !== searchTerm) return -1;
+        if (bTitle === searchTerm && aTitle !== searchTerm) return 1;
+        
+        // Prioritize starts with
+        if (aTitle.startsWith(searchTerm) && !bTitle.startsWith(searchTerm)) return -1;
+        if (bTitle.startsWith(searchTerm) && !aTitle.startsWith(searchTerm)) return 1;
+        
+        // Prioritize nutrition data (real-time results)
+        if (a.nutritionData && !b.nutritionData) return -1;
+        if (b.nutritionData && !a.nutritionData) return 1;
+        
+        return aTitle.localeCompare(bTitle);
+      });
+      
+      setResults(sorted.slice(0, 25)); // Show more results
+    } catch (error) {
+      console.error('Search error:', error);
+      // Fallback to basic search
+      const allItems = getAllData();
+      const filtered = allItems.filter(item => 
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    });
+      setResults(filtered.slice(0, 20));
+    }
     
-    // Sort by relevance
-    const sorted = filtered.sort((a, b) => {
-      const aTitle = a.title.toLowerCase();
-      const bTitle = b.title.toLowerCase();
-      const searchTerm = searchQuery.toLowerCase();
-      
-      if (aTitle === searchTerm && bTitle !== searchTerm) return -1;
-      if (bTitle === searchTerm && aTitle !== searchTerm) return 1;
-      if (aTitle.startsWith(searchTerm) && !bTitle.startsWith(searchTerm)) return -1;
-      if (bTitle.startsWith(searchTerm) && !aTitle.startsWith(searchTerm)) return 1;
-      
-      return aTitle.localeCompare(bTitle);
-    });
-    
-    setResults(sorted.slice(0, 8));
     setIsSearching(false);
   };
 
-  // Handle input change
+  // Handle input change with debouncing
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       performSearch(query);
-    }, 300);
+    }, 200); // Faster response for better UX
     
     return () => clearTimeout(timeoutId);
   }, [query]);
@@ -199,7 +266,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search workouts, meals, plans..."
+                    placeholder="Search all foods, workouts, plans..."
                     className="w-full pl-10 pr-10 py-2 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                     autoFocus
                   />
@@ -321,7 +388,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search workouts, meals, plans..."
+                    placeholder="Search all foods, workouts, plans..."
                     className="w-full pl-10 pr-10 py-3 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                     autoFocus
                   />

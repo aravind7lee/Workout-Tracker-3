@@ -8,23 +8,46 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // Only log non-suppressed errors
+    // Only catch actual React errors, not all errors
     const errorMessage = error?.message || error?.toString() || '';
     const suppressedPatterns = [
       /chrome-extension:/,
       /fetchPriority.*prop.*DOM element/,
       /Failed to load.*data.*SyntaxError/,
-      /Unexpected token.*doctype/
+      /Unexpected token.*doctype/,
+      /Loading chunk/,
+      /Loading CSS chunk/,
+      /Network Error/,
+      /fetch/
+    ];
+    
+    const shouldSuppress = suppressedPatterns.some(pattern => pattern.test(errorMessage));
+    
+    if (shouldSuppress) {
+      return { hasError: false, error: null };
+    }
+    
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Only log actual React component errors
+    const errorMessage = error?.message || error?.toString() || '';
+    const suppressedPatterns = [
+      /chrome-extension:/,
+      /fetchPriority.*prop.*DOM element/,
+      /Failed to load.*data.*SyntaxError/,
+      /Unexpected token.*doctype/,
+      /Loading chunk/,
+      /Loading CSS chunk/,
+      /Network Error/,
+      /fetch/
     ];
     
     const shouldSuppress = suppressedPatterns.some(pattern => pattern.test(errorMessage));
     
     if (!shouldSuppress) {
-      console.error('Error caught by boundary:', error, errorInfo);
+      console.error('React Error caught by boundary:', error, errorInfo);
     }
   }
 

@@ -46,18 +46,25 @@ export const AuthProvider = ({ children }) => {
             setUser(parsedUser);
             setAuthToken(savedToken);
           } catch (parseError) {
+            console.warn('Failed to parse saved user data, logging out');
             logout();
           }
         }
       } catch (error) {
+        console.warn('Failed to initialize auth, logging out');
         logout();
       } finally {
         setLoading(false);
       }
     };
 
-    // Use setTimeout to prevent blocking
-    setTimeout(initializeAuth, 0);
+    // Use setTimeout to prevent blocking and add error boundary
+    try {
+      setTimeout(initializeAuth, 0);
+    } catch (error) {
+      console.warn('Failed to initialize auth timeout');
+      setLoading(false);
+    }
   }, [logout]);
 
   const login = (userData, authToken) => {

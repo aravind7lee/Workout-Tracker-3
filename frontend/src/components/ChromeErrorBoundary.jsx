@@ -8,20 +8,41 @@ class ChromeErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
+    // Filter out Chrome extension and network errors immediately
+    const errorMessage = error?.message || error?.toString() || '';
+    const isChromeExtensionError = 
+      errorMessage.includes('Extension context invalidated') ||
+      errorMessage.includes('message channel closed') ||
+      errorMessage.includes('listener indicated an asynchronous response') ||
+      errorMessage.includes('chrome-extension:') ||
+      errorMessage.includes('Loading chunk') ||
+      errorMessage.includes('Loading CSS chunk') ||
+      errorMessage.includes('Network Error') ||
+      errorMessage.includes('fetch') ||
+      error?.stack?.includes('chrome-extension://');
+
+    if (isChromeExtensionError) {
+      // Don't show error UI for Chrome extension errors
+      return { hasError: false };
+    }
+    
     // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log the error but don't throw it
-    console.warn('Chrome Extension Error Caught:', error, errorInfo);
-    
     // Filter out Chrome extension errors
+    const errorMessage = error?.message || error?.toString() || '';
     const isChromeExtensionError = 
-      error.message?.includes('Extension context invalidated') ||
-      error.message?.includes('message channel closed') ||
-      error.message?.includes('listener indicated an asynchronous response') ||
-      error.stack?.includes('chrome-extension://');
+      errorMessage.includes('Extension context invalidated') ||
+      errorMessage.includes('message channel closed') ||
+      errorMessage.includes('listener indicated an asynchronous response') ||
+      errorMessage.includes('chrome-extension:') ||
+      errorMessage.includes('Loading chunk') ||
+      errorMessage.includes('Loading CSS chunk') ||
+      errorMessage.includes('Network Error') ||
+      errorMessage.includes('fetch') ||
+      error?.stack?.includes('chrome-extension://');
 
     if (isChromeExtensionError) {
       // Don't show error UI for Chrome extension errors
@@ -29,6 +50,9 @@ class ChromeErrorBoundary extends React.Component {
       return;
     }
 
+    // Log the error but don't throw it
+    console.warn('Chrome Extension Error Caught:', error, errorInfo);
+    
     this.setState({
       error: error,
       errorInfo: errorInfo

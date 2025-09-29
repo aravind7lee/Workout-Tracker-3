@@ -29,15 +29,19 @@ const PORT = process.env.PORT || 5001;
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:3007',
     'http://localhost:5173',
+    'http://localhost:8080',
     'https://grindx-workout-tracker.onrender.com',
     'https://workout-tracker-frontend.onrender.com',
     'https://gymtracker-app.onrender.com',
+    /localhost:\d+/,
     /\.onrender\.com$/
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  optionsSuccessStatus: 200
 }));
 
 app.use(express.json({ limit: '10mb' }));
@@ -59,12 +63,27 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
 
+// Handle preflight requests
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
 // Health check (no rate limiting)
 app.get('/api/health', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.json({ 
     status: 'OK', 
     message: 'Workout Tracker API is running',
     timestamp: new Date().toISOString(),
+    cors: {
+      origin: req.headers.origin,
+      allowed: true
+    },
     cloudinary: {
       configured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
     },

@@ -22,7 +22,9 @@ const api = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
+  withCredentials: false,
   validateStatus: (status) => status < 500,
 });
 
