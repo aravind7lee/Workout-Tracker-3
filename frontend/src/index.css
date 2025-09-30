@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
-@import './styles/themes.css';
-@import './styles/hero-semantic-tokens.css';
-@import './styles/dark-mode-premium.css';
-@import './styles/premium-dark-mode.css';
-@import './styles/premium-theme-utilities.css';
-@import './styles/nutrition-theme-complete.css';
-@import './styles/hero-styles.css';
-@import './styles/dashboard-hero.css';
-@import './styles/nutrition-hero.css';
-@import './styles/my-plans-hero.css';
-@import './styles/analytics-hero.css';
+@import "./styles/themes.css";
+@import "./styles/hero-semantic-tokens.css";
+@import "./styles/dark-mode-premium.css";
+@import "./styles/premium-dark-mode.css";
+@import "./styles/premium-theme-utilities.css";
+@import "./styles/nutrition-theme-complete.css";
+@import "./styles/hero-styles.css";
+@import "./styles/dashboard-hero.css";
+@import "./styles/nutrition-hero.css";
+@import "./styles/my-plans-hero.css";
+@import "./styles/analytics-hero.css";
 
 @tailwind base;
 @tailwind components;
@@ -18,21 +18,21 @@
 
 /* ===== PREMIUM DARK MODE THEME VARIABLES ===== */
 :root {
-  --font-heading: 'Bebas Neue', cursive;
-  --font-body: 'Inter', sans-serif;
-  
+  --font-heading: "Bebas Neue", cursive;
+  --font-body: "Inter", sans-serif;
+
   /* Premium Dark Theme */
   --bg: #0a0e1a;
   --bg-soft: rgba(15, 23, 42, 0.85);
   --bg-card: rgba(30, 41, 59, 0.75);
   --bg-accent: rgba(0, 212, 255, 0.08);
-  
+
   /* Premium Text Colors */
   --text: #f1f5f9;
   --text-secondary: #e2e8f0;
   --heading: #ffffff;
   --muted: #94a3b8;
-  
+
   /* Neon Accent System */
   --accent: #00d4ff;
   --accent-secondary: #0ea5e9;
@@ -40,20 +40,25 @@
   --accent-glow: rgba(0, 212, 255, 0.4);
   --accent-glow-strong: rgba(0, 212, 255, 0.6);
   --accent-contrast: #000000;
-  
+
   /* Premium Borders & Shadows */
   --panel-border: rgba(71, 85, 105, 0.3);
   --border-glow: rgba(0, 212, 255, 0.2);
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.6);
   --shadow-glow: 0 0 20px var(--accent-glow);
-  --shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  
+  --shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
   /* Button System */
-  --btn-primary-bg: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  --btn-primary-bg: linear-gradient(
+    135deg,
+    var(--accent),
+    var(--accent-secondary)
+  );
   --btn-secondary-bg: rgba(30, 41, 59, 0.6);
   --btn-secondary-border: var(--accent);
   --btn-secondary-text: var(--accent);
-  
+
   /* State Colors */
   --success: #00ff88;
   --danger: #ff4757;
@@ -78,10 +83,22 @@
 }
 
 /* Typography System */
-h1, h2, h3, h4, h5, h6,
-.heading-text, .hero-title, .section-title, .card-title,
-.nav-brand, .logo-text, .dashboard-title, .page-title,
-.modal-title, .form-title {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-text,
+.hero-title,
+.section-title,
+.card-title,
+.nav-brand,
+.logo-text,
+.dashboard-title,
+.page-title,
+.modal-title,
+.form-title {
   font-family: var(--font-heading) !important;
   font-weight: 400 !important;
   letter-spacing: 0.02em !important;
@@ -92,10 +109,48 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--font-body) !important;
 }
 
-body, p, span, div, a, button, input, textarea, label, select, option,
-.btn, .card, .muted-text, .nav-link, .menu-item, .form-control {
+body,
+p,
+span,
+div,
+a,
+button,
+input,
+textarea,
+label,
+select,
+option,
+.btn,
+.card,
+.muted-text,
+.nav-link,
+.menu-item,
+.form-control {
   font-family: var(--font-body) !important;
   text-transform: none !important;
+}
+
+/* Extended Typography System */
+.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+.text-xs, .text-sm, .text-base, .text-lg {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+}
+
+/* Font Utility Classes */
+.font-sans {
+  font-family: var(--font-body) !important;
+}
+
+.font-heading {
+  font-family: var(--font-heading) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
 }
 
 /* Premium Typography */
@@ -107,10 +162,12 @@ body, p, span, div, a, button, input, textarea, label, select, option,
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .text-premium {
   color: #f1f5f9;
+  text-shadow: 0 0 8px rgba(241, 245, 249, 0.2);
 }
 
 .text-accent-glow {
@@ -120,10 +177,21 @@ body, p, span, div, a, button, input, textarea, label, select, option,
 
 /* Premium Body */
 body {
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 60%, rgba(0, 255, 136, 0.06) 0%, transparent 50%),
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(0, 212, 255, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(139, 92, 246, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 60%,
+      rgba(0, 255, 136, 0.06) 0%,
+      transparent 50%
+    ),
     linear-gradient(135deg, #0a0e1a 0%, #1e293b 50%, #0f172a 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -152,33 +220,37 @@ body {
 .card:hover {
   border-color: var(--accent);
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.8),
-    0 0 40px var(--accent-glow),
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-glow),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Premium Global Overrides */
-.bg-white, .bg-gray-50, .bg-gray-100 {
+.bg-white,
+.bg-gray-50,
+.bg-gray-100 {
   background: var(--bg-card) !important;
   backdrop-filter: blur(20px) !important;
   border: 1px solid var(--panel-border) !important;
 }
 
-.text-gray-900, .text-black {
+.text-gray-900,
+.text-black {
   color: var(--heading) !important;
 }
 
-.text-gray-800, .text-gray-700 {
+.text-gray-800,
+.text-gray-700 {
   color: var(--text) !important;
 }
 
-.text-gray-600, .text-gray-500 {
+.text-gray-600,
+.text-gray-500 {
   color: var(--muted) !important;
 }
 
 /* Premium Buttons */
-.btn, button {
+.btn,
+button {
   background: var(--btn-secondary-bg) !important;
   border: 1px solid var(--panel-border) !important;
   color: var(--text) !important;
@@ -186,7 +258,8 @@ body {
   transition: all 300ms ease !important;
 }
 
-.btn:hover, button:hover {
+.btn:hover,
+button:hover {
   background: var(--accent) !important;
   color: var(--accent-contrast) !important;
   border-color: var(--accent) !important;
@@ -206,14 +279,18 @@ body {
 }
 
 /* Premium Inputs */
-input, textarea, select {
+input,
+textarea,
+select {
   background: rgba(15, 23, 42, 0.8) !important;
   border: 1px solid var(--panel-border) !important;
   color: var(--text) !important;
   backdrop-filter: blur(10px) !important;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 15px var(--accent-glow) !important;
   background: rgba(15, 23, 42, 0.9) !important;
@@ -222,17 +299,90 @@ input:focus, textarea:focus, select:focus {
 /* Responsive Design */
 @media (min-width: 768px) {
   body {
-    background: 
-      radial-gradient(ellipse 1200px 800px at 20% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 60%),
-      radial-gradient(ellipse 1000px 600px at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 800px 400px at 40% 60%, rgba(0, 255, 136, 0.08) 0%, transparent 60%),
-      linear-gradient(135deg, #0a0e1a 0%, #1e293b 30%, #334155 70%, #0f172a 100%);
+    background: radial-gradient(
+        ellipse 1200px 800px at 20% 20%,
+        rgba(0, 212, 255, 0.15) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 1000px 600px at 80% 80%,
+        rgba(139, 92, 246, 0.1) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 800px 400px at 40% 60%,
+        rgba(0, 255, 136, 0.08) 0%,
+        transparent 60%
+      ),
+      linear-gradient(
+        135deg,
+        #0a0e1a 0%,
+        #1e293b 30%,
+        #334155 70%,
+        #0f172a 100%
+      );
   }
+}
+
+/* Premium Card Variants */
+.card-premium {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-premium:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--accent);
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.9),
+    0 0 50px rgba(0, 212, 255, 0.6),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Glassmorphism Effects */
+.glass-effect {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Neon Glow Effects */
+.glow-cyan {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+}
+
+.glow-cyan:hover {
+  box-shadow: 0 0 50px rgba(0, 212, 255, 0.6);
+}
+
+.glow-purple {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+}
+
+.glow-green {
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
 }
 
 @media (max-width: 640px) {
   .card {
     border-radius: 16px;
     padding: 1.5rem;
+  }
+  
+  .card-premium {
+    border-radius: 20px;
+    padding: 2rem;
   }
 }
