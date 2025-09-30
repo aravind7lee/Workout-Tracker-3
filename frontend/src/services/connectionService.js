@@ -149,6 +149,8 @@ class ConnectionService {
 export const connectionService = new ConnectionService();
 
 // React hook for connection status
+import React from 'react';
+
 export const useConnectionStatus = () => {
   const [status, setStatus] = React.useState(connectionService.getConnectionStatus());
   

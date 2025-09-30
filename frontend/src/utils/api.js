@@ -68,39 +68,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Enhanced response interceptor with retry logic
+// Simplified response interceptor
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    
-    // Handle rate limiting with retry
-    if (error.response?.status === 429 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      
-      // Wait before retrying
-      const retryAfter = error.response.headers['retry-after'] || 2;
-      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-      
-      return api(originalRequest);
-    }
-    
+  (error) => {
     // Silently handle browser extension conflicts
     if (error.message?.includes('contentScript') || error.message?.includes('extension')) {
       return Promise.resolve({ data: null, status: 200 });
-    }
-    
-    // Handle network errors with fallback
-    if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
-      console.warn('🔄 Backend offline - switching to offline mode');
-      return Promise.reject({ ...error, offline: true });
-    }
-    
-    // Handle timeout errors with retry
-    if (error.code === 'ECONNABORTED' && !originalRequest._retry) {
-      originalRequest._retry = true;
-      console.warn('⏱️ Request timeout - retrying...');
-      return api(originalRequest);
     }
     
     // Handle authentication errors
@@ -110,6 +84,11 @@ api.interceptors.response.use(
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
       }
+    }
+    
+    // Mark network errors for offline handling
+    if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
+      error.offline = true;
     }
     
     return Promise.reject(error);
@@ -124,35 +103,14 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Enhanced connection testing with retry logic
-export const testConnection = async (retries = 3) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await api.get('/health', { timeout: 10000 });
-      if (response.status === 200) {
-        return { success: true, data: response.data, attempt: i + 1 };
-      }
-    } catch (error) {
-      if (i === retries - 1) {
-        return { success: false, error: 'Backend offline', attempts: retries };
-      }
-      // Wait before retry
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    }
+// Simple connection test
+export const testConnection = async () => {
+  try {
+    const response = await api.get('/health', { timeout: 5000 });
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: error.message };
   }
-  
-  return { success: false, error: 'Backend unavailable' };
 };
-
-// Queue requests to prevent rate limiting
-export const queuedRequest = (config) => {
-  return new Promise((resolve, reject) => {
-    requestQueue.push({ resolve, reject, config: { ...config, baseURL: getApiBaseUrl() } });
-    processQueue();
-  });
-};
-
-// Export enhanced API with queue support
-api.queue = queuedRequest;
 
 export default api;

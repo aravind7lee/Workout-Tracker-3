@@ -1,158 +1,121 @@
 // Fixed Authentication Service with Offline Support
 import api from '../utils/api';
 import { demoService } from './demoService';
+import { smartRequest, safeApiCall } from './smartRequestManager';
 
 export const registerUser = async (userData) => {
+  // Create offline user as fallback
+  const offlineUser = {
+    id: Date.now().toString(),
+    name: userData.name,
+    email: userData.email,
+    createdAt: new Date().toISOString(),
+    isOffline: true
+  };
+  
+  const offlineToken = btoa(JSON.stringify({
+    userId: offlineUser.id,
+    email: offlineUser.email,
+    exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
+  }));
+  
+  const offlineResult = {
+    success: true,
+    user: offlineUser,
+    token: offlineToken,
+    message: 'Account created offline'
+  };
+  
   try {
-    // Use queued request to prevent rate limiting
-    const response = await api.queue({
-      method: 'POST',
-      url: '/auth/register',
-      data: {
+    // Use smart request manager
+    const result = await safeApiCall(
+      () => smartRequest.post('/auth/register', {
         name: userData.name.trim(),
         email: userData.email.toLowerCase().trim(),
         password: userData.password
-      },
-      timeout: 15000
-    });
+      }),
+      offlineResult
+    );
     
-    return {
-      success: true,
-      user: response.data.user,
-      token: response.data.token,
-      message: response.data.message || 'Registration successful'
-    };
+    if (result.success) {
+      return {
+        success: true,
+        user: result.data.user,
+        token: result.data.token,
+        message: result.data.message || 'Registration successful'
+      };
+    } else {
+      // Save offline user
+      const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
+      existingUsers[userData.email] = { ...offlineUser, password: userData.password };
+      localStorage.setItem('offline_users', JSON.stringify(existingUsers));
+      
+      offlineResult.message = `Account created offline (${result.error})`;
+      return offlineResult;
+    }
     
   } catch (error) {
-    // Handle rate limiting
-    if (error.response?.status === 429) {
-      // Create offline account when rate limited
-      const offlineUser = {
-        id: Date.now().toString(),
-        name: userData.name,
-        email: userData.email,
-        createdAt: new Date().toISOString(),
-        isOffline: true
-      };
-      
-      const offlineToken = btoa(JSON.stringify({
-        userId: offlineUser.id,
-        email: offlineUser.email,
-        exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
-      }));
-      
-      const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
-      existingUsers[userData.email] = { ...offlineUser, password: userData.password };
-      localStorage.setItem('offline_users', JSON.stringify(existingUsers));
-      
-      return {
-        success: true,
-        user: offlineUser,
-        token: offlineToken,
-        message: 'Account created offline (server busy)'
-      };
+    // Save offline user
+    const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
+    existingUsers[userData.email] = { ...offlineUser, password: userData.password };
+    localStorage.setItem('offline_users', JSON.stringify(existingUsers));
+    
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
     }
     
-    // If backend is down, create offline account
-    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500 || error.offline) {
-      const offlineUser = {
-        id: Date.now().toString(),
-        name: userData.name,
-        email: userData.email,
-        createdAt: new Date().toISOString(),
-        isOffline: true
-      };
-      
-      const offlineToken = btoa(JSON.stringify({
-        userId: offlineUser.id,
-        email: offlineUser.email,
-        exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
-      }));
-      
-      const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
-      existingUsers[userData.email] = { ...offlineUser, password: userData.password };
-      localStorage.setItem('offline_users', JSON.stringify(existingUsers));
-      
-      return {
-        success: true,
-        user: offlineUser,
-        token: offlineToken,
-        message: 'Account created offline - will sync when online'
-      };
-    }
-    
-    throw new Error(error.response?.data?.message || 'Registration failed');
+    return offlineResult;
   }
 };
 
 export const loginUser = async (credentials) => {
   console.log('🔐 Attempting login for:', credentials.email);
-  console.log('🌐 API Base URL:', api.defaults.baseURL);
+  
+  // Try offline login first if we know backend is having issues
+  const offlineResult = tryOfflineLogin(credentials);
   
   try {
-    // Use queued request to prevent rate limiting
-    const response = await api.queue({
-      method: 'POST',
-      url: '/auth/login',
-      data: {
+    // Use smart request manager
+    const result = await safeApiCall(
+      () => smartRequest.post('/auth/login', {
         email: credentials.email.toLowerCase().trim(),
         password: credentials.password
-      },
-      timeout: 15000
-    });
+      }),
+      offlineResult
+    );
     
-    console.log('✅ Login successful:', response.data.user?.email);
-    
-    return {
-      success: true,
-      user: response.data.user,
-      token: response.data.token,
-      message: response.data.message || 'Login successful'
-    };
+    if (result.success) {
+      console.log('✅ Login successful:', result.data.user?.email);
+      return {
+        success: true,
+        user: result.data.user,
+        token: result.data.token,
+        message: result.data.message || 'Login successful'
+      };
+    } else {
+      // Use offline fallback
+      if (offlineResult) {
+        offlineResult.message = `Logged in offline (${result.error})`;
+        return offlineResult;
+      }
+      throw new Error(result.error || 'Login failed');
+    }
     
   } catch (error) {
-    console.error('❌ Login error details:', {
-      status: error.response?.status,
-      message: error.response?.data?.message,
-      code: error.code,
-      url: error.config?.url
-    });
-    
-    // Handle rate limiting specifically
-    if (error.response?.status === 429) {
-      console.log('⏳ Rate limited - trying offline login...');
-      const offlineResult = tryOfflineLogin(credentials);
-      if (offlineResult) {
-        offlineResult.message = 'Logged in offline (server busy)';
-        return offlineResult;
-      }
-      throw new Error('Server is busy. Please try again in a few minutes.');
-    }
-    
-    // If backend is down or network error, try offline login
-    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500 || error.offline) {
-      console.log('🔄 Backend offline - trying offline login...');
-      const offlineResult = tryOfflineLogin(credentials);
-      if (offlineResult) {
-        offlineResult.message = 'Logged in offline (server unavailable)';
-        return offlineResult;
-      }
-    }
+    console.error('❌ Login error:', error.message);
     
     // For 401/400 errors, show the actual error message
     if (error.response?.status === 401 || error.response?.status === 400) {
       throw new Error(error.response.data?.message || 'Invalid credentials');
     }
     
-    // Try offline as last resort
-    console.log('🔄 Trying offline login as fallback...');
-    const offlineResult = tryOfflineLogin(credentials);
+    // Use offline fallback
     if (offlineResult) {
       offlineResult.message = 'Logged in offline';
       return offlineResult;
     }
     
-    throw new Error(error.response?.data?.message || 'Login failed. Please try again.');
+    throw new Error('Login failed. Please try again.');
   }
 };
 
@@ -206,56 +169,26 @@ export const createDemoUser = async () => {
 
 export const checkBackendStatus = async () => {
   try {
-    console.log('🔍 Checking backend status at:', api.defaults.baseURL + '/health');
+    const result = await safeApiCall(
+      () => smartRequest.get('/health'),
+      { status: 'offline' }
+    );
     
-    // Use enhanced connection test with retries
-    const result = await api.testConnection?.() || await api.get('/health', { 
-      timeout: 15000,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (result.success || result.status === 200) {
-      console.log('✅ Backend health check successful');
+    if (result.success) {
       return {
         online: true,
         message: 'Backend connected',
-        data: result.data || result
+        data: result.data
       };
-    }
-    
-    throw new Error('Health check failed');
-    
-  } catch (error) {
-    console.error('❌ Backend health check failed:', {
-      message: error.message,
-      code: error.code,
-      status: error.response?.status,
-      url: error.config?.url
-    });
-    
-    // Handle rate limiting
-    if (error.response?.status === 429) {
-      console.log('⏳ Backend rate limited - assuming online');
-      return {
-        online: true,
-        message: 'Backend online (rate limited)',
-        rateLimited: true
-      };
-    }
-    
-    // For CORS errors, still try to proceed as if online
-    if (error.message.includes('CORS') || error.code === 'ERR_NETWORK') {
-      console.log('🔄 Network error - trying offline mode');
+    } else {
       return {
         online: false,
         message: 'Using offline mode',
-        networkError: true
+        error: result.error
       };
     }
     
+  } catch (error) {
     return {
       online: false,
       message: 'Backend not accessible - using offline mode',

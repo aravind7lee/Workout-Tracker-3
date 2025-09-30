@@ -19,39 +19,80 @@ import syncRoutes from './routes/sync.js';
 
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
+// Enhanced CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3007',
-    'http://localhost:5173',
-    'http://localhost:8080',
-    'https://grindx-workout-tracker.onrender.com',
-    'https://workout-tracker-frontend.onrender.com',
-    'https://gymtracker-app.onrender.com',
-    /localhost:\d+/,
-    /\.onrender\.com$/
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3007', 
+      'http://localhost:5173',
+      'http://localhost:8080',
+      'https://grindx-workout-tracker.onrender.com',
+      'https://workout-tracker-frontend.onrender.com',
+      'https://gymtracker-app.onrender.com',
+      'https://grind-x-workout-tracker.netlify.app'
+    ];
+    
+    // Allow localhost with any port
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    // Allow .onrender.com and .netlify.app domains
+    if (origin.endsWith('.onrender.com') || origin.endsWith('.netlify.app')) {
+      return callback(null, true);
+    }
+    
+    // Check allowed origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(null, true); // Allow all origins in production for now
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  optionsSuccessStatus: 200
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control'],
+  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Apply rate limiting
-app.use('/api/', generalLimiter);
+// Apply minimal rate limiting for production
+app.use('/api/', (req, res, next) => {
+  // Skip rate limiting for health checks and essential endpoints
+  if (req.path === '/health' || req.path === '/api/health') {
+    return next();
+  }
+  return generalLimiter(req, res, next);
+});
 
-// Routes with specific rate limiting
-app.use('/api/auth', authLimiter, authRoutes);
+// Routes with relaxed rate limiting
+app.use('/api/auth', (req, res, next) => {
+  // Apply lighter rate limiting for auth
+  const lightAuthLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 30, // 30 requests per minute
+    message: { success: false, message: 'Too many auth requests' },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.method === 'OPTIONS'
+  });
+  return lightAuthLimiter(req, res, next);
+}, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/plans', planRoutes);
@@ -63,13 +104,21 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
 
-// Handle preflight requests
-app.options('*', (req, res) => {
+// Enhanced preflight handling
+app.use((req, res, next) => {
+  // Set CORS headers for all requests
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control');
+  res.header('Access-Control-Expose-Headers', 'X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
 });
 
 // Health check (no rate limiting)
