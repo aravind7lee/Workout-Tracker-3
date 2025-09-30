@@ -187,8 +187,8 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
   const currentCategories = staticFoodCategories;
 
   const handleFoodClick = (food) => {
-    const query = `${food.serving} ${food.name}`;
-    onFoodSelect(query);
+    // Instead of triggering API lookup, pass the exact food data
+    onFoodSelect(food);
   };
 
   const formatNutrition = (food) => {

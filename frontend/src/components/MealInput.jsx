@@ -29,8 +29,16 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
     }
   };
 
-  const quickAdd = (foodName) => {
-    setQuery(foodName);
+  const quickAdd = async (foodName) => {
+    if (isLookingUp) return;
+    try {
+      console.log('Quick add submitting:', foodName);
+      await onLookup(foodName);
+      setQuery('');
+    } catch (error) {
+      console.error('Quick add failed:', error);
+      setQuery(foodName); // Fallback to setting query
+    }
   };
 
   return (

@@ -111,31 +111,8 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
       
       allResults = [...localResults];
       
-      // For food searches, also try real-time nutrition API
-      if (searchTerm.length > 2) {
-        try {
-          const nutritionResult = await nutritionApi.lookupFood(searchQuery);
-          if (nutritionResult.success && nutritionResult.data) {
-            // Check if this food is already in results to avoid duplicates
-            const existingFood = allResults.find(item => 
-              item.title.toLowerCase() === (nutritionResult.data.parsedName || nutritionResult.data.name).toLowerCase()
-            );
-            
-            if (!existingFood) {
-              allResults.unshift({
-                id: `api-${Date.now()}`,
-                type: 'meal',
-                title: nutritionResult.data.parsedName || nutritionResult.data.name,
-                description: `${nutritionResult.data.calories} cal • ${nutritionResult.data.protein}g protein • ${nutritionResult.data.carbs}g carbs • ${nutritionResult.data.fat}g fat • API`,
-                icon: '🍽️',
-                nutritionData: nutritionResult.data
-              });
-            }
-          }
-        } catch (error) {
-          console.log('API lookup failed, using database results');
-        }
-      }
+      // Skip API lookup for search to maintain consistency
+      // All food results come from static database only
       
       // Sort by relevance
       const sorted = allResults.sort((a, b) => {

@@ -38,12 +38,13 @@ export default function Nutrition() {
   // Auto-search when coming from navbar
   useEffect(() => {
     if (navbarSearch) {
+      // Navbar search is always a string query, not a food object
       handleLookup(navbarSearch);
     }
   }, [navbarSearch]);
 
-  const handleLookup = async (query) => {
-    if (!query || typeof query !== 'string') {
+  const handleLookup = async (queryOrFood) => {
+    if (!queryOrFood) {
       setError('Please enter a valid food name');
       return;
     }
@@ -52,41 +53,68 @@ export default function Nutrition() {
       setIsLookingUp(true);
       setError(null);
       
-      console.log('🔍 Looking up nutrition for:', query);
+      let enrichedItem;
       
-      // Real-time Nutritionix API lookup
-      const nutritionItem = await lookupFood(query.trim());
-      
-      // Ensure we have valid nutrition data
-      if (!nutritionItem || typeof nutritionItem !== 'object') {
-        throw new Error('Invalid nutrition data received');
+      // Check if it's a food object from Quick Add Foods or a string query
+      if (typeof queryOrFood === 'object' && queryOrFood.name) {
+        // It's a food object from Quick Add Foods - use exact data
+        console.log('🍽️ Using Quick Add Foods data:', queryOrFood);
+        console.log('📊 Quick Add Values - Cal:', queryOrFood.calories, 'Protein:', queryOrFood.protein, 'Carbs:', queryOrFood.carbs, 'Fat:', queryOrFood.fat);
+        
+        enrichedItem = {
+          name: queryOrFood.name,
+          parsedName: queryOrFood.name,
+          calories: queryOrFood.calories || 0,
+          protein: queryOrFood.protein || 0,
+          carbs: queryOrFood.carbs || 0,
+          fat: queryOrFood.fat || 0,
+          fiber: queryOrFood.fiber || 0,
+          sugar: queryOrFood.sugar || 0,
+          sodium: queryOrFood.sodium || 0,
+          servingText: queryOrFood.serving || '1 serving',
+          servingGrams: queryOrFood.servingGrams || 100,
+          mealType: 'snack',
+          source: 'quick-add'
+        };
+        
+        console.log('✅ Final Quick Add Item - Cal:', enrichedItem.calories, 'Protein:', enrichedItem.protein, 'Carbs:', enrichedItem.carbs, 'Fat:', enrichedItem.fat);
+      } else {
+        // It's a string query - do API lookup
+        const query = typeof queryOrFood === 'string' ? queryOrFood : queryOrFood.toString();
+        console.log('🔍 Looking up nutrition for:', query);
+        
+        const nutritionItem = await lookupFood(query.trim());
+        
+        if (!nutritionItem || typeof nutritionItem !== 'object') {
+          throw new Error('Invalid nutrition data received');
+        }
+        
+        enrichedItem = {
+          name: nutritionItem.name || 'Unknown Food',
+          parsedName: nutritionItem.parsedName || nutritionItem.name || 'Unknown Food',
+          calories: nutritionItem.calories || 0,
+          protein: nutritionItem.protein || 0,
+          carbs: nutritionItem.carbs || 0,
+          fat: nutritionItem.fat || 0,
+          fiber: nutritionItem.fiber || 0,
+          sugar: nutritionItem.sugar || 0,
+          sodium: nutritionItem.sodium || 0,
+          servingText: nutritionItem.servingText || '1 serving',
+          servingGrams: nutritionItem.servingGrams || 100,
+          mealType: nutritionItem.mealType || 'snack',
+          source: nutritionItem.source || 'api',
+          ...nutritionItem
+        };
       }
-      
-      // Add default meal type and ensure all required properties
-      const enrichedItem = {
-        name: nutritionItem.name || 'Unknown Food',
-        parsedName: nutritionItem.parsedName || nutritionItem.name || 'Unknown Food',
-        calories: nutritionItem.calories || 0,
-        protein: nutritionItem.protein || 0,
-        carbs: nutritionItem.carbs || 0,
-        fat: nutritionItem.fat || 0,
-        fiber: nutritionItem.fiber || 0,
-        sugar: nutritionItem.sugar || 0,
-        sodium: nutritionItem.sodium || 0,
-        servingText: nutritionItem.servingText || '1 serving',
-        servingGrams: nutritionItem.servingGrams || 100,
-        mealType: nutritionItem.mealType || 'snack',
-        source: nutritionItem.source || 'unknown',
-        ...nutritionItem
-      };
       
       setNutritionItems([enrichedItem]);
       setShowPreviewModal(true);
       
-      console.log('✅ Nutrition lookup successful:', enrichedItem);
+      console.log('✅ Nutrition data ready:', enrichedItem);
     } catch (error) {
       console.error('❌ Nutrition lookup failed:', error);
-      setError(`Failed to lookup "${query}". Please try again.`);
+      const errorMsg = typeof queryOrFood === 'string' ? queryOrFood : queryOrFood.name || 'food';
+      setError(`Failed to lookup "${errorMsg}". Please try again.`);
     } finally {
       setIsLookingUp(false);
     }
