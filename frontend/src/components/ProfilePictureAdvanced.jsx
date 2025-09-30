@@ -299,6 +299,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
                     onClick={handleRemovePhoto}
                     className="p-2 bg-red-500 hover:bg-red-600 rounded-full text-white transition-colors"
                     title="Remove Photo"
+                    style={{display: 'none'}}
                   >
                     🗑️
                   </button>
