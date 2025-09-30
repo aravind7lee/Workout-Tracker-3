@@ -1,57 +1,58 @@
-// Rate Limiter Middleware - Prevents API spam and 500 errors
+// Optimized Rate Limiter for Production
 import rateLimit from 'express-rate-limit';
 
-// General API rate limiter
+// Relaxed general API rate limiter for production
 export const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 200, // Allow 200 requests per minute
   message: {
     success: false,
-    message: 'Too many requests from this IP, please try again later.',
-    retryAfter: '15 minutes'
+    message: 'Rate limit exceeded. Please wait a moment.',
+    retryAfter: '1 minute'
   },
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    // Skip rate limiting for health checks
-    return req.path === '/api/health';
+    // Skip rate limiting for essential endpoints
+    const skipPaths = ['/api/health', '/api/auth/verify', '/api/sync'];
+    return skipPaths.some(path => req.path.includes(path));
   }
 });
 
-// Settings API rate limiter (more restrictive)
-export const settingsLimiter = rateLimit({
+// Relaxed auth rate limiter
+export const authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 20, // Limit each IP to 20 settings requests per 5 minutes
+  max: 20, // Allow 20 auth attempts per 5 minutes
   message: {
     success: false,
-    message: 'Too many settings requests. Please wait before trying again.',
+    message: 'Too many login attempts. Please wait 5 minutes.',
     retryAfter: '5 minutes'
   },
   standardHeaders: true,
   legacyHeaders: false
 });
 
-// Auth rate limiter (most restrictive)
-export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 auth requests per windowMs
+// Relaxed settings limiter
+export const settingsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 50, // Allow 50 settings requests per minute
   message: {
     success: false,
-    message: 'Too many authentication attempts, please try again later.',
-    retryAfter: '15 minutes'
+    message: 'Settings rate limit exceeded.',
+    retryAfter: '1 minute'
   },
   standardHeaders: true,
   legacyHeaders: false
 });
 
-// Upload rate limiter
+// Relaxed upload limiter
 export const uploadLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 10, // Limit each IP to 10 uploads per 10 minutes
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 30, // Allow 30 uploads per 5 minutes
   message: {
     success: false,
-    message: 'Too many upload requests. Please wait before uploading again.',
-    retryAfter: '10 minutes'
+    message: 'Upload rate limit exceeded.',
+    retryAfter: '5 minutes'
   },
   standardHeaders: true,
   legacyHeaders: false

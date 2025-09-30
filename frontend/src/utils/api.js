@@ -1,4 +1,4 @@
-// Enhanced API Configuration with Silent Error Handling
+// Production-Optimized API Configuration
 import axios from 'axios';
 
 // Determine the correct API base URL
@@ -17,9 +17,35 @@ const getApiBaseUrl = () => {
   return 'https://workout-tracker-backend-wga7.onrender.com/api';
 };
 
+// Request queue to prevent rate limiting
+const requestQueue = [];
+let isProcessingQueue = false;
+
+const processQueue = async () => {
+  if (isProcessingQueue || requestQueue.length === 0) return;
+  
+  isProcessingQueue = true;
+  
+  while (requestQueue.length > 0) {
+    const { resolve, reject, config } = requestQueue.shift();
+    
+    try {
+      const response = await axios(config);
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+    
+    // Small delay to prevent rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  
+  isProcessingQueue = false;
+};
+
 const api = axios.create({
   baseURL: getApiBaseUrl(),
-  timeout: 15000,
+  timeout: 30000, // Increased timeout for production
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -42,25 +68,39 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor with silent error handling
+// Enhanced response interceptor with retry logic
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Handle rate limiting with retry
+    if (error.response?.status === 429 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      // Wait before retrying
+      const retryAfter = error.response.headers['retry-after'] || 2;
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      
+      return api(originalRequest);
+    }
+    
     // Silently handle browser extension conflicts
     if (error.message?.includes('contentScript') || error.message?.includes('extension')) {
       return Promise.resolve({ data: null, status: 200 });
     }
     
-    // Silently handle connection refused errors
+    // Handle network errors with fallback
     if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
-      console.warn('Backend offline - using local mode');
-      return Promise.reject({ ...error, silent: true });
+      console.warn('🔄 Backend offline - switching to offline mode');
+      return Promise.reject({ ...error, offline: true });
     }
     
-    // Handle timeout errors silently
-    if (error.code === 'ECONNABORTED') {
-      console.warn('Request timeout - backend may be slow');
-      return Promise.reject({ ...error, silent: true });
+    // Handle timeout errors with retry
+    if (error.code === 'ECONNABORTED' && !originalRequest._retry) {
+      originalRequest._retry = true;
+      console.warn('⏱️ Request timeout - retrying...');
+      return api(originalRequest);
     }
     
     // Handle authentication errors
@@ -84,19 +124,35 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Test backend connectivity with silent fallback
-export const testConnection = async () => {
-  try {
-    const response = await api.get('/health');
-    if (response.status === 200) {
-      return { success: true, data: response.data };
+// Enhanced connection testing with retry logic
+export const testConnection = async (retries = 3) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await api.get('/health', { timeout: 10000 });
+      if (response.status === 200) {
+        return { success: true, data: response.data, attempt: i + 1 };
+      }
+    } catch (error) {
+      if (i === retries - 1) {
+        return { success: false, error: 'Backend offline', attempts: retries };
+      }
+      // Wait before retry
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
     }
-  } catch (error) {
-    // Silent failure - no console errors
-    return { success: false, error: 'Backend offline' };
   }
   
   return { success: false, error: 'Backend unavailable' };
 };
+
+// Queue requests to prevent rate limiting
+export const queuedRequest = (config) => {
+  return new Promise((resolve, reject) => {
+    requestQueue.push({ resolve, reject, config: { ...config, baseURL: getApiBaseUrl() } });
+    processQueue();
+  });
+};
+
+// Export enhanced API with queue support
+api.queue = queuedRequest;
 
 export default api;

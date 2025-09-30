@@ -4,10 +4,16 @@ import { demoService } from './demoService';
 
 export const registerUser = async (userData) => {
   try {
-    const response = await api.post('/auth/register', {
-      name: userData.name.trim(),
-      email: userData.email.toLowerCase().trim(),
-      password: userData.password
+    // Use queued request to prevent rate limiting
+    const response = await api.queue({
+      method: 'POST',
+      url: '/auth/register',
+      data: {
+        name: userData.name.trim(),
+        email: userData.email.toLowerCase().trim(),
+        password: userData.password
+      },
+      timeout: 15000
     });
     
     return {
@@ -18,8 +24,9 @@ export const registerUser = async (userData) => {
     };
     
   } catch (error) {
-    // If backend is down, create offline account
-    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
+    // Handle rate limiting
+    if (error.response?.status === 429) {
+      // Create offline account when rate limited
       const offlineUser = {
         id: Date.now().toString(),
         name: userData.name,
@@ -34,9 +41,37 @@ export const registerUser = async (userData) => {
         exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
       }));
       
-      localStorage.setItem('offline_users', JSON.stringify({
-        [userData.email]: { ...offlineUser, password: userData.password }
+      const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
+      existingUsers[userData.email] = { ...offlineUser, password: userData.password };
+      localStorage.setItem('offline_users', JSON.stringify(existingUsers));
+      
+      return {
+        success: true,
+        user: offlineUser,
+        token: offlineToken,
+        message: 'Account created offline (server busy)'
+      };
+    }
+    
+    // If backend is down, create offline account
+    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500 || error.offline) {
+      const offlineUser = {
+        id: Date.now().toString(),
+        name: userData.name,
+        email: userData.email,
+        createdAt: new Date().toISOString(),
+        isOffline: true
+      };
+      
+      const offlineToken = btoa(JSON.stringify({
+        userId: offlineUser.id,
+        email: offlineUser.email,
+        exp: Date.now() + (30 * 24 * 60 * 60 * 1000)
       }));
+      
+      const existingUsers = JSON.parse(localStorage.getItem('offline_users') || '{}');
+      existingUsers[userData.email] = { ...offlineUser, password: userData.password };
+      localStorage.setItem('offline_users', JSON.stringify(existingUsers));
       
       return {
         success: true,
@@ -55,9 +90,15 @@ export const loginUser = async (credentials) => {
   console.log('🌐 API Base URL:', api.defaults.baseURL);
   
   try {
-    const response = await api.post('/auth/login', {
-      email: credentials.email.toLowerCase().trim(),
-      password: credentials.password
+    // Use queued request to prevent rate limiting
+    const response = await api.queue({
+      method: 'POST',
+      url: '/auth/login',
+      data: {
+        email: credentials.email.toLowerCase().trim(),
+        password: credentials.password
+      },
+      timeout: 15000
     });
     
     console.log('✅ Login successful:', response.data.user?.email);
@@ -77,11 +118,25 @@ export const loginUser = async (credentials) => {
       url: error.config?.url
     });
     
-    // If backend is down, try offline login
-    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
-      console.log('🔄 Trying offline login...');
+    // Handle rate limiting specifically
+    if (error.response?.status === 429) {
+      console.log('⏳ Rate limited - trying offline login...');
       const offlineResult = tryOfflineLogin(credentials);
-      if (offlineResult) return offlineResult;
+      if (offlineResult) {
+        offlineResult.message = 'Logged in offline (server busy)';
+        return offlineResult;
+      }
+      throw new Error('Server is busy. Please try again in a few minutes.');
+    }
+    
+    // If backend is down or network error, try offline login
+    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500 || error.offline) {
+      console.log('🔄 Backend offline - trying offline login...');
+      const offlineResult = tryOfflineLogin(credentials);
+      if (offlineResult) {
+        offlineResult.message = 'Logged in offline (server unavailable)';
+        return offlineResult;
+      }
     }
     
     // For 401/400 errors, show the actual error message
@@ -92,7 +147,10 @@ export const loginUser = async (credentials) => {
     // Try offline as last resort
     console.log('🔄 Trying offline login as fallback...');
     const offlineResult = tryOfflineLogin(credentials);
-    if (offlineResult) return offlineResult;
+    if (offlineResult) {
+      offlineResult.message = 'Logged in offline';
+      return offlineResult;
+    }
     
     throw new Error(error.response?.data?.message || 'Login failed. Please try again.');
   }
@@ -150,20 +208,26 @@ export const checkBackendStatus = async () => {
   try {
     console.log('🔍 Checking backend status at:', api.defaults.baseURL + '/health');
     
-    const response = await api.get('/health', { 
-      timeout: 10000,
+    // Use enhanced connection test with retries
+    const result = await api.testConnection?.() || await api.get('/health', { 
+      timeout: 15000,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
     });
     
-    console.log('✅ Backend health check successful:', response.data);
-    return {
-      online: response.status === 200,
-      message: 'Backend connected',
-      data: response.data
-    };
+    if (result.success || result.status === 200) {
+      console.log('✅ Backend health check successful');
+      return {
+        online: true,
+        message: 'Backend connected',
+        data: result.data || result
+      };
+    }
+    
+    throw new Error('Health check failed');
+    
   } catch (error) {
     console.error('❌ Backend health check failed:', {
       message: error.message,
@@ -172,13 +236,23 @@ export const checkBackendStatus = async () => {
       url: error.config?.url
     });
     
+    // Handle rate limiting
+    if (error.response?.status === 429) {
+      console.log('⏳ Backend rate limited - assuming online');
+      return {
+        online: true,
+        message: 'Backend online (rate limited)',
+        rateLimited: true
+      };
+    }
+    
     // For CORS errors, still try to proceed as if online
     if (error.message.includes('CORS') || error.code === 'ERR_NETWORK') {
-      console.log('🔄 CORS error detected, assuming backend is online but CORS misconfigured');
+      console.log('🔄 Network error - trying offline mode');
       return {
-        online: true, // Force online mode for CORS issues
-        message: 'Backend accessible (CORS issue resolved)',
-        corsIssue: true
+        online: false,
+        message: 'Using offline mode',
+        networkError: true
       };
     }
     
