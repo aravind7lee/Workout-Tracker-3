@@ -21,4 +21,16 @@ router.delete('/:id', auth, async (req, res) => {
   res.json({ message: 'Meal deleted' });
 });
 
+router.get('/totals', auth, async (req, res) => {
+  const meals = await Meal.find({ user: req.user._id });
+  const totals = meals.reduce((acc, meal) => ({
+    calories: acc.calories + (meal.calories || 0),
+    protein: acc.protein + (meal.protein || 0),
+    carbs: acc.carbs + (meal.carbs || 0),
+    fat: acc.fat + (meal.fat || 0),
+    mealsCount: acc.mealsCount + 1
+  }), { calories: 0, protein: 0, carbs: 0, fat: 0, mealsCount: 0 });
+  res.json(totals);
+});
+
 export default router;
