@@ -16,4 +16,9 @@ router.post('/', auth, async (req, res) => {
   res.json(meal);
 });
 
+router.delete('/:id', auth, async (req, res) => {
+  await Meal.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+  res.json({ message: 'Meal deleted' });
+});
+
 export default router;
