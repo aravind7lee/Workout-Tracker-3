@@ -37,6 +37,8 @@ const Dashboard = () => {
   } = useRealTimeDashboard();
   
   const [recentWorkouts, setRecentWorkouts] = useState([]);
+  const [recentMeals, setRecentMeals] = useState([]);
+  const [nutritionTotals, setNutritionTotals] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0, mealsCount: 0 });
   const [loading, setLoading] = useState(true);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [completionData, setCompletionData] = useState(null);
@@ -69,6 +71,27 @@ const Dashboard = () => {
       const localWorkouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
       setRecentWorkouts(localWorkouts);
       console.log('✅ Real-time workouts loaded:', localWorkouts.length);
+      
+      // Load nutrition data
+      try {
+        const [mealsResponse, totalsResponse] = await Promise.all([
+          api.get('/meals'),
+          api.get('/meals/totals')
+        ]);
+        
+        if (mealsResponse?.data) {
+          const meals = Array.isArray(mealsResponse.data) ? mealsResponse.data : [];
+          setRecentMeals(meals.slice(0, 5));
+          console.log('✅ Recent meals loaded:', meals.length);
+        }
+        
+        if (totalsResponse?.data) {
+          setNutritionTotals(totalsResponse.data);
+          console.log('✅ Nutrition totals loaded:', totalsResponse.data);
+        }
+      } catch (nutritionError) {
+        console.warn('⚠️ Nutrition data load failed:', nutritionError.message);
+      }
       
       // Try to load from MongoDB backend as well
       try {
@@ -174,9 +197,36 @@ const Dashboard = () => {
       loadDashboardData();
     };
     
-    const handleMealAdded = () => {
+    const handleMealAdded = (event) => {
       console.log('🍽️ Meal added - refreshing stats');
+      
+      // Immediate optimistic update
+      if (event?.detail) {
+        const mealData = event.detail;
+        setNutritionTotals(prev => ({
+          calories: prev.calories + (mealData.calories || 0),
+          protein: prev.protein + (mealData.protein || 0),
+          carbs: prev.carbs + (mealData.carbs || 0),
+          fat: prev.fat + (mealData.fat || 0),
+          mealsCount: prev.mealsCount + 1
+        }));
+        
+        // Add to recent meals
+        setRecentMeals(prev => [{
+          ...mealData,
+          _id: `temp-${Date.now()}`,
+          consumedAt: new Date().toISOString()
+        }, ...prev.slice(0, 4)]);
+      }
+      
       refreshStats();
+      // Reload data after short delay to get real data
+      setTimeout(() => loadDashboardData(), 1000);
+    };
+    
+    const handleMealDeleted = () => {
+      console.log('🗑️ Meal deleted - refreshing data');
+      loadDashboardData();
     };
     
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
@@ -184,6 +234,7 @@ const Dashboard = () => {
     window.addEventListener('dashboardStreakUpdate', handleStreakUpdated);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('mealDeleted', handleMealDeleted);
     
     // NO AUTOMATIC REFRESH - MANUAL ONLY
     // const refreshInterval = setInterval(() => {
@@ -199,6 +250,7 @@ const Dashboard = () => {
       window.removeEventListener('dashboardStreakUpdate', handleStreakUpdated);
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('mealDeleted', handleMealDeleted);
       // clearInterval(refreshInterval); // Disabled
     };
   }, [isAuthenticated, refreshStats]);
@@ -528,13 +580,25 @@ const Dashboard = () => {
             onClick={() => navigate('/nutrition')}
             className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
           >
-            <div className="text-2xl sm:text-3xl mb-2">🍎</div>
+            <div className="text-2xl sm:text-3xl mb-2 flex items-center gap-1">
+              🍎
+              {nutritionTotals.mealsCount > 0 && (
+                <span className="text-lg bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                  {nutritionTotals.mealsCount}
+                </span>
+              )}
+            </div>
             <div className="font-medium text-sm sm:text-base">Meal Planner</div>
             <div className="text-xs text-orange-200 mt-1">
-              {stats.totalMeals > 0 ? `${stats.totalMeals} meals logged` : 'Track your nutrition'}
+              {nutritionTotals.mealsCount > 0 ? (
+                <div className="flex flex-col gap-1">
+                  <div className="font-semibold text-green-200">{nutritionTotals.mealsCount} meals logged today</div>
+                  <div>{Math.round(nutritionTotals.calories)} cal • {Math.round(nutritionTotals.protein)}g protein</div>
+                </div>
+              ) : 'Track your nutrition'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-orange-300/70">
-              {isOnline && stats.isRealTime ? '🔴' : '❌'}
+              {nutritionTotals.mealsCount > 0 ? '🔴 LIVE' : '❌'}
             </div>
           </button>
           
@@ -636,6 +700,77 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Recent Meals */}
+      <div className="card">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-white">🍎 Today's Meals</h2>
+          <button
+            onClick={() => navigate('/nutrition')}
+            className="btn bg-orange-600 hover:bg-orange-700 text-white text-sm"
+          >
+            + Add Meal
+          </button>
+        </div>
+        {!recentMeals || recentMeals.length === 0 ? (
+          <div className="text-center py-6 sm:py-8">
+            <div className="text-3xl sm:text-4xl mb-4">🍽️</div>
+            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+              No meals logged today. Start tracking your nutrition!
+            </p>
+            <button 
+              onClick={() => navigate('/nutrition')}
+              className="btn bg-orange-600 hover:bg-orange-700 text-white w-full sm:w-auto"
+            >
+              Add First Meal
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-green-400 flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Real-time nutrition data
+              </span>
+              <span className="text-xs text-slate-400">
+                {nutritionTotals.mealsCount} meals • {Math.round(nutritionTotals.calories)} calories
+              </span>
+            </div>
+            {recentMeals.map((meal, index) => (
+              <div key={meal._id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-4 border-orange-500">
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-white text-sm sm:text-base truncate">
+                    {meal.parsedName || meal.name || 'Unknown Food'}
+                  </div>
+                  <div className="text-xs sm:text-sm text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>{Math.round(meal.calories || 0)} cal</span>
+                    <span>•</span>
+                    <span>{Math.round((meal.protein || 0) * 10) / 10}g protein</span>
+                    <span>•</span>
+                    <span className="capitalize">{meal.mealType || 'snack'}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-xs sm:text-sm text-slate-400 flex-shrink-0">
+                    {meal.consumedAt ? (
+                      new Date(meal.consumedAt).toLocaleDateString() === new Date().toLocaleDateString() 
+                        ? new Date(meal.consumedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        : new Date(meal.consumedAt).toLocaleDateString()
+                    ) : 'Today'}
+                  </div>
+                  <button
+                    onClick={() => navigate('/nutrition')}
+                    className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
+                    title="View all meals"
+                  >
+                    📈 View All
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
