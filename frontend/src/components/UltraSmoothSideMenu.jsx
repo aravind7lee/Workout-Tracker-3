@@ -186,7 +186,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
               }}
             />
 
-            <div className="relative h-full flex flex-col min-h-screen">
+            <div className="relative h-full flex flex-col">
               {/* Header Section */}
               <motion.div 
                 initial={{ y: -20, opacity: 0 }}
@@ -228,9 +228,10 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                 </motion.button>
               </motion.div>
 
-              {/* Navigation Menu */}
-              <div className="flex-1 overflow-y-auto py-4 px-3 min-h-0">
-                <div className="space-y-2 pb-4">
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto py-4 px-3">
+                {/* Navigation Menu */}
+                <div className="space-y-2 mb-6">
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
                     const isActive = isActiveRoute(item.to);
@@ -298,18 +299,17 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     );
                   })}
                 </div>
-              </div>
 
-              {/* Profile Section */}
-              {isAuthenticated() && user ? (
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ ...springConfig, delay: 0.3 }}
-                  className="border-t border-slate-700/50 p-4 flex-shrink-0 mt-auto"
-                >
-                  <div className="bg-slate-800/30 rounded-xl p-3 sm:p-4 backdrop-blur-sm">
-                    <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                {/* Profile Section - Inside scrollable area */}
+                {isAuthenticated() && user ? (
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ ...springConfig, delay: 0.3 }}
+                    className="border-t border-slate-700/50 pt-4 mt-4"
+                  >
+                    <div className="bg-slate-800/30 rounded-xl p-3 sm:p-4 backdrop-blur-sm">
+                      <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         transition={ultraSmoothSpring}
@@ -339,76 +339,83 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                           <span className="text-xs text-green-400">Online</span>
                         </div>
                       </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <motion.button
+                          onClick={() => handleMenuItemClick('/profile')}
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
+                          whileHover={{ scale: 1.02, x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={ultraSmoothSpring}
+                        >
+                          <UserCircle size={18} />
+                          <span className="text-sm sm:text-base font-body">My Account</span>
+                        </motion.button>
+
+                        <motion.button
+                          onClick={() => handleMenuItemClick('/settings')}
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
+                          whileHover={{ scale: 1.02, x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={ultraSmoothSpring}
+                        >
+                          <Settings size={18} />
+                          <span className="text-sm sm:text-base font-body">Settings</span>
+                        </motion.button>
+
+                        {/* Logout Button - Highlighted */}
+                        <div className="pt-2 border-t border-slate-600/30 mt-3">
+                          <motion.button
+                            onClick={handleLogout}
+                            className="w-full flex items-center space-x-3 px-3 py-4 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-all duration-200 min-h-[48px] border border-red-500/20"
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={ultraSmoothSpring}
+                          >
+                            <LogOut size={20} />
+                            <span className="text-base font-body font-semibold">Logout</span>
+                          </motion.button>
+                        </div>
+                      </div>
                     </div>
-
-                    <div className="space-y-2">
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ ...springConfig, delay: 0.3 }}
+                    className="border-t border-slate-700/50 pt-4 mt-4"
+                  >
+                    <div className="space-y-3">
                       <motion.button
-                        onClick={() => handleMenuItemClick('/profile')}
-                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
-                        whileHover={{ scale: 1.02, x: 4 }}
+                        onClick={() => handleMenuItemClick('/login')}
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 min-h-[48px]"
+                        whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         transition={ultraSmoothSpring}
                       >
-                        <UserCircle size={18} />
-                        <span className="text-sm sm:text-base font-body">My Account</span>
+                        <User size={18} />
+                        <span className="font-medium font-body">Login</span>
                       </motion.button>
 
                       <motion.button
-                        onClick={() => handleMenuItemClick('/settings')}
-                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
-                        whileHover={{ scale: 1.02, x: 4 }}
+                        onClick={() => handleMenuItemClick('/register')}
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 min-h-[48px]"
+                        whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         transition={ultraSmoothSpring}
                       >
-                        <Settings size={18} />
-                        <span className="text-sm sm:text-base font-body">Settings</span>
-                      </motion.button>
-
-                      <motion.button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 min-h-[44px] mt-2"
-                        whileHover={{ scale: 1.02, x: 4 }}
-                        whileTap={{ scale: 0.98 }}
-                        transition={ultraSmoothSpring}
-                      >
-                        <LogOut size={18} />
-                        <span className="text-sm sm:text-base font-body font-medium">Logout</span>
+                        <Zap size={18} />
+                        <span className="font-medium font-body">Sign Up</span>
                       </motion.button>
                     </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ ...springConfig, delay: 0.3 }}
-                  className="border-t border-slate-700/50 p-4 flex-shrink-0 mt-auto"
-                >
-                  <div className="space-y-3">
-                    <motion.button
-                      onClick={() => handleMenuItemClick('/login')}
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 min-h-[48px]"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={ultraSmoothSpring}
-                    >
-                      <User size={18} />
-                      <span className="font-medium font-body">Login</span>
-                    </motion.button>
+                  </motion.div>
+                )}
 
-                    <motion.button
-                      onClick={() => handleMenuItemClick('/register')}
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 min-h-[48px]"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={ultraSmoothSpring}
-                    >
-                      <Zap size={18} />
-                      <span className="font-medium font-body">Sign Up</span>
-                    </motion.button>
-                  </div>
-                </motion.div>
-              )}
+                {/* Bottom padding for scroll */}
+                <div className="h-6"></div>
+              </div>
             </div>
           </motion.div>
         </>
