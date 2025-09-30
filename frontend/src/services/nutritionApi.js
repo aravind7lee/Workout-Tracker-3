@@ -68,7 +68,7 @@ class NutritionAPI {
   async getMeals(date = null) {
     try {
       const params = date ? { date: date.toISOString().split('T')[0] } : {};
-      const response = await this.api.get('/meals', { params });
+      const response = await this.api.get('/nutrition/meals', { params });
       
       return {
         success: true,
@@ -88,7 +88,7 @@ class NutritionAPI {
   async getNutritionTotals(date = null) {
     try {
       const params = date ? { date: date.toISOString().split('T')[0] } : {};
-      const response = await this.api.get('/meals/totals', { params });
+      const response = await this.api.get('/nutrition/meals/totals', { params });
       
       return {
         success: true,
@@ -107,7 +107,7 @@ class NutritionAPI {
   // Add a new meal
   async addMeal(mealData) {
     try {
-      const response = await this.api.post('/meals', {
+      const response = await this.api.post('/nutrition/meals', {
         ...mealData,
         consumedAt: new Date().toISOString()
       });
@@ -132,7 +132,7 @@ class NutritionAPI {
       
       console.log('🗑️ Deleting meal with ID:', mealId);
       
-      const response = await this.api.delete(`/meals/${mealId}`);
+      const response = await this.api.delete(`/nutrition/meals/${mealId}`);
       
       console.log('✅ Meal deleted successfully');
       return { success: true };
