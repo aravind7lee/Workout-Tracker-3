@@ -290,6 +290,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
                     onClick={() => cameraInputRef.current?.click()}
                     className="p-2 bg-green-500 hover:bg-green-600 rounded-full text-white transition-colors"
                     title="Take Photo"
+                    style={{display: 'none'}}
                   >
                     📷
                   </button>

@@ -169,7 +169,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
             animate={{ x: "0%", opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={ultraSmoothSpring}
-            className="fixed top-0 right-0 h-screen w-80 max-w-[85vw] z-50 overflow-hidden"
+            className="fixed top-0 right-0 h-screen w-80 max-w-[90vw] sm:max-w-[85vw] z-50 overflow-y-auto overflow-x-hidden"
             style={{
               background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 50%, rgba(15, 23, 42, 0.95) 100%)',
               backdropFilter: 'blur(25px) saturate(180%)',
@@ -186,13 +186,13 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
               }}
             />
 
-            <div className="relative h-full flex flex-col">
+            <div className="relative h-full flex flex-col min-h-screen">
               {/* Header Section */}
               <motion.div 
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ ...springConfig, delay: 0.1 }}
-                className="flex items-center justify-between p-6 border-b border-slate-700/50"
+                className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700/50 flex-shrink-0"
               >
                 <div className="flex items-center space-x-3">
                   <motion.img
@@ -229,8 +229,8 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
               </motion.div>
 
               {/* Navigation Menu */}
-              <div className="flex-1 overflow-y-auto py-4 px-3">
-                <div className="space-y-2">
+              <div className="flex-1 overflow-y-auto py-4 px-3 min-h-0">
+                <div className="space-y-2 pb-4">
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
                     const isActive = isActiveRoute(item.to);
@@ -244,7 +244,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                       >
                         <motion.button
                           onClick={() => handleMenuItemClick(item.to)}
-                          className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+                          className={`w-full flex items-center space-x-4 px-4 py-3 sm:py-4 rounded-xl transition-all duration-300 group relative overflow-hidden min-h-[52px] ${
                             isActive 
                               ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-500/30' 
                               : 'text-slate-300 hover:text-white hover:bg-slate-700/30'
@@ -279,7 +279,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                           </motion.div>
 
                           {/* Label */}
-                          <span className="relative z-10 font-medium font-body">
+                          <span className="relative z-10 font-medium font-body text-sm sm:text-base">
                             {item.label}
                           </span>
 
@@ -306,10 +306,10 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ ...springConfig, delay: 0.3 }}
-                  className="border-t border-slate-700/50 p-4"
+                  className="border-t border-slate-700/50 p-4 flex-shrink-0 mt-auto"
                 >
-                  <div className="bg-slate-800/30 rounded-xl p-4 backdrop-blur-sm">
-                    <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-slate-800/30 rounded-xl p-3 sm:p-4 backdrop-blur-sm">
+                    <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         transition={ultraSmoothSpring}
@@ -344,35 +344,35 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     <div className="space-y-2">
                       <motion.button
                         onClick={() => handleMenuItemClick('/profile')}
-                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
                         whileHover={{ scale: 1.02, x: 4 }}
                         whileTap={{ scale: 0.98 }}
                         transition={ultraSmoothSpring}
                       >
-                        <UserCircle size={16} />
-                        <span className="text-sm font-body">My Account</span>
+                        <UserCircle size={18} />
+                        <span className="text-sm sm:text-base font-body">My Account</span>
                       </motion.button>
 
                       <motion.button
                         onClick={() => handleMenuItemClick('/settings')}
-                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 min-h-[44px]"
                         whileHover={{ scale: 1.02, x: 4 }}
                         whileTap={{ scale: 0.98 }}
                         transition={ultraSmoothSpring}
                       >
-                        <Settings size={16} />
-                        <span className="text-sm font-body">Settings</span>
+                        <Settings size={18} />
+                        <span className="text-sm sm:text-base font-body">Settings</span>
                       </motion.button>
 
                       <motion.button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
+                        className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 min-h-[44px] mt-2"
                         whileHover={{ scale: 1.02, x: 4 }}
                         whileTap={{ scale: 0.98 }}
                         transition={ultraSmoothSpring}
                       >
-                        <LogOut size={16} />
-                        <span className="text-sm font-body">Logout</span>
+                        <LogOut size={18} />
+                        <span className="text-sm sm:text-base font-body font-medium">Logout</span>
                       </motion.button>
                     </div>
                   </div>
@@ -382,12 +382,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ ...springConfig, delay: 0.3 }}
-                  className="border-t border-slate-700/50 p-4"
+                  className="border-t border-slate-700/50 p-4 flex-shrink-0 mt-auto"
                 >
                   <div className="space-y-3">
                     <motion.button
                       onClick={() => handleMenuItemClick('/login')}
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 min-h-[48px]"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       transition={ultraSmoothSpring}
@@ -398,7 +398,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                     <motion.button
                       onClick={() => handleMenuItemClick('/register')}
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 min-h-[48px]"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       transition={ultraSmoothSpring}
