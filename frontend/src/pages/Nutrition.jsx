@@ -8,6 +8,7 @@ import NutritionPreviewModal from '../components/NutritionPreviewModal';
 import FoodCategories from '../components/FoodCategories';
 import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
 import NutritionHero from '../components/NutritionHero';
+import NutritionGallery from '../components/NutritionGallery';
 import AuthGuard from '../components/AuthGuard';
 import realTimeEvents from '../utils/realTimeEvents';
 
@@ -298,6 +299,9 @@ export default function Nutrition() {
         <div className="space-y-6">
         {/* Hero Header */}
         <NutritionHero />
+        
+        {/* Nutrition Gallery */}
+        <NutritionGallery />
         
         {/* Status Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4">

@@ -13,6 +13,7 @@ import { getRealTimeStreak } from '../utils/streakUtils';
 import AuthGuard from '../components/AuthGuard';
 import RealTimeAchievements from '../components/RealTimeAchievements';
 import RealTimeStats from '../components/RealTimeStats';
+import AnalyticsGallery from '../components/AnalyticsGallery';
 import progressAnalyticsImg from '../assets/Progress-Analytics.jpg';
 
 // Safe import of onlineService
@@ -667,6 +668,9 @@ export default function Analytics() {
       <div className="space-y-4 sm:space-y-6">
         {/* Hero Header */}
         <AnalyticsHero />
+        
+        {/* Analytics Gallery Section */}
+        <AnalyticsGallery />
       
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

@@ -17,6 +17,7 @@ import Library5 from '../assets/Library5.jpg';
 import Library6 from '../assets/Library6.jpg';
 import Library7 from '../assets/Library7.jpg';
 import Library8 from '../assets/Library8.jpg';
+import Library11 from '../assets/Library11.jpg';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -475,7 +476,7 @@ export default function LibrarySimple() {
           </motion.div>
 
           {/* Exercise Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {/* Strength Training */}
             <ExerciseCard
               image={Library1}
@@ -544,6 +545,16 @@ export default function LibrarySimple() {
               description="Sport-specific training protocols"
               category="sports"
               delay={0.7}
+            />
+            
+            {/* Power Training */}
+            <ExerciseCard
+              image={Library11}
+              title="Power Training"
+              subtitle="Explosive Movement"
+              description="Develop explosive power and athletic performance"
+              category="power"
+              delay={0.8}
             />
           </div>
         </div>
@@ -944,7 +955,8 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
     flexibility: 'from-purple-500 to-pink-500',
     olympic: 'from-yellow-500 to-orange-500',
     bodyweight: 'from-indigo-500 to-blue-500',
-    sports: 'from-teal-500 to-green-500'
+    sports: 'from-teal-500 to-green-500',
+    power: 'from-violet-500 to-purple-500'
   };
   
   const categoryIcons = {
@@ -954,7 +966,8 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
     flexibility: '🧘',
     olympic: '🏋️',
     bodyweight: '🤸',
-    sports: '🏆'
+    sports: '🏆',
+    power: '💥'
   };
   
   const gradientClass = categoryColors[category] || 'from-blue-500 to-cyan-500';
@@ -970,7 +983,7 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
   
   return (
     <motion.div
-      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500"
+      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-500 shadow-xl hover:shadow-2xl"
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -980,8 +993,8 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
         ease: [0.22, 1, 0.36, 1]
       }}
       whileHover={{ 
-        y: -8, 
-        scale: 1.02,
+        y: -12, 
+        scale: 1.03,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
     >
@@ -989,7 +1002,7 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
       <div className={`absolute -inset-1 bg-gradient-to-r ${gradientClass} rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition-all duration-500`} />
       
       {/* Image Container */}
-      <div className="relative h-48 sm:h-56 overflow-hidden">
+      <div className="relative h-64 sm:h-72 lg:h-80 overflow-hidden">
         {/* Skeleton Loader */}
         {!imageLoaded && !imageError && (
           <div className="absolute inset-0 bg-gradient-to-br from-slate-700/50 to-slate-600/50 animate-pulse">
@@ -1033,47 +1046,24 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
         </div>
         
         {/* Content Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: delay + 0.2 }}
           >
-            <h3 className="text-xl sm:text-2xl font-black text-white mb-1 leading-tight">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white mb-2 leading-tight drop-shadow-lg">
               {title}
             </h3>
-            <p className={`text-sm font-bold bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent mb-2`}>
+            <p className={`text-sm sm:text-base font-bold bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent mb-3 drop-shadow-sm`}>
               {subtitle}
             </p>
-            <p className="text-sm text-slate-200 leading-relaxed opacity-90">
+            <p className="text-sm sm:text-base text-slate-100 leading-relaxed opacity-95 drop-shadow-sm">
               {description}
             </p>
           </motion.div>
         </div>
-      </div>
-      
-      {/* Action Button */}
-      <div className="p-6 pt-4">
-        <motion.button
-          className={`w-full py-3 px-4 bg-gradient-to-r ${gradientClass} text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95`}
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            // Scroll to exercise grid
-            const exerciseGrid = document.getElementById('exercise-grid');
-            if (exerciseGrid) {
-              exerciseGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <span>Explore {title}</span>
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </span>
-        </motion.button>
       </div>
       
       {/* Hover Effect Overlay */}

@@ -8,6 +8,10 @@ import { onlineService } from '../services/onlineService';
 import { useAuth } from '../context/AuthContext';
 import { realTimePlanService } from '../services/realTimePlanService';
 import PlanBuilderHeader from '../assets/PlanBuilderheader.jpg';
+import PlanBuilder1 from '../assets/PlanBuilder1.jpg';
+import PlanBuilder2 from '../assets/PlanBuilder2.jpg';
+import PlanBuilder3 from '../assets/PlanBuilder3.jpg';
+import PlanBuilder4 from '../assets/PlanBuilder4.jpg';
 import Particles from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import PremiumSkeletonLoader from '../components/PremiumSkeletonLoader';
@@ -33,6 +37,12 @@ export default function PlansBuilder() {
   const [autoSave, setAutoSave] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [particlesReady, setParticlesReady] = useState(false);
+  const [featuresImagesLoaded, setFeaturesImagesLoaded] = useState({
+    image1: false,
+    image2: false,
+    image3: false,
+    image4: false
+  });
   const autoSaveTimer = useRef(null);
   const syncInterval = useRef(null);
   
@@ -583,6 +593,237 @@ export default function PlansBuilder() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+      
+      {/* Plan Builder Features Showcase - 2x2 Grid */}
+      <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-20">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                Professional Plan Builder
+              </span>
+            </h2>
+            <p className="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed">
+              Experience gym-quality workout planning with advanced tools and real-time synchronization
+            </p>
+          </motion.div>
+
+          {/* 2x2 Grid Layout - Mobile Optimized */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+            {/* Feature 1 - Smart Exercise Selection */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-orange-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+                {/* Skeleton Loader */}
+                <AnimatePresence>
+                  {!featuresImagesLoaded.image1 && (
+                    <motion.div
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <img
+                  src={PlanBuilder1}
+                  alt="Smart Exercise Selection - Advanced filtering system with 200+ exercises categorized by muscle groups and difficulty levels"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                  onLoad={() => setFeaturesImagesLoaded(prev => ({ ...prev, image1: true }))}
+                  style={{ opacity: featuresImagesLoaded.image1 ? 1 : 0 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl sm:text-2xl">🎯</span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Smart Exercise Selection</h3>
+                  </div>
+                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+                    Advanced filtering with 200+ exercises by muscle groups and difficulty levels.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 2 - Drag & Drop Interface */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+                {/* Skeleton Loader */}
+                <AnimatePresence>
+                  {!featuresImagesLoaded.image2 && (
+                    <motion.div
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <img
+                  src={PlanBuilder2}
+                  alt="Intuitive Drag & Drop Interface - Effortlessly build workout plans with modern UI and seamless interaction"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                  onLoad={() => setFeaturesImagesLoaded(prev => ({ ...prev, image2: true }))}
+                  style={{ opacity: featuresImagesLoaded.image2 ? 1 : 0 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl sm:text-2xl">🖱️</span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Intuitive Drag & Drop</h3>
+                  </div>
+                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+                    Effortlessly build workout plans with modern drag-and-drop interface.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 3 - Real-time Cloud Sync */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-green-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+                {/* Skeleton Loader */}
+                <AnimatePresence>
+                  {!featuresImagesLoaded.image3 && (
+                    <motion.div
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <img
+                  src={PlanBuilder3}
+                  alt="Real-time Cloud Sync - Instant synchronization across all devices with MongoDB integration for secure data access"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                  onLoad={() => setFeaturesImagesLoaded(prev => ({ ...prev, image3: true }))}
+                  style={{ opacity: featuresImagesLoaded.image3 ? 1 : 0 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl sm:text-2xl">☁️</span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Real-time Cloud Sync</h3>
+                  </div>
+                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+                    Instant sync across all devices with MongoDB integration for secure access.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 4 - Advanced Analytics */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-purple-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+                {/* Skeleton Loader */}
+                <AnimatePresence>
+                  {!featuresImagesLoaded.image4 && (
+                    <motion.div
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <img
+                  src={PlanBuilder4}
+                  alt="Advanced Analytics & Progress Tracking - Detailed workout insights with performance metrics and personalized recommendations"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                  onLoad={() => setFeaturesImagesLoaded(prev => ({ ...prev, image4: true }))}
+                  style={{ opacity: featuresImagesLoaded.image4 ? 1 : 0 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl sm:text-2xl">📊</span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Advanced Analytics</h3>
+                  </div>
+                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+                    Track progress with detailed analytics and personalized insights.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Enhanced Call to Action */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="text-center mt-20"
+          >
+            <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-slate-700 rounded-3xl p-10 max-w-3xl mx-auto">
+              <h3 className="text-3xl font-bold text-white mb-6">
+                Ready to Build Your Perfect Workout?
+              </h3>
+              <p className="text-slate-300 text-lg mb-8 leading-relaxed">
+                Join thousands of fitness enthusiasts using our professional-grade plan builder with real-time sync and advanced analytics
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-10 py-5 rounded-2xl font-semibold text-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25"
+              >
+                🚀 Start Building Now
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
       </div>
       
       {/* Main Content */}

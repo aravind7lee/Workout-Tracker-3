@@ -2,7 +2,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Wifi, WifiOff } from "lucide-react";
+import {
+  User,
+  Menu,
+  X,
+  Settings,
+  LogOut,
+  UserCircle,
+  Zap,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import SearchBar from "./SearchBar";
 import { demoService } from "../services/demoService";
@@ -125,7 +135,7 @@ export default function Navbar() {
                 src={logo}
                 alt="GymTracker Logo"
                 className="h-32 w-auto object-contain transition-all duration-300 drop-shadow-lg"
-                style={{ filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))' }}
+                style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
               />
             </motion.div>
           </Link>
@@ -169,11 +179,6 @@ export default function Navbar() {
               ) : (
                 <WifiOff size={14} className="text-red-400" />
               )}
-              <span className={`text-xs font-medium ${
-                connectionStatus.fullyOnline ? 'text-[#238636]' : 'text-red-400'
-              }`}>
-                {connectionStatus.fullyOnline ? 'Online' : 'Offline'}
-              </span>
             </div>
 
             {/* Desktop Search Bar */}
@@ -211,7 +216,7 @@ export default function Navbar() {
                     {user?.name || "User"}
                   </span>
                   <span className="hidden lg:block text-xs text-[#238636] bg-[#238636]/20 px-2 py-1 rounded-full">
-                    Online
+                    <Wifi size={14} />
                   </span>
                 </motion.button>
 
@@ -323,11 +328,11 @@ export default function Navbar() {
             >
               <motion.div
                 animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 400, 
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
                   damping: 30,
-                  duration: 0.3 
+                  duration: 0.3,
                 }}
               >
                 {isOpen ? (

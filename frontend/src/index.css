@@ -11,6 +11,7 @@
 @import "./styles/nutrition-hero.css";
 @import "./styles/my-plans-hero.css";
 @import "./styles/analytics-hero.css";
+@import "./styles/analytics-gallery.css";
 
 
 @tailwind base;
@@ -424,6 +425,11 @@ select:focus {
 @keyframes shimmer-premium {
   0% { left: -100%; }
   100% { left: 100%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes float-premium {

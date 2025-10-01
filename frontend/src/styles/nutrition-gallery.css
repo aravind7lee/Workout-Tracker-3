@@ -1,0 +1,123 @@
+/* Nutrition Gallery Styles */
+.nutrition-gallery-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Enhanced card hover effects */
+.nutrition-card {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, box-shadow;
+}
+
+.nutrition-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .nutrition-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+              0 0 30px rgba(74, 222, 128, 0.1);
+}
+
+/* Image optimization */
+.nutrition-card-image {
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.nutrition-card:hover .nutrition-card-image {
+  transform: scale(1.1);
+}
+
+/* Text shadow enhancements */
+.nutrition-card-title {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  font-weight: 700;
+}
+
+.nutrition-card-subtitle {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+}
+
+.nutrition-card-description {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+}
+
+/* Skeleton loader animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-loader {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-loader {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200px 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nutrition-card {
+    margin-bottom: 1rem;
+  }
+  
+  .nutrition-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+/* Accessibility improvements */
+.nutrition-card:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Performance optimizations */
+.nutrition-gallery-container * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .nutrition-card {
+    border: 2px solid currentColor;
+  }
+  
+  .nutrition-card-title,
+  .nutrition-card-subtitle,
+  .nutrition-card-description {
+    text-shadow: none;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .nutrition-card,
+  .nutrition-card-image {
+    transition: none;
+  }
+  
+  .nutrition-card:hover {
+    transform: none;
+  }
+  
+  .skeleton-loader {
+    animation: none;
+  }
+}

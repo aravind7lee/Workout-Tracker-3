@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import MyPlansHeaderImg from '../assets/Myplansheader.jpg';
-import { preloadImage } from '../utils/imageOptimization';
 
 export default function WorkoutPlanBuilderHeader() {
   const [imageLoaded, setImageLoaded] = useState(false);

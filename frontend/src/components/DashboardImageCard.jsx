@@ -80,7 +80,7 @@ const DashboardImageCard = ({
         <motion.img 
           src={image} 
           alt={title}
-          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-100 ${
+          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-110 contrast-110 group-hover:brightness-125 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={() => setImageLoaded(true)}
@@ -89,8 +89,8 @@ const DashboardImageCard = ({
           transition={{ duration: 0.8, ease: "easeOut" }}
         />
 
-        {/* Mobile-Optimized Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/20 sm:from-slate-900/95 sm:via-slate-900/70 sm:to-transparent group-hover:from-black/90 dark:from-black/98 dark:via-black/80"></div>
+        {/* Optimized Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent sm:from-black/80 sm:via-black/30 sm:to-transparent group-hover:from-black/75 dark:from-black/85 dark:via-black/50"></div>
         
 
 
@@ -105,7 +105,12 @@ const DashboardImageCard = ({
             {/* Mobile-Optimized Title */}
             <motion.h3 
               variants={contentVariants}
-              className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-4 bg-gradient-to-r ${gradient} bg-clip-text text-transparent leading-tight`}
+              className={`text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white mb-2 sm:mb-4 bg-gradient-to-r ${gradient} bg-clip-text text-transparent leading-none tracking-wider uppercase`}
+              style={{ 
+                fontFamily: 'Bebas Neue, sans-serif',
+                textShadow: '0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)',
+                letterSpacing: '0.1em'
+              }}
             >
               {title}
             </motion.h3>
@@ -114,6 +119,7 @@ const DashboardImageCard = ({
             <motion.p 
               variants={contentVariants}
               className="text-sm xs:text-base sm:text-lg text-slate-200 mb-3 sm:mb-6 leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity duration-500 line-clamp-2 sm:line-clamp-none"
+              style={{ fontFamily: 'Inter, sans-serif' }}
             >
               {description}
             </motion.p>
