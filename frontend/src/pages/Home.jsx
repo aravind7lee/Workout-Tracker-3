@@ -739,7 +739,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/src/assets/Home1.jpg" 
+                      src="/Home1.jpg" 
                       alt="Elite Training Experience" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -908,7 +908,7 @@ export default function Home() {
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
                     <img 
-                      src="/src/assets/Home2.jpg" 
+                      src="/Home2.jpg" 
                       alt="Strength and Power Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -954,7 +954,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/src/assets/Home3.jpg" 
+                      src="/Home3.jpg" 
                       alt="Muscle Building Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -1096,7 +1096,7 @@ export default function Home() {
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
                     <img 
-                      src="/src/assets/Home4.jpg" 
+                      src="/Home4.jpg" 
                       alt="Functional Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -1130,7 +1130,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/src/assets/Home5.jpg" 
+                      src="/Home5.jpg" 
                       alt="Elite Community" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
