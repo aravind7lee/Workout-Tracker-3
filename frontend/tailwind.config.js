@@ -12,51 +12,49 @@ export default {
       colors: {
         neon: '#00e6a1',
         accent: '#7c5cff',
-        // Premium Dark Mode Palette
+        // Deep Slate Dark Mode Palette
+        'slate': {
+          'primary': '#0f172a',
+          'secondary': '#1e293b',
+          'tertiary': '#334155',
+          'border': '#475569'
+        },
         'premium': {
-          'bg-primary': '#0a0e1a',
-          'bg-secondary': '#0f172a',
-          'bg-tertiary': '#1e293b',
-          'bg-quaternary': '#334155'
+          'bg-primary': '#0f172a',
+          'bg-secondary': '#1e293b',
+          'bg-tertiary': '#334155',
+          'bg-quaternary': '#475569'
         },
         'glass': {
-          'primary': 'rgba(15, 23, 42, 0.8)',
-          'secondary': 'rgba(30, 41, 59, 0.7)',
-          'tertiary': 'rgba(51, 65, 85, 0.6)'
+          'primary': '#1e293b',
+          'secondary': '#334155',
+          'tertiary': '#475569'
         },
         'neon': {
-          'cyan': '#00d4ff',
-          'blue': '#0ea5e9',
-          'purple': '#8b5cf6',
-          'green': '#00ff88',
-          'pink': '#ff0080',
-          'orange': '#ff6b35'
-        },
-        'glow': {
-          'cyan': 'rgba(0, 212, 255, 0.4)',
-          'cyan-strong': 'rgba(0, 212, 255, 0.6)',
-          'cyan-subtle': 'rgba(0, 212, 255, 0.2)',
-          'purple': 'rgba(139, 92, 246, 0.4)',
-          'green': 'rgba(0, 255, 136, 0.4)'
+          'cyan': '#06b6d4',
+          'blue': '#0891b2',
+          'purple': '#0e7490',
+          'green': '#10b981',
+          'pink': '#ef4444',
+          'orange': '#f59e0b'
         },
         // Dark mode color palette
         'dark-bg': {
           primary: '#0f172a',
           secondary: '#1e293b',
           tertiary: '#334155',
-          soft: 'rgba(30, 41, 59, 0.8)'
+          soft: '#1e293b'
         },
         'dark-text': {
           primary: '#f8fafc',
-          secondary: '#e2e8f0', 
+          secondary: '#cbd5e1', 
           muted: '#94a3b8'
         },
         'dark-accent': {
-          DEFAULT: '#00d4ff',
-          glow: 'rgba(0, 212, 255, 0.3)',
-          hover: '#00b8e6'
+          DEFAULT: '#06b6d4',
+          hover: '#0891b2'
         },
-        'dark-border': 'rgba(71, 85, 105, 0.4)',
+        'dark-border': '#475569',
         // Light mode enhanced colors
         'light-bg': {
           primary: '#ffffff',
@@ -77,17 +75,13 @@ export default {
         'maximum': '30px'
       },
       boxShadow: {
-        'dark-glow': '0 0 20px rgba(0, 212, 255, 0.3)',
-        'dark-glow-lg': '0 0 30px rgba(0, 212, 255, 0.5)',
-        'dark-card': '0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-        'light-card': '0 4px 20px rgba(0, 0, 0, 0.08)',
-        'premium': '0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-        'glow': '0 0 30px rgba(0, 212, 255, 0.4)',
-        'glow-strong': '0 0 50px rgba(0, 212, 255, 0.6)',
-        'floating': '0 25px 80px rgba(0, 0, 0, 0.9)',
-        'neon-cyan': '0 0 20px rgba(0, 212, 255, 0.4)',
-        'neon-purple': '0 0 20px rgba(139, 92, 246, 0.4)',
-        'neon-green': '0 0 20px rgba(0, 255, 136, 0.4)'
+        'dark-card': '0 4px 12px rgba(0, 0, 0, 0.4)',
+        'light-card': '0 4px 12px rgba(0, 0, 0, 0.08)',
+        'premium': '0 8px 24px rgba(0, 0, 0, 0.5)',
+        'floating': '0 12px 32px rgba(0, 0, 0, 0.6)',
+        'slate-soft': '0 4px 12px rgba(0, 0, 0, 0.4)',
+        'slate-premium': '0 8px 24px rgba(0, 0, 0, 0.5)',
+        'slate-floating': '0 12px 32px rgba(0, 0, 0, 0.6)'
       },
       animation: {
         'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
@@ -96,8 +90,8 @@ export default {
       },
       keyframes: {
         'glow-pulse': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 212, 255, 0.2)' },
-          '50%': { boxShadow: '0 0 40px rgba(0, 212, 255, 0.4)' }
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-2px)' }
         },
         'float': {
           '0%, 100%': { transform: 'translateY(0px)' },

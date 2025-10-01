@@ -1,11 +1,6 @@
 /* Hero Component Styles */
 .hero-overlay-primary {
-  background: linear-gradient(135deg, 
-    rgba(15, 23, 42, 0.8) 0%, 
-    rgba(30, 41, 59, 0.7) 25%, 
-    rgba(51, 65, 85, 0.6) 50%, 
-    rgba(30, 41, 59, 0.7) 75%, 
-    rgba(15, 23, 42, 0.8) 100%);
+  background: rgba(15, 23, 42, 0.15);
 }
 
 .hero-overlay-secondary {
@@ -14,54 +9,54 @@
 }
 
 .hero-title {
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: #f8fafc;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .hero-subtitle {
-  color: #e2e8f0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  color: #cbd5e1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .hero-description {
   color: #cbd5e1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .hero-accent {
-  color: #60a5fa;
+  color: #06b6d4;
 }
 
 .hero-feature-badge {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid #475569;
 }
 
 .hero-feature-text {
-  color: #e2e8f0;
+  color: #cbd5e1;
 }
 
 .hero-secondary-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 2px solid rgba(71, 85, 105, 0.5);
-  color: #e2e8f0;
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid #475569;
+  color: #cbd5e1;
 }
 
 .hero-secondary-btn:hover {
-  background: rgba(59, 130, 246, 0.8);
-  border-color: rgba(59, 130, 246, 0.8);
+  background: #06b6d4;
+  border-color: #06b6d4;
   color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .hero-stats-card {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #475569;
 }
 
 .hero-stats-title {
-  color: #e2e8f0;
+  color: #f8fafc;
 }
 
 .hero-stats-label {
@@ -69,11 +64,11 @@
 }
 
 .hero-stats-divider {
-  border-top: 1px solid rgba(71, 85, 105, 0.3);
+  border-top: 1px solid #475569;
 }
 
 .hero-progress-bg {
-  background: rgba(71, 85, 105, 0.3);
+  background: #475569;
 }
 
 .hero-progress-text {

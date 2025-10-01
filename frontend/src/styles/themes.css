@@ -2,44 +2,44 @@
 /* Production-ready Dark ↔ Light theme with Apple-inspired toggle */
 /* Energetic fitness-focused palette with premium aesthetics */
 
-/* ===== ROOT VARIABLES (DEFAULT: DARK THEME) ===== */
+/* ===== ROOT VARIABLES (DEEP SLATE THEME) ===== */
 :root {
   /* === BACKGROUNDS === */
-  --bg: #0f1419;                    /* Deep charcoal background */
-  --bg-soft: #1a1f26;              /* Card backgrounds - darker for contrast */
-  --bg-accent: rgba(0,212,255,0.08); /* Gradient overlays - cyan tint */
+  --bg: #0f172a;                    /* Deep slate background */
+  --bg-soft: #1e293b;              /* Card backgrounds */
+  --bg-accent: #334155;             /* Elevated elements */
   
   /* === TEXT COLORS === */
-  --text: #f5f5f5;                  /* Off-white body text - high contrast */
-  --heading: #ffffff;               /* Bright white headings */
-  --muted: #a0a9b8;                 /* Muted text - lighter for readability */
-  --link: #00d4ff;                  /* Neon cyan links */
+  --text: #cbd5e1;                  /* Secondary text */
+  --heading: #f8fafc;               /* Primary text/headings */
+  --muted: #94a3b8;                 /* Muted text */
+  --link: #06b6d4;                  /* Cyan links */
   
   /* === BORDERS & STRUCTURE === */
-  --panel-border: rgba(255,255,255,0.12); /* Brighter borders for visibility */
+  --panel-border: #475569;          /* Border color */
   
-  /* === BRAND ACCENT (Energetic Cyan) === */
-  --accent: #00D4FF;                /* Primary accent - neon cyan */
-  --accent-hover: #00b8e6;          /* Darker cyan for hover */
-  --accent-contrast: #000000;       /* Dark text on bright backgrounds */
+  /* === BRAND ACCENT === */
+  --accent: #06b6d4;                /* Primary accent - cyan */
+  --accent-hover: #0891b2;          /* Darker cyan for hover */
+  --accent-contrast: #ffffff;       /* White text on cyan */
   
   /* === SHADOWS & DEPTH === */
-  --shadow-soft: 0 4px 20px rgba(0,0,0,0.4); /* Deeper shadows */
+  --shadow-soft: 0 4px 12px rgba(0,0,0,0.4);
   
   /* === STATE COLORS === */
-  --success: #00ff88;               /* Bright neon green */
-  --danger: #ff4757;                /* Bright neon red */
-  --warning: #ffa502;               /* Bright orange */
+  --success: #10b981;               /* Green */
+  --danger: #ef4444;                /* Red */
+  --warning: #f59e0b;               /* Orange */
   
   /* === BUTTON COLORS === */
   --btn-primary-bg: var(--accent);
-  --btn-primary-text: #000000;
-  --btn-secondary-bg: transparent;
-  --btn-secondary-text: var(--accent);
-  --btn-secondary-border: var(--accent);
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: var(--bg-accent);
+  --btn-secondary-text: var(--text);
+  --btn-secondary-border: var(--panel-border);
   
   /* === TOGGLE SPECIFIC === */
-  --toggle-bg: rgba(255,255,255,0.15);
+  --toggle-bg: var(--bg-accent);
   --toggle-knob: #ffffff;
   --toggle-active-bg: var(--accent);
 }
@@ -244,17 +244,15 @@
 .card {
   background: var(--bg-soft);
   border: 1px solid var(--panel-border);
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(10px);
 }
 
 /* Glass Panel Effect */
 .glass-panel {
   background: var(--bg-soft);
   border: 1px solid var(--panel-border);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
+  border-radius: 12px;
 }
 
 /* Button Styles */
@@ -271,18 +269,18 @@
 
 .btn-primary:hover {
   background: var(--accent-hover);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-/* Dark mode glow */
+/* Dark mode simple shadow */
 :root .btn-primary:hover {
-  box-shadow: 0 8px 25px var(--accent), 0 0 20px var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Light mode - subtle shadow */
 .light-theme .btn-primary:hover,
 [data-theme="light"] .btn-primary:hover {
-  box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+  box-shadow: 0 4px 12px rgba(0,123,255,0.2);
 }
 
 .btn-ghost {
@@ -301,15 +299,15 @@
   transform: translateY(-1px);
 }
 
-/* Dark mode glow */
+/* Dark mode simple shadow */
 :root .btn-ghost:hover {
-  box-shadow: 0 0 15px var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Light mode - subtle shadow */
 .light-theme .btn-ghost:hover,
 [data-theme="light"] .btn-ghost:hover {
-  box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+  box-shadow: 0 4px 12px rgba(0,123,255,0.2);
 }
 
 /* Text Utilities */
@@ -330,7 +328,6 @@
 
 .link-text:hover {
   color: var(--accent-hover);
-  text-shadow: 0 0 8px var(--accent);
 }
 
 /* Badge Component */
@@ -350,7 +347,7 @@
 .badge:hover {
   background: var(--accent);
   color: var(--accent-contrast);
-  box-shadow: 0 0 10px var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Stat Value (for workout metrics) */
@@ -365,7 +362,6 @@
 
 .stat-value:hover {
   color: var(--accent);
-  text-shadow: 0 0 15px var(--accent);
 }
 
 /* ===== GLOBAL THEME APPLICATION ===== */
@@ -397,9 +393,9 @@ a:hover {
   color: var(--accent-hover);
 }
 
-/* Dark mode glow effect */
+/* Dark mode - no glow */
 :root a:hover {
-  text-shadow: 0 0 8px var(--accent);
+  text-decoration: underline;
 }
 
 /* Light mode - no glow, just underline */
@@ -426,9 +422,10 @@ a:hover {
   color: var(--accent);
 }
 
-/* Dark mode glow */
+/* Dark mode - simple background */
 :root .navbar .nav-link:hover {
-  text-shadow: 0 0 8px var(--accent);
+  background: rgba(0,212,255,0.1);
+  border-radius: 8px;
 }
 
 /* Light mode - no glow */
@@ -443,7 +440,6 @@ a:hover {
   color: var(--accent);
   background: rgba(0,212,255,0.1);
   border: 1px solid var(--accent);
-  box-shadow: 0 0 10px rgba(0,212,255,0.3);
 }
 
 /* Form Inputs */
@@ -462,9 +458,9 @@ input:focus, textarea:focus, select:focus {
   background: var(--bg-soft);
 }
 
-/* Dark mode glow */
+/* Dark mode simple focus */
 :root input:focus, :root textarea:focus, :root select:focus {
-  box-shadow: 0 0 0 3px rgba(0,212,255,0.2), 0 0 15px var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.2);
 }
 
 /* Light mode - clean focus */
@@ -562,7 +558,7 @@ input::placeholder, textarea::placeholder {
 .dark select:focus-visible {
   outline: 2px solid #00d4ff !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2) !important;
 }
 
 /* Ensure minimum contrast ratios */
@@ -602,87 +598,132 @@ input::placeholder, textarea::placeholder {
 /* ===== COMPREHENSIVE DARK MODE ENHANCEMENTS ===== */
 /* Enhanced dark mode with premium aesthetics and proper contrast */
 
-/* Dark mode global styles */
+/* Dark mode global styles with Deep Slate theme */
 .dark {
+  /* Deep Slate CSS Variables */
+  --bg: #0f172a !important;
+  --bg-soft: #1e293b !important;
+  --bg-card: #1e293b !important;
+  --bg-accent: #334155 !important;
+  --text: #cbd5e1 !important;
+  --text-secondary: #cbd5e1 !important;
+  --heading: #f8fafc !important;
+  --muted: #94a3b8 !important;
+  --accent: #06b6d4 !important;
+  --accent-secondary: #0891b2 !important;
+  --accent-hover: #0891b2 !important;
+  --accent-contrast: #ffffff !important;
+  --panel-border: #475569 !important;
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  --shadow-premium: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  --shadow-floating: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+  --btn-primary-bg: #06b6d4 !important;
+  --btn-secondary-bg: #334155 !important;
+  --btn-secondary-text: #cbd5e1 !important;
+  --success: #10b981 !important;
+  --danger: #ef4444 !important;
+  --warning: #f59e0b !important;
+  
+  /* Apply background and text */
   --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
-  color: rgb(248 250 252 / var(--tw-text-opacity));
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
 }
 
-/* Dark mode containers with glassmorphism */
+/* Dark mode containers with Deep Slate colors */
 .dark .bg-white {
-  background-color: rgba(30, 41, 59, 0.8) !important;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  background-color: #1e293b !important;
+  border: 1px solid #475569 !important;
 }
 
 .dark .bg-gray-50 {
-  background-color: rgba(51, 65, 85, 0.6) !important;
+  background-color: #334155 !important;
 }
 
 .dark .bg-gray-100 {
-  background-color: rgba(71, 85, 105, 0.4) !important;
+  background-color: #334155 !important;
 }
 
 .dark .bg-gray-200 {
-  background-color: rgba(71, 85, 105, 0.6) !important;
+  background-color: #475569 !important;
 }
 
-/* Dark mode text with proper contrast (≥4.5:1) */
+.dark .bg-slate-800 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-700 {
+  background-color: #334155 !important;
+}
+
+.dark .bg-slate-900 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-800\/50 {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+.dark .bg-slate-700\/50 {
+  background-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+/* Dark mode text with Deep Slate colors */
 .dark .text-gray-900 {
-  color: rgb(248 250 252) !important; /* #f8fafc - 18.7:1 contrast */
+  color: #f8fafc !important;
 }
 
 .dark .text-gray-800 {
-  color: rgb(241 245 249) !important; /* #f1f5f9 - 16.8:1 contrast */
+  color: #f8fafc !important;
 }
 
 .dark .text-gray-700 {
-  color: rgb(226 232 240) !important; /* #e2e8f0 - 12.6:1 contrast */
+  color: #cbd5e1 !important;
 }
 
 .dark .text-gray-600 {
-  color: rgb(203 213 225) !important; /* #cbd5e1 - 9.5:1 contrast */
+  color: #cbd5e1 !important;
 }
 
 .dark .text-gray-500 {
-  color: rgb(148 163 184) !important; /* #94a3b8 - 5.9:1 contrast */
+  color: #94a3b8 !important;
 }
 
-/* Dark mode borders with neon accents */
+/* Dark mode borders */
 .dark .border-gray-200 {
-  border-color: rgba(71, 85, 105, 0.4) !important;
+  border-color: #475569 !important;
 }
 
 .dark .border-gray-300 {
-  border-color: rgba(71, 85, 105, 0.6) !important;
+  border-color: #475569 !important;
 }
 
-/* Dark mode inputs with enhanced styling */
+/* Dark mode inputs */
 .dark input,
 .dark textarea,
 .dark select {
-  background-color: rgba(15, 23, 42, 0.8) !important;
-  border-color: rgba(71, 85, 105, 0.5) !important;
-  color: rgb(248 250 252) !important;
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #cbd5e1 !important;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #00d4ff !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 15px rgba(0, 212, 255, 0.3) !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
 }
 
-/* Dark mode buttons with neon effects */
+/* Dark mode buttons */
 .dark .btn-primary {
-  background: linear-gradient(135deg, #00d4ff, #0ea5e9) !important;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 212, 255, 0.2) !important;
+  background: #06b6d4 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark .btn-primary:hover {
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.4) !important;
-  transform: translateY(-2px) !important;
+  background: #0891b2 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* Dark mode skeleton loaders */
@@ -708,8 +749,33 @@ input::placeholder, textarea::placeholder {
 
 .dark .chip:hover,
 .dark .badge:hover {
-  background: rgba(0, 212, 255, 0.2) !important;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3) !important;
+  background: rgba(6, 182, 212, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Force Deep Slate colors on common Tailwind classes */
+.dark .text-white {
+  color: #f8fafc !important;
+}
+
+.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+.dark .border-slate-700 {
+  border-color: #475569 !important;
+}
+
+.dark .border-slate-600 {
+  border-color: #475569 !important;
+}
+
+.dark .bg-slate-800\/60 {
+  background-color: rgba(30, 41, 59, 0.6) !important;
 }
 
 /* ===== COMPREHENSIVE LIGHT MODE TEXT VISIBILITY OVERRIDES ===== */
@@ -882,12 +948,11 @@ input::placeholder, textarea::placeholder {
   color: var(--muted) !important;
 }
 
-/* ===== PREMIUM DARK MODE GLASSMORPHISM ===== */
+/* ===== DEEP SLATE DARK MODE ===== */
 .dark .glassmorphism {
-  background: rgba(30, 41, 59, 0.7) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(71, 85, 105, 0.3) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Dark mode neon glow effects */
@@ -913,21 +978,20 @@ input::placeholder, textarea::placeholder {
 /* Dark mode modal overlays */
 .dark .modal-overlay {
   background: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(8px) !important;
 }
 
 .dark .modal {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 212, 255, 0.1) !important;
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Dark mode tooltips */
 .dark .tooltip {
-  background: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid rgba(71, 85, 105, 0.5) !important;
-  color: rgb(248 250 252) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+  background: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Dark mode scrollbars */
@@ -937,27 +1001,27 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: rgba(71, 85, 105, 0.2);
+  background: #334155;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.3);
+  background: #06b6d4;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.5);
+  background: #0891b2;
 }
 
 /* Dark mode selection */
 .dark ::selection {
-  background: rgba(0, 212, 255, 0.3);
-  color: rgb(248 250 252);
+  background: rgba(6, 182, 212, 0.3);
+  color: #f8fafc;
 }
 
 /* Dark mode focus rings */
 .dark *:focus-visible {
-  outline: 2px solid #00d4ff;
+  outline: 2px solid #06b6d4;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
 }

@@ -244,7 +244,7 @@ const Dashboard = () => {
         <DashboardHero />
       
       {/* Dashboard Content */}
-      <div className="space-y-4 sm:space-y-6 px-4 py-8">
+      <div className="space-y-4 sm:space-y-6 px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
       
       {/* Workout Completion Notification */}
       {showCompletionMessage && completionData && (
@@ -336,190 +336,191 @@ const Dashboard = () => {
       </div>
 
       {/* Real-Time Stats - MongoDB Data Only */}
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
         <button 
           onClick={() => navigate('/workouts')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">💪</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">💪</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} completed!` : 'Start your first workout'}
               </div>
             </div>
           </div>
-          <div className="absolute top-2 right-2 text-xs text-blue-400/70">
-            {workoutStats?.lastUpdate ? '🔴 LIVE' : isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-blue-400/70">
+            {workoutStats?.lastUpdate ? '🔴' : isOnline && stats.isRealTime ? '🔴' : '❌'}
           </div>
-          <div className="absolute bottom-2 right-2 text-blue-400/50 text-xs">→</div>
         </button>
         
         <button 
           onClick={() => navigate('/current-streak')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">🔥</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">🔥</span>
             </div>
-            <div className="min-w-0">
-              <div className={`text-xl sm:text-2xl font-bold text-white ${
+            <div className="min-w-0 text-center sm:text-left">
+              <div className={`text-lg sm:text-xl lg:text-2xl font-bold text-white ${
                 realTimeCurrentStreak > 0 ? 'animate-pulse' : ''
               }`}>
                 {realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak}🔥` : '0🔥'}
               </div>
               <div className="text-slate-400 text-xs sm:text-sm">Current Streak</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'}
               </div>
             </div>
           </div>
-          <div className="absolute top-2 right-2 text-xs text-red-400/70">
-            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-red-400/70">
+            {isOnline && stats.isRealTime ? '🔴' : '❌'}
           </div>
-          <div className="absolute bottom-2 right-2 text-red-400/50 text-xs">→</div>
         </button>
         
         <button 
           onClick={() => navigate('/analytics')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">📊</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">📊</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} this week!` : 'No workouts yet'}
               </div>
             </div>
           </div>
-          <div className="absolute top-2 right-2 text-xs text-green-400/70">
-            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-green-400/70">
+            {isOnline && stats.isRealTime ? '🔴' : '❌'}
           </div>
-          <div className="absolute bottom-2 right-2 text-green-400/50 text-xs">→</div>
         </button>
         
         <button 
           onClick={() => navigate('/xp-points')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">⭐</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">⭐</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white">{stats.xpPoints || 0}</div>
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{stats.xpPoints || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {stats.xpPoints > 0 ? `Level ${Math.floor(stats.xpPoints / 100) + 1}` : 'Earn XP by working out'}
               </div>
             </div>
           </div>
-          <div className="absolute top-2 right-2 text-xs text-purple-400/70">
-            {isOnline && stats.isRealTime ? '🔴 LIVE' : '❌ OFFLINE'}
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-purple-400/70">
+            {isOnline && stats.isRealTime ? '🔴' : '❌'}
           </div>
-          <div className="absolute bottom-2 right-2 text-purple-400/50 text-xs">→</div>
         </button>
         
         <button 
           onClick={() => navigate('/my-plans')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">📋</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">📋</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center justify-center sm:justify-start gap-2">
                 {dashboardStats.totalPlans}
                 {planSyncStatus === 'syncing' && (
-                  <div className="animate-spin w-4 h-4 border border-orange-500 border-t-transparent rounded-full"></div>
+                  <div className="animate-spin w-3 h-3 sm:w-4 sm:h-4 border border-orange-500 border-t-transparent rounded-full"></div>
                 )}
               </div>
               <div className="text-slate-400 text-xs sm:text-sm">Workout Plans</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans ready • REAL-TIME` : 'Create your first plan'}
               </div>
             </div>
           </div>
-          <div className="absolute top-2 right-2 text-xs text-orange-400/70">
-            {plansOnline && isRealTime ? '🚀 INSTANT' : '❌ OFFLINE'}
+          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-orange-400/70">
+            {plansOnline && isRealTime ? '🚀' : '❌'}
           </div>
-          <div className="absolute bottom-2 right-2 text-orange-400/50 text-xs">→</div>
         </button>
         
         <button 
           onClick={() => navigate('/achievements')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20 text-left relative"
+          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20 text-left relative p-3 sm:p-4"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl">🏆</span>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-base sm:text-lg lg:text-2xl">🏆</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center justify-center sm:justify-start gap-2">
                 {unlockedCount}
                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${achievementsOnline ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
                   {achievementsOnline ? 'LIVE' : 'LOCAL'}
                 </span>
               </div>
               <div className="text-slate-400 text-xs sm:text-sm">Achievements</div>
-              <div className="text-xs text-green-400">
+              <div className="text-xs text-green-400 hidden sm:block">
                 {unlockedCount > 0 ? `${completionPercentage}% • ${currentXP.toLocaleString()} XP` : 'Start earning achievements'}
               </div>
             </div>
           </div>
-          <div className="absolute bottom-2 right-2 text-yellow-400/50 text-xs">→</div>
         </button>
       </div>
 
       {/* Real-Time Quick Actions */}
       <div className="card">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-white">Quick Actions</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Quick Actions</h2>
           <div className="text-xs text-green-400 flex items-center gap-1">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
             Real-time Data
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
           <button 
             onClick={() => navigate('/library')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-3 sm:py-4 lg:py-6 transition-all hover:scale-105 relative text-center"
           >
-            <div className="text-2xl sm:text-3xl mb-2">📚</div>
-            <div className="font-medium text-sm sm:text-base">Exercise Library</div>
-            <div className="text-xs text-blue-200 mt-1">
+            <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2">📚</div>
+            <div className="font-medium text-xs sm:text-sm lg:text-base">Exercise Library</div>
+            <div className="text-xs text-blue-200 mt-1 hidden sm:block">
               Browse exercises
             </div>
-            <div className="absolute top-2 right-2 text-xs text-blue-300/70">
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-blue-300/70">
               {isOnline && stats.isRealTime ? '🔴' : '❌'}
             </div>
           </button>
           
           <button 
             onClick={() => navigate('/my-plans')}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
+            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-3 sm:py-4 lg:py-6 transition-all hover:scale-105 relative text-center"
           >
-            <div className="text-2xl sm:text-3xl mb-2">📋</div>
-            <div className="font-medium text-sm sm:text-base flex items-center gap-2">
-              My Plans ({dashboardStats.totalPlans})
+            <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2">📋</div>
+            <div className="font-medium text-xs sm:text-sm lg:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+              <span className="whitespace-nowrap">My Plans ({dashboardStats.totalPlans})</span>
               {planSyncStatus === 'syncing' && (
                 <div className="animate-spin w-3 h-3 border border-green-300 border-t-transparent rounded-full"></div>
               )}
             </div>
-            <div className="text-xs text-green-200 mt-1">
-              {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans • INSTANT UPDATES` : 'Create your first plan'}
+            <div className="text-xs text-green-200 mt-1 px-1 leading-tight">
+              {dashboardStats.totalPlans > 0 ? (
+                <>
+                  <span className="block sm:hidden">{dashboardStats.totalPlans} plans</span>
+                  <span className="hidden sm:block">{dashboardStats.totalPlans} plans • INSTANT</span>
+                </>
+              ) : (
+                <span className="block">Create first plan</span>
+              )}
             </div>
-            <div className="absolute top-2 right-2 text-xs text-green-300/70">
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-green-300/70">
               {plansOnline && isRealTime ? '🚀' : '❌'}
             </div>
           </button>
@@ -556,11 +557,11 @@ const Dashboard = () => {
 
       {/* Saved Plans */}
       <div className="card">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-white">My Workout Plans</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">My Workout Plans</h2>
           <button
             onClick={() => navigate('/plans')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm w-full sm:w-auto"
           >
             + Create Plan
           </button>
@@ -592,9 +593,9 @@ const Dashboard = () => {
                 {dashboardStats.totalPlans} total • {planStats.syncedPlans} synced
               </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {recentPlans.map((plan, index) => (
-                <div key={plan.id || index} className="p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors relative">
+                <div key={plan.id || index} className="p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors relative">
                   {/* Sync Status Badge */}
                   <div className="absolute top-2 right-2">
                     {plan.synced ? (
@@ -642,20 +643,20 @@ const Dashboard = () => {
 
       {/* Recent Workouts */}
       <div className="card">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-white">Recent Workouts</h2>
-          <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Recent Workouts</h2>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             {recentWorkouts.length > 5 && (
               <button
                 onClick={() => setShowAllWorkouts(!showAllWorkouts)}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
               >
                 {showAllWorkouts ? 'Show Less' : `Show More (${recentWorkouts.length})`}
               </button>
             )}
             <button
               onClick={() => navigate('/my-plans')}
-              className="btn bg-green-600 hover:bg-green-700 text-white text-sm"
+              className="btn bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm"
             >
               🏋️ Start Workout
             </button>
@@ -697,7 +698,7 @@ const Dashboard = () => {
               </span>
             </div>
             {(showAllWorkouts ? recentWorkouts : recentWorkouts.slice(0, 5)).map((workout, index) => (
-              <div key={workout.id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-4 border-green-500">
+              <div key={workout.id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-2 sm:border-l-4 border-green-500">
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-white text-sm sm:text-base truncate">
                     {workout.exercise || workout.planName || workout.exerciseName || 'Workout Session'}
@@ -711,29 +712,31 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="text-xs sm:text-sm text-slate-400 flex-shrink-0">
-                    {workout.completedAt ? (
-                      new Date(workout.completedAt).toLocaleDateString() === new Date().toLocaleDateString() 
-                        ? 'Today' 
-                        : new Date(workout.completedAt).toLocaleDateString()
-                    ) : 'Today'}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                    <div className="text-xs sm:text-sm text-slate-400 flex-shrink-0">
+                      {workout.completedAt ? (
+                        new Date(workout.completedAt).toLocaleDateString() === new Date().toLocaleDateString() 
+                          ? 'Today' 
+                          : new Date(workout.completedAt).toLocaleDateString()
+                      ) : 'Today'}
+                    </div>
+                    <button
+                      onClick={() => {
+                        const workoutId = workout.planId || workout.id;
+                        if (workoutId) {
+                          console.log('🔄 Repeating workout:', workout.exercise || workout.planName, 'ID:', workoutId);
+                          navigate(`/workout/${workoutId}`);
+                        } else {
+                          console.warn('⚠️ Workout ID missing, redirecting to plans');
+                          navigate('/my-plans');
+                        }
+                      }}
+                      className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-2 sm:px-3 py-1 w-full sm:w-auto"
+                      title={`Repeat workout: ${workout.exercise || workout.planName || 'Workout Session'}`}
+                    >
+                      🔄 Repeat
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      const workoutId = workout.planId || workout.id;
-                      if (workoutId) {
-                        console.log('🔄 Repeating workout:', workout.exercise || workout.planName, 'ID:', workoutId);
-                        navigate(`/workout/${workoutId}`);
-                      } else {
-                        console.warn('⚠️ Workout ID missing, redirecting to plans');
-                        navigate('/my-plans');
-                      }
-                    }}
-                    className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
-                    title={`Repeat workout: ${workout.exercise || workout.planName || 'Workout Session'}`}
-                  >
-                    🔄 Repeat
-                  </button>
                 </div>
               </div>
             ))}

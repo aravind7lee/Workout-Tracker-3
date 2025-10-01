@@ -45,6 +45,10 @@ export const RealTimeProvider = ({ children }) => {
     try {
       const realtimeStats = realTimeWorkoutSync.getStats();
       
+      // Get plans count from localStorage like Home and Dashboard pages
+      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const totalPlans = plans.length;
+      
       return {
         workouts: realtimeStats.todayWorkouts,
         totalWorkouts: realtimeStats.totalWorkouts,
@@ -53,6 +57,7 @@ export const RealTimeProvider = ({ children }) => {
         monthlyWorkouts: realtimeStats.monthlyWorkouts,
         totalCalories: realtimeStats.totalCalories,
         totalDuration: realtimeStats.totalDuration,
+        totalPlans: totalPlans,
         isRealTime: true,
         lastSync: realtimeStats.lastUpdate || new Date().toISOString(),
         dataSource: 'RealTimeWorkoutSync'
@@ -67,6 +72,7 @@ export const RealTimeProvider = ({ children }) => {
         monthlyWorkouts: 0,
         totalCalories: 0,
         totalDuration: 0,
+        totalPlans: 0,
         isRealTime: false,
         lastSync: new Date().toISOString(),
         dataSource: 'Error'
@@ -107,6 +113,7 @@ export const RealTimeProvider = ({ children }) => {
         xpPoints: 0,
         streak: 0,
         totalMeals: 0,
+        totalPlans: localStats.totalPlans,
         currentStreak: 0,
         weeklyGoal: { completed: localStats.weeklyWorkouts, target: 4, percentage: (localStats.weeklyWorkouts / 4) * 100 },
         isRealTime: true,
@@ -242,6 +249,14 @@ export const RealTimeProvider = ({ children }) => {
 
     const handlePlanCreated = () => {
       console.log('📋 Plan created - refreshing stats');
+      // Update plans count immediately
+      const freshStats = loadWorkoutStats();
+      setStats(prev => ({
+        ...prev,
+        totalPlans: freshStats.totalPlans,
+        lastSync: new Date().toISOString(),
+        dataSource: 'Plan Created Update'
+      }));
       setTimeout(fetchRealTimeStats, 1000);
     };
 
@@ -313,6 +328,21 @@ export const RealTimeProvider = ({ children }) => {
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('streakUpdated', handleStreakUpdated);
     
+    // Also listen for plan updates to refresh totalPlans immediately
+    const handlePlanUpdate = () => {
+      console.log('📋 Plan updated - refreshing plans count');
+      const freshStats = loadWorkoutStats();
+      setStats(prev => ({
+        ...prev,
+        totalPlans: freshStats.totalPlans,
+        lastSync: new Date().toISOString(),
+        dataSource: 'Plan Update'
+      }));
+    };
+    
+    window.addEventListener('planUpdated', handlePlanUpdate);
+    window.addEventListener('planDeleted', handlePlanUpdate);
+    
     // Listen for specific streak events for even faster updates
     window.addEventListener('dashboardStreakUpdate', handleStreakUpdated);
     window.addEventListener('homeStreakUpdate', handleStreakUpdated);
@@ -328,6 +358,8 @@ export const RealTimeProvider = ({ children }) => {
       window.removeEventListener('dashboardStreakUpdate', handleStreakUpdated);
       window.removeEventListener('homeStreakUpdate', handleStreakUpdated);
       window.removeEventListener('analyticsStreakUpdate', handleStreakUpdated);
+      window.removeEventListener('planUpdated', handlePlanUpdate);
+      window.removeEventListener('planDeleted', handlePlanUpdate);
     };
   }, [fetchRealTimeStats, loadWorkoutStats]);
 

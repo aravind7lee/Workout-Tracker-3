@@ -64,9 +64,6 @@ export default function RealTimeAchievements() {
           <div>
             <h3 className="text-xl font-bold text-white group-hover:text-yellow-400 transition-colors flex items-center gap-2">
               🏆 Achievements
-              <span className="text-sm bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent font-normal">
-                ULTRA AURA++
-              </span>
             </h3>
             <div className="flex items-center gap-2 text-xs mt-1">
               <span className={`px-2 py-1 rounded-full border ${isOnline ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'}`}>

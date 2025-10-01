@@ -1,34 +1,32 @@
 /* ===== PREMIUM DARK MODE ENHANCEMENTS ===== */
 /* Comprehensive dark mode styling with glassmorphism and neon accents */
 
-/* ===== CORE DARK MODE VARIABLES ===== */
+/* ===== DEEP SLATE DARK MODE VARIABLES ===== */
 .dark {
-  --dark-bg-primary: #0f172a;
-  --dark-bg-secondary: #1e293b;
-  --dark-bg-tertiary: #334155;
-  --dark-text-primary: #f8fafc;
-  --dark-text-secondary: #e2e8f0;
-  --dark-text-muted: #94a3b8;
-  --dark-accent: #00d4ff;
-  --dark-accent-glow: rgba(0, 212, 255, 0.3);
-  --dark-border: rgba(71, 85, 105, 0.4);
-  --dark-shadow: rgba(0, 0, 0, 0.5);
+  --dark-bg-primary: #0f172a !important;
+  --dark-bg-secondary: #1e293b !important;
+  --dark-bg-tertiary: #334155 !important;
+  --dark-text-primary: #f8fafc !important;
+  --dark-text-secondary: #cbd5e1 !important;
+  --dark-text-muted: #94a3b8 !important;
+  --dark-accent: #06b6d4 !important;
+  --dark-accent-glow: rgba(6, 182, 212, 0.3) !important;
+  --dark-border: #475569 !important;
+  --dark-shadow: rgba(0, 0, 0, 0.5) !important;
 }
 
-/* ===== GLASSMORPHISM CONTAINERS ===== */
+/* ===== DEEP SLATE CONTAINERS ===== */
 .dark .card,
 .dark .bg-white,
 .dark .bg-gray-50,
 .dark .bg-gray-100 {
-  background: rgba(30, 41, 59, 0.8) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid var(--dark-border) !important;
-  box-shadow: 0 4px 20px var(--dark-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .dark .bg-gray-200 {
-  background: rgba(51, 65, 85, 0.6) !important;
-  backdrop-filter: blur(8px) !important;
+  background: #334155 !important;
 }
 
 /* ===== ENHANCED TEXT CONTRAST ===== */
@@ -51,51 +49,52 @@
 /* ===== PREMIUM BUTTONS ===== */
 .dark .btn,
 .dark button {
-  background: rgba(30, 41, 59, 0.8) !important;
-  border: 1px solid var(--dark-border) !important;
-  color: var(--dark-text-primary) !important;
-  backdrop-filter: blur(8px) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #cbd5e1 !important;
+  transition: all 0.2s ease !important;
 }
 
 .dark .btn:hover,
 .dark button:hover {
-  background: rgba(51, 65, 85, 0.9) !important;
-  border-color: var(--dark-accent) !important;
-  box-shadow: 0 0 20px var(--dark-accent-glow) !important;
-  transform: translateY(-2px) !important;
+  background: #06b6d4 !important;
+  border-color: #06b6d4 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-1px) !important;
 }
 
 .dark .btn-primary,
 .dark .bg-blue-600,
 .dark .bg-blue-500 {
-  background: linear-gradient(135deg, var(--dark-accent), #0ea5e9) !important;
+  background: #06b6d4 !important;
   border: none !important;
-  box-shadow: 0 4px 15px var(--dark-accent-glow), 0 0 20px rgba(0, 212, 255, 0.2) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark .btn-primary:hover,
 .dark .bg-blue-600:hover,
 .dark .bg-blue-500:hover {
-  box-shadow: 0 8px 25px var(--dark-accent-glow), 0 0 30px rgba(0, 212, 255, 0.4) !important;
+  background: #0891b2 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ===== PREMIUM INPUTS ===== */
 .dark input,
 .dark textarea,
 .dark select {
-  background: rgba(15, 23, 42, 0.9) !important;
-  border: 1px solid var(--dark-border) !important;
-  color: var(--dark-text-primary) !important;
-  backdrop-filter: blur(8px) !important;
+  background: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #cbd5e1 !important;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: var(--dark-accent) !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 15px var(--dark-accent-glow) !important;
-  background: rgba(15, 23, 42, 0.95) !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
+  background: #1e293b !important;
 }
 
 .dark input::placeholder,
@@ -112,8 +111,8 @@
 
 .dark .border-blue-500,
 .dark .border-blue-600 {
-  border-color: var(--dark-accent) !important;
-  box-shadow: 0 0 10px var(--dark-accent-glow) !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* ===== ENHANCED SHADOWS ===== */
@@ -146,17 +145,16 @@
 .dark .chip,
 .dark .badge,
 .dark .pill {
-  background: rgba(0, 212, 255, 0.1) !important;
-  border: 1px solid rgba(0, 212, 255, 0.3) !important;
-  color: var(--dark-accent) !important;
-  backdrop-filter: blur(8px) !important;
+  background: rgba(6, 182, 212, 0.1) !important;
+  border: 1px solid rgba(6, 182, 212, 0.3) !important;
+  color: #06b6d4 !important;
 }
 
 .dark .chip:hover,
 .dark .badge:hover,
 .dark .pill:hover {
-  background: rgba(0, 212, 255, 0.2) !important;
-  box-shadow: 0 0 15px var(--dark-accent-glow) !important;
+  background: rgba(6, 182, 212, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* ===== MODALS & OVERLAYS ===== */
@@ -168,19 +166,17 @@
 
 .dark .modal,
 .dark .dialog {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border: 1px solid var(--dark-border) !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 212, 255, 0.1) !important;
-  backdrop-filter: blur(20px) !important;
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* ===== TOOLTIPS ===== */
 .dark .tooltip {
-  background: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid var(--dark-border) !important;
-  color: var(--dark-text-primary) !important;
-  box-shadow: 0 8px 25px var(--dark-shadow) !important;
-  backdrop-filter: blur(12px) !important;
+  background: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ===== PROGRESS BARS ===== */
@@ -188,8 +184,8 @@
 .dark .bg-green-500,
 .dark .bg-blue-500,
 .dark .bg-purple-500 {
-  background: linear-gradient(90deg, var(--dark-accent), #0ea5e9, #8b5cf6) !important;
-  box-shadow: 0 0 10px var(--dark-accent-glow) !important;
+  background: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* ===== SCROLLBARS ===== */
@@ -204,27 +200,25 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.3);
+  background: #06b6d4;
   border-radius: 4px;
-  border: 1px solid rgba(0, 212, 255, 0.1);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.5);
-  box-shadow: 0 0 5px var(--dark-accent-glow);
+  background: #0891b2;
 }
 
 /* ===== SELECTION ===== */
 .dark ::selection {
-  background: var(--dark-accent-glow) !important;
-  color: var(--dark-text-primary) !important;
+  background: rgba(6, 182, 212, 0.3) !important;
+  color: #f8fafc !important;
 }
 
 /* ===== FOCUS STATES ===== */
 .dark *:focus-visible {
-  outline: 2px solid var(--dark-accent) !important;
+  outline: 2px solid #06b6d4 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
 }
 
 /* ===== HOVER EFFECTS ===== */
