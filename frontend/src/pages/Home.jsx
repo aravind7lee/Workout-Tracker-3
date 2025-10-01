@@ -728,13 +728,7 @@ export default function Home() {
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-                {/* Premium Brand Badge */}
-                <div className="absolute top-6 right-6 z-10">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-blue-400/30">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-black text-blue-400 tracking-wider">GYMTRACKER PRO</span>
-                  </div>
-                </div>
+
                 
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
@@ -850,13 +844,7 @@ export default function Home() {
               <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-                {/* Premium Brand Badge */}
-                <div className="absolute top-6 right-6 z-10">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-red-400/30">
-                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-black text-red-400 tracking-wider">BEAST MODE</span>
-                  </div>
-                </div>
+
                 
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
@@ -943,13 +931,7 @@ export default function Home() {
               <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-teal-500 to-green-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-                {/* Premium Brand Badge */}
-                <div className="absolute top-6 left-6 z-10">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-green-400/30">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-black text-green-400 tracking-wider">MUSCLE ELITE</span>
-                  </div>
-                </div>
+
                 
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
@@ -1037,13 +1019,7 @@ export default function Home() {
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-                {/* Premium Brand Badge */}
-                <div className="absolute top-6 right-6 z-10">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-purple-400/30">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-black text-purple-400 tracking-wider">FUNCTIONAL PRO</span>
-                  </div>
-                </div>
+
                 
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
@@ -1119,13 +1095,7 @@ export default function Home() {
               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-                {/* Premium Brand Badge */}
-                <div className="absolute top-6 left-6 z-10">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-yellow-400/30">
-                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-black text-yellow-400 tracking-wider">CHAMPIONS CLUB</span>
-                  </div>
-                </div>
+
                 
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
