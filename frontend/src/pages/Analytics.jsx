@@ -279,6 +279,15 @@ export default function Analytics() {
   // Get real-time streak from RealTimeContext (same as Home and Dashboard)
   const realTimeCurrentStreak = stats.currentStreak || stats.streak || currentStreak || 0;
   
+  // Use RealTimeContext stats directly like Dashboard and Home pages
+  const contextStats = {
+    totalWorkouts: stats.totalWorkouts || 0,
+    totalPlans: JSON.parse(localStorage.getItem('workoutPlans') || '[]').length,
+    todayWorkouts: stats.todayWorkouts || 0,
+    weeklyWorkouts: stats.weeklyWorkouts || 0,
+    currentStreak: realTimeCurrentStreak
+  };
+  
   const loadAnalyticsData = useCallback(async () => {
     try {
       // Load offline data INSTANTLY first - no loading state
@@ -390,9 +399,11 @@ export default function Analytics() {
       const finalStreak = Math.max(contextStreak, realtimeStreak, workoutStreak, utilityStreak);
       
       console.log('🧹 Analytics: Using RealTimeContext stats:', {
-        totalWorkouts: stats.totalWorkouts || 0,
-        todayWorkouts: stats.todayWorkouts || 0,
-        weeklyWorkouts: stats.weeklyWorkouts || 0
+        totalWorkouts: contextStats.totalWorkouts,
+        totalPlans: contextStats.totalPlans,
+        todayWorkouts: contextStats.todayWorkouts,
+        weeklyWorkouts: contextStats.weeklyWorkouts,
+        currentStreak: contextStats.currentStreak
       });
       
       console.log('🔥 ANALYTICS: Streak data loaded (using RealTimeContext):', {
@@ -458,7 +469,13 @@ export default function Analytics() {
       const chartData = generateRealChartData();
       
       setAnalyticsData({
-        stats: null,
+        stats: {
+          totalWorkouts: contextStats.totalWorkouts,
+          totalPlans: contextStats.totalPlans,
+          todayWorkouts: contextStats.todayWorkouts,
+          weeklyWorkouts: contextStats.weeklyWorkouts,
+          currentStreak: contextStats.currentStreak
+        },
         caloriesTrend: chartData.caloriesData,
         workoutFrequency: chartData.workoutData,
         muscleDistribution: null,

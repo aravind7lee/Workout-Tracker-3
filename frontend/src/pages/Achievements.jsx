@@ -287,9 +287,7 @@ export default function Achievements() {
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-3">
               🏆 Achievements
-              <span className="text-lg bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent font-normal">
-                ULTRA AURA++
-              </span>
+
             </h1>
             <div className="flex items-center gap-2 text-sm mt-2">
               <span className={`px-3 py-1 rounded-full border ${isOnline ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'}`}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useStreak } from '../context/StreakContext';
-import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
+import { useRealTime } from '../context/RealTimeContext';
 import { getRealTimeStreak } from '../utils/streakUtils';
 
 export default function RealTimeStats() {
@@ -17,11 +17,11 @@ export default function RealTimeStats() {
   const [isOnline, setIsOnline] = useState(false);
   const { user } = useAuth();
   const { currentStreak } = useStreak();
-  const { stats: workoutStats } = useRealTimeWorkouts();
+  const { stats: contextStats, isOnline: contextOnline, refreshStats, updatePlansCount } = useRealTime();
   const navigate = useNavigate();
   
   // Get real-time streak using utility function (same as other pages)
-  const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats.currentStreak);
+  const realTimeCurrentStreak = contextStats.currentStreak || contextStats.streak || currentStreak || 0;
 
   const loadRealTimeStats = async () => {
     if (!user) return;
@@ -46,8 +46,8 @@ export default function RealTimeStats() {
         const finalStreak = getRealTimeStreak(currentStreak, serverStreak);
         
         setStats({
-          totalWorkouts: Math.max(data.totalWorkouts || 0, workoutStats?.totalWorkouts || 0),
-          totalPlans: data.totalPlans || 0,
+          totalWorkouts: Math.max(data.totalWorkouts || 0, contextStats.totalWorkouts || 0),
+          totalPlans: Math.max(data.totalPlans || 0, contextStats.totalPlans || 0),
           totalMeals: data.totalMeals || 0,
           currentStreak: finalStreak,
           xpPoints: data.xpPoints || 0
@@ -61,12 +61,12 @@ export default function RealTimeStats() {
       } else {
         // Fallback to localStorage
         loadLocalStats();
-        setIsOnline(false);
+        setIsOnline(contextOnline);
       }
     } catch (error) {
       console.warn('Database unavailable, using local data:', error);
       loadLocalStats();
-      setIsOnline(false);
+      setIsOnline(contextOnline);
     } finally {
       setLoading(false);
     }
@@ -74,28 +74,28 @@ export default function RealTimeStats() {
 
   const loadLocalStats = () => {
     try {
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
       
       // Get streak using utility function for consistency
       const localStreak = getRealTimeStreak(currentStreak, null);
       
-      // Use real-time workout stats
-      const currentStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
-      const totalWorkouts = currentStats.totalWorkouts || 0;
+      // Use RealTimeContext stats directly (including totalPlans)
+      const totalWorkouts = contextStats.totalWorkouts || 0;
+      const totalPlans = contextStats.totalPlans || 0;
       
       setStats({
         totalWorkouts,
-        totalPlans: plans.length,
+        totalPlans,
         totalMeals: meals.length,
         currentStreak: localStreak,
-        xpPoints: (totalWorkouts * 100) + (plans.length * 50) + (meals.length * 25)
+        xpPoints: (totalWorkouts * 100) + (totalPlans * 50) + (meals.length * 25)
       });
       
       console.log('🔥 REAL-TIME STATS: Local data loaded with real-time workouts:', {
         contextStreak: currentStreak,
         localStreak,
-        totalWorkouts
+        totalWorkouts,
+        totalPlans
       });
     } catch (error) {
       console.error('Error loading local stats:', error);
@@ -110,17 +110,20 @@ export default function RealTimeStats() {
     }
   };
 
-  // Update stats when workoutStats change
+  // Update stats when contextStats change
   useEffect(() => {
-    const currentStats = window.realTimeWorkoutSync?.getStats() || workoutStats || {};
-    if (currentStats.totalWorkouts !== undefined) {
+    if (contextStats.totalWorkouts !== undefined) {
       setStats(prev => ({
         ...prev,
-        totalWorkouts: currentStats.totalWorkouts,
-        xpPoints: (currentStats.totalWorkouts * 100) + (prev.totalPlans * 50) + (prev.totalMeals * 25)
+        totalWorkouts: contextStats.totalWorkouts,
+        totalPlans: contextStats.totalPlans || prev.totalPlans,
+        todayWorkouts: contextStats.todayWorkouts || 0,
+        weeklyWorkouts: contextStats.weeklyWorkouts || 0,
+        currentStreak: contextStats.currentStreak || contextStats.streak || prev.currentStreak,
+        xpPoints: (contextStats.totalWorkouts * 100) + ((contextStats.totalPlans || prev.totalPlans) * 50) + (prev.totalMeals * 25)
       }));
     }
-  }, [workoutStats]);
+  }, [contextStats]);
 
   useEffect(() => {
     loadRealTimeStats();
@@ -128,16 +131,14 @@ export default function RealTimeStats() {
     // Listen for real-time updates
     const handleWorkoutComplete = () => {
       console.log('🏋️ REAL-TIME STATS: Workout completed - refreshing stats');
-      // Update stats immediately with real-time data
-      const currentStats = window.realTimeWorkoutSync?.getStats() || {};
-      setStats(prev => ({
-        ...prev,
-        totalWorkouts: currentStats.totalWorkouts || prev.totalWorkouts,
-        xpPoints: ((currentStats.totalWorkouts || prev.totalWorkouts) * 100) + (prev.totalPlans * 50) + (prev.totalMeals * 25)
-      }));
+      // RealTimeContext will handle the update automatically
+      refreshStats();
       loadRealTimeStats();
     };
-    const handlePlanCreated = () => loadRealTimeStats();
+    const handlePlanCreated = () => {
+      updatePlansCount();
+      loadRealTimeStats();
+    };
     const handleMealAdded = () => loadRealTimeStats();
     
     // REAL-TIME STREAK UPDATE HANDLER
