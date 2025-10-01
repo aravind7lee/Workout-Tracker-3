@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useStreak } from '../context/StreakContext';
 import { useRealTime } from '../context/RealTimeContext';
+import { useAchievements } from '../context/AchievementsContext';
 import { getRealTimeStreak } from '../utils/streakUtils';
 
 export default function RealTimeStats() {
@@ -18,10 +19,14 @@ export default function RealTimeStats() {
   const { user } = useAuth();
   const { currentStreak } = useStreak();
   const { stats: contextStats, isOnline: contextOnline, refreshStats, updatePlansCount } = useRealTime();
+  const { currentXP, currentStreak: achievementsStreak } = useAchievements();
   const navigate = useNavigate();
   
   // Get real-time streak using utility function (same as other pages)
-  const realTimeCurrentStreak = contextStats.currentStreak || contextStats.streak || currentStreak || 0;
+  const realTimeCurrentStreak = achievementsStreak || contextStats.currentStreak || contextStats.streak || currentStreak || 0;
+  
+  // Get real XP from AchievementsContext
+  const realTimeXP = currentXP || 0;
 
   const loadRealTimeStats = async () => {
     if (!user) return;
@@ -45,12 +50,15 @@ export default function RealTimeStats() {
         const serverStreak = data.currentStreak || 0;
         const finalStreak = getRealTimeStreak(currentStreak, serverStreak);
         
+        // Use server XP if available, otherwise use AchievementsContext XP
+        const serverXP = data.xpPoints || realTimeXP;
+        
         setStats({
           totalWorkouts: Math.max(data.totalWorkouts || 0, contextStats.totalWorkouts || 0),
           totalPlans: Math.max(data.totalPlans || 0, contextStats.totalPlans || 0),
           totalMeals: data.totalMeals || 0,
           currentStreak: finalStreak,
-          xpPoints: data.xpPoints || 0
+          xpPoints: serverXP
         });
         
         console.log('🔥 REAL-TIME STATS: Server data loaded:', {
@@ -83,12 +91,15 @@ export default function RealTimeStats() {
       const totalWorkouts = contextStats.totalWorkouts || 0;
       const totalPlans = contextStats.totalPlans || 0;
       
+      // Use the exact same XP calculation as XP Points page
+      const calculatedXP = (totalWorkouts * 100) + (totalPlans * 50) + (meals.length * 25);
+      
       setStats({
         totalWorkouts,
         totalPlans,
         totalMeals: meals.length,
         currentStreak: localStreak,
-        xpPoints: (totalWorkouts * 100) + (totalPlans * 50) + (meals.length * 25)
+        xpPoints: realTimeXP || calculatedXP
       });
       
       console.log('🔥 REAL-TIME STATS: Local data loaded with real-time workouts:', {
@@ -105,7 +116,7 @@ export default function RealTimeStats() {
         totalPlans: 0,
         totalMeals: 0,
         currentStreak: 0,
-        xpPoints: 0
+        xpPoints: realTimeXP || 0
       });
     }
   };
@@ -113,6 +124,7 @@ export default function RealTimeStats() {
   // Update stats when contextStats change
   useEffect(() => {
     if (contextStats.totalWorkouts !== undefined) {
+      // Always use AchievementsContext XP for consistency
       setStats(prev => ({
         ...prev,
         totalWorkouts: contextStats.totalWorkouts,
@@ -120,7 +132,7 @@ export default function RealTimeStats() {
         todayWorkouts: contextStats.todayWorkouts || 0,
         weeklyWorkouts: contextStats.weeklyWorkouts || 0,
         currentStreak: contextStats.currentStreak || contextStats.streak || prev.currentStreak,
-        xpPoints: (contextStats.totalWorkouts * 100) + ((contextStats.totalPlans || prev.totalPlans) * 50) + (prev.totalMeals * 25)
+        xpPoints: realTimeXP
       }));
     }
   }, [contextStats]);
@@ -231,8 +243,8 @@ export default function RealTimeStats() {
           },
           { 
             label: 'XP Points', 
-            value: formatNumber(stats.xpPoints), 
-            color: 'text-purple-400',
+            value: formatNumber(realTimeXP), 
+            color: 'text-green-400',
             icon: '⭐',
             path: '/xp-points'
           },
@@ -269,7 +281,7 @@ export default function RealTimeStats() {
               <div className={`text-xs ${
                 (stat.label === 'Total Workouts' && stats.totalWorkouts > 0) ||
                 (stat.label === 'Workout Plans' && stats.totalPlans > 0) ||
-                (stat.label === 'XP Points' && stats.xpPoints > 0) ||
+                (stat.label === 'XP Points' && realTimeXP > 0) ||
                 (stat.label === 'Current Streak' && realTimeCurrentStreak > 0)
                   ? 'text-green-400' 
                   : 'text-gray-400'
@@ -277,7 +289,7 @@ export default function RealTimeStats() {
                 {getStatMessage(stat.label, 
                   stat.label === 'Total Workouts' ? stats.totalWorkouts :
                   stat.label === 'Workout Plans' ? stats.totalPlans :
-                  stat.label === 'XP Points' ? stats.xpPoints :
+                  stat.label === 'XP Points' ? realTimeXP :
                   realTimeCurrentStreak
                 )}
               </div>

@@ -95,7 +95,7 @@ export default function Home() {
     { id: 'analytics', icon: '📊', title: 'PROGRESS ANALYTICS', desc: 'Advanced metrics with predictive insights and transformation visualization', color: 'purple' },
     { id: 'goals', icon: '🎯', title: 'GOAL CRUSHING', desc: 'Smart goal setting with achievement tracking and milestone rewards', color: 'green' },
     { id: 'streak', icon: '🔥', title: 'STREAK MASTER', desc: 'Maintain momentum with streak rewards and consistency challenges', color: 'orange' },
-    { id: 'achieve', icon: '🏆', title: 'ACHIEVEMENT SYSTEM', desc: 'Unlock exclusive badges and level up your fitness journey', color: 'yellow' },
+    { id: 'achieve', icon: '🏆', title: 'ACHIEVEMENT SYSTEM', desc: 'Unlock exclusive badges, earn XP points, and level up your fitness journey with real-time progress tracking', color: 'yellow' },
     { id: 'nutrition', icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track meals, calories, and macros with smart food recognition', color: 'green' }
   ]), []);
 
@@ -111,7 +111,14 @@ export default function Home() {
     return stats?.todayWorkouts ?? 0;
   }, [stats?.todayWorkouts, refreshTrigger]);
   
-  console.log('🏠 HOME: RealTime stats (trigger:', refreshTrigger, '):', { totalWorkouts, todayWorkouts, stats });
+  console.log('🏠 HOME: RealTime stats (trigger:', refreshTrigger, '):', { 
+    totalWorkouts, 
+    todayWorkouts, 
+    currentXP: currentXP || 0, 
+    achievements: `${unlockedCount}/${totalCount}`,
+    completionPercentage: Math.round(completionPercentage || 0),
+    stats 
+  });
 
   const quickStats = [
     {
@@ -135,8 +142,8 @@ export default function Home() {
       value: currentXP ?? 0,
       icon: '⭐',
       color: 'yellow',
-      path: '/dashboard',
-      subtitle: currentXP > 0 ? `Level ${Math.floor(currentXP / 100) + 1}` : 'Earn XP by working out'
+      path: '/xp-points',
+      subtitle: currentXP > 0 ? `Level ${Math.floor((currentXP || 0) / 100) + 1}` : 'Earn XP by working out'
     },
     {
       label: 'Achievements',
@@ -144,7 +151,7 @@ export default function Home() {
       icon: '🏆',
       color: 'purple',
       path: '/achievements',
-      subtitle: unlockedCount > 0 ? `${completionPercentage}% complete` : 'Start earning achievements'
+      subtitle: unlockedCount > 0 ? `${Math.round(completionPercentage || 0)}% complete` : 'Start earning achievements'
     }
   ];
 

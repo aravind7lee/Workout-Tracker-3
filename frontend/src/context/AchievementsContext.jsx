@@ -114,7 +114,7 @@ export const AchievementsProvider = ({ children }) => {
           totalPlans: plans.length,
           totalMeals: meals.length,
           currentStreak: calculateStreak(workouts),
-          xpPoints: (workouts.length * 100) + (plans.length * 150) + (meals.length * 50),
+          xpPoints: (workouts.length * 100) + (plans.length * 50) + (meals.length * 25),
           isRealTime: false
         };
       }
@@ -231,6 +231,24 @@ export const AchievementsProvider = ({ children }) => {
     await calculateRealTimeAchievements();
   }, [calculateRealTimeAchievements]);
 
+  // Navigation helper for achievement boxes
+  const getNavigationPath = useCallback((achievementType) => {
+    switch (achievementType) {
+      case 'workout':
+        return '/workouts';
+      case 'plan':
+        return '/my-plans';
+      case 'streak':
+        return '/current-streak';
+      case 'nutrition':
+        return '/nutrition';
+      case 'xp':
+        return '/dashboard';
+      default:
+        return '/achievements';
+    }
+  }, []);
+
   const value = {
     // Core achievement data
     achievements,
@@ -247,6 +265,7 @@ export const AchievementsProvider = ({ children }) => {
     // Actions
     syncNow,
     checkAchievements: calculateRealTimeAchievements,
+    getNavigationPath,
     
     // Professional gym metrics
     completionPercentage: totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0,

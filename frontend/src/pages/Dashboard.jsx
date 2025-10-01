@@ -413,10 +413,10 @@ const Dashboard = () => {
               <span className="text-base sm:text-lg lg:text-2xl">⭐</span>
             </div>
             <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{stats.xpPoints || 0}</div>
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentXP || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
               <div className="text-xs text-green-400 hidden sm:block">
-                {stats.xpPoints > 0 ? `Level ${Math.floor(stats.xpPoints / 100) + 1}` : 'Earn XP by working out'}
+                {currentXP > 0 ? `Level ${Math.floor(currentXP / 100) + 1}` : 'Earn XP by working out'}
               </div>
             </div>
           </div>
@@ -546,7 +546,7 @@ const Dashboard = () => {
             <div className="text-2xl sm:text-3xl mb-2">📊</div>
             <div className="font-medium text-sm sm:text-base">Analytics</div>
             <div className="text-xs text-purple-200 mt-1">
-              {stats.totalWorkouts > 0 ? `${stats.totalWorkouts} workouts tracked` : 'View your progress'}
+              {currentXP > 0 ? `${currentXP.toLocaleString()} XP earned` : 'View your progress'}
             </div>
             <div className="absolute top-2 right-2 text-xs text-purple-300/70">
               {isOnline && stats.isRealTime ? '🔴' : '❌'}

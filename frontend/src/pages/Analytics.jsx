@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
 import { useRealTime } from '../context/RealTimeContext';
+import { useAchievements } from '../context/AchievementsContext';
 import { workoutSync } from '../services/workoutSync';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import AuthGuard from '../components/AuthGuard';
@@ -272,20 +273,28 @@ export default function Analytics() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { currentStreak } = useStreak();
   const { stats, isOnline, refreshStats } = useRealTime();
+  const { currentXP, currentStreak: achievementsStreak, unlockedCount, totalXPEarned, completionPercentage } = useAchievements();
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Get real-time streak from RealTimeContext (same as Home and Dashboard)
-  const realTimeCurrentStreak = stats.currentStreak || stats.streak || currentStreak || 0;
+  // Get real-time streak from AchievementsContext (most accurate)
+  const realTimeCurrentStreak = achievementsStreak || stats.currentStreak || stats.streak || currentStreak || 0;
   
-  // Use RealTimeContext stats directly like Dashboard and Home pages
+  // Get real-time XP from AchievementsContext
+  const realTimeXP = currentXP || stats.xpPoints || 0;
+  
+  // Use real-time data from AchievementsContext and RealTimeContext
   const contextStats = {
     totalWorkouts: stats.totalWorkouts || 0,
     totalPlans: JSON.parse(localStorage.getItem('workoutPlans') || '[]').length,
     todayWorkouts: stats.todayWorkouts || 0,
     weeklyWorkouts: stats.weeklyWorkouts || 0,
-    currentStreak: realTimeCurrentStreak
+    currentStreak: realTimeCurrentStreak,
+    xpPoints: realTimeXP,
+    achievements: unlockedCount,
+    totalXPEarned: totalXPEarned,
+    completionPercentage: completionPercentage
   };
   
   const loadAnalyticsData = useCallback(async () => {
@@ -398,21 +407,26 @@ export default function Analytics() {
       const utilityStreak = getRealTimeStreak(contextStreak, null);
       const finalStreak = Math.max(contextStreak, realtimeStreak, workoutStreak, utilityStreak);
       
-      console.log('🧹 Analytics: Using RealTimeContext stats:', {
+      console.log('🧹 Analytics: Using AchievementsContext + RealTimeContext stats:', {
         totalWorkouts: contextStats.totalWorkouts,
         totalPlans: contextStats.totalPlans,
         todayWorkouts: contextStats.todayWorkouts,
         weeklyWorkouts: contextStats.weeklyWorkouts,
-        currentStreak: contextStats.currentStreak
+        currentStreak: contextStats.currentStreak,
+        xpPoints: contextStats.xpPoints,
+        achievements: contextStats.achievements,
+        totalXPEarned: contextStats.totalXPEarned
       });
       
-      console.log('🔥 ANALYTICS: Streak data loaded (using RealTimeContext):', {
+      console.log('🔥 ANALYTICS: Streak data loaded (using AchievementsContext):', {
+        achievementsStreak,
         contextStreak,
         realtimeStreak,
         workoutStreak,
         utilityStreak,
         finalStreak,
-        realTimeContextStreak: stats.currentStreak
+        realTimeContextStreak: stats.currentStreak,
+        realTimeXP: realTimeXP
       });
       
       // Generate real chart data from actual workouts
@@ -474,7 +488,11 @@ export default function Analytics() {
           totalPlans: contextStats.totalPlans,
           todayWorkouts: contextStats.todayWorkouts,
           weeklyWorkouts: contextStats.weeklyWorkouts,
-          currentStreak: contextStats.currentStreak
+          currentStreak: contextStats.currentStreak,
+          xpPoints: realTimeXP, // Use AchievementsContext XP directly
+          achievements: contextStats.achievements,
+          totalXPEarned: contextStats.totalXPEarned,
+          completionPercentage: contextStats.completionPercentage
         },
         caloriesTrend: chartData.caloriesData,
         workoutFrequency: chartData.workoutData,
