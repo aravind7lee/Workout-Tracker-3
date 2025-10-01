@@ -12,6 +12,9 @@ import AuthGuard from '../components/AuthGuard';
 import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
 import { getRealTimeStreak } from '../utils/streakUtils';
 import api from '../utils/api';
+import Dashboard1 from '../assets/Dashboard1.jpg';
+import Dashboard2 from '../assets/Dashboard2.jpg';
+import DashboardImageCard from '../components/DashboardImageCard';
 
 const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated, loading: authLoading } = useAuth();
@@ -335,6 +338,29 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Dashboard Feature Sections - After Header */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <DashboardImageCard
+          image={Dashboard1}
+          title="Transform Your Fitness Journey"
+          description="Experience real-time tracking with advanced analytics. Monitor progress, celebrate achievements, and stay motivated with instant feedback that adapts to your goals."
+          gradient="from-blue-400 to-cyan-400"
+          glowColor="blue"
+          badgeText=""
+          badgeIcon="✨"
+        />
+
+        <DashboardImageCard
+          image={Dashboard2}
+          title="Elevate Your Performance"
+          description="Take your workouts to the next level with personalized plans, comprehensive tracking, and intelligent insights that evolve with your fitness journey."
+          gradient="from-green-400 to-emerald-400"
+          glowColor="green"
+          badgeText=""
+          badgeIcon="💫"
+        />
+      </div>
+
       {/* Real-Time Stats - MongoDB Data Only */}
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
         <button 
@@ -640,6 +666,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+
 
       {/* Recent Workouts */}
       <div className="card">

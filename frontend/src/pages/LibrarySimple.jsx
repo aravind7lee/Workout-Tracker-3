@@ -10,6 +10,13 @@ import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import WorkoutSuccessNotification from '../components/WorkoutSuccessNotification';
 import LibraryHeaderImg from '../assets/Libraryheader.jpg';
+import Library1 from '../assets/Library1.jpg';
+import Library2 from '../assets/Library2.jpg';
+import Library4 from '../assets/Library4.jpg';
+import Library5 from '../assets/Library5.jpg';
+import Library6 from '../assets/Library6.jpg';
+import Library7 from '../assets/Library7.jpg';
+import Library8 from '../assets/Library8.jpg';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -35,6 +42,22 @@ export default function LibrarySimple() {
   // Hero image states
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  
+  // Add shimmer animation styles
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      .animate-shimmer {
+        animation: shimmer 2s infinite;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   
   // LQIP (Low Quality Image Placeholder)
   const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
@@ -414,6 +437,117 @@ export default function LibrarySimple() {
           </>
         )}
       </motion.div>
+
+      {/* Exercise Categories Gallery Section */}
+      <motion.section 
+        className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-16 sm:py-20"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Section Header */}
+          <motion.div 
+            className="text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+              <span className="text-xs font-bold tracking-[0.3em] text-blue-400 uppercase">Exercise Categories</span>
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200">
+                PREMIUM TRAINING
+              </span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300">
+                COLLECTION
+              </span>
+            </h2>
+            <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Discover our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">elite exercise library</span> with professional-grade workouts
+            </p>
+          </motion.div>
+
+          {/* Exercise Gallery Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            {/* Strength Training */}
+            <ExerciseCard
+              image={Library1}
+              title="Strength Training"
+              subtitle="Build Raw Power"
+              description="Compound movements for maximum strength gains"
+              category="strength"
+              delay={0.1}
+            />
+            
+            {/* Muscle Building */}
+            <ExerciseCard
+              image={Library2}
+              title="Muscle Building"
+              subtitle="Mass & Definition"
+              description="Hypertrophy training for maximum muscle growth"
+              category="muscle"
+              delay={0.2}
+            />
+            
+            {/* Functional Fitness */}
+            <ExerciseCard
+              image={Library4}
+              title="Functional Fitness"
+              subtitle="Real-World Movement"
+              description="Practical exercises for daily performance"
+              category="functional"
+              delay={0.3}
+            />
+            
+            {/* Flexibility & Mobility */}
+            <ExerciseCard
+              image={Library5}
+              title="Flexibility & Mobility"
+              subtitle="Recovery & Movement"
+              description="Enhance range of motion and recovery"
+              category="flexibility"
+              delay={0.4}
+            />
+            
+            {/* Olympic Lifting */}
+            <ExerciseCard
+              image={Library6}
+              title="Olympic Lifting"
+              subtitle="Elite Technique"
+              description="Advanced lifting techniques and form"
+              category="olympic"
+              delay={0.5}
+            />
+            
+            {/* Bodyweight Training */}
+            <ExerciseCard
+              image={Library7}
+              title="Bodyweight Training"
+              subtitle="No Equipment Needed"
+              description="Master your bodyweight movements"
+              category="bodyweight"
+              delay={0.6}
+            />
+            
+            {/* Sports Performance */}
+            <ExerciseCard
+              image={Library8}
+              title="Sports Performance"
+              subtitle="Athletic Excellence"
+              description="Sport-specific training protocols"
+              category="sports"
+              delay={0.7}
+            />
+          </div>
+        </div>
+      </motion.section>
 
       {/* Main Content Area */}
       <div className="relative bg-slate-900 pt-12 pb-12">
@@ -796,3 +930,154 @@ export default function LibrarySimple() {
     </div>
   );
 }
+
+// Exercise Card Component with Premium Features
+const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  // Category color mapping
+  const categoryColors = {
+    strength: 'from-red-500 to-orange-500',
+    muscle: 'from-blue-500 to-cyan-500',
+    functional: 'from-green-500 to-emerald-500',
+    flexibility: 'from-purple-500 to-pink-500',
+    olympic: 'from-yellow-500 to-orange-500',
+    bodyweight: 'from-indigo-500 to-blue-500',
+    sports: 'from-teal-500 to-green-500'
+  };
+  
+  const categoryIcons = {
+    strength: '💪',
+    muscle: '🔥',
+    functional: '⚡',
+    flexibility: '🧘',
+    olympic: '🏋️',
+    bodyweight: '🤸',
+    sports: '🏆'
+  };
+  
+  const gradientClass = categoryColors[category] || 'from-blue-500 to-cyan-500';
+  const icon = categoryIcons[category] || '💪';
+  
+  // Preload image
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = image;
+  }, [image]);
+  
+  return (
+    <motion.div
+      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500"
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ 
+        duration: 0.6, 
+        delay: delay,
+        ease: [0.22, 1, 0.36, 1]
+      }}
+      whileHover={{ 
+        y: -8, 
+        scale: 1.02,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+    >
+      {/* Premium Glow Effect */}
+      <div className={`absolute -inset-1 bg-gradient-to-r ${gradientClass} rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition-all duration-500`} />
+      
+      {/* Image Container */}
+      <div className="relative h-48 sm:h-56 overflow-hidden">
+        {/* Skeleton Loader */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-700/50 to-slate-600/50 animate-pulse">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+          </div>
+        )}
+        
+        {/* Error Fallback */}
+        {imageError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+            <div className="text-center text-slate-400">
+              <div className="text-4xl mb-2">{icon}</div>
+              <div className="text-sm font-medium">{title}</div>
+            </div>
+          </div>
+        )}
+        
+        {/* Main Image */}
+        {imageLoaded && (
+          <motion.img
+            src={image}
+            alt={`${title} - ${subtitle}`}
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+        
+        {/* Dark Mode Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent dark:from-black/90 dark:via-black/40" />
+        
+        {/* Category Badge */}
+        <div className="absolute top-4 right-4">
+          <div className={`flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r ${gradientClass} rounded-full text-white text-xs font-bold shadow-lg`}>
+            <span>{icon}</span>
+            <span className="uppercase tracking-wider">{category}</span>
+          </div>
+        </div>
+        
+        {/* Content Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: delay + 0.2 }}
+          >
+            <h3 className="text-xl sm:text-2xl font-black text-white mb-1 leading-tight">
+              {title}
+            </h3>
+            <p className={`text-sm font-bold bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent mb-2`}>
+              {subtitle}
+            </p>
+            <p className="text-sm text-slate-200 leading-relaxed opacity-90">
+              {description}
+            </p>
+          </motion.div>
+        </div>
+      </div>
+      
+      {/* Action Button */}
+      <div className="p-6 pt-4">
+        <motion.button
+          className={`w-full py-3 px-4 bg-gradient-to-r ${gradientClass} text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95`}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            // Scroll to exercise grid
+            const exerciseGrid = document.getElementById('exercise-grid');
+            if (exerciseGrid) {
+              exerciseGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <span>Explore {title}</span>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </span>
+        </motion.button>
+      </div>
+      
+      {/* Hover Effect Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </motion.div>
+  );
+};

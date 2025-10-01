@@ -718,35 +718,98 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Enhanced Features Section */}
-        <section data-animate data-id="features" id="features" className="mb-10 sm:mb-16">
-          <div className={`transition-all duration-700 delay-300 transform ${isVisible['features'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
-                <span className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-purple-400 uppercase">Elite Arsenal</span>
-                <div className="w-8 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
-              </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black mb-3 sm:mb-4">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">
-                  GRIND-X FITNESS
-                </span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 ml-2 sm:ml-3">
-                  FEATURES
-                </span>
-              </h2>
-              <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-3 sm:mb-4 px-4">
-                Professional-grade tools for <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">serious athletes</span>
-              </p>
-              <div className="flex items-center justify-center gap-2 sm:gap-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full animate-pulse" />
-                <span className="text-xs sm:text-sm text-green-400 font-medium">Real-time data synchronization</span>
-                <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-ping" />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              {features.map((f, idx) => <FeatureCard key={f.id} feature={f} index={idx} />)}
+
+        {/* Elite Training Experience - Home1.jpg */}
+        <section data-animate data-id="training-experience" id="training-experience" className="mb-20">
+          <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="relative group">
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
+              
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+                {/* Premium Brand Badge */}
+                <div className="absolute top-6 right-6 z-10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-blue-400/30">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-black text-blue-400 tracking-wider">GYMTRACKER PRO</span>
+                  </div>
+                </div>
+                
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                    <img 
+                      src="/src/assets/Home1.jpg" 
+                      alt="Elite Training Experience" 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Premium Overlay Stats */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-blue-400 text-xs font-bold">EQUIPMENT GRADE</div>
+                          <div className="text-white text-lg font-black">PROFESSIONAL</div>
+                        </div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-cyan-400 text-xs font-bold">SUCCESS RATE</div>
+                          <div className="text-white text-lg font-black">98.7%</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
+                    {/* Premium Decorative Elements */}
+                    <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-full blur-2xl" />
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
+                        <span className="text-xs font-black text-blue-400 tracking-[0.2em] uppercase">Elite Training Division</span>
+                      </div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-blue-400 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 backdrop-blur-sm">
+                        <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                        PROFESSIONAL GRADE
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-cyan-100">
+                        ELITE TRAINING
+                      </span>
+                      <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300">
+                        EXPERIENCE
+                      </span>
+                    </h3>
+                    
+                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                      Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance. Every rep counts towards your transformation into a champion.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => handleNav('/workouts')}
+                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10">Start Elite Training</span>
+                        <span className="relative z-10 text-xl">🏋️</span>
+                      </button>
+                      
+                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
+                        <span>View Equipment</span>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -775,6 +838,369 @@ export default function Home() {
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {globalStats.map((s, i) => <GlobalStat key={`global-${i}`} stat={s} />)}
+            </div>
+          </div>
+        </section>
+
+        {/* Strength & Power - Home2.jpg */}
+        <section data-animate data-id="strength-power" id="strength-power" className="mb-20">
+          <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="relative group">
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
+              
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+                {/* Premium Brand Badge */}
+                <div className="absolute top-6 right-6 z-10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-red-400/30">
+                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-black text-red-400 tracking-wider">BEAST MODE</span>
+                  </div>
+                </div>
+                
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
+                 
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-8 bg-gradient-to-b from-red-400 to-orange-400 rounded-full" />
+                        <span className="text-xs font-black text-red-400 tracking-[0.2em] uppercase">Power & Strength Division</span>
+                      </div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-red-400 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 backdrop-blur-sm">
+                        <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                        MAXIMUM INTENSITY
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-orange-100">
+                        UNLEASH YOUR
+                      </span>
+                      <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-red-300">
+                        INNER BEAST
+                      </span>
+                    </h3>
+                    
+                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                      Push beyond your limits with <span className="text-red-400 font-bold">intense strength training</span>. Build raw power, explosive strength, and unstoppable determination that defines champions.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => handleNav('/workouts')}
+                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 via-orange-600 to-red-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10">Activate Beast Mode</span>
+                        <span className="relative z-10 text-xl">💪</span>
+                      </button>
+                      
+                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
+                        <span>Power Programs</span>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
+                    <img 
+                      src="/src/assets/Home2.jpg" 
+                      alt="Strength and Power Training" 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-l from-red-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Premium Overlay Stats */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-red-400 text-xs font-bold">POWER LEVEL</div>
+                          <div className="text-white text-lg font-black">MAXIMUM</div>
+                        </div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-orange-400 text-xs font-bold">INTENSITY</div>
+                          <div className="text-white text-lg font-black">BEAST</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cardio Excellence - Home3.jpg */}
+        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-20">
+          <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="relative group">
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-teal-500 to-green-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
+              
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+                {/* Premium Brand Badge */}
+                <div className="absolute top-6 left-6 z-10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-green-400/30">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-black text-green-400 tracking-wider">MUSCLE ELITE</span>
+                  </div>
+                </div>
+                
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                    <img 
+                      src="/src/assets/Home3.jpg" 
+                      alt="Muscle Building Training" 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Premium Overlay Stats */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-green-400 text-xs font-bold">MUSCLE GAIN</div>
+                          <div className="text-white text-lg font-black">OPTIMAL</div>
+                        </div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-teal-400 text-xs font-bold">ENDURANCE</div>
+                          <div className="text-white text-lg font-black">ELITE</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
+                    {/* Premium Decorative Elements */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-full blur-2xl" />
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-8 bg-gradient-to-b from-green-400 to-teal-400 rounded-full" />
+                        <span className="text-xs font-black text-green-400 tracking-[0.2em] uppercase">Muscle Building Excellence</span>
+                      </div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-green-400 bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-400/30 backdrop-blur-sm">
+                        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                        HYPERTROPHY MASTERY
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-100 to-teal-100">
+                        BUILD MASSIVE
+                      </span>
+                      <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-300">
+                        MUSCLE GAINS
+                      </span>
+                    </h3>
+                    
+                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                      Sculpt <span className="text-emerald-400 font-bold">massive muscle gains</span> with scientifically-proven hypertrophy training. Transform your physique with precision muscle-building protocols.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => handleNav('/workouts')}
+                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 via-teal-600 to-green-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-green-500/25"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500 via-teal-500 to-green-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10">Build Muscle Elite</span>
+                        <span className="relative z-10 text-xl">🏃‍♂️</span>
+                      </button>
+                      
+                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
+                        <span>Muscle Programs</span>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Functional Training - Home4.jpg */}
+        <section data-animate data-id="functional-training" id="functional-training" className="mb-20">
+          <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="relative group">
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
+              
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+                {/* Premium Brand Badge */}
+                <div className="absolute top-6 right-6 z-10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-purple-400/30">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-black text-purple-400 tracking-wider">FUNCTIONAL PRO</span>
+                  </div>
+                </div>
+                
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
+                    {/* Premium Decorative Elements */}
+                    <div className="absolute -top-20 -left-20 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl" />
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full" />
+                        <span className="text-xs font-black text-purple-400 tracking-[0.2em] uppercase">Functional Movement</span>
+                      </div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-purple-400 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm">
+                        <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                        SMART TRAINING
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-pink-100">
+                        REAL-WORLD
+                      </span>
+                      <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-300">
+                        STRENGTH
+                      </span>
+                    </h3>
+                    
+                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                      Master <span className="text-purple-400 font-bold">functional movements</span> that translate to real-world performance. Train your body to move with purpose, power, and precision.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => handleNav('/workouts')}
+                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10">Train Functional</span>
+                        <span className="relative z-10 text-xl">🎯</span>
+                      </button>
+                      
+                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
+                        <span>Movement Patterns</span>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
+                    <img 
+                      src="/src/assets/Home4.jpg" 
+                      alt="Functional Training" 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-l from-purple-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Elite Community - Home5.jpg */}
+        <section data-animate data-id="elite-community" id="elite-community" className="mb-20">
+          <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+            <div className="relative group">
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
+              
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+                {/* Premium Brand Badge */}
+                <div className="absolute top-6 left-6 z-10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-black/80 backdrop-blur-xl rounded-full border border-yellow-400/30">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-black text-yellow-400 tracking-wider">CHAMPIONS CLUB</span>
+                  </div>
+                </div>
+                
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                    <img 
+                      src="/src/assets/Home5.jpg" 
+                      alt="Elite Community" 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Premium Overlay Stats */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-yellow-400 text-xs font-bold">MEMBERS</div>
+                          <div className="text-white text-lg font-black">15K+</div>
+                        </div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-orange-400 text-xs font-bold">RATING</div>
+                          <div className="text-white text-lg font-black">4.9★</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
+                    {/* Premium Decorative Elements */}
+                    <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-bl from-yellow-500/10 to-transparent rounded-full blur-2xl" />
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
+                        <span className="text-xs font-black text-yellow-400 tracking-[0.2em] uppercase">Elite Champions Network</span>
+                      </div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-yellow-400 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 backdrop-blur-sm">
+                        <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                        EXCLUSIVE ACCESS
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-100 to-orange-100">
+                        JOIN THE
+                      </span>
+                      <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-300">
+                        CHAMPIONS
+                      </span>
+                    </h3>
+                    
+                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                      Connect with <span className="text-yellow-400 font-bold">elite athletes worldwide</span>. Share victories, push limits together, and become part of the ultimate fitness community that breeds champions.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => handleNav('/achievements')}
+                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-600 via-orange-600 to-yellow-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/25"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10">Join Elite Club</span>
+                        <span className="relative z-10 text-xl">🏆</span>
+                      </button>
+                      
+                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
+                        <span>View Community</span>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -959,109 +1385,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Workout Categories */}
-        <section data-animate data-id="categories" id="categories" className="mb-12">
-          <div className={`transition-all duration-700 delay-700 transform ${isVisible['categories'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-3 mb-4">
-                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
-                <span className="text-xs font-bold tracking-[0.2em] text-blue-400 uppercase">Track Everything</span>
-                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200">
-                  WORKOUT
-                </span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-3">
-                  CATEGORIES
-                </span>
-              </h2>
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                Track any type of workout with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">detailed analytics</span>
-              </p>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-              {[
-                {
-                  title: "STRENGTH TRAINING",
-                  exercises: "50+ Exercises",
-                  tracking: "Sets, Reps, Weight",
-                  description: "Track your strength gains with detailed weight progression and performance analytics.",
-                  features: ["Weight tracking", "Rep counting", "Progress charts", "PR notifications"],
-                  gradient: "from-red-500 via-orange-500 to-yellow-500",
-                  bgGradient: "from-red-500/5 via-orange-500/5 to-yellow-500/5",
-                  icon: "🏋️"
-                },
-                {
-                  title: "CARDIO WORKOUTS",
-                  exercises: "30+ Activities",
-                  tracking: "Time, Distance, Calories",
-                  description: "Monitor your cardio sessions with heart rate zones and endurance metrics.",
-                  features: ["Time tracking", "Distance logs", "Calorie burn", "Heart rate zones"],
-                  gradient: "from-blue-500 via-purple-500 to-pink-500",
-                  bgGradient: "from-blue-500/5 via-purple-500/5 to-pink-500/5",
-                  icon: "🏃",
-                  popular: true
-                },
-                {
-                  title: "BODYWEIGHT TRAINING",
-                  exercises: "40+ Movements",
-                  tracking: "Reps, Duration, Form",
-                  description: "Perfect for home workouts with detailed form tracking and progression monitoring.",
-                  features: ["Rep counting", "Duration timer", "Form notes", "Difficulty scaling"],
-                  gradient: "from-green-500 via-teal-500 to-cyan-500",
-                  bgGradient: "from-green-500/5 via-teal-500/5 to-cyan-500/5",
-                  icon: "🤸"
-                }
-              ].map((category, i) => (
-                <div key={i} className="relative group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 h-full flex flex-col">
-                  {category.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
-                      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold px-4 py-1 rounded-full shadow-lg">
-                        ⭐ MOST TRACKED
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} rounded-3xl blur-sm opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
-                  <div className="absolute inset-0.5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl" />
-                  
-                  <div className={`relative bg-gradient-to-br ${category.bgGradient} backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex-1 flex flex-col group-hover:border-white/20 transition-all duration-500`}>
-                    <div className="text-center mb-6">
-                      <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{category.icon}</div>
-                      <h3 className={`text-xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r ${category.gradient}`}>
-                        {category.title}
-                      </h3>
-                      <div className="flex justify-center gap-4 text-sm">
-                        <span className="text-slate-400">{category.exercises}</span>
-                        <span className="text-slate-400">•</span>
-                        <span className="text-blue-400 font-semibold">{category.tracking}</span>
-                      </div>
-                    </div>
-                    
-                    <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-1 text-center">
-                      {category.description}
-                    </p>
-                    
-                    <div className="space-y-2 mb-6">
-                      {category.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm">
-                          <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${category.gradient}`} />
-                          <span className="text-slate-300">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <button className={`w-full py-3 bg-gradient-to-r ${category.gradient} text-white font-bold rounded-xl hover:scale-105 active:scale-95 transition-transform duration-300 shadow-lg mt-auto`}>
-                      Start Tracking
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Equipment Tracking */}
         <section data-animate data-id="equipment" id="equipment" className="mb-12 relative z-20">
