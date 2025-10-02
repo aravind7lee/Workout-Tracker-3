@@ -25,7 +25,9 @@ import Forum from './pages/Forum';
 import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
 import XPPoints from './pages/XPPoints';
-import CurrentStreak from './pages/CurrentStreak';
+import CurrentStreakFixed from './pages/CurrentStreakFixed';
+const CurrentStreak = CurrentStreakFixed; // Use fixed version
+import StreakTest from './pages/StreakTest';
 import Workouts from './pages/Workouts';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -415,7 +417,8 @@ export default function App() {
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/start-workout" element={<StartWorkout />} />
                       <Route path="/xp-points" element={<XPPoints />} />
-                      <Route path="/current-streak" element={<CurrentStreak />} />
+                      <Route path="/current-streak" element={<CurrentStreakFixed />} />
+                      <Route path="/streak-test" element={<StreakTest />} />
                       <Route path="/workouts" element={<Workouts />} />
                       <Route path="/legends" element={<LegendsAndInfluencers />} />
                       <Route path="/search" element={<Search />} />

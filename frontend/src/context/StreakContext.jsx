@@ -69,7 +69,15 @@ const loadStreakData = () => {
 export const useStreak = () => {
   const context = useContext(StreakContext);
   if (!context) {
-    return loadStreakData(); // Always return saved data
+    console.warn('🔥 STREAK: Context not available, returning fallback data');
+    const fallbackData = loadStreakData();
+    return {
+      ...fallbackData,
+      updateStreak: async () => {
+        throw new Error('Streak context not available. Please refresh the page.');
+      },
+      loading: false
+    };
   }
   return context;
 };
@@ -97,15 +105,21 @@ export const StreakProvider = ({ children }) => {
 
   // BULLETPROOF check-in - ALWAYS works + REAL-TIME SYNC
   const updateStreak = useCallback(async () => {
+    console.log('🔥 CONTEXT: updateStreak called');
+    
     const today = new Date().toISOString().split('T')[0];
     const current = loadStreakData();
     
+    console.log('🔥 CONTEXT: Current data:', current);
+    console.log('🔥 CONTEXT: Today:', today);
+    
     // Check if already checked in today
     if (current.lastCheckInDate === today) {
+      console.log('🔥 CONTEXT: Already checked in today');
       throw new Error('Already checked in today');
     }
 
-    // Calculate new streak
+    // Calculate new streak with proper day logic
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
@@ -113,10 +127,23 @@ export const StreakProvider = ({ children }) => {
     let newStreak = 1;
     let streakStartDate = today;
     
-    if (current.lastCheckInDate === yesterdayStr) {
-      // Continue streak
-      newStreak = (current.currentStreak || 0) + 1;
+    console.log('🔥 CONTEXT: Check-in calculation - Today:', today, 'Yesterday:', yesterdayStr, 'Last check-in:', current.lastCheckInDate, 'Current streak:', current.currentStreak);
+    
+    if (current.lastCheckInDate === yesterdayStr && current.currentStreak > 0) {
+      // Continue existing streak
+      newStreak = current.currentStreak + 1;
       streakStartDate = current.streakStartDate || today;
+      console.log('✅ CONTEXT: Continuing streak - New streak:', newStreak);
+    } else if (current.currentStreak === 0 || !current.lastCheckInDate) {
+      // Starting new streak
+      newStreak = 1;
+      streakStartDate = today;
+      console.log('🎆 CONTEXT: Starting new streak - Day 1');
+    } else {
+      // Gap detected - restart streak
+      newStreak = 1;
+      streakStartDate = today;
+      console.log('🔄 CONTEXT: Gap detected, restarting streak - Day 1');
     }
     
     const newData = {
@@ -126,9 +153,12 @@ export const StreakProvider = ({ children }) => {
       lastCheckInDate: today,
       streakStartDate,
       canCheckIn: false,
-      message: `🔥 Day ${newStreak} - Streak Active!`,
-      timestamp: new Date().toISOString()
+      message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Keep Going!`,
+      timestamp: new Date().toISOString(),
+      nextDay: newStreak + 1
     };
+    
+    console.log('✅ CONTEXT: New streak data:', newData);
     
     // Save immediately - NEVER lose this data + BROADCAST TO ALL PAGES
     updateStreakState(newData);
@@ -142,18 +172,39 @@ export const StreakProvider = ({ children }) => {
     
     // Try to sync to API in background
     try {
-      await api.post('/users/streak/check-in');
-      console.log('✅ Synced to database');
+      const response = await api.post('/users/streak/check-in');
+      console.log('✅ CONTEXT: Synced to database - Response:', response.data);
       
-      // Broadcast sync success
-      broadcastStreakUpdate({
-        ...newData,
-        type: 'STREAK_SYNCED',
-        source: 'database',
-        synced: true
-      });
+      // Update with server response if available
+      const serverData = response.data;
+      if (serverData && serverData.currentStreak !== undefined) {
+        const syncedData = {
+          ...newData,
+          currentStreak: serverData.currentStreak,
+          longestStreak: serverData.longestStreak,
+          totalCheckIns: serverData.totalCheckIns,
+          message: serverData.message || newData.message,
+          synced: true
+        };
+        updateStreakState(syncedData);
+        
+        // Broadcast sync success with server data
+        broadcastStreakUpdate({
+          ...syncedData,
+          type: 'STREAK_SYNCED',
+          source: 'database'
+        });
+      } else {
+        // Broadcast sync success with local data
+        broadcastStreakUpdate({
+          ...newData,
+          type: 'STREAK_SYNCED',
+          source: 'database',
+          synced: true
+        });
+      }
     } catch (error) {
-      console.warn('Database sync failed, but local data saved:', error.message);
+      console.warn('⚠️ CONTEXT: Database sync failed, but local data saved:', error.message);
       
       // Broadcast sync failure (but data is still saved locally)
       broadcastStreakUpdate({
@@ -202,11 +253,18 @@ export const StreakProvider = ({ children }) => {
     const current = loadStreakData();
     const today = new Date().toISOString().split('T')[0];
     
+    console.log('🔥 CONTEXT: Validating streak for today:', today, 'Current data:', current);
+    
     if (current.lastCheckInDate) {
-      const daysDiff = Math.floor((new Date() - new Date(current.lastCheckInDate)) / (1000 * 60 * 60 * 24));
+      const lastCheckIn = new Date(current.lastCheckInDate);
+      const todayDate = new Date(today);
+      const daysDiff = Math.floor((todayDate - lastCheckIn) / (1000 * 60 * 60 * 24));
+      
+      console.log('🔥 CONTEXT: Days difference:', daysDiff, 'Last check-in:', current.lastCheckInDate);
       
       if (daysDiff > 1) {
         // Streak broken - reset
+        console.log('💔 CONTEXT: Streak broken, resetting...');
         const resetData = {
           ...current,
           currentStreak: 0,
@@ -214,40 +272,77 @@ export const StreakProvider = ({ children }) => {
           streakStartDate: null
         };
         updateStreakState(resetData);
-      } else {
-        // Streak continues - update canCheckIn for next day
-        const validData = {
+      } else if (daysDiff === 1) {
+        // Next day - can check in
+        console.log('✅ CONTEXT: Next day, can check in');
+        const nextDayData = {
           ...current,
-          canCheckIn: current.lastCheckInDate !== today
+          canCheckIn: true
         };
-        updateStreakState(validData);
+        updateStreakState(nextDayData);
+      } else if (daysDiff === 0) {
+        // Same day - already checked in
+        console.log('✅ CONTEXT: Same day, already checked in');
+        const sameDayData = {
+          ...current,
+          canCheckIn: false
+        };
+        updateStreakState(sameDayData);
       }
     } else {
       // No previous check-in - can start streak
+      console.log('🎆 CONTEXT: No previous check-in, can start streak');
       const freshData = {
         ...current,
-        canCheckIn: true
+        canCheckIn: true,
+        currentStreak: 0
       };
       updateStreakState(freshData);
     }
   }, [updateStreakState]);
 
-  // Initialize ONLY - NO API CALLS
+  // Initialize and validate streak on mount and daily
   useEffect(() => {
     validateStreak();
+    
+    // Set up daily validation at midnight
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+    
+    const midnightTimeout = setTimeout(() => {
+      console.log('🌅 CONTEXT: New day detected, validating streak...');
+      validateStreak();
+      
+      // Set up daily interval after first midnight
+      const dailyInterval = setInterval(() => {
+        console.log('🌅 CONTEXT: Daily validation...');
+        validateStreak();
+      }, 24 * 60 * 60 * 1000); // 24 hours
+      
+      return () => clearInterval(dailyInterval);
+    }, msUntilMidnight);
+    
+    return () => clearTimeout(midnightTimeout);
   }, [validateStreak]);
 
   // Save data whenever it changes + REAL-TIME BROADCAST
   useEffect(() => {
-    saveStreakData(streakData);
-    
-    // Broadcast any streak data changes for real-time updates
     if (streakData.currentStreak !== undefined) {
+      saveStreakData(streakData);
+      
+      // Broadcast any streak data changes for real-time updates
       broadcastStreakUpdate({
         ...streakData,
         type: 'STREAK_DATA_CHANGED',
-        source: 'context'
+        source: 'context',
+        timestamp: new Date().toISOString()
       });
+      
+      console.log('📡 CONTEXT: Broadcasted streak update:', streakData);
     }
   }, [streakData]);
 
@@ -258,7 +353,17 @@ export const StreakProvider = ({ children }) => {
     refreshStreak: fetchStreakData,
     // Real-time functions for external components
     broadcastUpdate: broadcastStreakUpdate,
-    getLatestData: loadStreakData
+    getLatestData: loadStreakData,
+    validateStreak,
+    
+    // Debug information
+    debugInfo: {
+      currentStreakValue: streakData.currentStreak,
+      canCheckInValue: streakData.canCheckIn,
+      lastCheckInValue: streakData.lastCheckInDate,
+      todayValue: new Date().toISOString().split('T')[0],
+      nextDayValue: (streakData.currentStreak || 0) + 1
+    }
   };
 
   return (

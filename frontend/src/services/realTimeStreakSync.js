@@ -1,6 +1,8 @@
 // Real-Time Streak Synchronization Service
 // Ensures all pages (Dashboard, Home, Analytics) display consistent streak data
 
+import streakCalculator from '../utils/streakCalculator.js';
+
 class RealTimeStreakSync {
   constructor() {
     this.listeners = new Set();
@@ -39,35 +41,35 @@ class RealTimeStreakSync {
     console.log('✅ REAL-TIME STREAK SYNC: Initialized successfully');
   }
 
-  // Load streak data from localStorage
+  // Load streak data using the calculator
   loadStreakData() {
     try {
-      const saved = localStorage.getItem('gymtracker_streak_data');
-      if (saved) {
-        const data = JSON.parse(saved);
-        this.currentStreakData = {
-          ...data,
-          lastSyncTime: new Date().toISOString()
-        };
-        console.log('📱 SYNC: Streak data loaded:', this.currentStreakData);
-        return this.currentStreakData;
-      }
+      // Use the streak calculator for consistent data loading
+      const calculatorData = streakCalculator.getStreakStats();
+      
+      this.currentStreakData = {
+        ...calculatorData,
+        lastSyncTime: new Date().toISOString()
+      };
+      
+      console.log('📱 SYNC: Streak data loaded via calculator:', this.currentStreakData);
+      return this.currentStreakData;
     } catch (error) {
       console.error('❌ SYNC: Failed to load streak data:', error);
+      
+      // Fallback to default data
+      this.currentStreakData = {
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCheckIns: 0,
+        lastCheckInDate: null,
+        streakStartDate: null,
+        canCheckIn: true,
+        lastSyncTime: new Date().toISOString()
+      };
+      
+      return this.currentStreakData;
     }
-    
-    // Return default data if nothing found
-    this.currentStreakData = {
-      currentStreak: 0,
-      longestStreak: 0,
-      totalCheckIns: 0,
-      lastCheckInDate: null,
-      streakStartDate: null,
-      canCheckIn: true,
-      lastSyncTime: new Date().toISOString()
-    };
-    
-    return this.currentStreakData;
   }
 
   // Get current streak data
@@ -107,9 +109,9 @@ class RealTimeStreakSync {
       lastSyncTime: new Date().toISOString()
     };
     
-    // Save to localStorage
+    // Save using the calculator for consistency
     try {
-      localStorage.setItem('gymtracker_streak_data', JSON.stringify(this.currentStreakData));
+      streakCalculator.saveStreakData(this.currentStreakData);
     } catch (error) {
       console.error('❌ SYNC: Failed to save streak data:', error);
     }
@@ -158,29 +160,26 @@ class RealTimeStreakSync {
     console.log('📡 SYNC: Broadcasted to all pages:', eventData);
   }
 
-  // Sync streak data (validate and update if needed)
+  // Sync streak data using the calculator
   syncStreakData() {
-    const current = this.loadStreakData();
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Check if streak needs validation
-    if (current.lastCheckInDate) {
-      const daysDiff = Math.floor((new Date() - new Date(current.lastCheckInDate)) / (1000 * 60 * 60 * 24));
+    try {
+      // Use the calculator to validate and get current streak status
+      const validatedData = streakCalculator.validateStreak();
+      console.log('🔥 SYNC: Validated streak data:', validatedData);
       
-      if (daysDiff > 1 && current.currentStreak > 0) {
-        // Streak broken - reset
-        console.log('💔 SYNC: Streak broken, resetting...');
-        this.updateStreakData({
-          currentStreak: 0,
-          streakStartDate: null,
-          canCheckIn: true
-        });
-      } else if (current.lastCheckInDate !== today) {
-        // Can check in today
-        this.updateStreakData({
-          canCheckIn: true
-        });
+      // Update with validated data
+      this.updateStreakData(validatedData);
+      
+      // Log the validation result
+      if (validatedData.status === 'streak_broken') {
+        console.log('💔 SYNC: Streak was broken and reset');
+      } else if (validatedData.status === 'can_continue') {
+        console.log('✅ SYNC: Can continue streak today');
+      } else if (validatedData.status === 'checked_in_today') {
+        console.log('✅ SYNC: Already checked in today');
       }
+    } catch (error) {
+      console.error('❌ SYNC: Streak validation failed:', error);
     }
   }
 
@@ -223,30 +222,40 @@ class RealTimeStreakSync {
     return false;
   }
 
-  // Get streak statistics for display
+  // Get streak statistics using the calculator
   getStreakStats() {
-    const data = this.getCurrentStreakData();
-    
-    return {
-      currentStreak: data.currentStreak || 0,
-      longestStreak: data.longestStreak || 0,
-      totalCheckIns: data.totalCheckIns || 0,
-      canCheckIn: data.canCheckIn !== false,
-      lastCheckInDate: data.lastCheckInDate,
-      streakStartDate: data.streakStartDate,
-      isOnline: navigator.onLine,
-      lastSyncTime: data.lastSyncTime,
-      motivation: this.getMotivationMessage(data.currentStreak || 0)
-    };
+    try {
+      const calculatorStats = streakCalculator.getStreakStats();
+      const currentData = this.getCurrentStreakData();
+      
+      return {
+        ...calculatorStats,
+        isOnline: navigator.onLine,
+        lastSyncTime: currentData.lastSyncTime,
+        nextDay: (calculatorStats.currentStreak || 0) + 1,
+        buttonText: streakCalculator.getCheckInButtonText(calculatorStats)
+      };
+    } catch (error) {
+      console.error('❌ SYNC: Failed to get streak stats:', error);
+      return {
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCheckIns: 0,
+        canCheckIn: true,
+        lastCheckInDate: null,
+        streakStartDate: null,
+        isOnline: navigator.onLine,
+        lastSyncTime: new Date().toISOString(),
+        motivation: "Ready to start your journey? 💪",
+        nextDay: 1,
+        buttonText: '🔥 START DAY 1 STREAK'
+      };
+    }
   }
 
-  // Get motivation message based on streak
+  // Get motivation message using the calculator
   getMotivationMessage(streak) {
-    if (streak === 0) return "Ready to start your journey? 💪";
-    if (streak < 7) return `${streak} days strong! Building momentum! 🔥`;
-    if (streak < 30) return `${streak} days! You're on fire! 🚀`;
-    if (streak < 100) return `${streak} days! Absolutely crushing it! ⚡`;
-    return `${streak} days! You're a legend! 👑`;
+    return streakCalculator.getMotivationMessage(streak);
   }
 
   // Cleanup

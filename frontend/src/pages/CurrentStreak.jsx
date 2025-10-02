@@ -4,28 +4,46 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
-import { useRealTimeStreak } from '../hooks/useRealTimeStreak';
 import AuthGuard from '../components/AuthGuard';
+import StreakDebugger from '../components/StreakDebugger';
 
 const CurrentStreak = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { theme } = useTheme();
-  const { currentStreak: contextStreak, longestStreak: contextLongest, totalCheckIns: contextTotal } = useStreak();
-  
-  // Use real-time streak hook for instant updates
-  const {
-    currentStreak,
-    longestStreak, 
-    totalCheckIns,
-    canCheckIn,
+  const { 
+    currentStreak: contextStreak, 
+    longestStreak: contextLongest, 
+    totalCheckIns: contextTotal,
     updateStreak,
-    isLoading: streakLoading,
-    streakStartDate,
-    lastCheckInDate,
-    motivation,
-    forceSync
-  } = useRealTimeStreak();
+    canCheckIn: contextCanCheckIn,
+    lastCheckInDate: contextLastCheckIn,
+    streakStartDate: contextStreakStart
+  } = useStreak();
+  
+  // Use real-time streak data from context
+  const [streakData, setStreakData] = useState({
+    currentStreak: contextStreak || 0,
+    longestStreak: contextLongest || 0,
+    totalCheckIns: contextTotal || 0,
+    canCheckIn: contextCanCheckIn !== undefined ? contextCanCheckIn : true,
+    streakStartDate: contextStreakStart || null,
+    lastCheckInDate: contextLastCheckIn || null
+  });
+  
+  const { currentStreak, longestStreak, totalCheckIns, canCheckIn, streakStartDate, lastCheckInDate } = streakData;
+  
+  // Update local state when context changes
+  useEffect(() => {
+    setStreakData({
+      currentStreak: contextStreak || 0,
+      longestStreak: contextLongest || 0,
+      totalCheckIns: contextTotal || 0,
+      canCheckIn: contextCanCheckIn !== undefined ? contextCanCheckIn : true,
+      streakStartDate: contextStreakStart || null,
+      lastCheckInDate: contextLastCheckIn || null
+    });
+  }, [contextStreak, contextLongest, contextTotal, contextCanCheckIn, contextStreakStart, contextLastCheckIn]);
   
   const [localData, setLocalData] = useState({
     milestones: [],
@@ -183,13 +201,27 @@ const CurrentStreak = () => {
       setCheckingIn(true);
       setSuccessMessage('');
       
-      // Use context method which handles database persistence
-      const updatedStreakData = await updateStreak();
+      console.log('🔥 CURRENT STREAK: Starting check-in process...');
+      
+      // Use context method for database sync
+      const result = await updateStreak();
+      
+      console.log('✅ CURRENT STREAK: Check-in successful:', result);
+      
+      // Update local streak data with result
+      const newStreakData = {
+        currentStreak: result.currentStreak || (currentStreak + 1),
+        longestStreak: result.longestStreak || Math.max(longestStreak, result.currentStreak || (currentStreak + 1)),
+        totalCheckIns: result.totalCheckIns || (totalCheckIns + 1),
+        lastCheckInDate: result.lastCheckInDate || new Date().toISOString().split('T')[0],
+        streakStartDate: result.streakStartDate || streakStartDate || new Date().toISOString().split('T')[0],
+        canCheckIn: false
+      };
+      
+      setStreakData(newStreakData);
       
       // Update local data with new streak information
-      const updatedMilestones = generateLifetimeMilestones(updatedStreakData.currentStreak);
-      
-      // Get updated check-in history for UI
+      const updatedMilestones = generateLifetimeMilestones(newStreakData.currentStreak);
       const today = new Date().toISOString().split('T')[0];
       const checkInHistory = [...(localData.weeklyProgress.filter(d => d.hasCheckIn).map(d => d.date)), today];
       
@@ -198,18 +230,18 @@ const CurrentStreak = () => {
         milestones: updatedMilestones,
         weeklyProgress: generateWeeklyProgress(checkInHistory),
         monthlyProgress: generateMonthlyProgress(checkInHistory),
-        lastCheckInDate: updatedStreakData.lastCheckInDate,
-        streakStartDate: updatedStreakData.streakStartDate
+        lastCheckInDate: newStreakData.lastCheckInDate,
+        streakStartDate: newStreakData.streakStartDate
       }));
       
-      // Success message from server response
-      setSuccessMessage(`${updatedStreakData.message} ✅ Persisted to Database`);
+      const message = result.message || `🔥 Day ${newStreakData.currentStreak} - Keep Going!`;
+      setSuccessMessage(`${message} ✅ Persisted to Database`);
       
       setTimeout(() => setSuccessMessage(''), 4000);
       
     } catch (error) {
-      console.error('Check-in error:', error);
-      const errorMessage = error.message.includes('Already checked in') 
+      console.error('❌ CURRENT STREAK: Check-in error:', error);
+      const errorMessage = error.message && (error.message.includes('Already checked in') || error.message.includes('Cannot check in'))
         ? '✅ Already checked in today - streak secured!' 
         : '❌ Check-in failed, please try again';
       setSuccessMessage(errorMessage);
@@ -220,10 +252,13 @@ const CurrentStreak = () => {
   };
 
   const getStreakMotivation = () => {
-    return motivation || "Ready to start your journey? 💪";
+    if (currentStreak === 0) return "Ready to start your journey? 💪";
+    if (currentStreak < 7) return `${currentStreak} days strong! Building momentum! 🔥`;
+    if (currentStreak < 30) return `${currentStreak} days! You're on fire! 🚀`;
+    return `${currentStreak} days! You're unstoppable! ⚡`;
   };
 
-  if (loading || streakLoading) {
+  if (loading) {
     return (
       <AuthGuard>
         <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -310,26 +345,13 @@ const CurrentStreak = () => {
                     Processing Check-in...
                   </span>
                 ) : canCheckIn ? (
-                  currentStreak === 0 
-                    ? '🔥 START DAY 1 STREAK' 
-                    : `🔥 START DAY ${currentStreak + 1} STREAK`
+                  `🔥 START DAY ${currentStreak + 1} STREAK`
                 ) : (
                   '✅ Checked In Today - Come Back Tomorrow!'
                 )}
               </button>
               
-              <button
-                onClick={forceSync}
-                disabled={streakLoading}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 flex items-center gap-2"
-              >
-                {streakLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  '🔄'
-                )}
-                Sync Now
-              </button>
+
             </div>
             
             {!canCheckIn && (
@@ -551,6 +573,7 @@ const CurrentStreak = () => {
           </div>
         </div>
       </div>
+      <StreakDebugger />
     </AuthGuard>
   );
 };
