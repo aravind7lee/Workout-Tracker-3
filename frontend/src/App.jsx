@@ -3,6 +3,7 @@ import './utils/immediateCleanup'; // Clean fake workouts immediately
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { RealTimeProvider } from './context/RealTimeContext';
 import { StreakProvider } from './context/StreakContext';
 import { AchievementsProvider } from './context/AchievementsContext';
@@ -38,6 +39,7 @@ import WorkoutCompletionHandler from './components/WorkoutCompletionHandler';
 import { DemoProvider } from './context/DemoContext';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import LegendsAndInfluencers from './pages/LegendsAndInfluencers';
 import chromeErrorHandler from './utils/chromeErrorHandler';
 import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
@@ -381,11 +383,12 @@ export default function App() {
       <ErrorBoundary>
         <ThemeErrorBoundary>
           <ThemeProvider>
-            <RealTimeProvider>
-              <StreakProvider>
-                <AchievementsProvider>
-                  <WorkoutCompletionProvider>
-                    <DemoProvider>
+            <AuthProvider>
+              <RealTimeProvider>
+                <StreakProvider>
+                  <AchievementsProvider>
+                    <WorkoutCompletionProvider>
+                      <DemoProvider>
                   <div className="min-h-screen">
                     <Navbar />
                     <DemoBanner />
@@ -414,17 +417,19 @@ export default function App() {
                       <Route path="/xp-points" element={<XPPoints />} />
                       <Route path="/current-streak" element={<CurrentStreak />} />
                       <Route path="/workouts" element={<Workouts />} />
+                      <Route path="/legends" element={<LegendsAndInfluencers />} />
                       <Route path="/search" element={<Search />} />
                       <Route path="/exercises/:id" element={<ExerciseDetail />} />
                     </Routes>
                     </main>
                     <Footer />
                   </div>
-                    </DemoProvider>
-                  </WorkoutCompletionProvider>
-                </AchievementsProvider>
-              </StreakProvider>
-            </RealTimeProvider>
+                      </DemoProvider>
+                    </WorkoutCompletionProvider>
+                  </AchievementsProvider>
+                </StreakProvider>
+              </RealTimeProvider>
+            </AuthProvider>
           </ThemeProvider>
         </ThemeErrorBoundary>
       </ErrorBoundary>

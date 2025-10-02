@@ -39,6 +39,7 @@ export default function Navbar() {
     { to: "/plans", label: "Plan Builder", icon: "🏗️" },
     { to: "/nutrition", label: "Nutrition", icon: "🍎" },
     { to: "/analytics", label: "Analytics", icon: "📈" },
+    { to: "/legends", label: "Champs", icon: "🏆" },
     { to: "/profile", label: "Profile", icon: "👤" },
   ];
 

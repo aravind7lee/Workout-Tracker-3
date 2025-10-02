@@ -1,0 +1,103 @@
+/* Legends & Influencers Page Styles */
+
+/* Smooth scrolling for mobile image strips */
+@media (max-width: 640px) {
+  .image-strip-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .image-strip-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .image-strip-item {
+    flex: 0 0 80%;
+    scroll-snap-align: center;
+    margin-right: 8px;
+  }
+  
+  .image-strip-item:last-child {
+    margin-right: 0;
+  }
+}
+
+/* Enhanced glow effects */
+.neon-glow-gold {
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5),
+               0 0 20px rgba(255, 215, 0, 0.3),
+               0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.neon-glow-blue {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5),
+               0 0 20px rgba(59, 130, 246, 0.3),
+               0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+/* Particle background optimizations */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .particles-container {
+    display: none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .builder-card {
+    border: 2px solid white;
+  }
+  
+  .quote-text {
+    color: white;
+    background: black;
+  }
+}
+
+/* Focus styles for accessibility */
+.builder-card:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
