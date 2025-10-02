@@ -153,7 +153,7 @@ const ImageStrip = ({ images, name, isHovered }) => {
     <motion.div
       variants={containerVariants}
       animate={isHovered ? "hover" : "rest"}
-      className="relative h-48 sm:h-56 md:h-64 lg:h-96 xl:h-[28rem] w-full overflow-hidden rounded-t-2xl bg-slate-900/50 group"
+      className="relative h-64 sm:h-80 md:h-96 lg:h-[32rem] xl:h-[36rem] w-full overflow-hidden rounded-t-2xl bg-slate-900/50 group"
       onMouseEnter={() => {
         setIsAutoPlaying(false);
       }}

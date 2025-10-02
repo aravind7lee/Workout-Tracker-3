@@ -13,6 +13,8 @@ import ChampsHeader from '../assets/Champsheader.jpg';
 // Import legend images
 import Arnold1 from '../assets/Arnold Schwarzenegge1.jpg';
 import Arnold2 from '../assets/Arnold Schwarzenegge2.jpg';
+import Arnold3 from '../assets/Arnold Schwarzenegge3.jpg';
+import Arnold4 from '../assets/Arnold Schwarzenegge4.jpg';
 import Arnold6 from '../assets/Arnold Schwarzenegge6.jpg';
 import Ronnie1 from '../assets/RonnieColeman.jpg';
 import Ronnie2 from '../assets/RonnieColeman2.jpg';
@@ -20,7 +22,11 @@ import Ronnie4 from '../assets/RonnieColeman4.jpg';
 import Mike1 from '../assets/Mike Mentzer1.jpg';
 import Mike2 from '../assets/Mike Mentzer2.jpg';
 import Mike4 from '../assets/Mike Mentzer4.jpg';
+import Mike6 from '../assets/Mike Mentzer6.jpg';
+import Mike7 from '../assets/Mike Mentzer7.png';
+import Mike8 from '../assets/Mike Mentzer8.jpg';
 import Jay1 from '../assets/JayCutler.jpg';
+import Jay2 from '../assets/JayCutler2.jpg';
 import Jay3 from '../assets/JayCutler3.jpg';
 import Jay4 from '../assets/JayCutler4.jpg';
 
@@ -28,15 +34,22 @@ import Jay4 from '../assets/JayCutler4.jpg';
 import Chris1 from '../assets/ChrisBumstead1.jpg';
 import Chris2 from '../assets/ChrisBumstead2.jpg';
 import Chris3 from '../assets/ChrisBumstead3.jpg';
+import Chris4 from '../assets/ChrisBumstead4.jpg';
+import Chris5 from '../assets/ChrisBumstead5.jpg';
+import Chris6 from '../assets/ChrisBumstead6.jpg';
 import David1 from '../assets/DavidLaid1.jpg';
 import David2 from '../assets/DavidLaid2.jpg';
 import David3 from '../assets/DavidLaid3.jpg';
+import David4 from '../assets/DavidLaid4.jpg';
+import David5 from '../assets/DavidLaid5.jpg';
+import DavidLaid from '../assets/David laid.jpg';
 import Jeff1 from '../assets/JeffSeid1.jpg';
 import Jeff2 from '../assets/JeffSeid2.jpg';
 import Jeff3 from '../assets/JeffSeid3.jpg';
 import Sam1 from '../assets/SamSulek.jpg';
 import Sam2 from '../assets/SamSulek2.jpg';
 import Sam3 from '../assets/SamSulek3.jpg';
+import Sam4 from '../assets/SamSulek4.jpg';
 
 const buildersData = {
   classicLegends: [
@@ -44,7 +57,7 @@ const buildersData = {
       id: 'arnold',
       name: 'Arnold Schwarzenegger',
       category: 'Classic Legend',
-      images: [Arnold1, Arnold2, Arnold6],
+      images: [Arnold1, Arnold2, Arnold3, Arnold4, Arnold6],
       quote: "The worst thing I can be is the same as everybody else. I hate that.",
       era: '1970s-1980s'
     },
@@ -60,7 +73,7 @@ const buildersData = {
       id: 'mike',
       name: 'Mike Mentzer',
       category: 'Classic Legend',
-      images: [Mike1, Mike2, Mike4],
+      images: [Mike1, Mike2, Mike4, Mike6, Mike7, Mike8],
       quote: "The quality of training is more important than the quantity.",
       era: '1970s-1980s'
     },
@@ -68,7 +81,7 @@ const buildersData = {
       id: 'jay',
       name: 'Jay Cutler',
       category: 'Classic Legend',
-      images: [Jay1, Jay3, Jay4],
+      images: [Jay1, Jay2, Jay3, Jay4],
       quote: "Success is usually the culmination of controlling failure.",
       era: '2000s-2010s'
     }
@@ -78,7 +91,7 @@ const buildersData = {
       id: 'chris',
       name: 'Chris Bumstead (Cbum)',
       category: 'Modern Influencer',
-      images: [Chris1, Chris2, Chris3],
+      images: [Chris1, Chris2, Chris3, Chris4, Chris5, Chris6],
       quote: "It's not about being the biggest. It's about building the best version of yourself.",
       era: '2010s-Present'
     },
@@ -86,7 +99,7 @@ const buildersData = {
       id: 'david',
       name: 'David Laid',
       category: 'Modern Influencer',
-      images: [David1, David2, David3],
+      images: [David1, David2, David3, David4, David5, DavidLaid],
       quote: "Transform your physique, transform your life.",
       era: '2010s-Present'
     },
@@ -102,7 +115,7 @@ const buildersData = {
       id: 'sam',
       name: 'Sam Sulek',
       category: 'Modern Influencer',
-      images: [Sam1, Sam2, Sam3],
+      images: [Sam1, Sam2, Sam3, Sam4],
       quote: "Progress is built one rep at a time.",
       era: '2020s-Present'
     }
