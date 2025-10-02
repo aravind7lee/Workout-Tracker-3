@@ -230,28 +230,33 @@ const LegendsAndInfluencers = () => {
               </div>
             </motion.div>
 
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: [0, 8, 0] }}
-          transition={{ 
-            opacity: { duration: 0.6, delay: 0.8 },
-            y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-          }}
-        >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/60 rounded-full mt-2" />
-          </div>
-        </motion.div>
           </motion.div>
         </div>
-
-
       </motion.section>
 
+      {/* Scroll Indicator - Below hero section */}
+      <motion.button
+        className="relative left-1/2 transform -translate-x-1/2 -mt-20 z-30 cursor-pointer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: [0, 8, 0] }}
+        transition={{ 
+          opacity: { duration: 0.6, delay: 0.8 },
+          y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+        }}
+        onClick={() => {
+          document.getElementById('content-section')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }}
+      >
+        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center hover:border-white/50 transition-colors">
+          <div className="w-1 h-3 bg-white/60 rounded-full mt-2" />
+        </div>
+      </motion.button>
+
       {/* Main Content */}
-      <div className="relative z-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div id="content-section" className="relative z-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Classic Legends Section */}
         <motion.section
           variants={containerVariants}
