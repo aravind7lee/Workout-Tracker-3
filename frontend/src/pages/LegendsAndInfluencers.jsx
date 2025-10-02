@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Trophy, Globe, Star, Zap } from 'lucide-react';
-import ParticleBackground from '../components/ParticleBackground';
+
 import BuilderCard from '../components/BuilderCard';
 import SkeletonLoader from '../components/SkeletonLoader';
 import '../styles/legends.css';
@@ -145,19 +145,18 @@ const LegendsAndInfluencers = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.2
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
         ease: "easeOut"
       }
     }
@@ -169,10 +168,7 @@ const LegendsAndInfluencers = () => {
 
   return (
     <div className="min-h-screen bg-[#0d1117] text-white overflow-hidden">
-      {/* Particle Background */}
-      <div className="fixed inset-0 z-0">
-        <ParticleBackground />
-      </div>
+
 
       {/* Hero Header Section */}
       <motion.section
@@ -201,18 +197,18 @@ const LegendsAndInfluencers = () => {
           >
             <motion.h1 
               className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight"
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               Legends & Influencers
             </motion.h1>
             
             <motion.p 
               className="text-xl md:text-2xl lg:text-3xl text-gray-300 font-light max-w-4xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               Learn from the icons who shaped bodybuilding & fitness culture
             </motion.p>
@@ -221,7 +217,7 @@ const LegendsAndInfluencers = () => {
               className="flex items-center justify-center space-x-8 pt-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
               <div className="flex items-center space-x-2 text-yellow-400">
                 <Trophy size={24} />
@@ -233,19 +229,25 @@ const LegendsAndInfluencers = () => {
                 <span className="text-lg font-semibold">Modern Influencers</span>
               </div>
             </motion.div>
-          </motion.div>
-        </div>
 
         {/* Scroll Indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, 8, 0] }}
+          transition={{ 
+            opacity: { duration: 0.6, delay: 0.8 },
+            y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+          }}
         >
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white/60 rounded-full mt-2" />
           </div>
         </motion.div>
+          </motion.div>
+        </div>
+
+
       </motion.section>
 
       {/* Main Content */}
@@ -271,16 +273,11 @@ const LegendsAndInfluencers = () => {
             </p>
           </motion.div>
 
-          <motion.div 
-            variants={containerVariants}
-            className="space-y-12"
-          >
+          <div className="space-y-12">
             {buildersData.classicLegends.map((builder, index) => (
-              <motion.div key={builder.id} variants={itemVariants}>
-                <BuilderCard builder={builder} index={index} />
-              </motion.div>
+              <BuilderCard key={builder.id} builder={builder} index={index} />
             ))}
-          </motion.div>
+          </div>
         </motion.section>
 
         {/* Modern Influencers Section */}
@@ -304,16 +301,11 @@ const LegendsAndInfluencers = () => {
             </p>
           </motion.div>
 
-          <motion.div 
-            variants={containerVariants}
-            className="space-y-12"
-          >
+          <div className="space-y-12">
             {buildersData.modernInfluencers.map((builder, index) => (
-              <motion.div key={builder.id} variants={itemVariants}>
-                <BuilderCard builder={builder} index={index} />
-              </motion.div>
+              <BuilderCard key={builder.id} builder={builder} index={index} />
             ))}
-          </motion.div>
+          </div>
         </motion.section>
 
         {/* Call to Action Section */}

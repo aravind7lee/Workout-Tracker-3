@@ -40,23 +40,18 @@ const ImageStrip = ({ images, name, isHovered }) => {
     Promise.all(imagePromises);
   }, [images]);
 
-  // Auto-slide functionality
+  // Auto-slide functionality - optimized
   useEffect(() => {
     if (!isAutoPlaying || !allImagesLoaded) return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
+    }, 3500);
     
     return () => clearInterval(interval);
   }, [isAutoPlaying, allImagesLoaded, images.length]);
 
-  // Start auto-play when component mounts
-  useEffect(() => {
-    if (allImagesLoaded) {
-      setIsAutoPlaying(true);
-    }
-  }, [allImagesLoaded]);
+
 
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -122,15 +117,7 @@ const ImageStrip = ({ images, name, isHovered }) => {
     setTimeout(() => setIsAutoPlaying(true), 3000);
   };
 
-  const containerVariants = {
-    rest: { scale: 1 },
-    hover: { scale: 1 }
-  };
 
-  const imageVariants = {
-    rest: { scale: 1 },
-    hover: { scale: 1 }
-  };
 
   if (!allImagesLoaded) {
     return (
@@ -150,22 +137,15 @@ const ImageStrip = ({ images, name, isHovered }) => {
   }
 
   return (
-    <motion.div
-      variants={containerVariants}
-      animate={isHovered ? "hover" : "rest"}
-      className="relative h-64 sm:h-80 md:h-96 lg:h-[32rem] xl:h-[36rem] w-full overflow-hidden rounded-t-2xl bg-slate-900/50 group"
-      onMouseEnter={() => {
-        setIsAutoPlaying(false);
-      }}
-      onMouseLeave={() => {
-        setIsAutoPlaying(true);
-      }}
+    <div
+      className="relative h-64 sm:h-80 md:h-96 lg:h-[30rem] xl:h-[34rem] w-full overflow-hidden rounded-t-2xl bg-slate-900/50 group"
+      onMouseEnter={() => setIsAutoPlaying(false)}
+      onMouseLeave={() => setIsAutoPlaying(true)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
       style={{ touchAction: 'pan-y' }}
     >
       {/* Image Slider */}
@@ -173,10 +153,10 @@ const ImageStrip = ({ images, name, isHovered }) => {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, x: 300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -300 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
             className="absolute inset-0"
           >
             <img
@@ -217,7 +197,7 @@ const ImageStrip = ({ images, name, isHovered }) => {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
