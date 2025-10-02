@@ -143,32 +143,7 @@ const BuilderCard = ({ builder, index }) => {
           </motion.div>
         </div>
 
-        {/* Hover Glow Effect */}
-        <motion.div
-          className={`absolute inset-0 rounded-2xl opacity-0 ${
-            isClassicLegend 
-              ? 'bg-gradient-to-br from-yellow-500/10 to-orange-500/10' 
-              : 'bg-gradient-to-br from-blue-500/10 to-purple-500/10'
-          }`}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
 
-        {/* Border Glow */}
-        <motion.div
-          className={`absolute inset-0 rounded-2xl border-2 ${
-            isClassicLegend ? 'border-yellow-500/30' : 'border-blue-500/30'
-          }`}
-          animate={{ 
-            opacity: isHovered ? 1 : 0,
-            boxShadow: isHovered 
-              ? isClassicLegend
-                ? '0 0 20px rgba(255, 215, 0, 0.3)'
-                : '0 0 20px rgba(59, 130, 246, 0.3)'
-              : '0 0 0px rgba(0, 0, 0, 0)'
-          }}
-          transition={{ duration: 0.3 }}
-        />
       </motion.div>
     </motion.div>
   );
