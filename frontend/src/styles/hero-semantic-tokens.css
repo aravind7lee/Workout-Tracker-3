@@ -240,7 +240,7 @@
   .hero-text-secondary {
     text-shadow: 0 2px 8px var(--color-background-overlay) !important;
   }
-}
+} 
 
 /* ===== MY PLANS HEADER LIGHT MODE OVERRIDES ===== */
 .light-theme .my-plans-header-title,
