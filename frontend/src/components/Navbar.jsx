@@ -33,14 +33,14 @@ export default function Navbar() {
   const profileRef = useRef(null);
 
   const navLinks = [
-    { to: "/dashboard", label: "Dashboard", icon: "📊" },
-    { to: "/library", label: "Library", icon: "📚" },
-    { to: "/my-plans", label: "My Plans", icon: "📋" },
-    { to: "/plans", label: "Plan Builder", icon: "🏗️" },
-    { to: "/nutrition", label: "Nutrition", icon: "🍎" },
-    { to: "/analytics", label: "Analytics", icon: "📈" },
-    { to: "/legends", label: "Champs", icon: "🏆" },
-    { to: "/profile", label: "Profile", icon: "👤" },
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/library", label: "Library" },
+    { to: "/my-plans", label: "My Plans" },
+    { to: "/plans", label: "Plan Builder" },
+    { to: "/nutrition", label: "Nutrition" },
+    { to: "/analytics", label: "Analytics" },
+    { to: "/legends", label: "Champs" },
+    { to: "/profile", label: "Profile" },
   ];
 
   // Handle scroll effect
@@ -119,9 +119,9 @@ export default function Navbar() {
         isScrolled ? "navbar-scrolled" : "navbar-default"
       }`}
     >
-      <div className="px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12">
         <div
-          className={`flex items-center justify-between transition-all duration-300 ${
+          className={`flex items-center justify-between w-full transition-all duration-300 ${
             isScrolled ? "h-12 sm:h-14" : "h-14 sm:h-16"
           }`}
         >
@@ -142,19 +142,18 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center space-x-1">
+          <div className="hidden xl:flex items-center justify-center flex-1 space-x-2">
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to} className="relative group">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center ${
                     isActiveRoute(link.to)
                       ? "text-white bg-[#238636]/20 border border-[#238636]/30"
                       : "text-slate-300 hover:text-white hover:bg-slate-700/30"
                   }`}
                 >
-                  <span className="mr-2">{link.icon}</span>
                   <span className="font-body">{link.label}</span>
                 </motion.div>
 
