@@ -520,10 +520,10 @@ export default function LibrarySimple() {
             {/* Olympic Lifting */}
             <ExerciseCard
               image={Library6}
-              title="Olympic Lifting"
+              title="Heavy Lifting"
               subtitle="Elite Technique"
               description="Advanced lifting techniques and form"
-              category="olympic"
+              category="lifting"
               delay={0.5}
             />
             
