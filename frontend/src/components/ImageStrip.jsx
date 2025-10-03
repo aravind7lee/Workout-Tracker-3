@@ -172,16 +172,18 @@ const ImageStrip = ({ images, name, isHovered }) => {
         {/* Navigation Arrows */}
         <button
           onClick={prevImage}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100"
+          onTouchEnd={(e) => { e.stopPropagation(); prevImage(); }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-all duration-200 opacity-70 md:opacity-0 md:group-hover:opacity-100 z-10"
         >
-          <ChevronLeft size={16} className="text-white" />
+          <ChevronLeft size={18} className="text-white" />
         </button>
         
         <button
           onClick={nextImage}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100"
+          onTouchEnd={(e) => { e.stopPropagation(); nextImage(); }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-all duration-200 opacity-70 md:opacity-0 md:group-hover:opacity-100 z-10"
         >
-          <ChevronRight size={16} className="text-white" />
+          <ChevronRight size={18} className="text-white" />
         </button>
         
         {/* Dots Indicator */}

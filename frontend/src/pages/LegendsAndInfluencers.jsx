@@ -15,13 +15,21 @@ import Arnold1 from '../assets/Arnold Schwarzenegge1.jpg';
 import Arnold2 from '../assets/Arnold Schwarzenegge2.jpg';
 import Arnold3 from '../assets/Arnold Schwarzenegge3.jpg';
 import Arnold4 from '../assets/Arnold Schwarzenegge4.jpg';
+import Arnold5 from '../assets/Arnold Schwarzenegge5.jpg';
 import Arnold6 from '../assets/Arnold Schwarzenegge6.jpg';
+import Arnold7 from '../assets/Arnold Schwarzenegge7.jpg';
+import Arnold8 from '../assets/Arnold Schwarzenegge8.jpg';
+import Arnold9 from '../assets/Arnold Schwarzenegge9.jpg';
 import Ronnie1 from '../assets/RonnieColeman.jpg';
 import Ronnie2 from '../assets/RonnieColeman2.jpg';
+import Ronnie3 from '../assets/RonnieColeman3.jpeg';
 import Ronnie4 from '../assets/RonnieColeman4.jpg';
+import Ronnie5 from '../assets/RonnieColeman5.jpeg';
 import Mike1 from '../assets/Mike Mentzer1.jpg';
 import Mike2 from '../assets/Mike Mentzer2.jpg';
+import Mike3 from '../assets/Mike Mentzer3.jpg';
 import Mike4 from '../assets/Mike Mentzer4.jpg';
+import Mike5 from '../assets/Mike Mentzer5.jpg';
 import Mike6 from '../assets/Mike Mentzer6.jpg';
 import Mike7 from '../assets/Mike Mentzer7.png';
 import Mike8 from '../assets/Mike Mentzer8.jpg';
@@ -37,6 +45,9 @@ import Chris3 from '../assets/ChrisBumstead3.jpg';
 import Chris4 from '../assets/ChrisBumstead4.jpg';
 import Chris5 from '../assets/ChrisBumstead5.jpg';
 import Chris6 from '../assets/ChrisBumstead6.jpg';
+import Chris7 from '../assets/ChrisBumstead7.jpg';
+import Chris8 from '../assets/ChrisBumstead8.jpg';
+import Chris9 from '../assets/ChrisBumstead9.jpg';
 import David1 from '../assets/DavidLaid1.jpg';
 import David2 from '../assets/DavidLaid2.jpg';
 import David3 from '../assets/DavidLaid3.jpg';
@@ -57,7 +68,7 @@ const buildersData = {
       id: 'arnold',
       name: 'Arnold Schwarzenegger',
       category: 'Classic Legend',
-      images: [Arnold1, Arnold2, Arnold3, Arnold4, Arnold6],
+      images: [Arnold1, Arnold2, Arnold3, Arnold4, Arnold5, Arnold6, Arnold7, Arnold8, Arnold9],
       quote: "The worst thing I can be is the same as everybody else. I hate that.",
       era: '1970s-1980s'
     },
@@ -65,7 +76,7 @@ const buildersData = {
       id: 'ronnie',
       name: 'Ronnie Coleman',
       category: 'Classic Legend',
-      images: [Ronnie1, Ronnie2, Ronnie4],
+      images: [Ronnie1, Ronnie2, Ronnie3, Ronnie4, Ronnie5],
       quote: "Everybody wants to be a bodybuilder, but nobody wants to lift no heavy-ass weights.",
       era: '1990s-2000s'
     },
@@ -73,7 +84,7 @@ const buildersData = {
       id: 'mike',
       name: 'Mike Mentzer',
       category: 'Classic Legend',
-      images: [Mike1, Mike2, Mike4, Mike6, Mike7, Mike8],
+      images: [Mike1, Mike2, Mike3, Mike4, Mike5, Mike6, Mike7, Mike8],
       quote: "The quality of training is more important than the quantity.",
       era: '1970s-1980s'
     },
@@ -91,7 +102,7 @@ const buildersData = {
       id: 'chris',
       name: 'Chris Bumstead (Cbum)',
       category: 'Modern Influencer',
-      images: [Chris1, Chris2, Chris3, Chris4, Chris5, Chris6],
+      images: [Chris1, Chris2, Chris3, Chris4, Chris5, Chris6, Chris7, Chris8, Chris9],
       quote: "It's not about being the biggest. It's about building the best version of yourself.",
       era: '2010s-Present'
     },
