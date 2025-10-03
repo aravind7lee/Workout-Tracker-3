@@ -49,6 +49,7 @@ import './utils/errorSuppression'; // Suppress import errors
 import { realTimeStreakSync } from './services/realTimeStreakSync'; // Initialize real-time streak sync
 import './utils/testWorkoutCompletion'; // Test utilities for real-time updates
 import './utils/cleanupFakeWorkouts'; // Cleanup fake workouts
+import './styles/button-improvements.css'; // Global button improvements
 
 // Inline components to avoid module loading errors
 const Search = () => {

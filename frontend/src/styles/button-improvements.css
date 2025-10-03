@@ -1,0 +1,249 @@
+/* Global Button Improvements - Subtle & Optimized */
+
+/* Primary Buttons */
+.btn {
+  @apply px-4 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-sm;
+  @apply hover:shadow-md hover:scale-[1.02] active:scale-[0.98];
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+  border: 1px solid transparent;
+}
+
+/* Blue Buttons */
+.btn.bg-blue-600 {
+  @apply bg-gradient-to-r from-blue-600 to-blue-700;
+  @apply hover:from-blue-700 hover:to-blue-800;
+  @apply focus:ring-blue-500;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.btn.bg-blue-600:hover {
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+}
+
+/* Green Buttons */
+.btn.bg-green-600 {
+  @apply bg-gradient-to-r from-green-600 to-green-700;
+  @apply hover:from-green-700 hover:to-green-800;
+  @apply focus:ring-green-500;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+
+.btn.bg-green-600:hover {
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
+}
+
+/* Orange Buttons */
+.btn.bg-orange-600 {
+  @apply bg-gradient-to-r from-orange-600 to-orange-700;
+  @apply hover:from-orange-700 hover:to-orange-800;
+  @apply focus:ring-orange-500;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+.btn.bg-orange-600:hover {
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
+}
+
+/* Purple Buttons */
+.btn.bg-purple-600 {
+  @apply bg-gradient-to-r from-purple-600 to-purple-700;
+  @apply hover:from-purple-700 hover:to-purple-800;
+  @apply focus:ring-purple-500;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15);
+}
+
+.btn.bg-purple-600:hover {
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.25);
+}
+
+/* Red Buttons */
+.btn.bg-red-600 {
+  @apply bg-gradient-to-r from-red-600 to-red-700;
+  @apply hover:from-red-700 hover:to-red-800;
+  @apply focus:ring-red-500;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+.btn.bg-red-600:hover {
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+}
+
+/* Yellow Buttons */
+.btn.bg-yellow-600 {
+  @apply bg-gradient-to-r from-yellow-600 to-yellow-700;
+  @apply hover:from-yellow-700 hover:to-yellow-800;
+  @apply focus:ring-yellow-500;
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.15);
+}
+
+.btn.bg-yellow-600:hover {
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.25);
+}
+
+/* Secondary Buttons */
+.btn-secondary {
+  @apply px-4 py-2.5 rounded-xl font-medium transition-all duration-200;
+  @apply bg-slate-700/50 hover:bg-slate-600/60 text-slate-200 hover:text-white;
+  @apply border border-slate-600/50 hover:border-slate-500/60;
+  @apply hover:scale-[1.02] active:scale-[0.98];
+  @apply focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-900;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Small Buttons */
+.btn-xs {
+  @apply px-3 py-2 text-xs rounded-lg;
+}
+
+.btn-sm {
+  @apply px-3.5 py-2 text-sm rounded-lg;
+}
+
+/* Large Buttons */
+.btn-lg {
+  @apply px-6 py-3 text-lg rounded-xl;
+}
+
+/* Flex Column Buttons (for dashboard quick actions) */
+.btn-flex-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  min-height: 80px;
+  transition: transform 0.2s;
+}
+
+.btn-flex-col:hover {
+  transform: scale(1.03);
+}
+
+.btn-flex-col:active {
+  transform: scale(0.97);
+}
+
+/* CTA Buttons */
+.cta-button {
+  @apply relative overflow-hidden;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.cta-button:hover::before {
+  left: 100%;
+}
+
+/* Disabled State */
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+  @apply hover:scale-100 hover:shadow-sm;
+}
+
+/* Action Buttons (small icon buttons) */
+.action-button-duplicate,
+.action-button-delete {
+  @apply p-2 rounded-lg transition-all duration-200;
+  @apply hover:scale-110 active:scale-95;
+}
+
+.action-button-duplicate:hover {
+  @apply bg-blue-500/20 text-blue-400;
+}
+
+.action-button-delete:hover {
+  @apply bg-red-500/20 text-red-400;
+}
+
+/* Input Styling */
+.input {
+  @apply px-4 py-3 rounded-xl bg-slate-800/60 border border-slate-700;
+  @apply text-white placeholder-slate-400;
+  @apply focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20;
+  @apply transition-all duration-200;
+}
+
+/* Card Styling */
+.card {
+  @apply bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6;
+  @apply shadow-lg hover:shadow-xl transition-all duration-200;
+}
+
+/* Plan Card Specific */
+.plan-card {
+  @apply hover:scale-[1.02] transition-all duration-300;
+  @apply hover:shadow-lg hover:shadow-blue-500/10;
+}
+
+/* Sync Badge Styling */
+.sync-badge-synced {
+  @apply animate-pulse;
+}
+
+.sync-badge-local {
+  @apply animate-pulse;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  .btn {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .btn-flex-col {
+    padding: 0.75rem;
+    min-height: 70px;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+}
+
+/* Dark/Light Theme Support */
+.light-theme .btn-secondary {
+  background-color: rgb(243 244 246);
+  color: rgb(55 65 81);
+  border-color: rgb(209 213 219);
+}
+
+.light-theme .btn-secondary:hover {
+  background-color: rgb(229 231 235);
+  color: rgb(17 24 39);
+  border-color: rgb(156 163 175);
+}
+
+.light-theme .card {
+  background-color: white;
+  border-color: rgb(229 231 235);
+}
+
+.light-theme .input {
+  background-color: white;
+  border-color: rgb(209 213 219);
+  color: rgb(17 24 39);
+}
+
+.light-theme .input::placeholder {
+  color: rgb(107 114 128);
+}
+
+.light-theme .input:focus {
+  border-color: rgb(59 130 246);
+}
