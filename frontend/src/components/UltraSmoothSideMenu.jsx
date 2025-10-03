@@ -198,7 +198,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                   <motion.img
                     src={logo}
                     alt="GymTracker"
-                    className="h-12 w-auto"
+                    className="h-8 w-auto"
                     whileHover={{ scale: 1.05, rotate: 5 }}
                     transition={ultraSmoothSpring}
                     loading="eager"

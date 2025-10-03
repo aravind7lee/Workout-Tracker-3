@@ -57,7 +57,7 @@ export default function Footer() {
             <div className="sm:col-span-2 lg:col-span-2">
               <div className="flex items-center mb-4 sm:mb-6">
                 <div className="relative">
-                  <img src={logo} alt="GymTracker" className="h-32 sm:h-36 w-auto object-contain drop-shadow-lg" />
+                  <img src={logo} alt="GymTracker" className="h-12 sm:h-14 w-auto object-contain drop-shadow-lg" />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md"></div>
                 </div>
                 <div className="ml-6">

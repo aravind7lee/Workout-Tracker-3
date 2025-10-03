@@ -43,7 +43,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
           <img 
             src={logo} 
             alt="Workout Tracker Logo" 
-            className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto object-contain filter drop-shadow-2xl"
+            className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto object-contain filter drop-shadow-2xl"
             style={{ 
               filter: `brightness(1.3) contrast(1.2) drop-shadow(0 0 20px rgba(59,130,246,0.4))`,
               transform: `scale(${0.8 + (loadingProgress / 100) * 0.3})`

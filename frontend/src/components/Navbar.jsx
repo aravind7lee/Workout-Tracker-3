@@ -134,7 +134,7 @@ export default function Navbar() {
               <img
                 src={logo}
                 alt="GymTracker Logo"
-                className="h-32 w-auto object-contain transition-all duration-300 drop-shadow-lg"
+                className="h-8 sm:h-10 w-auto object-contain transition-all duration-300 drop-shadow-lg"
                 style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
                 loading="eager"
                 decoding="async"
