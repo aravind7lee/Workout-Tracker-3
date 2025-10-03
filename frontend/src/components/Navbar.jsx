@@ -152,13 +152,13 @@ export default function Navbar() {
                   whileTap={{ scale: 0.98 }}
                   className={`px-5 py-3 rounded-lg text-sm font-semibold transition-all duration-300 relative overflow-hidden ${
                     isActiveRoute(link.to)
-                      ? "text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg"
+                      ? "text-white bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/25"
                       : "text-slate-200 hover:text-white hover:bg-slate-800/60 border border-transparent hover:border-slate-600/50"
                   }`}
                 >
                   <span className="relative z-10 font-body tracking-wide">{link.label}</span>
                   {!isActiveRoute(link.to) && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   )}
                 </motion.div>
 
@@ -166,7 +166,7 @@ export default function Navbar() {
                 {isActiveRoute(link.to) && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                    className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"
                     initial={false}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
@@ -323,7 +323,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 lg:px-6 lg:py-3 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="px-4 py-2 lg:px-6 lg:py-3 text-sm font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg hover:from-blue-500 hover:to-cyan-400 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   <Zap size={16} className="mr-2" />
                   <span className="tracking-wide">JOIN NOW</span>
@@ -359,7 +359,7 @@ export default function Navbar() {
                   />
                 )}
               </motion.div>
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </motion.button>
           </div>
         </div>
