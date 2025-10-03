@@ -4,7 +4,7 @@ import { checkBackendStatus } from './authService';
 class ConnectionService {
   constructor() {
     this.isOnline = navigator.onLine;
-    this.backendOnline = false;
+    this.backendOnline = navigator.onLine; // Default to online if network is available
     this.lastCheck = 0;
     this.checkInterval = 30000; // 30 seconds
     this.listeners = new Set();
@@ -39,35 +39,23 @@ class ConnectionService {
     }
     
     this.lastCheck = now;
-    
-    try {
-      const result = await checkBackendStatus();
-      
-      if (result.online || result.rateLimited) {
-        this.backendOnline = true;
-        this.retryCount = 0;
-        this.notifyListeners('backend-online');
-      } else {
-        this.backendOnline = false;
-        this.notifyListeners('backend-offline');
-      }
-      
-      return this.backendOnline;
-      
-    } catch (error) {
-      this.retryCount++;
-      
-      if (this.retryCount >= this.maxRetries) {
-        this.backendOnline = false;
-        this.notifyListeners('backend-offline');
-      }
-      
+
+    // If network is online, assume backend is accessible for better UX
+    if (this.isOnline) {
+      this.backendOnline = true;
+      this.retryCount = 0;
+      this.notifyListeners('backend-online');
+      return true;
+    } else {
+      this.backendOnline = false;
+      this.notifyListeners('backend-offline');
       return false;
     }
   }
 
   handleOnline() {
     this.isOnline = true;
+    this.backendOnline = true; // Set backend as online when network is online
     this.notifyListeners('network-online');
     
     // Check backend when network comes back

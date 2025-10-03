@@ -100,8 +100,15 @@ export default function Home() {
     [currentStreak, stats?.currentStreak]
   );
   
-  const totalWorkouts = useMemo(() => stats?.totalWorkouts ?? 0, [stats?.totalWorkouts, refreshTrigger]);
-  const todayWorkouts = useMemo(() => stats?.todayWorkouts ?? 0, [stats?.todayWorkouts, refreshTrigger]);
+  const totalWorkouts = useMemo(() => {
+    const count = stats?.totalWorkouts ?? 0;
+    return count > 0 ? count : 0;
+  }, [stats?.totalWorkouts, refreshTrigger]);
+  
+  const todayWorkouts = useMemo(() => {
+    const count = stats?.todayWorkouts ?? 0;
+    return count > 0 ? count : 0;
+  }, [stats?.todayWorkouts, refreshTrigger]);
 
   // Optimized quick stats
   const quickStats = useMemo(() => [
@@ -111,7 +118,7 @@ export default function Home() {
       icon: '💪',
       color: 'blue',
       path: '/workouts',
-      subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'Start your first workout'
+      subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'No workouts yet - Start your journey!'
     },
     {
       label: 'Current Streak',
@@ -280,6 +287,32 @@ export default function Home() {
       });
     };
   }, [checkAchievements, realTimeCurrentStreak]);
+
+  // Clean fake data on mount
+  useEffect(() => {
+    // Clean any fake workout data when component mounts
+    try {
+      const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
+      const realWorkouts = workouts.filter(workout => {
+        return workout.exercise && 
+               workout.exercise !== 'Workout' && 
+               workout.exercise !== 'Test Workout' &&
+               (workout.duration > 0 || workout.caloriesBurned > 0) &&
+               workout.completedAt &&
+               !workout.id?.includes('test_') &&
+               !workout.id?.includes('fake_') &&
+               !workout.id?.includes('demo_');
+      });
+      
+      if (realWorkouts.length !== workouts.length) {
+        localStorage.setItem('workoutSync_workouts', JSON.stringify(realWorkouts));
+        setRefreshTrigger(prev => prev + 1);
+        console.log(`🧹 Cleaned fake workouts: ${workouts.length} → ${realWorkouts.length}`);
+      }
+    } catch (error) {
+      console.warn('Error cleaning fake workouts:', error);
+    }
+  }, []);
 
   // Handle location state
   useEffect(() => {
