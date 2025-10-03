@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
+import Heroimg from '../assets/Heroimg.jpg';
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
@@ -30,7 +31,7 @@ export default function Hero() {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
-    img.src = '/Heroimg.jpg';
+    img.src = Heroimg;
     img.loading = 'eager';
   }, []);
 
@@ -79,7 +80,7 @@ export default function Hero() {
           {/* Main Image */}
           {!imageError && (
             <img 
-              src="/Heroimg.jpg" 
+              src={Heroimg} 
               alt="Welcome to GymTracker - Professional Fitness Tracking" 
               className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
               loading="eager"

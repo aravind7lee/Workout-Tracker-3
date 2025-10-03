@@ -9,6 +9,13 @@ import { getRealTimeStreak } from '../utils/streakUtils';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
 
+// Import images from assets folder
+import Home1 from '../assets/Home1.jpg';
+import Home2 from '../assets/Home2.jpg';
+import Home3 from '../assets/Home3.jpg';
+import Home4 from '../assets/Home4.jpg';
+import Home5 from '../assets/Home5.jpg';
+
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -614,7 +621,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/Home1.jpg" 
+                      src={Home1} 
                       alt="Elite Training Experience" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -711,7 +718,7 @@ export default function Home() {
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
                     <img 
-                      src="/Home2.jpg" 
+                      src={Home2} 
                       alt="Strength and Power Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -751,7 +758,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/Home3.jpg" 
+                      src={Home3} 
                       alt="Muscle Building Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -849,7 +856,7 @@ export default function Home() {
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
                     <img 
-                      src="/Home4.jpg" 
+                      src={Home4} 
                       alt="Functional Training" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
@@ -877,7 +884,7 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
-                      src="/Home5.jpg" 
+                      src={Home5} 
                       alt="Elite Community" 
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />

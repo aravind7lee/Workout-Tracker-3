@@ -9,8 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useConnectionStatus } from "../services/connectionService";
-
-const logo = "/logo.png";
+import logo from "../assets/logo.png";
 
 // Ultra-smooth spring configurations
 const springConfig = {
@@ -202,6 +201,8 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     className="h-12 w-auto"
                     whileHover={{ scale: 1.05, rotate: 5 }}
                     transition={ultraSmoothSpring}
+                    loading="eager"
+                    decoding="async"
                   />
                   <div>
                     <h2 className="text-xl font-bold text-white font-heading">GRIND-X</h2>

@@ -18,8 +18,7 @@ import SearchBar from "./SearchBar";
 import { demoService } from "../services/demoService";
 import UltraSmoothSideMenu from "./UltraSmoothSideMenu";
 import { useConnectionStatus } from "../services/connectionService";
-
-const logo = "/logo.png";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -137,6 +136,8 @@ export default function Navbar() {
                 alt="GymTracker Logo"
                 className="h-32 w-auto object-contain transition-all duration-300 drop-shadow-lg"
                 style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
+                loading="eager"
+                decoding="async"
               />
             </motion.div>
           </Link>

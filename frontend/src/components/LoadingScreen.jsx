@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logo from '../assets/logo.png';
 
 const LoadingScreen = ({ onLoadingComplete }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -40,7 +41,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
           
           {/* Logo */}
           <img 
-            src="/logo.png" 
+            src={logo} 
             alt="Workout Tracker Logo" 
             className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto object-contain filter drop-shadow-2xl"
             style={{ 
@@ -48,6 +49,8 @@ const LoadingScreen = ({ onLoadingComplete }) => {
               transform: `scale(${0.8 + (loadingProgress / 100) * 0.3})`
             }}
             onLoad={() => console.log('Logo loaded successfully')}
+            loading="eager"
+            decoding="async"
           />
           
           {/* Orbiting Dots */}
