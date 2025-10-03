@@ -160,6 +160,8 @@ const LegendsAndInfluencers = () => {
         ease: "easeOut"
       }
     }
+
+    
   };
 
   if (isLoading) {
@@ -195,8 +197,8 @@ const LegendsAndInfluencers = () => {
             animate="visible"
             className="space-y-6"
           >
-            <motion.h1 
-              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight"
+             <motion.h1 
+              className="text-5xl md:text-7xl lg:text-8xl font-black text-amber-300 mb-2 sm:mb-3 drop-shadow-lg font-heading"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -205,7 +207,7 @@ const LegendsAndInfluencers = () => {
             </motion.h1>
             
             <motion.p 
-              className="text-xl md:text-2xl lg:text-3xl text-gray-300 font-light max-w-4xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-extrabold hero-text-primary drop-shadow-lg font-heading"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -221,12 +223,12 @@ const LegendsAndInfluencers = () => {
             >
               <div className="flex items-center space-x-2 text-yellow-400">
                 <Trophy size={24} />
-                <span className="text-lg font-semibold">Classic Legends</span>
+                <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">Classic Legends</span>
               </div>
               <div className="w-px h-8 bg-gray-600" />
               <div className="flex items-center space-x-2 text-blue-400">
                 <Globe size={24} />
-                <span className="text-lg font-semibold">Modern Influencers</span>
+                <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">Modern Influencers</span>
               </div>
             </motion.div>
 

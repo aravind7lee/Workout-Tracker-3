@@ -605,8 +605,6 @@ export default function Home() {
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
                     {/* Premium Decorative Elements */}
-                    <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-full blur-2xl" />
-                    
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
@@ -628,27 +626,9 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance. Every rep counts towards your transformation into a champion.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button 
-                        onClick={() => handleNav('/workouts')}
-                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                        <span className="relative z-10">Start Elite Training</span>
-                        <span className="relative z-10 text-xl">🏋️</span>
-                      </button>
-                      
-                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
-                        <span>View Equipment</span>
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -691,27 +671,9 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Push beyond your limits with <span className="text-red-400 font-bold">intense strength training</span>. Build raw power, explosive strength, and unstoppable determination that defines champions.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button 
-                        onClick={() => handleNav('/workouts')}
-                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 via-orange-600 to-red-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                        <span className="relative z-10">Activate Beast Mode</span>
-                        <span className="relative z-10 text-xl">💪</span>
-                      </button>
-                      
-                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
-                        <span>Power Programs</span>
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
@@ -780,7 +742,6 @@ export default function Home() {
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
                     {/* Premium Decorative Elements */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-full blur-2xl" />
                     
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
@@ -803,27 +764,9 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Sculpt <span className="text-emerald-400 font-bold">massive muscle gains</span> with scientifically-proven hypertrophy training. Transform your physique with precision muscle-building protocols.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button 
-                        onClick={() => handleNav('/workouts')}
-                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 via-teal-600 to-green-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-green-500/25"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-500 via-teal-500 to-green-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                        <span className="relative z-10">Build Muscle Elite</span>
-                        <span className="relative z-10 text-xl">🏃‍♂️</span>
-                      </button>
-                      
-                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
-                        <span>Muscle Programs</span>
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -844,7 +787,6 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
                     {/* Premium Decorative Elements */}
-                    <div className="absolute -top-20 -left-20 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl" />
                     
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
@@ -867,27 +809,9 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Master <span className="text-purple-400 font-bold">functional movements</span> that translate to real-world performance. Train your body to move with purpose, power, and precision.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button 
-                        onClick={() => handleNav('/workouts')}
-                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                        <span className="relative z-10">Train Functional</span>
-                        <span className="relative z-10 text-xl">🎯</span>
-                      </button>
-                      
-                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
-                        <span>Movement Patterns</span>
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                   
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
@@ -932,8 +856,7 @@ export default function Home() {
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
                     {/* Premium Decorative Elements */}
-                    <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-bl from-yellow-500/10 to-transparent rounded-full blur-2xl" />
-                    
+                  
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
@@ -955,27 +878,9 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed mb-8 font-medium">
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Connect with <span className="text-yellow-400 font-bold">elite athletes worldwide</span>. Share victories, push limits together, and become part of the ultimate fitness community that breeds champions.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button 
-                        onClick={() => handleNav('/achievements')}
-                        className="group/btn relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-600 via-orange-600 to-yellow-600 text-white font-black rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/25"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                        <span className="relative z-10">Join Elite Club</span>
-                        <span className="relative z-10 text-xl">🏆</span>
-                      </button>
-                      
-                      <button className="inline-flex items-center gap-2 px-6 py-4 border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all duration-300">
-                        <span>View Community</span>
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
