@@ -52,42 +52,42 @@ export default function Home() {
     }
   }, [auth]);
 
-  // Fight Club Raw Color Palette
+  // Optimized color classes (static)
   const colorClasses = useMemo(() => ({
     blue: {
-      bg: 'bg-amber-700',
-      bgSoft: 'bg-amber-600/15',
-      text: 'text-amber-300',
-      ring: 'ring-amber-500',
-      border: 'border-amber-600'
+      bg: 'bg-blue-600',
+      bgSoft: 'bg-blue-500/10',
+      text: 'text-blue-400',
+      ring: 'ring-blue-500',
+      border: 'border-blue-600'
     },
     purple: {
-      bg: 'bg-orange-800',
-      bgSoft: 'bg-orange-700/15',
-      text: 'text-orange-300',
-      ring: 'ring-orange-600',
-      border: 'border-orange-700'
+      bg: 'bg-purple-600',
+      bgSoft: 'bg-purple-500/10',
+      text: 'text-purple-400',
+      ring: 'ring-purple-500',
+      border: 'border-purple-600'
     },
     green: {
-      bg: 'bg-yellow-800',
-      bgSoft: 'bg-yellow-700/15',
-      text: 'text-yellow-300',
-      ring: 'ring-yellow-600',
-      border: 'border-yellow-700'
+      bg: 'bg-green-600',
+      bgSoft: 'bg-green-500/10',
+      text: 'text-green-400',
+      ring: 'ring-green-500',
+      border: 'border-green-600'
     },
     orange: {
-      bg: 'bg-red-900',
-      bgSoft: 'bg-red-800/15',
-      text: 'text-red-300',
-      ring: 'ring-red-700',
-      border: 'border-red-800'
+      bg: 'bg-orange-500',
+      bgSoft: 'bg-orange-400/10',
+      text: 'text-orange-400',
+      ring: 'ring-orange-400',
+      border: 'border-orange-500'
     },
     yellow: {
-      bg: 'bg-amber-800',
-      bgSoft: 'bg-amber-700/15',
-      text: 'text-amber-200',
-      ring: 'ring-amber-600',
-      border: 'border-amber-700'
+      bg: 'bg-yellow-500',
+      bgSoft: 'bg-yellow-400/10',
+      text: 'text-yellow-400',
+      ring: 'ring-yellow-400',
+      border: 'border-yellow-500'
     }
   }), []);
 
@@ -396,12 +396,7 @@ export default function Home() {
         onClick={() => handleNav(stat.path)}
         className="relative group transform transition-all duration-300 text-left w-full hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
       >
-        <div className="relative backdrop-blur-xl border rounded-xl p-4 sm:p-6 shadow-xl group-hover:border-amber-400/40 transition-all duration-300" style={{
-          background: 'linear-gradient(135deg, rgba(45,27,14,0.9) 0%, rgba(26,15,8,0.8) 100%)',
-          borderColor: 'rgba(251,146,60,0.2)',
-          boxShadow: '0 0 25px rgba(251,146,60,0.1), inset 0 1px 2px rgba(255,255,255,0.05)',
-          filter: 'contrast(1.2) saturate(0.9)'
-        }}>
+        <div className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl group-hover:border-white/20 transition-all duration-300">
           <div className="flex items-start justify-between mb-3">
             <div className={`flex items-center justify-center rounded-xl p-3 bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg`}>
               <div className="text-xl sm:text-2xl">{stat.icon}</div>
@@ -409,33 +404,23 @@ export default function Home() {
             
             <div className="flex flex-col items-end gap-1">
               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${c.text} bg-gradient-to-r ${c.bgSoft} border ${c.border}`}>
-                <div className={`w-1.5 h-1.5 rounded-sm ${isOnline && stats?.isRealTime ? 'bg-amber-400' : 'bg-red-600'}`} style={{
-                  boxShadow: isOnline && stats?.isRealTime ? '0 0 8px rgba(251,191,36,0.6)' : '0 0 8px rgba(220,38,38,0.6)'
-                }} />
+                <div className={`w-1.5 h-1.5 rounded-full ${isOnline && stats?.isRealTime ? 'bg-green-400' : 'bg-gray-400'}`} />
                 {isOnline && stats?.isRealTime ? 'LIVE' : 'OFF'}
               </span>
             </div>
           </div>
           
           <div className="space-y-1">
-            <div className={`text-xl sm:text-2xl font-black ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''}`} style={{
-              color: '#fbbf24',
-              textShadow: '0 0 12px rgba(251,191,36,0.4)'
-            }}>
+            <div className={`text-xl sm:text-2xl font-black text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''}`}>
               {typeof stat.value === 'number' ? count : stat.value}
               {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && <span className="ml-2 animate-bounce">🔥</span>}
             </div>
             
-            <div className="text-xs sm:text-sm font-semibold" style={{
-              color: '#fb923c',
-              textShadow: '0 0 8px rgba(251,146,60,0.3)'
-            }}>
+            <div className="text-xs sm:text-sm font-semibold text-slate-300">
               {stat.label}
             </div>
             
-            <div className="text-xs line-clamp-1" style={{
-              color: '#d97706'
-            }}>
+            <div className="text-xs text-slate-400 line-clamp-1">
               {stat.subtitle}
             </div>
           </div>
@@ -547,27 +532,17 @@ export default function Home() {
      Main render
      -------------------------- */
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #2d1b0e 0%, #1a0f08 25%, #3d2817 50%, #1f1209 75%, #2d1b0e 100%)',
-      filter: 'contrast(1.3) saturate(0.8) brightness(0.95)'
-    }}>
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black relative overflow-hidden">
       {/* Loading Screen Component */}
       {isLoading && (
         <LoadingScreen onLoadingComplete={handleLoadingComplete} />
       )}
 
-      {/* Industrial Gritty Effects */}
+      {/* Simplified Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-64 -right-64 w-[600px] h-[600px] bg-gradient-to-br from-amber-600/8 to-transparent blur-3xl" style={{ filter: 'contrast(1.4)' }} />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-bl from-orange-700/6 to-transparent blur-3xl" style={{ filter: 'sepia(0.3)' }} />
-        <div className="absolute bottom-1/3 left-1/3 w-[300px] h-[300px] bg-gradient-to-r from-red-900/5 to-transparent blur-2xl" style={{ filter: 'brightness(0.9)' }} />
-        {/* Film Grain Overlay */}
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `radial-gradient(circle at 25% 25%, #fb923c 0%, transparent 50%), 
-                           radial-gradient(circle at 75% 75%, #f97316 0%, transparent 50%),
-                           radial-gradient(circle at 50% 50%, #ea580c 0%, transparent 30%)`,
-          mixBlendMode: 'soft-light'
-        }} />
+        <div className="absolute -top-64 -right-64 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-bl from-purple-500/8 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 left-1/3 w-[300px] h-[300px] bg-gradient-to-r from-green-500/6 to-transparent rounded-full blur-2xl" />
       </div>
 
       {/* Hero Section */}
@@ -579,52 +554,30 @@ export default function Home() {
         {/* Status Bar */}
         <section data-animate data-id="status-bar" className="mb-8">
           <div className={`transition-all duration-500 transform ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="relative backdrop-blur-xl border rounded-2xl p-4 sm:p-6 shadow-xl" style={{
-              background: 'linear-gradient(90deg, rgba(45,27,14,0.95) 0%, rgba(26,15,8,0.9) 100%)',
-              borderColor: 'rgba(251,146,60,0.2)',
-              boxShadow: '0 0 30px rgba(251,146,60,0.1), inset 0 1px 2px rgba(255,255,255,0.05)'
-            }}>
+            <div className="relative bg-gradient-to-r from-slate-900/95 to-slate-800/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-sm ${isOnline ? 'bg-amber-400' : 'bg-red-600'} shadow-lg`} style={{
-                      boxShadow: isOnline ? '0 0 10px rgba(251,191,36,0.6)' : '0 0 10px rgba(220,38,38,0.6)'
-                    }} />
-                    <span className="text-xs font-black tracking-wider" style={{
-                      color: '#fbbf24',
-                      textShadow: '0 0 8px rgba(251,191,36,0.3)'
-                    }}>
-                      {isOnline ? '🟡 LIVE SYNC' : '🔴 OFFLINE'}
+                    <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-500'} shadow-lg`} />
+                    <span className="text-xs font-black text-white tracking-wider">
+                      {isOnline ? '🟢 LIVE SYNC' : '🔴 OFFLINE'}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-400">⏰</span>
-                    <div className="text-xs font-mono px-2 py-1 rounded-sm" style={{
-                      color: '#fbbf24',
-                      background: 'rgba(45,27,14,0.7)',
-                      border: '1px solid rgba(251,146,60,0.3)',
-                      textShadow: '0 0 5px rgba(251,191,36,0.3)'
-                    }}>
+                    <span className="text-blue-400">⏰</span>
+                    <div className="text-xs text-white font-mono bg-slate-800/50 px-2 py-1 rounded-lg">
                       {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 backdrop-blur-sm border rounded-lg px-3 py-2" style={{
-                    background: 'linear-gradient(90deg, rgba(251,146,60,0.15) 0%, rgba(249,115,22,0.15) 100%)',
-                    borderColor: 'rgba(251,146,60,0.4)'
-                  }}>
-                    <span className="text-amber-400 animate-pulse">👥</span>
+                  <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-xl px-3 py-2">
+                    <span className="text-blue-400 animate-pulse">👥</span>
                     <div className="flex flex-col">
-                      <span className="font-black text-sm tabular-nums" style={{
-                        color: '#fbbf24',
-                        textShadow: '0 0 8px rgba(251,191,36,0.3)'
-                      }}>{liveUsers.toLocaleString()}</span>
-                      <span className="text-xs font-medium" style={{
-                        color: '#fb923c'
-                      }}>ONLINE</span>
+                      <span className="font-black text-white text-sm tabular-nums">{liveUsers.toLocaleString()}</span>
+                      <span className="text-xs text-blue-300 font-medium">ONLINE</span>
                     </div>
                   </div>
                 </div>
@@ -633,35 +586,27 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Stats - Only show when user is logged in */}
-        {isAuthenticated() && (
-          <section data-animate data-id="quick-stats" className="mb-12">
-            <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              <div className="text-center mb-8">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3" style={{
-                  color: '#fbbf24',
-                  textShadow: '0 0 15px rgba(251,191,36,0.4)',
-                  fontFamily: 'monospace',
-                  letterSpacing: '2px'
-                }}>
+        {/* Quick Stats */}
+        <section data-animate data-id="quick-stats" className="mb-12">
+          <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
                   YOUR STATUS
-                </h2>
-                <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{
-                  color: '#fb923c',
-                  textShadow: '0 0 8px rgba(251,146,60,0.2)'
-                }}>
-                  Real-time performance metrics for champions
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                {quickStats.map((stat, i) => (
-                  <StatCard key={`stat-${i}`} stat={stat} />
-                ))}
-              </div>
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+                Real-time performance metrics for champions
+              </p>
             </div>
-          </section>
-        )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {quickStats.map((stat, i) => (
+                <StatCard key={`stat-${i}`} stat={stat} />
+              ))}
+            </div>
+          </div>
+        </section>
 
 
 
@@ -669,53 +614,30 @@ export default function Home() {
         <section data-animate data-id="training-experience" id="training-experience" className="mb-20">
           <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Industrial Glow Effect */}
-              <div className="absolute -inset-1 rounded-3xl blur-lg opacity-20 group-hover:opacity-35 transition-all duration-500" style={{
-                background: 'linear-gradient(90deg, #f59e0b, #ea580c, #f59e0b)',
-                filter: 'contrast(1.4) brightness(1.1)'
-              }} />
+              {/* Premium Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
-              <div className="relative overflow-hidden rounded-3xl backdrop-blur-2xl border shadow-2xl" style={{
-                background: 'linear-gradient(135deg, rgba(45,27,14,0.98) 0%, rgba(26,15,8,0.95) 50%, rgba(45,27,14,0.98) 100%)',
-                borderColor: 'rgba(251,146,60,0.3)',
-                boxShadow: '0 0 40px rgba(251,146,60,0.15), inset 0 2px 4px rgba(255,255,255,0.05)',
-                filter: 'contrast(1.3) saturate(0.9)'
-              }}>
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
                       src={Home1} 
                       alt="Elite Training Experience" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                      style={{
-                        filter: 'contrast(1.4) saturate(0.7) brightness(0.9) sepia(0.3) hue-rotate(15deg)'
-                      }}
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-900/50 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
                     {/* Premium Overlay Stats */}
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex items-center justify-between">
-                        <div className="backdrop-blur-xl rounded-lg px-4 py-2 border" style={{
-                          background: 'rgba(0,0,0,0.8)',
-                          borderColor: 'rgba(251,146,60,0.3)'
-                        }}>
-                          <div className="text-xs font-bold" style={{ color: '#fb923c' }}>EQUIPMENT GRADE</div>
-                          <div className="text-lg font-black" style={{
-                            color: '#fbbf24',
-                            textShadow: '0 0 8px rgba(251,191,36,0.4)'
-                          }}>PROFESSIONAL</div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-blue-400 text-xs font-bold">EQUIPMENT GRADE</div>
+                          <div className="text-white text-lg font-black">PROFESSIONAL</div>
                         </div>
-                        <div className="backdrop-blur-xl rounded-lg px-4 py-2 border" style={{
-                          background: 'rgba(0,0,0,0.8)',
-                          borderColor: 'rgba(251,146,60,0.3)'
-                        }}>
-                          <div className="text-xs font-bold" style={{ color: '#f59e0b' }}>SUCCESS RATE</div>
-                          <div className="text-lg font-black" style={{
-                            color: '#fbbf24',
-                            textShadow: '0 0 8px rgba(251,191,36,0.4)'
-                          }}>98.7%</div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
+                          <div className="text-cyan-400 text-xs font-bold">SUCCESS RATE</div>
+                          <div className="text-white text-lg font-black">98.7%</div>
                         </div>
                       </div>
                     </div>
@@ -734,33 +656,18 @@ export default function Home() {
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight" style={{
-                      fontFamily: 'monospace',
-                      letterSpacing: '1px'
-                    }}>
-                      <span style={{
-                        color: '#fbbf24',
-                        textShadow: '0 0 15px rgba(251,191,36,0.4)'
-                      }}>
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-cyan-100">
                         ELITE TRAINING
                       </span>
                       <br />
-                      <span style={{
-                        color: '#fb923c',
-                        textShadow: '0 0 12px rgba(251,146,60,0.4)'
-                      }}>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300">
                         EXPERIENCE
                       </span>
                     </h3>
                     
-                    <p className="text-lg leading-relaxed font-medium" style={{
-                      color: '#d97706',
-                      textShadow: '0 0 5px rgba(217,119,6,0.3)'
-                    }}>
-                      Experience world-class training with <span className="font-bold" style={{
-                        color: '#fb923c',
-                        textShadow: '0 0 8px rgba(251,146,60,0.4)'
-                      }}>state-of-the-art equipment</span> designed for elite performance. Every rep counts towards your transformation into a warrior.
+                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
+                      Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance. Every rep counts towards your transformation into a champion.
                     </p>
                   </div>
                 </div>
@@ -1037,35 +944,17 @@ export default function Home() {
                 <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
               </div>
               
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6" style={{
-                fontFamily: 'monospace',
-                letterSpacing: '2px'
-              }}>
-                <span style={{
-                  color: '#fbbf24',
-                  textShadow: '0 0 20px rgba(251,191,36,0.5)'
-                }}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-200 to-cyan-200">
                   READY TO
                 </span>
-                <span className="ml-3" style={{
-                  color: '#fb923c',
-                  textShadow: '0 0 18px rgba(251,146,60,0.5)'
-                }}>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-3">
                   DOMINATE?
                 </span>
               </h2>
               
-              <p className="text-lg sm:text-xl mb-8 max-w-3xl mx-auto leading-relaxed px-4" style={{
-                color: '#d97706',
-                textShadow: '0 0 8px rgba(217,119,6,0.3)'
-              }}>
-                Join the elite community of warriors who track their progress with <span className="font-semibold" style={{
-                  color: '#fb923c',
-                  textShadow: '0 0 10px rgba(251,146,60,0.4)'
-                }}>precision</span> and achieve <span className="font-semibold" style={{
-                  color: '#f59e0b',
-                  textShadow: '0 0 10px rgba(245,158,11,0.4)'
-                }}>extraordinary results</span>.
+              <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4">
+                Join the elite community of athletes who track their progress with <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 font-semibold">precision</span> and achieve <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-semibold">extraordinary results</span>.
               </p>
             </div>
 
@@ -1074,32 +963,14 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => navigate('/dashboard')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-black shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none hover:shadow-3xl"
-                    style={{
-                      background: 'linear-gradient(90deg, #f59e0b, #ea580c, #f59e0b)',
-                      color: '#1a0f08',
-                      textShadow: '0 0 8px rgba(26,15,8,0.5)',
-                      border: '2px solid rgba(251,146,60,0.4)',
-                      boxShadow: '0 0 30px rgba(251,146,60,0.3), inset 0 2px 4px rgba(255,255,255,0.1)',
-                      fontFamily: 'monospace',
-                      letterSpacing: '1px'
-                    }}
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400/50 hover:shadow-3xl"
                   >
                     🚀 GO TO DASHBOARD
                   </button>
                   
                   <button 
                     onClick={() => navigate('/current-streak')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-black shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none hover:shadow-3xl"
-                    style={{
-                      background: 'linear-gradient(90deg, #dc2626, #b91c1c, #dc2626)',
-                      color: '#fbbf24',
-                      textShadow: '0 0 10px rgba(251,191,36,0.6)',
-                      border: '2px solid rgba(220,38,38,0.6)',
-                      boxShadow: '0 0 30px rgba(220,38,38,0.4), inset 0 2px 4px rgba(255,255,255,0.1)',
-                      fontFamily: 'monospace',
-                      letterSpacing: '1px'
-                    }}
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-400/50 hover:shadow-3xl"
                   >
                     🔥 CHECK STREAK ({realTimeCurrentStreak})
                   </button>
@@ -1108,32 +979,14 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => navigate('/register')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-black shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none hover:shadow-3xl"
-                    style={{
-                      background: 'linear-gradient(90deg, #f59e0b, #ea580c, #f59e0b)',
-                      color: '#1a0f08',
-                      textShadow: '0 0 8px rgba(26,15,8,0.5)',
-                      border: '2px solid rgba(251,146,60,0.4)',
-                      boxShadow: '0 0 30px rgba(251,146,60,0.3), inset 0 2px 4px rgba(255,255,255,0.1)',
-                      fontFamily: 'monospace',
-                      letterSpacing: '1px'
-                    }}
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400/50 hover:shadow-3xl"
                   >
                     🎆 START YOUR JOURNEY
                   </button>
                   
                   <button 
                     onClick={() => navigate('/login')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-black backdrop-blur-xl border shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none hover:shadow-3xl"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(45,27,14,0.9) 0%, rgba(26,15,8,0.9) 100%)',
-                      borderColor: 'rgba(251,146,60,0.4)',
-                      color: '#fbbf24',
-                      textShadow: '0 0 10px rgba(251,191,36,0.4)',
-                      boxShadow: '0 0 25px rgba(251,146,60,0.2), inset 0 2px 4px rgba(255,255,255,0.05)',
-                      fontFamily: 'monospace',
-                      letterSpacing: '1px'
-                    }}
+                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-white/20 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/20 hover:border-white/40 hover:shadow-3xl"
                   >
                     🔑 LOGIN
                   </button>
@@ -1147,21 +1000,13 @@ export default function Home() {
       {/* Notification System */}
       {notification && (
         <div className="fixed top-4 right-4 z-50 max-w-sm animate-in slide-in-from-right duration-300">
-          <div className="p-3 rounded-lg shadow-xl border backdrop-blur-sm transform transition-all duration-300" style={{
-            background: notification.type === 'workout' 
-              ? 'linear-gradient(135deg, rgba(245,158,11,0.95) 0%, rgba(234,88,12,0.95) 100%)'
+          <div className={`p-3 rounded-xl shadow-xl border backdrop-blur-sm transform transition-all duration-300 ${
+            notification.type === 'workout' 
+              ? 'bg-green-600/95 border-green-400 text-white' 
               : notification.type === 'streak' 
-              ? 'linear-gradient(135deg, rgba(220,38,38,0.95) 0%, rgba(185,28,28,0.95) 100%)'
-              : 'linear-gradient(135deg, rgba(251,146,60,0.95) 0%, rgba(249,115,22,0.95) 100%)',
-            borderColor: notification.type === 'workout' 
-              ? 'rgba(245,158,11,0.6)'
-              : notification.type === 'streak' 
-              ? 'rgba(220,38,38,0.6)'
-              : 'rgba(251,146,60,0.6)',
-            color: '#1a0f08',
-            textShadow: '0 0 5px rgba(26,15,8,0.3)',
-            boxShadow: '0 0 25px rgba(251,146,60,0.3), inset 0 1px 2px rgba(255,255,255,0.1)'
-          }}>
+              ? 'bg-orange-600/95 border-orange-400 text-white' 
+              : 'bg-blue-600/95 border-blue-400 text-white'
+          }`}>
             <div className="flex items-start gap-3">
               <span className="text-xl flex-shrink-0">
                 {notification.type === 'workout' ? '🎉' : notification.type === 'streak' ? '🔥' : '✨'}
@@ -1172,11 +1017,7 @@ export default function Home() {
               </div>
               <button 
                 onClick={() => setNotification(null)} 
-                className="rounded-sm p-1 transition-all duration-200"
-                style={{
-                  color: 'rgba(26,15,8,0.7)',
-                  ':hover': { color: '#1a0f08' }
-                }}
+                className="text-white/80 hover:text-white rounded-full p-1 transition-all duration-200"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
