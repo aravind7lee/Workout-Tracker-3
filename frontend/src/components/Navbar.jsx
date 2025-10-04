@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import SearchBar from "./SearchBar";
-import { demoService } from "../services/demoService";
+
 import UltraSmoothSideMenu from "./UltraSmoothSideMenu";
 import { useConnectionStatus } from "../services/connectionService";
 import logo from "../assets/logo.png";

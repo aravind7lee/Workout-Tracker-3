@@ -1,6 +1,6 @@
 // Fixed Authentication Service with Offline Support
 import api from '../utils/api';
-import { demoService } from './demoService';
+
 import { smartRequest, safeApiCall } from './smartRequestManager';
 
 export const registerUser = async (userData) => {
@@ -139,16 +139,7 @@ const tryOfflineLogin = (credentials) => {
       };
     }
     
-    // Try demo credentials
-    if (credentials.email === 'demo@gymtracker.com' && credentials.password === 'demo123456') {
-      const { user, token } = demoService.createDemoSession();
-      return {
-        success: true,
-        user,
-        token,
-        message: 'Demo login successful'
-      };
-    }
+
     
     return null;
   } catch (error) {
@@ -156,16 +147,7 @@ const tryOfflineLogin = (credentials) => {
   }
 };
 
-export const createDemoUser = async () => {
-  // Always use offline demo
-  const { user, token } = demoService.createDemoSession();
-  return {
-    success: true,
-    user,
-    token,
-    message: 'Demo session started'
-  };
-};
+
 
 export const checkBackendStatus = async () => {
   try {

@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import { loginUser, createDemoUser, checkBackendStatus } from '../services/authService';
-import { demoService } from '../services/demoService';
+import { loginUser, checkBackendStatus } from '../services/authService';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -64,36 +63,9 @@ const Login = () => {
     }
   };
 
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const { user, token } = demoService.createDemoSession();
-      login(user, token);
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Demo login error:', err);
-      setError('Failed to start demo. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleQuickLogin = async (email, password) => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const result = await loginUser({ email, password });
-      login(result.user, result.token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -153,22 +125,7 @@ const Login = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
           
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
-            </div>
-          </div>
-          
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            className="btn bg-green-600 hover:bg-green-700 text-white w-full"
-          >
-            🚀 Try Demo Account
-          </button>
+
           
           <p className="text-center text-sm text-slate-400 mt-6">
             Don't have an account?{" "}
@@ -178,27 +135,7 @@ const Login = () => {
           </p>
         </form>
         
-        {backendStatus === 'offline' && (
-          <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
-            <p className="text-slate-300 text-sm text-center mb-3">Quick Login Options:</p>
-            <div className="space-y-2">
-              <button
-                onClick={() => handleQuickLogin('demo@gymtracker.com', 'demo123456')}
-                className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
-                disabled={loading}
-              >
-                📧 demo@gymtracker.com / demo123456
-              </button>
-              <button
-                onClick={() => handleQuickLogin('test@example.com', 'password123')}
-                className="w-full text-left px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
-                disabled={loading}
-              >
-                📧 test@example.com / password123
-              </button>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );

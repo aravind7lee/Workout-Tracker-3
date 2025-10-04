@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import { registerUser, createDemoUser, checkBackendStatus } from '../services/authService';
-import { demoService } from '../services/demoService';
+import { registerUser, checkBackendStatus } from '../services/authService';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -63,21 +62,7 @@ const Register = () => {
     }
   };
   
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const { user, token } = demoService.createDemoSession();
-      login(user, token);
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Demo login error:', err);
-      setError('Failed to start demo. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -164,24 +149,7 @@ const Register = () => {
           </button>
         </form>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleDemoLogin}
-            disabled={loading}
-            className="w-full mt-4 btn bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
-          >
-            {loading ? 'Starting Demo...' : '🚀 Try Demo Account'}
-          </button>
-        </div>
+
 
         <div className="mt-6 text-center">
           <p className="text-slate-400 text-sm">
