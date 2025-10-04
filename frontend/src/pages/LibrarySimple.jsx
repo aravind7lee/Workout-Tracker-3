@@ -18,6 +18,7 @@ import Library6 from '../assets/Library6.jpg';
 import Library7 from '../assets/Library7.jpg';
 import Library8 from '../assets/Library8.jpg';
 import Library11 from '../assets/Library11.jpg';
+import '../styles/shimmer.css';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -44,56 +45,15 @@ export default function LibrarySimple() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   
-  // Add shimmer animation styles
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-      .animate-shimmer {
-        animation: shimmer 2s infinite;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => document.head.removeChild(style);
-  }, []);
+
   
   // LQIP (Low Quality Image Placeholder)
   const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
   
-  // Framer Motion variants for text animation
-  const textVariants = {
-    hidden: {
-      opacity: 0,
-      y: 12
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
-        staggerChildren: 0.06,
-        delayChildren: 0.1
-      }
-    }
-  };
-  
-  const childVariants = {
-    hidden: {
-      opacity: 0,
-      y: 12
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.42,
-        ease: [0.22, 1, 0.36, 1]
-      }
-    }
+  // Simplified animation for better performance
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.3 } }
   };
   
   // Update search when navbar search parameter changes
@@ -107,36 +67,12 @@ export default function LibrarySimple() {
   const [showQuickPlan, setShowQuickPlan] = useState(null);
   const [showAddToExisting, setShowAddToExisting] = useState(null);
   
-  // Preload hero image with optimization and performance monitoring
+  // Optimized image preloading
   useEffect(() => {
-    const startTime = performance.now();
     const img = new Image();
-    
-    img.onload = () => {
-      const loadTime = performance.now() - startTime;
-      console.log(`🖼️ Library hero image loaded in ${loadTime.toFixed(2)}ms`);
-      
-      setImageLoaded(true);
-      
-      // Remove will-change properties after all animations complete
-      setTimeout(() => {
-        const heroContainer = document.querySelector('.hero-image-container');
-        if (heroContainer) {
-          heroContainer.classList.add('hero-animation-complete');
-        }
-      }, 1200);
-    };
-    
-    img.onerror = (error) => {
-      console.error('❌ Library hero image failed to load:', error);
-      setImageError(true);
-    };
-    
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
     img.src = LibraryHeaderImg;
-    img.loading = 'eager';
-    img.fetchPriority = 'high';
-    
-    // Cleanup function
     return () => {
       img.onload = null;
       img.onerror = null;
@@ -264,16 +200,10 @@ export default function LibrarySimple() {
         aria-label="Exercise Library Hero Section"
       >
         {!imageLoaded && !imageError ? (
-          // Skeleton placeholder with shimmer - no text animation during loading
-          <motion.div 
-            className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          // Optimized skeleton
+          <div className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
-
-          </motion.div>
+          </div>
         ) : imageError ? (
           // Fallback content if image fails to load
           <motion.div 
@@ -359,78 +289,39 @@ export default function LibrarySimple() {
             {/* Adaptive gradient overlay for WCAG contrast compliance */}
             <div className="absolute inset-0 hero-overlay-dark dark:hero-overlay-dark light:hero-overlay-light" />
             
-            {/* Hero content with precise Framer Motion sequencing */}
+            {/* Optimized hero content */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div 
                 className="text-center text-white px-4 sm:px-6 max-w-4xl mx-auto"
                 initial="hidden"
                 animate={imageLoaded ? "visible" : "hidden"}
-                variants={textVariants}
+                variants={fadeIn}
               >
-                <motion.h1 
+                <h1 
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 hero-text-contrast leading-tight"
                   style={{ color: '#f59e0b' }}
-                  variants={{
-                    hidden: { opacity: 0, y: 12 },
-                    visible: { 
-                      opacity: 1, 
-                      y: 0,
-                      transition: {
-                        duration: 0.6,
-                        ease: [0.22, 1, 0.36, 1]
-                      }
-                    }
-                  }}
-                  role="banner"
-                  aria-label="Exercise Library - Main heading"
                 >
                   Exercise Library
-                </motion.h1>
+                </h1>
                 
-                <motion.p 
-                  className="text-sm sm:text-base md:text-lg lg:text-xl hero-text-contrast max-w-2xl mx-auto font-medium leading-relaxed px-2"
-                  variants={childVariants}
-                  aria-describedby="library-description"
-                >
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl hero-text-contrast max-w-2xl mx-auto font-medium leading-relaxed px-2">
                   Browse, track, and customize your exercises with ease.
-                </motion.p>
+                </p>
                 
-                {/* Mobile-friendly CTA buttons with stagger */}
-                <motion.div
-                  className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"
-                  variants={childVariants}
-                >
-                  <motion.button 
-                    onClick={() => {
-                      const exerciseGrid = document.getElementById('exercise-grid');
-                      if (exerciseGrid) {
-                        exerciseGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 text-base sm:text-lg cta-button border-2 border-blue-500"
-                    aria-label="Scroll to exercise library"
-                    variants={childVariants}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                  <button 
+                    onClick={() => document.getElementById('exercise-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-colors duration-200 text-base sm:text-lg"
                   >
                     💪 EXPLORE EXERCISES
-                  </motion.button>
-                  <motion.button 
-                    onClick={() => {
-                      const searchFilters = document.getElementById('search-filters');
-                      if (searchFilters) {
-                        searchFilters.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }}
-                    className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 text-base sm:text-lg cta-button border-2 border-orange-500"
-                    aria-label="Scroll to search and filters"
-                    variants={childVariants}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                  </button>
+                  <button 
+                    onClick={() => document.getElementById('search-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-colors duration-200 text-base sm:text-lg"
                   >
                     🔥 START TRAINING
-                  </motion.button>
-                </motion.div>
+                  </button>
+                </div>
               </motion.div>
             </div>
             
@@ -440,22 +331,10 @@ export default function LibrarySimple() {
       </motion.div>
 
       {/* Exercise Categories Gallery Section */}
-      <motion.section 
-        className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-16 sm:py-20"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-      >
+      <section className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-16 sm:py-20">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Section Header */}
-          <motion.div 
-            className="text-center mb-12 sm:mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div className="text-center mb-12 sm:mb-16">
             <div className="inline-flex items-center gap-3 mb-4">
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
               <span className="text-xs font-bold tracking-[0.3em] text-blue-400 uppercase">Exercise Categories</span>
@@ -473,7 +352,7 @@ export default function LibrarySimple() {
             <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Discover our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">elite exercise library</span> with professional-grade workouts
             </p>
-          </motion.div>
+          </div>
 
           {/* Exercise Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -558,7 +437,7 @@ export default function LibrarySimple() {
             />
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Main Content Area */}
       <div className="relative bg-slate-900 pt-12 pb-12">
@@ -676,7 +555,7 @@ export default function LibrarySimple() {
           </div>
         ) : (
           filteredExercises.map(exercise => (
-            <div key={exercise.id} className="card hover:scale-105 transition-all duration-200 plan-card">
+            <div key={exercise.id} className="card hover:scale-[1.02] transition-transform duration-150 plan-card">
               <div className="flex items-start gap-3 mb-4">
                 <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
                   <span className="text-2xl">{exercise.icon}</span>
@@ -942,18 +821,15 @@ export default function LibrarySimple() {
   );
 }
 
-// Exercise Card Component with Premium Features
+// Optimized Exercise Card Component
 const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  
   // Category color mapping
   const categoryColors = {
     strength: 'from-red-500 to-orange-500',
     muscle: 'from-blue-500 to-cyan-500',
     functional: 'from-green-500 to-emerald-500',
     flexibility: 'from-purple-500 to-pink-500',
-    olympic: 'from-yellow-500 to-orange-500',
+    lifting: 'from-yellow-500 to-orange-500',
     bodyweight: 'from-indigo-500 to-blue-500',
     sports: 'from-teal-500 to-green-500',
     power: 'from-violet-500 to-purple-500'
@@ -964,7 +840,7 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
     muscle: '🔥',
     functional: '⚡',
     flexibility: '🧘',
-    olympic: '🏋️',
+    lifting: '🏋️',
     bodyweight: '🤸',
     sports: '🏆',
     power: '💥'
@@ -973,66 +849,21 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
   const gradientClass = categoryColors[category] || 'from-blue-500 to-cyan-500';
   const icon = categoryIcons[category] || '💪';
   
-  // Preload image
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageError(true);
-    img.src = image;
-  }, [image]);
-  
   return (
-    <motion.div
-      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-500 shadow-xl hover:shadow-2xl"
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ 
-        duration: 0.6, 
-        delay: delay,
-        ease: [0.22, 1, 0.36, 1]
-      }}
-      whileHover={{ 
-        y: -12, 
-        scale: 1.03,
-        transition: { duration: 0.3, ease: "easeOut" }
-      }}
-    >
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
       {/* Premium Glow Effect */}
       <div className={`absolute -inset-1 bg-gradient-to-r ${gradientClass} rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition-all duration-500`} />
       
       {/* Image Container */}
       <div className="relative h-64 sm:h-72 lg:h-80 overflow-hidden">
-        {/* Skeleton Loader */}
-        {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-700/50 to-slate-600/50 animate-pulse">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
-          </div>
-        )}
-        
-        {/* Error Fallback */}
-        {imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
-            <div className="text-center text-slate-400">
-              <div className="text-4xl mb-2">{icon}</div>
-              <div className="text-sm font-medium">{title}</div>
-            </div>
-          </div>
-        )}
-        
         {/* Main Image */}
-        {imageLoaded && (
-          <motion.img
-            src={image}
-            alt={`${title} - ${subtitle}`}
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            loading="lazy"
-            decoding="async"
-          />
-        )}
+        <img
+          src={image}
+          alt={`${title} - ${subtitle}`}
+          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+          loading="lazy"
+          decoding="async"
+        />
         
         {/* Dark Mode Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent dark:from-black/90 dark:via-black/40" />
@@ -1047,12 +878,7 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
         
         {/* Content Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: delay + 0.2 }}
-          >
+          <div>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white mb-2 leading-tight drop-shadow-lg">
               {title}
             </h3>
@@ -1062,12 +888,12 @@ const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0
             <p className="text-sm sm:text-base text-slate-100 leading-relaxed opacity-95 drop-shadow-sm">
               {description}
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
       
       {/* Hover Effect Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-    </motion.div>
+    </div>
   );
 };
