@@ -89,20 +89,28 @@ router.post("/login", async (req, res) => {
 
     // Validation
     if (!email || !password) {
+      console.log('❌ Missing email or password');
       return res.status(400).json({ message: "Email and password are required" });
     }
 
     // Find user in MongoDB Atlas with profileImage
     const user = await User.findOne({ email: email.toLowerCase() }).select('+profileImage');
     if (!user) {
+      console.log(`❌ User not found for email: ${email}`);
       return res.status(400).json({ message: "Invalid email or password" });
     }
     
-    console.log(`🔍 Found user with profileImage: ${user.profileImage ? 'YES' : 'NO'}`);
+    console.log(`🔍 Found user: ${user.name} (${user.email}) - ID: ${user._id}`);
+    console.log(`🔍 User profileImage: ${user.profileImage ? 'YES' : 'NO'}`);
+    console.log(`🔍 User isActive: ${user.isActive}`);
+    console.log(`🔍 Password hash exists: ${user.password ? 'YES' : 'NO'}`);
 
     // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(`🔐 Password match result: ${isMatch}`);
+    
     if (!isMatch) {
+      console.log(`❌ Password mismatch for user: ${user.email}`);
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
@@ -132,6 +140,8 @@ router.post("/login", async (req, res) => {
       { expiresIn: "30d" }
     );
 
+    console.log(`✅ JWT token generated successfully for user: ${updatedUser.email}`);
+
     res.json({
       success: true,
       message: "Login successful and tracked in MongoDB Atlas",
@@ -140,7 +150,7 @@ router.post("/login", async (req, res) => {
         id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        profileImage: updatedUser.profileImage || null, // Explicitly ensure profileImage is included
+        profileImage: updatedUser.profileImage || null,
         bio: updatedUser.bio,
         stats: updatedUser.stats,
         lastLogin: updatedUser.lastLogin,
@@ -152,7 +162,8 @@ router.post("/login", async (req, res) => {
     console.log(`📸 Profile Image Status: ${updatedUser.profileImage ? 'PRESENT - Will sync across devices' : 'NONE - Default will be used'}`);
   } catch (error) {
     console.error('❌ MongoDB Atlas Login Error:', error);
-    res.status(500).json({ message: "Failed to track login in MongoDB Atlas", error: error.message });
+    console.error('❌ Error stack:', error.stack);
+    res.status(500).json({ message: "Login failed. Please try again.", error: error.message });
   }
 });
 
