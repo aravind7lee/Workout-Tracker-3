@@ -1,7 +1,7 @@
-// Frontend API Configuration - RENDER BACKEND URL
+// Frontend API Configuration - LOCAL DEVELOPMENT
 export const API_CONFIG = {
-  // Your deployed backend URL on Render
-  BASE_URL: 'https://workout-tracker-backend-wga7.onrender.com',
+  // Local development backend URL
+  BASE_URL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000',
   
   // API Endpoints
   ENDPOINTS: {
@@ -19,13 +19,15 @@ export const API_CONFIG = {
     LOGIN: '/api/auth/login',
   },
   
-  // Full URLs for direct use
-  URLS: {
-    ROOT: 'https://workout-tracker-backend-wga7.onrender.com/api',
-    TEST: 'https://workout-tracker-backend-wga7.onrender.com/api/test',
-    HEALTH: 'https://workout-tracker-backend-wga7.onrender.com/api/health',
-    REGISTER: 'https://workout-tracker-backend-wga7.onrender.com/api/auth/register',
-    LOGIN: 'https://workout-tracker-backend-wga7.onrender.com/api/auth/login',
+  // Full URLs for direct use (dynamically generated)
+  get URLS() {
+    return {
+      ROOT: `${this.BASE_URL}/api`,
+      TEST: `${this.BASE_URL}/api/test`,
+      HEALTH: `${this.BASE_URL}/api/health`,
+      REGISTER: `${this.BASE_URL}/api/auth/register`,
+      LOGIN: `${this.BASE_URL}/api/auth/login`,
+    };
   }
 };
 

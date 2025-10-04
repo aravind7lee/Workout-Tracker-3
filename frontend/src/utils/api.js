@@ -10,7 +10,7 @@ const getApiBaseUrl = () => {
   
   // In development, prefer local backend if available
   if (import.meta.env.DEV) {
-    return 'http://localhost:5000/api';
+    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   }
   
   // In production, use the deployed backend
