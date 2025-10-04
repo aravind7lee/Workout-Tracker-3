@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useAchievements } from '../context/AchievementsContext';
 import CompletedWorkouts from '../components/CompletedWorkouts';
 import RealTimeNotification from '../components/RealTimeNotification';
+import YourWorkoutsImg from '../assets/Yourworkouts.jpg';
 
 export default function Workouts() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export default function Workouts() {
   const { checkAchievements } = useAchievements();
   const [notification, setNotification] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated()) {
@@ -26,6 +30,21 @@ export default function Workouts() {
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Preload hero image
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = YourWorkoutsImg;
+    img.loading = 'eager';
+    img.fetchPriority = 'high';
+    
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, []);
 
   // Handle navigation from StartWorkout
@@ -100,72 +119,175 @@ export default function Workouts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-blue-900/20 border-b border-slate-700/50">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5"></div>
-        <div className="relative container mx-auto px-4 py-12">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-black text-transparent bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text mb-4">
-              YOUR WORKOUTS
-            </h1>
-            <p className="text-lg text-slate-300 mb-6">Track your completed workouts and progress in real-time</p>
+    <div className="min-h-screen bg-slate-900">
+      {/* Premium Hero Section with Yourworkouts.jpg */}
+      <motion.div 
+        className="relative w-full h-screen min-h-screen overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        role="banner"
+        aria-label="Your Workouts Hero Section"
+      >
+        {!imageLoaded && !imageError ? (
+          // Skeleton loader with shimmer
+          <motion.div 
+            className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
+          </motion.div>
+        ) : imageError ? (
+          // Fallback content if image fails
+          <motion.div 
+            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center text-white px-4">
+              <div className="text-6xl mb-4">💪</div>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+                YOUR WORKOUTS
+              </h1>
+              <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
+                Track your completed workouts and progress in real-time
+              </p>
+            </div>
+          </motion.div>
+        ) : (
+          <>
+            {/* Main hero image - responsive for mobile vertical */}
+            <motion.img
+              src={YourWorkoutsImg}
+              alt="Your Workouts - Professional gym training background"
+              className="w-full h-full object-cover sm:object-contain bg-slate-900"
+              style={{
+                objectPosition: window.innerWidth <= 640 ? '65% center' : 'center center'
+              }}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ 
+                opacity: imageLoaded ? 1 : 0, 
+                scale: imageLoaded ? 1 : 0.98 
+              }}
+              transition={{ 
+                duration: 0.6, 
+                ease: "easeOut"
+              }}
+            />
             
-            {/* Quick Action Button */}
-            <div className="mb-6">
-              <div className="flex gap-3 justify-center">
-                <button
-                  onClick={() => navigate('/library')}
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-semibold"
-                >
-                  🏋️ Start New Workout
-                </button>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="btn bg-slate-600 hover:bg-slate-700 text-white px-4 py-3"
-                >
-                  🔄 Refresh
-                </button>
-              </div>
+            {/* Dark overlay for text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+            
+            {/* Title in center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.h1 
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white drop-shadow-2xl"
+                initial={{ opacity: 0, y: 20 }}
+                animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                YOUR WORKOUTS
+              </motion.h1>
             </div>
             
-            {/* Real-time Status */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-600/30">
-                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
-                <span className="text-sm font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
-              </div>
-              <div className="text-sm text-slate-300 font-mono bg-slate-800/50 px-4 py-2 rounded-full border border-slate-600/30">
-                {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second: '2-digit'})}
-              </div>
-            </div>
+            {/* Other content at bottom */}
+            <div className="absolute inset-0 flex items-end justify-center pb-8 sm:pb-12">
+              <motion.div 
+                className="text-center text-white px-4 max-w-6xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                
+                <motion.p 
+                  className="text-sm sm:text-base md:text-lg text-white/90 max-w-2xl mx-auto mb-4 drop-shadow-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                >
+                  Track your completed workouts and progress in real-time
+                </motion.p>
+                
+                {/* Compact Action Buttons */}
+                <motion.div
+                  className="flex flex-col sm:flex-row gap-2 justify-center items-center mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <motion.button
+                    onClick={() => navigate('/library')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg transition-all duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🏋️ Start New Workout
+                  </motion.button>
+                  <motion.button
+                    onClick={() => window.location.reload()}
+                    className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-sm shadow-lg transition-all duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🔄 Refresh
+                  </motion.button>
+                </motion.div>
+                
+                {/* Compact Status Indicators */}
+                <motion.div 
+                  className="flex items-center justify-center gap-3 mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                >
+                  <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
+                    <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                    <span className="text-xs font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
+                  </div>
+                  <div className="text-xs text-white/80 font-mono bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
+                    {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </div>
+                </motion.div>
 
-            {/* Real-Time Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-4 relative">
-                <div className="text-2xl font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
-                <div className="text-xs text-slate-300 uppercase tracking-wide">Today's Workouts</div>
-                <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              </div>
-              <div className="bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-4 relative">
-                <div className="text-2xl font-black text-green-400">{stats?.totalWorkouts || 0}</div>
-                <div className="text-xs text-slate-300 uppercase tracking-wide">Total Workouts</div>
-                <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              </div>
-              <div className="bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-4 relative">
-                <div className="text-2xl font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
-                <div className="text-xs text-slate-300 uppercase tracking-wide">This Week</div>
-                <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              </div>
-              <div className="bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-4 relative">
-                <div className="text-2xl font-black text-orange-400">{stats?.totalCalories || 0}</div>
-                <div className="text-xs text-slate-300 uppercase tracking-wide">Total Calories</div>
-                <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              </div>
+                {/* Compact Stats Grid */}
+                <motion.div 
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                >
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
+                    <div className="text-lg font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
+                    <div className="text-xs text-white/80">Today</div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
+                    <div className="text-lg font-black text-green-400">{stats?.totalWorkouts || 0}</div>
+                    <div className="text-xs text-white/80">Total</div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
+                    <div className="text-lg font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
+                    <div className="text-xs text-white/80">Week</div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
+                    <div className="text-lg font-black text-orange-400">{stats?.totalCalories || 0}</div>
+                    <div className="text-xs text-white/80">Calories</div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      </div>
+          </>
+        )}
+      </motion.div>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
