@@ -34,11 +34,9 @@ import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import ChromeErrorBoundary from './components/ChromeErrorBoundary';
 import ThemeErrorBoundary from './components/ThemeErrorBoundary';
-import DemoBanner from './components/DemoBanner';
-import DemoFloatingControls from './components/DemoFloatingControls';
-import DemoFeatureTracker from './components/DemoFeatureTracker';
+
 import WorkoutCompletionHandler from './components/WorkoutCompletionHandler';
-import { DemoProvider } from './context/DemoContext';
+
 import Register from './pages/Register';
 import Login from './pages/Login';
 import LegendsAndInfluencers from './pages/LegendsAndInfluencers';
@@ -391,12 +389,8 @@ export default function App() {
                 <StreakProvider>
                   <AchievementsProvider>
                     <WorkoutCompletionProvider>
-                      <DemoProvider>
                   <div className="min-h-screen">
                     <Navbar />
-                    <DemoBanner />
-                    <DemoFloatingControls />
-                    <DemoFeatureTracker />
                     <WorkoutCompletionHandler />
                     <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                     <Routes>
@@ -428,7 +422,6 @@ export default function App() {
                     </main>
                     <Footer />
                   </div>
-                      </DemoProvider>
                     </WorkoutCompletionProvider>
                   </AchievementsProvider>
                 </StreakProvider>

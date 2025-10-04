@@ -586,27 +586,29 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Stats */}
-        <section data-animate data-id="quick-stats" className="mb-12">
-          <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
-                  YOUR STATUS
-                </span>
-              </h2>
-              <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-                Real-time performance metrics for champions
-              </p>
-            </div>
+        {/* Quick Stats - Only show when logged in */}
+        {isAuthenticated() && (
+          <section data-animate data-id="quick-stats" className="mb-12">
+            <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+              <div className="text-center mb-8">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                    YOUR STATUS
+                  </span>
+                </h2>
+                <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+                  Real-time performance metrics for champions
+                </p>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {quickStats.map((stat, i) => (
-                <StatCard key={`stat-${i}`} stat={stat} />
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {quickStats.map((stat, i) => (
+                  <StatCard key={`stat-${i}`} stat={stat} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
 
 

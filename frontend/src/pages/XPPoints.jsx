@@ -270,7 +270,7 @@ const XPPoints = () => {
                       Level {levelReward}
                     </div>
                     <div className="text-xs sm:text-sm text-slate-500 truncate">
-                      {levelReward === 1 && 'Welcome to GymTracker!'}
+                      {levelReward === 1 && 'Welcome to GRINDX!'}
                       {levelReward === 5 && 'Fitness Enthusiast'}
                       {levelReward === 10 && 'Dedicated Athlete'}
                       {levelReward === 25 && 'Fitness Warrior'}

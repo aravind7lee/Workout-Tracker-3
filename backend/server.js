@@ -81,19 +81,18 @@ app.use('/api/', (req, res, next) => {
   return generalLimiter(req, res, next);
 });
 
+// Create auth rate limiter at app initialization
+const lightAuthLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // 30 requests per minute
+  message: { success: false, message: 'Too many auth requests' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS'
+});
+
 // Routes with relaxed rate limiting
-app.use('/api/auth', (req, res, next) => {
-  // Apply lighter rate limiting for auth
-  const lightAuthLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 30, // 30 requests per minute
-    message: { success: false, message: 'Too many auth requests' },
-    standardHeaders: true,
-    legacyHeaders: false,
-    skip: (req) => req.method === 'OPTIONS'
-  });
-  return lightAuthLimiter(req, res, next);
-}, authRoutes);
+app.use('/api/auth', lightAuthLimiter, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/plans', planRoutes);

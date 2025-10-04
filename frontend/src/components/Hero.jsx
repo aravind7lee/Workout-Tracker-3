@@ -110,7 +110,7 @@ export default function Hero() {
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
               {/* Main Title */}
               <motion.h1 
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
                 variants={itemVariants}
               >
                 Welcome to{' '}
@@ -118,7 +118,7 @@ export default function Hero() {
                   textShadow: '3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8)',
                   fontSize: '1.1em'
                 }}>
-                  GymTracker
+                  GRIND-X
                 </span>
               </motion.h1>
 
