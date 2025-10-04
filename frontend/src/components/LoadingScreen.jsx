@@ -41,10 +41,21 @@ const LoadingScreen = ({ onLoadingComplete }) => {
     { text: 'GRIND-X READY', color: 'from-amber-300 to-orange-400', glow: 'rgba(252,211,77,0.5)' }
   ];
 
+  useEffect(() => {
+    if (isVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-600 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+    <div className={`fixed inset-0 z-[99999] flex items-center justify-center transition-all duration-600 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
          style={{
            background: 'linear-gradient(135deg, #2d1b0e 0%, #1a0f08 25%, #3d2817 50%, #1f1209 75%, #2d1b0e 100%)',
            filter: 'contrast(1.2) saturate(0.9) brightness(1.05)'
