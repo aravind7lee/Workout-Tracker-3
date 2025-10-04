@@ -24,7 +24,7 @@ import rateLimit from 'express-rate-limit';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = 5000;
 
 // Enhanced CORS configuration
 app.use(cors({
@@ -201,22 +201,9 @@ mongoose.connect(process.env.MONGO_URI)
     console.log('✅ Connected to MongoDB');
     console.log('🔧 Cloudinary configured:', !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY));
     
-    const server = app.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 API Health: http://localhost:${PORT}/api/health`);
-    });
-    
-    server.on('error', (err) => {
-      if (err.code === 'EADDRINUSE') {
-        console.log(`❌ Port ${PORT} is busy, trying port ${PORT + 1}`);
-        const newPort = PORT + 1;
-        app.listen(newPort, () => {
-          console.log(`🚀 Server running on port ${newPort}`);
-          console.log(`📡 API Health: http://localhost:${newPort}/api/health`);
-        });
-      } else {
-        console.error('❌ Server error:', err);
-      }
     });
   })
   .catch((error) => {
