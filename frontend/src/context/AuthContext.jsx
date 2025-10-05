@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { setAuthToken } from '../utils/api';
 import { profileStorage } from '../utils/profileStorage';
 import { initializeUserData } from '../utils/cleanUserWorkouts';
+import { initializeUserPlanData } from '../utils/cleanUserPlans';
 
 const AuthContext = createContext();
 
@@ -26,6 +27,11 @@ export const AuthProvider = ({ children }) => {
       
       // Clear user-specific cached data
       localStorage.removeItem('mongodb_workouts_cache');
+      
+      // Clear plan service cache
+      if (window.realTimePlanService) {
+        window.realTimePlanService.planCache.clear();
+      }
       
       setUser(null);
       setToken(null);
@@ -59,9 +65,17 @@ export const AuthProvider = ({ children }) => {
             console.log('🔄 Initializing user data on app startup...');
             const initResult = initializeUserData(parsedUser);
             if (initResult.success) {
-              console.log('✅ User data initialized on startup');
+              console.log('✅ User workout data initialized on startup');
             } else {
-              console.warn('⚠️ User data initialization failed on startup:', initResult.message);
+              console.warn('⚠️ User workout data initialization failed on startup:', initResult.message);
+            }
+            
+            // Initialize user plan data on app startup
+            const planInitResult = initializeUserPlanData(parsedUser);
+            if (planInitResult.success) {
+              console.log('✅ User plan data initialized on startup');
+            } else {
+              console.warn('⚠️ User plan data initialization failed on startup:', planInitResult.message);
             }
           } catch (parseError) {
             console.warn('Failed to parse saved user data, logging out');
@@ -114,9 +128,17 @@ export const AuthProvider = ({ children }) => {
       console.log('🧹 Initializing user-specific data after login...');
       const initResult = initializeUserData(userWithPhoto);
       if (initResult.success) {
-        console.log('✅ User data initialized successfully');
+        console.log('✅ User workout data initialized successfully');
       } else {
-        console.warn('⚠️ User data initialization failed:', initResult.message);
+        console.warn('⚠️ User workout data initialization failed:', initResult.message);
+      }
+      
+      // Initialize user-specific plans
+      const planInitResult = initializeUserPlanData(userWithPhoto);
+      if (planInitResult.success) {
+        console.log('✅ User plan data initialized successfully');
+      } else {
+        console.warn('⚠️ User plan data initialization failed:', planInitResult.message);
       }
     } catch (error) {
       console.error('Login error:', error);

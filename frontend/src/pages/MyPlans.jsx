@@ -38,8 +38,32 @@ export default function MyPlans() {
     }
   }, [navbarSearch]);
   
-  // Real-time data loading with instant updates
+  // Real-time data loading with instant updates - USER SPECIFIC
   useEffect(() => {
+    if (!user) {
+      console.log('🔒 No authenticated user - clearing plans');
+      setSavedPlans([]);
+      setLoading(false);
+      return;
+    }
+    
+    // Clean fake plans on mount
+    const cleanFakePlans = () => {
+      try {
+        const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+        const userPlans = allPlans.filter(plan => 
+          plan.userId === user.id || plan.userId === user._id
+        );
+        if (userPlans.length !== allPlans.length) {
+          localStorage.setItem('workoutPlans', JSON.stringify(userPlans));
+          console.log(`🧹 Cleaned plans: ${allPlans.length} → ${userPlans.length}`);
+        }
+      } catch (error) {
+        console.warn('Error cleaning fake plans:', error);
+      }
+    };
+    
+    cleanFakePlans();
     loadRealTimePlans();
     
     // Listen for real-time plan events
@@ -87,14 +111,31 @@ export default function MyPlans() {
   }, [highlightPlan]);
 
   const loadRealTimePlans = async () => {
+    if (!user) {
+      console.log('🔒 No authenticated user - cannot load plans');
+      setSavedPlans([]);
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
     setSyncStatus('syncing');
     try {
-      console.log('🚀 Loading REAL-TIME plans from MongoDB...');
+      console.log(`🚀 Loading USER-SPECIFIC plans for ${user.id}...`);
       
-      // Load plans using real-time service
+      // Load plans using real-time service (already user-filtered)
       const plans = await realTimePlanService.getPlans();
-      setSavedPlans(plans);
+      
+      // STRICT user filtering - only plans with matching userId
+      const userPlans = plans.filter(plan => {
+        const belongsToUser = plan.userId === user.id || plan.userId === user._id;
+        if (!belongsToUser) {
+          console.log(`🗑️ Filtering out plan: "${plan.name}" (userId: ${plan.userId}, user: ${user.id})`);
+        }
+        return belongsToUser;
+      });
+      
+      setSavedPlans(userPlans);
       
       // Update real-time stats
       updateRealTimeStats();
@@ -102,12 +143,12 @@ export default function MyPlans() {
       setLastSync(new Date());
       setSyncStatus('synced');
       
-      console.log('✅ REAL-TIME plans loaded:', plans.length);
+      console.log(`✅ USER-SPECIFIC plans loaded for ${user.id}:`, userPlans.length);
       
       // Auto-hide sync status
       setTimeout(() => setSyncStatus('idle'), 3000);
     } catch (error) {
-      console.error('❌ Failed to load real-time plans:', error);
+      console.error('❌ Failed to load user-specific plans:', error);
       setSyncStatus('error');
       setTimeout(() => setSyncStatus('idle'), 5000);
     } finally {
@@ -299,16 +340,30 @@ export default function MyPlans() {
         ) : savedPlans.length === 0 ? (
           <div className="empty-state card text-center py-12">
             <div className="text-6xl mb-4">📋</div>
-            <h3 className="text-xl font-semibold heading-text mb-2">No Plans Yet</h3>
+            <h3 className="text-xl font-semibold heading-text mb-2">
+              {user ? 'No Plans Yet' : 'Login Required'}
+            </h3>
             <p className="muted-text mb-6">
-              You haven't created any workout plans yet. Start building your first plan!
+              {user 
+                ? 'You haven\'t created any workout plans yet. Start building your first plan!' 
+                : 'Please login to view and create your personal workout plans.'
+              }
             </p>
-            <Link
-              to="/plans"
-              className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
-            >
-              <span>+</span> Create Your First Plan
-            </Link>
+            {user ? (
+              <Link
+                to="/plans"
+                className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
+              >
+                <span>+</span> Create Your First Plan
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
+              >
+                🔑 Login to View Plans
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

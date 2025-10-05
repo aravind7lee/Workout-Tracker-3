@@ -62,15 +62,16 @@ export const RealTimeProvider = ({ children }) => {
       
       const realtimeStats = realTimeWorkoutSync.getStats();
       
-      // Get plans count from localStorage - filter by user if possible
+      // Get plans count from localStorage - filter by current user only
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const userPlans = plans.filter(plan => {
-        // Filter by user ID if available
-        return !plan.userId || plan.userId === user.id || plan.userId === user._id;
+        // Only include plans that belong to current user
+        return plan.userId === user.id || plan.userId === user._id ||
+               (!plan.userId && plan.synced === false); // Backward compatibility for local plans
       });
       const totalPlans = userPlans.length;
       
-      console.log(`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} plans`);
+      console.log(`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} user-specific plans`);
       
       return {
         workouts: realtimeStats.todayWorkouts,

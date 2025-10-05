@@ -19,7 +19,36 @@ class RealTimePlanService {
       this.isOnline = false;
     });
     
+    // Listen for user logout to clear plans
+    window.addEventListener('userLoggedOut', () => {
+      console.log('🔒 User logged out - clearing plan cache');
+      this.planCache.clear();
+      this.syncQueue = [];
+    });
+    
+    // Listen for user login to refresh plans
+    window.addEventListener('userDataInitialized', () => {
+      console.log('👤 User logged in - refreshing plan cache');
+      setTimeout(() => {
+        this.getPlans(true);
+      }, 200);
+    });
+    
     console.log('🚀 Real-Time Plan Service initialized');
+  }
+  
+  // Get current authenticated user
+  getCurrentUser() {
+    try {
+      const authUser = localStorage.getItem('user');
+      if (authUser) {
+        return JSON.parse(authUser);
+      }
+      return null;
+    } catch (error) {
+      console.warn('⚠️ Error getting current user:', error);
+      return null;
+    }
   }
 
   // Event system for real-time updates
@@ -48,12 +77,18 @@ class RealTimePlanService {
     }
   }
 
-  // Real-time plan creation with instant dashboard updates
+  // Real-time plan creation with instant dashboard updates - USER SPECIFIC
   async createPlan(planData) {
     try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        throw new Error('No authenticated user');
+      }
+      
       const tempId = `temp_${Date.now()}`;
       const localPlan = {
         id: tempId,
+        userId: currentUser.id || currentUser._id, // Associate with user
         ...planData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -144,11 +179,23 @@ class RealTimePlanService {
     }
   }
 
-  // Real-time plan loading with cache
+  // Real-time plan loading with cache - USER SPECIFIC
   async getPlans(forceRefresh = false) {
     try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - returning empty plans');
+        this.planCache.clear();
+        return [];
+      }
+      
       if (!forceRefresh && this.planCache.size > 0) {
-        return Array.from(this.planCache.values());
+        // Return only current user's plans from cache - STRICT filtering
+        const userPlans = Array.from(this.planCache.values()).filter(plan => 
+          plan.userId === currentUser.id || plan.userId === currentUser._id
+        );
+        console.log(`💾 Cache: ${userPlans.length} plans for user ${currentUser.id}`);
+        return userPlans;
       }
 
       let plans = [];
@@ -157,9 +204,16 @@ class RealTimePlanService {
       if (this.isOnline) {
         try {
           const backendPlans = await onlineService.getWorkoutPlans();
-          plans = backendPlans.map(plan => ({
+          // Filter MongoDB plans by current user
+          const userBackendPlans = backendPlans.filter(plan => 
+            plan.user === currentUser.id || plan.user === currentUser._id ||
+            plan.userId === currentUser.id || plan.userId === currentUser._id
+          );
+          
+          plans = userBackendPlans.map(plan => ({
             id: plan._id,
             backendId: plan._id,
+            userId: plan.user || plan.userId || currentUser.id,
             name: plan.name,
             exercises: plan.exercises || [],
             category: plan.category || 'General',
@@ -171,29 +225,54 @@ class RealTimePlanService {
             stats: plan.stats || {}
           }));
 
-          console.log('✅ Plans loaded from MongoDB:', plans.length);
+          console.log(`✅ User ${currentUser.id} plans loaded from MongoDB:`, plans.length);
+          
+          if (plans.length === 0) {
+            console.log('📊 No plans found in MongoDB for current user');
+          }
         } catch (error) {
           console.error('❌ MongoDB load failed, using local:', error);
           this.isOnline = false;
         }
       }
 
-      // Fallback to localStorage
+      // Fallback to localStorage - filter by user
       if (plans.length === 0) {
         const localPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-        plans = localPlans.map(plan => ({
+        // STRICT filtering - only plans with explicit userId match
+        const userLocalPlans = localPlans.filter(plan => {
+          const belongsToUser = plan.userId === currentUser.id || plan.userId === currentUser._id;
+          if (!belongsToUser && plan.name) {
+            console.log(`🗑️ Excluding plan: "${plan.name}" (userId: ${plan.userId})`);
+          }
+          return belongsToUser;
+        });
+        
+        plans = userLocalPlans.map(plan => ({
           ...plan,
+          userId: plan.userId || currentUser.id,
           synced: plan.synced || false,
           isTemp: plan.isTemp || false
         }));
-        console.log('📱 Plans loaded from localStorage:', plans.length);
+        console.log(`📱 User ${currentUser.id} plans loaded from localStorage:`, plans.length);
+        
+        if (plans.length === 0) {
+          console.log('📊 No plans found in localStorage for current user');
+        }
       }
 
-      // Update cache
+      // Update cache with user-specific plans only - STRICT filtering
       this.planCache.clear();
       plans.forEach(plan => {
-        this.planCache.set(plan.id, plan);
+        // ONLY cache plans that explicitly belong to current user
+        if (plan.userId === currentUser.id || plan.userId === currentUser._id) {
+          this.planCache.set(plan.id, plan);
+        } else {
+          console.log(`🗑️ Not caching plan: "${plan.name}" (userId: ${plan.userId})`);
+        }
       });
+      
+      console.log(`💾 Cached ${this.planCache.size} plans for user ${currentUser.id}`);
 
       this.lastSync = new Date().toISOString();
       return plans;
@@ -271,13 +350,30 @@ class RealTimePlanService {
     }
   }
 
-  // Get real-time plan count for dashboard
+  // Get real-time plan count for dashboard - USER SPECIFIC
   getPlanCount() {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      return 0;
+    }
     return this.planCache.size;
   }
 
-  // Get real-time plan stats for dashboard
+  // Get real-time plan stats for dashboard - USER SPECIFIC
   getPlanStats() {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      return {
+        totalPlans: 0,
+        syncedPlans: 0,
+        unsyncedPlans: 0,
+        totalExercises: 0,
+        categories: [],
+        lastSync: null,
+        isOnline: this.isOnline
+      };
+    }
+    
     const plans = Array.from(this.planCache.values());
     const syncedPlans = plans.filter(p => p.synced).length;
     const totalExercises = plans.reduce((sum, p) => sum + (p.exercises?.length || 0), 0);
@@ -293,11 +389,34 @@ class RealTimePlanService {
     };
   }
 
-  // Save to localStorage
+  // Save to localStorage - USER SPECIFIC
   saveToLocalStorage() {
     try {
-      const plans = Array.from(this.planCache.values());
-      localStorage.setItem('workoutPlans', JSON.stringify(plans));
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No user - not saving plans');
+        return;
+      }
+      
+      // Get existing plans from localStorage
+      const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      
+      // Remove current user's plans
+      const otherUsersPlans = allPlans.filter(plan => 
+        plan.userId && plan.userId !== currentUser.id && plan.userId !== currentUser._id
+      );
+      
+      // Add current user's plans from cache
+      const currentUserPlans = Array.from(this.planCache.values()).map(plan => ({
+        ...plan,
+        userId: plan.userId || currentUser.id // Ensure userId is set
+      }));
+      
+      // Combine all plans
+      const finalPlans = [...otherUsersPlans, ...currentUserPlans];
+      
+      localStorage.setItem('workoutPlans', JSON.stringify(finalPlans));
+      console.log(`💾 Saved ${currentUserPlans.length} plans for user ${currentUser.id}`);
     } catch (error) {
       console.error('❌ Failed to save to localStorage:', error);
     }
