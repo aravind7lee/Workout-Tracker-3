@@ -303,7 +303,7 @@ export default function Analytics() {
           <div className="mb-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-blue-400">📊</span>
-              <h3 className="text-lg font-semibold text-white">Your Real-Time MongoDB Analytics</h3>
+              <h3 className="text-lg font-semibold text-white">Your Real-Time Analytics</h3>
             </div>
             <p className="text-sm text-slate-400">
               {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}

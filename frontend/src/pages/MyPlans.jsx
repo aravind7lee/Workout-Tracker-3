@@ -250,7 +250,7 @@ export default function MyPlans() {
                 realTimeStats.isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'
               }`}></div>
               <span className="text-xs muted-text">
-                {realTimeStats.isOnline ? 'REAL-TIME MONGODB' : 'OFFLINE MODE'}
+                {realTimeStats.isOnline ? 'REAL-TIME' : 'OFFLINE MODE'}
               </span>
               
               {/* Sync Status */}
