@@ -374,7 +374,7 @@ export default function PlansBuilder() {
             if (createdPlan.synced) {
               alert(`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\n\n✅ "${planName}" saved to MongoDB\n⚡ Dashboard updated INSTANTLY\n☁️ Real-time sync active\n📱 Available on all devices\n🏋️♂️ Professional gym-level tracking\n\n🔥 Check your dashboard - it's already updated!`);
             } else {
-              alert(`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\n\n💾 "${planName}" saved locally\n⚡ Dashboard updated INSTANTLY\n🔄 Queued for MongoDB sync\n📱 Will sync automatically when online\n\n💪 Your dashboard shows the new plan count!`);
+              alert(`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\n\n💾 "${planName}" saved locally\n⚡ Dashboard updated INSTANTLY\n🔄 Queued for MongoDB sync\n📱 Will sync automatically when online\n\n💪 Your dashboard and Analytics page shows the new plan count!`);
             }
           } else {
             throw new Error('Failed to create plan');
