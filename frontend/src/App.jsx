@@ -50,7 +50,13 @@ import './utils/silentMode'; // Complete console silence
 import './utils/errorSuppression'; // Suppress import errors
 import { realTimeStreakSync } from './services/realTimeStreakSync'; // Initialize real-time streak sync
 import './utils/testWorkoutCompletion'; // Test utilities for real-time updates
+import './utils/testPlanWorkoutCompletion'; // Test plan workout completion flow
 import './utils/cleanupFakeWorkouts'; // Cleanup fake workouts
+import './utils/cleanUserStreaks'; // Cleanup fake streaks and ensure user-specific tracking
+import './utils/testUserStreaks'; // Test user-specific streak implementation
+import './utils/forceStreakStatsRefresh'; // Force refresh streak stats across all pages
+import './utils/initializeStreakSync'; // Initialize streak synchronization across all pages
+import './utils/testStreakStatsSync'; // Test streak stats synchronization across all pages
 import './styles/button-improvements.css'; // Global button improvements
 
 // Inline components to avoid module loading errors

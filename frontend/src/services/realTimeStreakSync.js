@@ -1,5 +1,5 @@
-// Real-Time Streak Synchronization Service
-// Ensures all pages (Dashboard, Home, Analytics) display consistent streak data
+// Real-Time Streak Synchronization Service - USER SPECIFIC
+// Ensures all pages (Dashboard, Home, Analytics) display consistent USER-SPECIFIC streak data
 
 import streakCalculator from '../utils/streakCalculator.js';
 
@@ -14,6 +14,31 @@ class RealTimeStreakSync {
     this.initialize();
   }
 
+  // Get current authenticated user
+  getCurrentUser() {
+    try {
+      const authUser = localStorage.getItem('user');
+      if (authUser) {
+        return JSON.parse(authUser);
+      }
+      
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          return { id: payload.userId || payload.id, _id: payload.userId || payload.id };
+        } catch (e) {
+          console.warn('⚠️ Invalid token format');
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('⚠️ Error getting current user:', error);
+      return null;
+    }
+  }
+
   // Initialize the sync service
   initialize() {
     if (this.isInitialized) return;
@@ -23,6 +48,12 @@ class RealTimeStreakSync {
     // Load initial data
     this.loadStreakData();
     
+    // Broadcast initial data immediately
+    setTimeout(() => {
+      this.broadcastToAllPages();
+      console.log('📡 SYNC: Initial broadcast completed');
+    }, 1000);
+    
     // Set up periodic sync (every 30 seconds)
     this.syncInterval = setInterval(() => {
       this.syncStreakData();
@@ -30,34 +61,73 @@ class RealTimeStreakSync {
     
     // Listen for storage changes (cross-tab sync)
     window.addEventListener('storage', (event) => {
-      if (event.key === 'gymtracker_streak_data') {
+      if (event.key && event.key.includes('gymtracker_streak_data')) {
         console.log('🔥 SYNC: Storage change detected, syncing...');
         this.loadStreakData();
         this.broadcastToAllPages();
       }
     });
     
+    // Listen for user login/logout events
+    window.addEventListener('userLoggedIn', () => {
+      console.log('🔥 SYNC: User logged in, refreshing streak data');
+      setTimeout(() => {
+        this.loadStreakData();
+        this.broadcastToAllPages();
+      }, 500);
+    });
+    
+    window.addEventListener('userLoggedOut', () => {
+      console.log('🔥 SYNC: User logged out, clearing streak data');
+      this.currentStreakData = {
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCheckIns: 0,
+        lastCheckInDate: null,
+        streakStartDate: null,
+        canCheckIn: true,
+        lastSyncTime: new Date().toISOString()
+      };
+      this.broadcastToAllPages();
+    });
+    
     this.isInitialized = true;
     console.log('✅ REAL-TIME STREAK SYNC: Initialized successfully');
   }
 
-  // Load streak data using the calculator
+  // Load USER-SPECIFIC streak data
   loadStreakData() {
     try {
-      // Use the streak calculator for consistent data loading
-      const calculatorData = streakCalculator.getStreakStats();
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - returning zero streak data');
+        this.currentStreakData = {
+          currentStreak: 0,
+          longestStreak: 0,
+          totalCheckIns: 0,
+          lastCheckInDate: null,
+          streakStartDate: null,
+          canCheckIn: true,
+          lastSyncTime: new Date().toISOString()
+        };
+        return this.currentStreakData;
+      }
+      
+      // Use user-specific streak calculator
+      const calculatorData = streakCalculator.getStreakStats(currentUser.id || currentUser._id);
       
       this.currentStreakData = {
         ...calculatorData,
+        userId: currentUser.id || currentUser._id,
         lastSyncTime: new Date().toISOString()
       };
       
-      console.log('📱 SYNC: Streak data loaded via calculator:', this.currentStreakData);
+      console.log(`📱 SYNC: User ${currentUser.id} streak data loaded:`, this.currentStreakData);
       return this.currentStreakData;
     } catch (error) {
       console.error('❌ SYNC: Failed to load streak data:', error);
       
-      // Fallback to default data
+      // Fallback to zero data for safety
       this.currentStreakData = {
         currentStreak: 0,
         longestStreak: 0,
@@ -99,28 +169,42 @@ class RealTimeStreakSync {
     };
   }
 
-  // Update streak data and broadcast to all subscribers
+  // Update USER-SPECIFIC streak data and broadcast
   updateStreakData(newData) {
-    console.log('🔥 SYNC: Updating streak data:', newData);
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      console.log('🔒 No authenticated user - cannot update streak data');
+      return;
+    }
+    
+    console.log(`🔥 SYNC: Updating streak data for user ${currentUser.id}:`, newData);
     
     this.currentStreakData = {
       ...this.currentStreakData,
       ...newData,
+      userId: currentUser.id || currentUser._id,
       lastSyncTime: new Date().toISOString()
     };
     
-    // Save using the calculator for consistency
+    // Save using user-specific calculator
     try {
-      streakCalculator.saveStreakData(this.currentStreakData);
+      streakCalculator.saveStreakData(this.currentStreakData, currentUser.id || currentUser._id);
+      console.log('💾 SYNC: Streak data saved to localStorage');
     } catch (error) {
       console.error('❌ SYNC: Failed to save streak data:', error);
     }
     
-    // Broadcast to all subscribers
+    // Broadcast to all subscribers immediately
     this.broadcastToSubscribers();
     
-    // Broadcast to all pages via events
+    // Broadcast to all pages via events immediately
     this.broadcastToAllPages();
+    
+    // Force additional broadcast after short delay to ensure all components receive it
+    setTimeout(() => {
+      this.broadcastToAllPages();
+      console.log('📡 SYNC: Secondary broadcast completed');
+    }, 100);
   }
 
   // Broadcast to all subscribers
@@ -148,7 +232,8 @@ class RealTimeStreakSync {
       'streakUpdated',
       'dashboardStreakUpdate', 
       'homeStreakUpdate',
-      'analyticsStreakUpdate'
+      'analyticsStreakUpdate',
+      'realTimeStatsUpdate' // Also trigger general stats update
     ];
     
     events.forEach(eventName => {
@@ -157,15 +242,31 @@ class RealTimeStreakSync {
       }));
     });
     
-    console.log('📡 SYNC: Broadcasted to all pages:', eventData);
+    console.log('📡 SYNC: Broadcasted streak to all pages:', eventData);
+    
+    // Force refresh real-time stats if available
+    if (window.realTimeWorkoutSync) {
+      try {
+        window.realTimeWorkoutSync.broadcastUpdate();
+        console.log('🔄 SYNC: Triggered workout stats refresh');
+      } catch (error) {
+        console.warn('⚠️ SYNC: Failed to trigger workout stats refresh:', error);
+      }
+    }
   }
 
-  // Sync streak data using the calculator
+  // Sync USER-SPECIFIC streak data
   syncStreakData() {
     try {
-      // Use the calculator to validate and get current streak status
-      const validatedData = streakCalculator.validateStreak();
-      console.log('🔥 SYNC: Validated streak data:', validatedData);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - skipping streak sync');
+        return;
+      }
+      
+      // Use user-specific calculator to validate
+      const validatedData = streakCalculator.validateStreak(currentUser.id || currentUser._id);
+      console.log(`🔥 SYNC: Validated streak data for user ${currentUser.id}:`, validatedData);
       
       // Update with validated data
       this.updateStreakData(validatedData);
@@ -222,14 +323,33 @@ class RealTimeStreakSync {
     return false;
   }
 
-  // Get streak statistics using the calculator
+  // Get USER-SPECIFIC streak statistics
   getStreakStats() {
     try {
-      const calculatorStats = streakCalculator.getStreakStats();
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - returning zero streak stats');
+        return {
+          currentStreak: 0,
+          longestStreak: 0,
+          totalCheckIns: 0,
+          canCheckIn: true,
+          lastCheckInDate: null,
+          streakStartDate: null,
+          isOnline: navigator.onLine,
+          lastSyncTime: new Date().toISOString(),
+          motivation: "Ready to start your journey? 💪",
+          nextDay: 1,
+          buttonText: '🔥 START DAY 1 STREAK'
+        };
+      }
+      
+      const calculatorStats = streakCalculator.getStreakStats(currentUser.id || currentUser._id);
       const currentData = this.getCurrentStreakData();
       
       return {
         ...calculatorStats,
+        userId: currentUser.id || currentUser._id,
         isOnline: navigator.onLine,
         lastSyncTime: currentData.lastSyncTime,
         nextDay: (calculatorStats.currentStreak || 0) + 1,

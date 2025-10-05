@@ -1,20 +1,26 @@
 // frontend/src/pages/WorkoutSession.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useRealTime } from '../context/RealTimeContext';
 import { planService } from '../services/planService';
 import { workoutService } from '../services/workoutService';
 import { onlineService } from '../services/onlineService';
+import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
 import realTimeEvents from '../utils/realTimeEvents';
 
 export default function WorkoutSession() {
   const { planId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { updateWorkoutStats } = useRealTime();
   const [plan, setPlan] = useState(null);
   const [currentExercise, setCurrentExercise] = useState(0);
   const [workoutStarted, setWorkoutStarted] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [completedExercises, setCompletedExercises] = useState(new Set());
+  const [isCompleting, setIsCompleting] = useState(false);
 
   useEffect(() => {
     if (planId) {
@@ -50,140 +56,154 @@ export default function WorkoutSession() {
   };
 
   const finishWorkout = async () => {
-    const duration = Math.floor(elapsedTime / 60);
-    const completedCount = completedExercises.size;
-    const totalExercises = plan.exercises.length;
-    const completionRate = (completedCount / totalExercises) * 100;
-    
-    // Calculate estimated calories burned (rough estimate)
-    const estimatedCalories = Math.round(duration * 8 + completedCount * 15);
-    
-    // Save workout to recent workouts
-    const workoutData = {
-      planId: plan.id,
-      planName: plan.name,
-      exercises: plan.exercises.map((ex, index) => ({
-        name: ex.name,
-        category: ex.category,
-        sets: ex.sets,
-        completed: completedExercises.has(index)
-      })),
-      duration: duration,
-      completedExercises: completedCount,
-      totalExercises: totalExercises,
-      completionRate: completionRate,
-      caloriesBurned: estimatedCalories,
-      completed: true,
-      completedAt: new Date().toISOString()
-    };
+    if (isCompleting) return;
+    setIsCompleting(true);
     
     try {
-      // Save locally first
+      const duration = Math.floor(elapsedTime / 60);
+      const completedCount = completedExercises.size;
+      const totalExercises = plan.exercises.length;
+      const completionRate = (completedCount / totalExercises) * 100;
+      
+      // Calculate estimated calories burned (rough estimate)
+      const estimatedCalories = Math.round(duration * 8 + completedCount * 15);
+      
+      // Create comprehensive workout data for real-time sync
+      const workoutData = {
+        id: `plan_workout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        userId: user?.id || user?._id,
+        planId: plan.id,
+        planName: plan.name,
+        exercise: `${plan.name} Plan`, // Main exercise name
+        name: `${plan.name} Workout`,
+        category: plan.category || 'Plan Workout',
+        difficulty: plan.difficulty || 'Intermediate',
+        exercises: plan.exercises.map((ex, index) => ({
+          name: ex.name,
+          category: ex.category,
+          sets: ex.sets,
+          completed: completedExercises.has(index)
+        })),
+        duration: duration * 60, // Convert to seconds for consistency
+        completedExercises: completedCount,
+        totalExercises: totalExercises,
+        completionRate: completionRate,
+        caloriesBurned: estimatedCalories,
+        sets: completedCount, // Number of exercises completed as "sets"
+        reps: totalExercises, // Total exercises as "reps"
+        completed: true,
+        completedAt: new Date().toISOString(),
+        notes: `Completed ${completedCount}/${totalExercises} exercises from ${plan.name} plan`,
+        savedOffline: false,
+        synced: true
+      };
+    
+      // 🚀 REAL-TIME WORKOUT COMPLETION - Updates ALL pages instantly
+      console.log('🎯 Plan Workout Completion:', workoutData);
+      
+      // Save to localStorage for /workouts page
+      const existingWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      const updatedWorkouts = [workoutData, ...existingWorkouts];
+      localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
+      
+      // Add to real-time workout sync for instant stats updates
+      const syncedWorkout = realTimeWorkoutSync.addCompletedWorkout(workoutData);
+      
+      if (syncedWorkout) {
+        console.log('✅ Workout added to real-time sync:', syncedWorkout);
+        
+        // Trigger comprehensive real-time events for ALL pages
+        window.dispatchEvent(new CustomEvent('workoutCompleted', { 
+          detail: syncedWorkout 
+        }));
+        
+        window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
+          detail: {
+            todayWorkouts: realTimeWorkoutSync.getStats().todayWorkouts,
+            totalWorkouts: realTimeWorkoutSync.getStats().totalWorkouts,
+            weeklyWorkouts: realTimeWorkoutSync.getStats().weeklyWorkouts,
+            totalCalories: realTimeWorkoutSync.getStats().totalCalories,
+            lastWorkout: syncedWorkout
+          }
+        }));
+        
+        // Update streak
+        window.dispatchEvent(new CustomEvent('streakUpdated', { 
+          detail: { 
+            type: 'WORKOUT_COMPLETED',
+            workout: syncedWorkout
+          }
+        }));
+      }
+      
+      // Save to workoutService for backward compatibility
       workoutService.saveWorkout(workoutData);
       
       // Dispatch real-time event for instant profile update
       realTimeEvents.dispatchWorkoutCompleted(workoutData);
       
       // Try to sync with backend
-      const isOnline = await onlineService.checkBackendStatus();
-      if (isOnline) {
-        try {
+      try {
+        const isOnline = await onlineService.checkBackendStatus();
+        if (isOnline) {
           await onlineService.saveWorkout(workoutData);
-          
-          // Show success message
-          const successMsg = document.createElement('div');
-          successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
-          successMsg.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="text-2xl">🎉</div>
-              <div>
-                <div class="font-bold">Workout Completed!</div>
-                <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
-                <div class="text-xs opacity-75 mt-1">✅ Synced to MongoDB</div>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(successMsg);
-          setTimeout(() => {
-            if (document.body.contains(successMsg)) {
-              document.body.removeChild(successMsg);
-            }
-          }, 5000);
-          
-        } catch (syncError) {
-          console.error('Backend sync failed:', syncError);
-          
-          // Show offline success message
-          const offlineMsg = document.createElement('div');
-          offlineMsg.className = 'fixed top-4 right-4 bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
-          offlineMsg.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="text-2xl">🎉</div>
-              <div>
-                <div class="font-bold">Workout Completed!</div>
-                <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
-                <div class="text-xs opacity-75 mt-1">⚠️ Will sync when online</div>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(offlineMsg);
-          setTimeout(() => {
-            if (document.body.contains(offlineMsg)) {
-              document.body.removeChild(offlineMsg);
-            }
-          }, 5000);
+          console.log('✅ Workout synced to MongoDB');
         }
-      } else {
-        // Show offline message
-        const offlineMsg = document.createElement('div');
-        offlineMsg.className = 'fixed top-4 right-4 bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
-        offlineMsg.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="text-2xl">🎉</div>
-            <div>
-              <div class="font-bold">Workout Completed!</div>
-              <div class="text-sm opacity-90">${duration}min • ${estimatedCalories} cal • ${completedCount}/${totalExercises} exercises</div>
-              <div class="text-xs opacity-75 mt-1">📴 Offline mode - will sync later</div>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(offlineMsg);
-        setTimeout(() => {
-          if (document.body.contains(offlineMsg)) {
-            document.body.removeChild(offlineMsg);
-          }
-        }, 5000);
+      } catch (syncError) {
+        console.warn('⚠️ Backend sync failed, saved locally:', syncError);
       }
-    } catch (error) {
-      console.error('Error saving workout:', error);
       
-      // Still dispatch the event for local updates
-      realTimeEvents.dispatchWorkoutCompleted(workoutData);
-      
-      // Show basic success message
-      const basicMsg = document.createElement('div');
-      basicMsg.className = 'fixed top-4 right-4 bg-blue-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
-      basicMsg.innerHTML = `
+      // Show success notification
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm animate-pulse';
+      successMsg.innerHTML = `
         <div class="flex items-center gap-3">
           <div class="text-2xl">🎉</div>
           <div>
-            <div class="font-bold">Workout Completed!</div>
-            <div class="text-sm opacity-90">${duration}min • ${completedCount}/${totalExercises} exercises</div>
+            <div class="font-bold">Plan Workout Completed!</div>
+            <div class="text-sm opacity-90">${plan.name} • ${duration}min • ${estimatedCalories} cal</div>
+            <div class="text-xs opacity-75 mt-1">✅ Updated in /workouts & stats instantly!</div>
           </div>
         </div>
       `;
-      document.body.appendChild(basicMsg);
+      document.body.appendChild(successMsg);
       setTimeout(() => {
-        if (document.body.contains(basicMsg)) {
-          document.body.removeChild(basicMsg);
+        if (document.body.contains(successMsg)) {
+          document.body.removeChild(successMsg);
         }
-      }, 4000);
+      }, 5000);
+      
+    } catch (error) {
+      console.error('❌ Error completing workout:', error);
+      
+      // Still try to save locally
+      try {
+        const existingWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+        const updatedWorkouts = [workoutData, ...existingWorkouts];
+        localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
+        
+        // Dispatch basic events
+        window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: workoutData }));
+        realTimeEvents.dispatchWorkoutCompleted(workoutData);
+      } catch (saveError) {
+        console.error('❌ Failed to save workout locally:', saveError);
+      }
+    } finally {
+      setIsCompleting(false);
     }
     
-    // Navigate back to dashboard after a short delay
+    // Navigate to /workouts page to show the completed workout
     setTimeout(() => {
-      navigate('/dashboard');
-    }, 1500);
+      navigate('/workouts', { 
+        state: { 
+          workoutCompleted: true, 
+          planName: plan.name,
+          duration: `${duration}min`,
+          exercises: `${completedCount}/${totalExercises}`,
+          calories: estimatedCalories
+        } 
+      });
+    }, 2000);
   };
 
   const formatTime = (seconds) => {
@@ -228,12 +248,14 @@ export default function WorkoutSession() {
             <button
               onClick={() => navigate('/my-plans')}
               className="btn-secondary flex-1"
+              disabled={isCompleting}
             >
               Back to Plans
             </button>
             <button
               onClick={startWorkout}
               className="btn bg-green-600 hover:bg-green-700 text-white flex-1"
+              disabled={isCompleting}
             >
               Start Workout
             </button>
@@ -288,7 +310,7 @@ export default function WorkoutSession() {
         <div className="flex gap-4">
           <button
             onClick={() => completeExercise(currentExercise)}
-            disabled={completedExercises.has(currentExercise)}
+            disabled={completedExercises.has(currentExercise) || isCompleting}
             className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {completedExercises.has(currentExercise) ? 'Completed ✓' : 'Mark Complete'}
@@ -297,9 +319,17 @@ export default function WorkoutSession() {
           {completedExercises.size === plan.exercises.length && (
             <button
               onClick={finishWorkout}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+              disabled={isCompleting}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Finish Workout
+              {isCompleting ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Completing...
+                </div>
+              ) : (
+                'Finish Workout'
+              )}
             </button>
           )}
         </div>

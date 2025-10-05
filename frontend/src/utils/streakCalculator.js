@@ -3,7 +3,41 @@
 
 export class StreakCalculator {
   constructor() {
-    this.STORAGE_KEY = 'gymtracker_streak_data';
+    this.STORAGE_KEY_PREFIX = 'gymtracker_streak_data';
+  }
+
+  // Get user-specific storage key
+  getUserStorageKey(userId) {
+    if (!userId) {
+      console.warn('⚠️ No userId provided, using default key');
+      return this.STORAGE_KEY_PREFIX;
+    }
+    return `${this.STORAGE_KEY_PREFIX}_${userId}`;
+  }
+
+  // Get current authenticated user
+  getCurrentUser() {
+    try {
+      const authUser = localStorage.getItem('user');
+      if (authUser) {
+        return JSON.parse(authUser);
+      }
+      
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          return { id: payload.userId || payload.id, _id: payload.userId || payload.id };
+        } catch (e) {
+          console.warn('⚠️ Invalid token format');
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('⚠️ Error getting current user:', error);
+      return null;
+    }
   }
 
   // Get today's date in YYYY-MM-DD format
@@ -25,13 +59,28 @@ export class StreakCalculator {
     return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
   }
 
-  // Load current streak data from storage
-  loadStreakData() {
+  // Load USER-SPECIFIC streak data from storage
+  loadStreakData(userId = null) {
     try {
-      const saved = localStorage.getItem(this.STORAGE_KEY);
+      const currentUser = userId ? { id: userId } : this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - returning zero streak data');
+        return {
+          currentStreak: 0,
+          longestStreak: 0,
+          totalCheckIns: 0,
+          lastCheckInDate: null,
+          streakStartDate: null,
+          canCheckIn: true
+        };
+      }
+      
+      const storageKey = this.getUserStorageKey(currentUser.id || currentUser._id);
+      const saved = localStorage.getItem(storageKey);
+      
       if (saved) {
         const data = JSON.parse(saved);
-        console.log('📱 CALCULATOR: Loaded streak data:', data);
+        console.log(`📱 CALCULATOR: Loaded streak data for user ${currentUser.id}:`, data);
         return {
           currentStreak: data.currentStreak || 0,
           longestStreak: data.longestStreak || 0,
@@ -39,6 +88,7 @@ export class StreakCalculator {
           lastCheckInDate: data.lastCheckInDate || null,
           streakStartDate: data.streakStartDate || null,
           canCheckIn: data.canCheckIn !== false,
+          userId: currentUser.id || currentUser._id,
           ...data
         };
       }
@@ -56,16 +106,25 @@ export class StreakCalculator {
     };
   }
 
-  // Save streak data to storage
-  saveStreakData(data) {
+  // Save USER-SPECIFIC streak data to storage
+  saveStreakData(data, userId = null) {
     try {
+      const currentUser = userId ? { id: userId } : this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - cannot save streak data');
+        return false;
+      }
+      
+      const storageKey = this.getUserStorageKey(currentUser.id || currentUser._id);
       const dataToSave = {
         ...data,
+        userId: currentUser.id || currentUser._id,
         lastUpdated: new Date().toISOString(),
-        version: '2.0'
+        version: '3.0'
       };
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(dataToSave));
-      console.log('✅ CALCULATOR: Saved streak data:', dataToSave);
+      
+      localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+      console.log(`✅ CALCULATOR: Saved streak data for user ${currentUser.id}:`, dataToSave);
       return true;
     } catch (error) {
       console.error('❌ CALCULATOR: Failed to save streak data:', error);
@@ -73,12 +132,12 @@ export class StreakCalculator {
     }
   }
 
-  // Validate current streak status
-  validateStreak() {
-    const current = this.loadStreakData();
+  // Validate current USER-SPECIFIC streak status
+  validateStreak(userId = null) {
+    const current = this.loadStreakData(userId);
     const today = this.getTodayString();
     
-    console.log('🔥 CALCULATOR: Validating streak for', today, 'Current data:', current);
+    console.log(`🔥 CALCULATOR: Validating streak for ${userId || 'current user'} on ${today}:`, current);
     
     if (!current.lastCheckInDate) {
       // No previous check-in - can start streak
@@ -168,10 +227,10 @@ export class StreakCalculator {
     return newData;
   }
 
-  // Get streak statistics
-  getStreakStats() {
-    const data = this.loadStreakData();
-    const validated = this.validateStreak();
+  // Get USER-SPECIFIC streak statistics
+  getStreakStats(userId = null) {
+    const data = this.loadStreakData(userId);
+    const validated = this.validateStreak(userId);
     
     return {
       ...validated,
@@ -219,10 +278,10 @@ export class StreakCalculator {
     };
   }
 
-  // Perform check-in
-  async performCheckIn() {
-    const currentData = this.loadStreakData();
-    const validated = this.validateStreak();
+  // Perform USER-SPECIFIC check-in
+  async performCheckIn(userId = null) {
+    const currentData = this.loadStreakData(userId);
+    const validated = this.validateStreak(userId);
     
     if (!validated.canCheckIn) {
       throw new Error('Cannot check in today - already completed or streak broken');
@@ -230,8 +289,8 @@ export class StreakCalculator {
 
     const newStreakData = this.calculateNewStreak(currentData);
     
-    // Save immediately to localStorage
-    this.saveStreakData(newStreakData);
+    // Save immediately to user-specific localStorage
+    this.saveStreakData(newStreakData, userId);
     
     // Return the new data
     return {
@@ -243,8 +302,14 @@ export class StreakCalculator {
     };
   }
 
-  // Reset streak (for testing or manual reset)
-  resetStreak() {
+  // Reset USER-SPECIFIC streak
+  resetStreak(userId = null) {
+    const currentUser = userId ? { id: userId } : this.getCurrentUser();
+    if (!currentUser) {
+      console.log('🔒 No authenticated user - cannot reset streak');
+      return null;
+    }
+    
     const resetData = {
       currentStreak: 0,
       longestStreak: 0,
@@ -252,11 +317,12 @@ export class StreakCalculator {
       lastCheckInDate: null,
       streakStartDate: null,
       canCheckIn: true,
+      userId: currentUser.id || currentUser._id,
       resetAt: new Date().toISOString()
     };
     
-    this.saveStreakData(resetData);
-    console.log('🔄 CALCULATOR: Streak reset');
+    this.saveStreakData(resetData, userId);
+    console.log(`🔄 CALCULATOR: Streak reset for user ${currentUser.id}`);
     return resetData;
   }
 
@@ -270,13 +336,15 @@ export class StreakCalculator {
     return `🔥 START DAY ${nextDay} STREAK`;
   }
 
-  // Debug information
-  getDebugInfo() {
-    const data = this.loadStreakData();
-    const validated = this.validateStreak();
+  // Debug information for USER-SPECIFIC streak
+  getDebugInfo(userId = null) {
+    const data = this.loadStreakData(userId);
+    const validated = this.validateStreak(userId);
     const today = this.getTodayString();
+    const currentUser = userId ? { id: userId } : this.getCurrentUser();
     
     return {
+      userId: currentUser?.id || currentUser?._id || 'none',
       today,
       yesterday: this.getYesterdayString(),
       rawData: data,
@@ -285,7 +353,8 @@ export class StreakCalculator {
       nextDay: (validated.currentStreak || 0) + 1,
       buttonText: this.getCheckInButtonText(validated),
       daysDifference: data.lastCheckInDate ? 
-        this.getDaysDifference(data.lastCheckInDate, today) : null
+        this.getDaysDifference(data.lastCheckInDate, today) : null,
+      storageKey: currentUser ? this.getUserStorageKey(currentUser.id || currentUser._id) : 'none'
     };
   }
 }

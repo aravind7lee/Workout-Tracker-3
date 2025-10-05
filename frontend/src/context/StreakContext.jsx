@@ -5,8 +5,17 @@ import api from '../utils/api';
 
 const StreakContext = createContext();
 
-// Global streak storage key
-const STREAK_KEY = 'gymtracker_streak_data';
+// User-specific streak storage key prefix
+const STREAK_KEY_PREFIX = 'gymtracker_streak_data';
+
+// Get user-specific storage key
+const getUserStreakKey = (userId) => {
+  if (!userId) {
+    console.warn('⚠️ No userId provided for streak key');
+    return STREAK_KEY_PREFIX;
+  }
+  return `${STREAK_KEY_PREFIX}_${userId}`;
+};
 
 // Real-time event broadcaster for instant updates across all pages
 const broadcastStreakUpdate = (streakData) => {
@@ -31,31 +40,58 @@ const broadcastStreakUpdate = (streakData) => {
   console.log('🔥 REAL-TIME: Streak update broadcasted to all pages:', streakData);
 };
 
-// Save to localStorage immediately + broadcast
-const saveStreakData = (data) => {
+// Save USER-SPECIFIC streak data to localStorage + broadcast
+const saveStreakData = (data, userId) => {
   try {
-    localStorage.setItem(STREAK_KEY, JSON.stringify(data));
-    console.log('✅ Streak data saved:', data);
+    if (!userId) {
+      console.warn('⚠️ No userId provided, cannot save streak data');
+      return;
+    }
+    
+    const storageKey = getUserStreakKey(userId);
+    const dataToSave = {
+      ...data,
+      userId,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+    console.log(`✅ Streak data saved for user ${userId}:`, dataToSave);
     
     // Broadcast to all pages for instant updates
-    broadcastStreakUpdate(data);
+    broadcastStreakUpdate(dataToSave);
   } catch (e) {
     console.error('Failed to save streak data:', e);
   }
 };
 
-// Load from localStorage
-const loadStreakData = () => {
+// Load USER-SPECIFIC streak data from localStorage
+const loadStreakData = (userId) => {
   try {
-    const saved = localStorage.getItem(STREAK_KEY);
+    if (!userId) {
+      console.log('🔒 No userId provided - returning zero streak data');
+      return {
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCheckIns: 0,
+        lastCheckInDate: null,
+        streakStartDate: null,
+        canCheckIn: true
+      };
+    }
+    
+    const storageKey = getUserStreakKey(userId);
+    const saved = localStorage.getItem(storageKey);
+    
     if (saved) {
       const data = JSON.parse(saved);
-      console.log('📱 Streak data loaded from storage:', data);
+      console.log(`📱 Streak data loaded for user ${userId}:`, data);
       return data;
     }
   } catch (e) {
     console.error('Failed to load streak data:', e);
   }
+  
   return {
     currentStreak: 0,
     longestStreak: 0,
@@ -103,14 +139,20 @@ export const StreakProvider = ({ children }) => {
     saveStreakData(newData);
   }, []);
 
-  // BULLETPROOF check-in - ALWAYS works + REAL-TIME SYNC
+  // BULLETPROOF USER-SPECIFIC check-in - ALWAYS works + REAL-TIME SYNC
   const updateStreak = useCallback(async () => {
     console.log('🔥 CONTEXT: updateStreak called');
     
-    const today = new Date().toISOString().split('T')[0];
-    const current = loadStreakData();
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      console.log('🔒 No authenticated user - cannot update streak');
+      throw new Error('User not authenticated');
+    }
     
-    console.log('🔥 CONTEXT: Current data:', current);
+    const today = new Date().toISOString().split('T')[0];
+    const current = loadStreakData(userId);
+    
+    console.log(`🔥 CONTEXT: Current data for user ${userId}:`, current);
     console.log('🔥 CONTEXT: Today:', today);
     
     // Check if already checked in today
@@ -237,7 +279,8 @@ export const StreakProvider = ({ children }) => {
         };
 
         // Only update if API data is newer/better
-        const current = loadStreakData();
+        const userId = user?.id || user?._id;
+        const current = loadStreakData(userId);
         if (apiData.currentStreak >= current.currentStreak) {
           updateStreakState(apiData);
         }
@@ -248,12 +291,18 @@ export const StreakProvider = ({ children }) => {
     }
   }, [user, isAuthenticated, updateStreakState]);
 
-  // Real-time streak validation with next day logic
+  // Real-time USER-SPECIFIC streak validation
   const validateStreak = useCallback(() => {
-    const current = loadStreakData();
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      console.log('🔒 No authenticated user - cannot validate streak');
+      return;
+    }
+    
+    const current = loadStreakData(userId);
     const today = new Date().toISOString().split('T')[0];
     
-    console.log('🔥 CONTEXT: Validating streak for today:', today, 'Current data:', current);
+    console.log(`🔥 CONTEXT: Validating streak for user ${userId} on ${today}:`, current);
     
     if (current.lastCheckInDate) {
       const lastCheckIn = new Date(current.lastCheckInDate);

@@ -1,9 +1,11 @@
-// FIXED Real-Time Streak Tracker - Professional Implementation
+// USER-SPECIFIC Real-Time Streak Tracker - Professional Implementation
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useStreak } from '../context/StreakContext';
+import { realTimeStreakSync } from '../services/realTimeStreakSync';
+import streakCalculator from '../utils/streakCalculator';
 import AuthGuard from '../components/AuthGuard';
 import api from '../utils/api';
 
@@ -26,58 +28,91 @@ const CurrentStreakFixed = () => {
     lastCheckInDate: null
   });
 
-  // Initialize streak data
+  // Initialize USER-SPECIFIC streak data
   useEffect(() => {
-    const initializeStreak = async () => {
+    const initializeUserStreak = async () => {
       try {
         setLoading(true);
         
-        // First, try to get data from context
-        if (streakContext && typeof streakContext === 'object') {
-          console.log('🔥 Using context data:', streakContext);
+        if (!user?.id && !user?._id) {
+          console.log('🔒 No authenticated user - showing zero streak data');
           setStreakData({
-            currentStreak: streakContext.currentStreak || 0,
-            longestStreak: streakContext.longestStreak || 0,
-            totalCheckIns: streakContext.totalCheckIns || 0,
-            canCheckIn: streakContext.canCheckIn !== undefined ? streakContext.canCheckIn : true,
-            streakStartDate: streakContext.streakStartDate || null,
-            lastCheckInDate: streakContext.lastCheckInDate || null
+            currentStreak: 0,
+            longestStreak: 0,
+            totalCheckIns: 0,
+            canCheckIn: true,
+            streakStartDate: null,
+            lastCheckInDate: null
           });
+          setLoading(false);
+          return;
         }
 
-        // If authenticated, try to fetch from API
+        const userId = user.id || user._id;
+        console.log(`🔥 Initializing streak for user: ${userId}`);
+        
+        // Get user-specific streak data from calculator
+        const userStreakStats = streakCalculator.getStreakStats(userId);
+        console.log(`📊 User ${userId} streak stats:`, userStreakStats);
+        
+        setStreakData({
+          currentStreak: userStreakStats.currentStreak || 0,
+          longestStreak: userStreakStats.longestStreak || 0,
+          totalCheckIns: userStreakStats.totalCheckIns || 0,
+          canCheckIn: userStreakStats.canCheckIn !== false,
+          streakStartDate: userStreakStats.streakStartDate || null,
+          lastCheckInDate: userStreakStats.lastCheckInDate || null
+        });
+
+        // Try to sync with API if available
         if (isAuthenticated && isAuthenticated()) {
           try {
             const response = await api.get('/users/streak/status');
-            if (response.data) {
-              console.log('🔥 API data received:', response.data);
+            if (response.data && response.data.currentStreak >= userStreakStats.currentStreak) {
+              console.log('🔄 Updating with API data:', response.data);
               setStreakData({
                 currentStreak: response.data.currentStreak || 0,
                 longestStreak: response.data.longestStreak || 0,
                 totalCheckIns: response.data.totalCheckIns || 0,
-                canCheckIn: response.data.canCheckIn !== undefined ? response.data.canCheckIn : true,
+                canCheckIn: response.data.canCheckIn !== false,
                 streakStartDate: response.data.streakStartDate || null,
                 lastCheckInDate: response.data.lastCheckInDate || null
               });
             }
           } catch (apiError) {
-            console.warn('🔥 API failed, using context/local data:', apiError.message);
+            console.warn('⚠️ API sync failed, using local data:', apiError.message);
           }
         }
       } catch (error) {
-        console.error('🔥 Initialization error:', error);
+        console.error('❌ Streak initialization error:', error);
+        // Fallback to zero data for safety
+        setStreakData({
+          currentStreak: 0,
+          longestStreak: 0,
+          totalCheckIns: 0,
+          canCheckIn: true,
+          streakStartDate: null,
+          lastCheckInDate: null
+        });
       } finally {
         setLoading(false);
       }
     };
 
-    initializeStreak();
-  }, [streakContext, isAuthenticated]);
+    initializeUserStreak();
+  }, [user, isAuthenticated]);
 
-  // Handle check-in with multiple fallback strategies
+  // Handle USER-SPECIFIC check-in
   const handleCheckIn = async () => {
     if (!streakData.canCheckIn || checkingIn) {
       console.log('🔥 Cannot check in:', { canCheckIn: streakData.canCheckIn, checkingIn });
+      return;
+    }
+
+    if (!user?.id && !user?._id) {
+      console.log('🔒 No authenticated user - cannot check in');
+      setSuccessMessage('❌ Please log in to start your streak');
+      setTimeout(() => setSuccessMessage(''), 3000);
       return;
     }
 
@@ -85,12 +120,22 @@ const CurrentStreakFixed = () => {
       setCheckingIn(true);
       setSuccessMessage('');
       
-      console.log('🔥 Starting check-in process...');
+      const userId = user.id || user._id;
+      console.log(`🔥 Starting check-in for user: ${userId}`);
 
       let result = null;
 
-      // Strategy 1: Try context method first
-      if (streakContext && typeof streakContext.updateStreak === 'function') {
+      // Strategy 1: Use streak calculator for user-specific check-in
+      try {
+        console.log('🔥 Trying user-specific calculator check-in...');
+        result = await streakCalculator.performCheckIn(userId);
+        console.log('✅ Calculator check-in successful:', result);
+      } catch (calculatorError) {
+        console.warn('🔥 Calculator check-in failed:', calculatorError.message);
+      }
+
+      // Strategy 2: Try context method if available
+      if (!result && streakContext && typeof streakContext.updateStreak === 'function') {
         try {
           console.log('🔥 Trying context method...');
           result = await streakContext.updateStreak();
@@ -100,7 +145,7 @@ const CurrentStreakFixed = () => {
         }
       }
 
-      // Strategy 2: Try direct API call if context failed
+      // Strategy 3: Try direct API call
       if (!result && isAuthenticated && isAuthenticated()) {
         try {
           console.log('🔥 Trying direct API call...');
@@ -112,7 +157,7 @@ const CurrentStreakFixed = () => {
         }
       }
 
-      // Strategy 3: Local fallback calculation
+      // Strategy 4: Local fallback calculation
       if (!result) {
         console.log('🔥 Using local fallback calculation...');
         const today = new Date().toISOString().split('T')[0];
@@ -129,21 +174,60 @@ const CurrentStreakFixed = () => {
           local: true
         };
         
-        // Save to localStorage
-        localStorage.setItem('gymtracker_streak_data', JSON.stringify(result));
+        // Save to user-specific localStorage
+        streakCalculator.saveStreakData(result, userId);
         console.log('✅ Local fallback successful:', result);
       }
 
       // Update UI with result
       if (result) {
-        setStreakData({
+        const newStreakData = {
           currentStreak: result.currentStreak || streakData.currentStreak + 1,
           longestStreak: result.longestStreak || Math.max(streakData.longestStreak, result.currentStreak || streakData.currentStreak + 1),
           totalCheckIns: result.totalCheckIns || streakData.totalCheckIns + 1,
           lastCheckInDate: result.lastCheckInDate || new Date().toISOString().split('T')[0],
           streakStartDate: result.streakStartDate || streakData.streakStartDate || new Date().toISOString().split('T')[0],
           canCheckIn: false
+        };
+        
+        setStreakData(newStreakData);
+
+        // Update the real-time streak sync service
+        realTimeStreakSync.updateStreakData(newStreakData);
+        console.log('🔥 Updated realTimeStreakSync service with new data');
+
+        // Dispatch real-time events for stats updates across ALL pages
+        const streakEventData = {
+          ...newStreakData,
+          type: 'STREAK_UPDATED',
+          userId: userId,
+          source: 'current-streak-page',
+          timestamp: new Date().toISOString()
+        };
+        
+        // Dispatch to all page-specific events
+        const events = [
+          'streakUpdated',
+          'homeStreakUpdate', 
+          'dashboardStreakUpdate',
+          'analyticsStreakUpdate'
+        ];
+        
+        events.forEach(eventName => {
+          window.dispatchEvent(new CustomEvent(eventName, { 
+            detail: streakEventData
+          }));
         });
+        
+        console.log('📡 Dispatched streak events to all pages:', streakEventData);
+        
+        // Force refresh streak stats across all pages
+        if (window.forceStreakStatsRefresh) {
+          setTimeout(() => {
+            window.forceStreakStatsRefresh();
+            console.log('🔄 Forced streak stats refresh across all pages');
+          }, 500);
+        }
 
         const message = result.message || `🔥 Day ${result.currentStreak} - Keep Going!`;
         const syncStatus = result.local ? '💾 Saved Locally' : '✅ Synced to Database';
@@ -175,7 +259,7 @@ const CurrentStreakFixed = () => {
     return (
       <AuthGuard>
         <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-          <div className="text-white text-xl">Loading streak data...</div>
+          <div className="text-white text-xl">Loading your streak data...</div>
         </div>
       </AuthGuard>
     );
@@ -204,9 +288,9 @@ const CurrentStreakFixed = () => {
                   ← Back to Analytics
                 </button>
                 <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
-                  Real-Time Streak Tracker
+                  Your Streak Tracker
                   <span className="ml-3 text-sm bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
-                    🔴 LIVE
+                    🔴 USER-SPECIFIC
                   </span>
                 </h1>
                 <p className="text-white/90 text-sm sm:text-base">
@@ -270,7 +354,7 @@ const CurrentStreakFixed = () => {
             )}
             
             <div className="mt-2 text-xs text-slate-400">
-              Real-time sync • Last updated: {new Date().toLocaleTimeString()}
+              User-specific tracking • Last updated: {new Date().toLocaleTimeString()}
             </div>
           </div>
 
@@ -286,7 +370,7 @@ const CurrentStreakFixed = () => {
                 <div>
                   <h3 className={`text-lg font-semibold ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>Current Streak</h3>
+                  }`}>Your Current Streak</h3>
                   <p className={`text-sm ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>Active days</p>
@@ -309,7 +393,7 @@ const CurrentStreakFixed = () => {
                 <div>
                   <h3 className={`text-lg font-semibold ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>Best Streak</h3>
+                  }`}>Your Best Streak</h3>
                   <p className={`text-sm ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>Personal record</p>
@@ -332,7 +416,7 @@ const CurrentStreakFixed = () => {
                 <div>
                   <h3 className={`text-lg font-semibold ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>Total Check-ins</h3>
+                  }`}>Your Total Check-ins</h3>
                   <p className={`text-sm ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>All time</p>
@@ -355,7 +439,7 @@ const CurrentStreakFixed = () => {
                 <div>
                   <h3 className={`text-lg font-semibold ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>Streak Age</h3>
+                  }`}>Your Streak Age</h3>
                   <p className={`text-sm ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>Days since start</p>
@@ -371,14 +455,15 @@ const CurrentStreakFixed = () => {
             </div>
           </div>
 
-          {/* Debug Info */}
+          {/* User Info */}
           <div className="bg-gray-800 text-white p-4 rounded-lg text-xs">
-            <h4 className="font-bold mb-2">🔧 Debug Info</h4>
-            <div>Context Available: {streakContext ? 'Yes' : 'No'}</div>
-            <div>User Authenticated: {isAuthenticated && isAuthenticated() ? 'Yes' : 'No'}</div>
+            <h4 className="font-bold mb-2">👤 User-Specific Streak Tracking</h4>
+            <div>User ID: {user?.id || user?._id || 'Not logged in'}</div>
+            <div>User Name: {user?.name || user?.email || 'Anonymous'}</div>
             <div>Can Check In: {streakData.canCheckIn ? 'Yes' : 'No'}</div>
-            <div>Last Check In: {streakData.lastCheckInDate || 'None'}</div>
+            <div>Last Check In: {streakData.lastCheckInDate || 'Never'}</div>
             <div>Today: {new Date().toISOString().split('T')[0]}</div>
+            <div className="mt-2 text-green-400">✅ All data is user-specific - no fake/global streaks!</div>
           </div>
         </div>
       </div>
