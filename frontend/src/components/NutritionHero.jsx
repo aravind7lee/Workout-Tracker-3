@@ -42,6 +42,9 @@ export default function NutritionHero() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       role="banner"
       aria-label="Nutrition Tracker Hero Section"
+      style={{
+        backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f8fafc'
+      }}
     >
       {/* Background Image */}
       <div className="absolute inset-0">
@@ -57,7 +60,7 @@ export default function NutritionHero() {
         <motion.img
           src={nutritionHeaderImg}
           alt="Professional nutrition tracking and meal planning - healthy foods and fitness lifestyle"
-          className="nutrition-hero-image w-full h-full object-cover absolute inset-0"
+          className="nutrition-hero-image w-full h-full absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: imageLoaded ? 1 : 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -65,6 +68,12 @@ export default function NutritionHero() {
           decoding="async"
           fetchPriority="high"
           sizes="100vw"
+          style={{
+            objectFit: 'cover',
+            objectPosition: 'center center',
+            width: '100%',
+            height: '100%'
+          }}
         />
         
         {imageError && (
