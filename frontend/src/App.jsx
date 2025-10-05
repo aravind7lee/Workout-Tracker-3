@@ -30,6 +30,9 @@ import CurrentStreakFixed from './pages/CurrentStreakFixed';
 const CurrentStreak = CurrentStreakFixed; // Use fixed version
 import StreakTest from './pages/StreakTest';
 import Workouts from './pages/Workouts';
+import WorkoutsTest from './pages/WorkoutsTest';
+import WorkoutsFixed from './pages/WorkoutsFixed';
+import WorkoutsComplete from './pages/WorkoutsComplete';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';

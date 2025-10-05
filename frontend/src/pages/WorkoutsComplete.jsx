@@ -4,11 +4,37 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 
-import CompletedWorkouts from '../components/CompletedWorkouts';
-import RealTimeNotification from '../components/RealTimeNotification';
-import YourWorkoutsImg from '../assets/Yourworkouts.jpg';
+// Safe import with error handling
+let CompletedWorkouts;
+let RealTimeNotification;
+let YourWorkoutsImg;
 
-export default function Workouts() {
+try {
+  CompletedWorkouts = require('../components/CompletedWorkouts').default;
+} catch (error) {
+  console.warn('CompletedWorkouts component not available:', error.message);
+  CompletedWorkouts = () => (
+    <div className="text-center py-8 text-white">
+      <p>Workout history will be displayed here.</p>
+    </div>
+  );
+}
+
+try {
+  RealTimeNotification = require('../components/RealTimeNotification').default;
+} catch (error) {
+  console.warn('RealTimeNotification component not available:', error.message);
+  RealTimeNotification = () => null;
+}
+
+try {
+  YourWorkoutsImg = require('../assets/Yourworkouts.jpg').default;
+} catch (error) {
+  console.warn('Yourworkouts.jpg image not available:', error.message);
+  YourWorkoutsImg = null;
+}
+
+export default function WorkoutsComplete() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, loading } = useAuth();
@@ -31,14 +57,17 @@ export default function Workouts() {
     return () => clearInterval(timer);
   }, []);
 
-  // Preload hero image
+  // Preload hero image with error handling
   useEffect(() => {
+    if (!YourWorkoutsImg) {
+      setImageError(true);
+      return;
+    }
+
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
     img.src = YourWorkoutsImg;
-    img.loading = 'eager';
-    img.fetchPriority = 'high';
     
     return () => {
       img.onload = null;
@@ -64,7 +93,7 @@ export default function Workouts() {
     }
   }, [location.state, navigate, location.pathname]);
 
-  // Listen for workout completion events and real-time sync
+  // Listen for workout completion events
   useEffect(() => {
     const handleWorkoutCompleted = (event) => {
       if (event.detail) {
@@ -85,13 +114,11 @@ export default function Workouts() {
     const handleStatsUpdate = (event) => {
       if (event.detail) {
         console.log('📊 Workouts page: Stats updated:', event.detail);
-        // The RealTimeContext will handle the stats update
       }
     };
     
     const handleRealTimeSync = (event) => {
       console.log('🔄 Workouts page: Real-time sync received:', event.detail);
-      // Stats are automatically updated via RealTimeContext
     };
 
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
@@ -118,7 +145,7 @@ export default function Workouts() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      {/* Premium Hero Section with Yourworkouts.jpg */}
+      {/* Premium Hero Section */}
       <motion.div 
         className="relative w-full h-screen min-h-screen overflow-hidden"
         initial={{ opacity: 0 }}
@@ -128,7 +155,7 @@ export default function Workouts() {
         aria-label="Your Workouts Hero Section"
       >
         {!imageLoaded && !imageError ? (
-          // Skeleton loader with shimmer
+          // Skeleton loader
           <motion.div 
             className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden"
             initial={{ opacity: 1 }}
@@ -137,8 +164,8 @@ export default function Workouts() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
           </motion.div>
-        ) : imageError ? (
-          // Fallback content if image fails
+        ) : imageError || !YourWorkoutsImg ? (
+          // Fallback content if image fails or not available
           <motion.div 
             className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
             initial={{ opacity: 0, y: 12 }}
@@ -157,7 +184,7 @@ export default function Workouts() {
           </motion.div>
         ) : (
           <>
-            {/* Main hero image - responsive for mobile vertical */}
+            {/* Main hero image */}
             <motion.img
               src={YourWorkoutsImg}
               alt="Your Workouts - Professional gym training background"
@@ -167,7 +194,6 @@ export default function Workouts() {
               }}
               loading="eager"
               decoding="async"
-              fetchPriority="high"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ 
                 opacity: imageLoaded ? 1 : 0, 
@@ -293,7 +319,7 @@ export default function Workouts() {
       </div>
 
       {/* Real-time Notifications */}
-      {notification && (
+      {notification && RealTimeNotification && (
         <RealTimeNotification
           message={notification.message}
           type={notification.type}

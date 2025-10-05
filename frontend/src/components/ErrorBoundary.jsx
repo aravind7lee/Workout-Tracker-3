@@ -27,6 +27,8 @@ class ErrorBoundary extends React.Component {
       return { hasError: false, error: null };
     }
     
+    // Log the error for debugging
+    console.error('ErrorBoundary caught error:', error);
     return { hasError: true, error };
   }
 
@@ -48,6 +50,8 @@ class ErrorBoundary extends React.Component {
     
     if (!shouldSuppress) {
       console.error('React Error caught by boundary:', error, errorInfo);
+      console.error('Error stack:', error.stack);
+      console.error('Component stack:', errorInfo.componentStack);
     }
   }
 
