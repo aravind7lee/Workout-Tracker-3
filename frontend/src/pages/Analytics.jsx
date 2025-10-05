@@ -4,7 +4,7 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useStreak } from '../context/StreakContext';
+
 import { useRealTime } from '../context/RealTimeContext';
 
 import AuthGuard from '../components/AuthGuard';
@@ -69,13 +69,13 @@ function AnalyticsHero() {
 
 export default function Analytics() {
   const { isAuthenticated } = useAuth();
-  const { currentStreak } = useStreak();
+
   const { stats, isOnline, refreshStats } = useRealTime();
   // Achievement system removed
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const realTimeCurrentStreak = stats.currentStreak || currentStreak || 0;
+
 
   const loadAnalyticsData = () => {
     try {
@@ -90,7 +90,7 @@ export default function Analytics() {
             totalPlans: 0,
             todayWorkouts: 0,
             weeklyWorkouts: 0,
-            currentStreak: 0
+
           },
           caloriesTrend: null,
           workoutFrequency: null,
@@ -161,7 +161,7 @@ export default function Analytics() {
           totalPlans: plans.length,
           todayWorkouts: stats.todayWorkouts || 0,
           weeklyWorkouts: stats.weeklyWorkouts || 0,
-          currentStreak: realTimeCurrentStreak,
+
           // Achievement system removed
         },
         caloriesTrend: chartData.caloriesData,
@@ -176,7 +176,7 @@ export default function Analytics() {
           totalPlans: 0,
           todayWorkouts: 0,
           weeklyWorkouts: 0,
-          currentStreak: 0
+
         },
         caloriesTrend: null,
         workoutFrequency: null,
@@ -203,7 +203,7 @@ export default function Analytics() {
       window.removeEventListener('mealAdded', handleMealAdded);
       window.removeEventListener('planCreated', handlePlanCreated);
     };
-  }, [stats, realTimeCurrentStreak]);
+  }, [stats]);
 
   const refresh = () => {
     refreshStats();
@@ -344,10 +344,7 @@ export default function Analytics() {
                 <span className="text-slate-400">Your Workout Plans</span>
                 <span className="text-white font-bold">{analyticsData?.stats?.totalPlans || 0}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Your Current Streak</span>
-                <span className="text-orange-400 font-bold">{analyticsData?.stats?.currentStreak || 0} days</span>
-              </div>
+
 
             </div>
           </div>

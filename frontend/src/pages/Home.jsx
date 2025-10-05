@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
-import { useStreak } from '../context/StreakContext';
 
-import { getRealTimeStreak } from '../utils/streakUtils';
+
+
 import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
@@ -22,7 +22,7 @@ export default function Home() {
   const location = useLocation();
   const auth = useAuth();
   const { stats, isOnline } = useRealTime();
-  const { currentStreak } = useStreak();
+
   // Achievement system removed
 
 
@@ -92,16 +92,12 @@ export default function Home() {
     { id: 'workout', icon: '🏋️', title: 'WORKOUT DOMINATION', desc: 'AI-powered training with real-time form analysis', color: 'blue' },
     { id: 'analytics', icon: '📊', title: 'PROGRESS ANALYTICS', desc: 'Advanced metrics with predictive insights', color: 'purple' },
     { id: 'goals', icon: '🎯', title: 'GOAL CRUSHING', desc: 'Smart goal setting with achievement tracking', color: 'green' },
-    { id: 'streak', icon: '🔥', title: 'STREAK MASTER', desc: 'Maintain momentum with streak rewards', color: 'orange' },
+
 
     { id: 'nutrition', icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track meals, calories, and macros', color: 'green' }
   ]), []);
 
-  // Optimized stats calculation
-  const realTimeCurrentStreak = useMemo(() => 
-    getRealTimeStreak(currentStreak, stats?.currentStreak), 
-    [currentStreak, stats?.currentStreak]
-  );
+
   
   const totalWorkouts = useMemo(() => {
     // Only show workout count if user is authenticated
@@ -134,14 +130,7 @@ export default function Home() {
           path: '/login',
           subtitle: 'Login to track your workouts'
         },
-        {
-          label: 'Current Streak',
-          value: 0,
-          icon: '🔥',
-          color: 'orange',
-          path: '/login',
-          subtitle: 'Login to start your streak'
-        }
+
       ];
     }
     
@@ -154,16 +143,9 @@ export default function Home() {
         path: '/workouts',
         subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'No workouts yet - Start your journey!'
       },
-      {
-        label: 'Current Streak',
-        value: realTimeCurrentStreak,
-        icon: '🔥',
-        color: 'orange',
-        path: '/current-streak',
-        subtitle: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'
-      }
+
     ];
-  }, [totalWorkouts, realTimeCurrentStreak, isAuthenticated, auth?.user]);
+  }, [totalWorkouts, isAuthenticated, auth?.user]);
 
   const globalStats = useMemo(() => [
     { value: '15K+', label: 'ELITE ATHLETES', sublabel: 'WORLDWIDE', color: 'blue', icon: '🌍' },
@@ -251,16 +233,7 @@ export default function Home() {
 
   // Optimized event listeners
   useEffect(() => {
-    const handleStreakUpdate = (e) => {
-      const detail = e?.detail;
-      if (!detail || !mountedRef.current) return;
-      
-      if (detail.type === 'STREAK_UPDATED') {
-        const newStreak = detail.currentStreak ?? realTimeCurrentStreak;
-        setNotification({ type: 'streak', message: `🔥 Day ${newStreak} Streak Active!` });
-        setTimeout(() => mountedRef.current && setNotification(null), 3000);
-      }
-    };
+
 
     const handleWorkoutComplete = (e) => {
       const detail = e?.detail;
@@ -285,8 +258,7 @@ export default function Home() {
     
     // Add event listeners
     const events = [
-      ['homeStreakUpdate', handleStreakUpdate],
-      ['streakUpdated', handleStreakUpdate],
+
       ['workoutCompleted', handleWorkoutComplete],
       ['realTimeStatsUpdate', handleStatsUpdate],
       ['analyticsWorkoutUpdate', handleStatsUpdate]
@@ -301,7 +273,7 @@ export default function Home() {
         window.removeEventListener(event, handler);
       });
     };
-  }, [realTimeCurrentStreak]);
+  }, []);
 
   // Clean fake data on mount - USER SPECIFIC
   useEffect(() => {
@@ -440,9 +412,9 @@ export default function Home() {
           </div>
           
           <div className="space-y-1">
-            <div className={`text-xl sm:text-2xl font-black text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && !isLocked ? 'animate-pulse' : ''}`}>
+            <div className="text-xl sm:text-2xl font-black text-white">
               {isLocked ? '🔒' : (typeof stat.value === 'number' ? count : stat.value)}
-              {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && !isLocked && <span className="ml-2 animate-bounce">🔥</span>}
+
             </div>
             
             <div className="text-xs sm:text-sm font-semibold text-slate-300">
@@ -499,15 +471,7 @@ export default function Home() {
               {feature.desc}
             </p>
             
-            {/* Special Streak Display */}
-            {feature.title === 'STREAK MASTER' && (
-              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-400/20 rounded-lg sm:rounded-xl">
-                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-orange-400 to-red-400 animate-pulse" />
-                <span className="text-xs sm:text-sm font-semibold text-orange-300">
-                  Current: <span className="text-white">{realTimeCurrentStreak}</span> days
-                </span>
-              </div>
-            )}
+
           </div>
           
           {/* Active Indicator */}
@@ -639,7 +603,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 max-w-md mx-auto">
               {quickStats.map((stat, i) => (
                 <StatCard key={`stat-${i}`} stat={stat} />
               ))}
@@ -1007,12 +971,7 @@ export default function Home() {
                     🚀 GO TO DASHBOARD
                   </button>
                   
-                  <button 
-                    onClick={() => navigate('/current-streak')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-400/50 hover:shadow-3xl"
-                  >
-                    🔥 CHECK STREAK ({realTimeCurrentStreak})
-                  </button>
+
                 </>
               ) : (
                 <>
@@ -1055,13 +1014,12 @@ export default function Home() {
           <div className={`p-3 rounded-xl shadow-xl border backdrop-blur-sm transform transition-all duration-300 ${
             notification.type === 'workout' 
               ? 'bg-green-600/95 border-green-400 text-white' 
-              : notification.type === 'streak' 
-              ? 'bg-orange-600/95 border-orange-400 text-white' 
+ 
               : 'bg-blue-600/95 border-blue-400 text-white'
           }`}>
             <div className="flex items-start gap-3">
               <span className="text-xl flex-shrink-0">
-                {notification.type === 'workout' ? '🎉' : notification.type === 'streak' ? '🔥' : '✨'}
+                {notification.type === 'workout' ? '🎉' : '✨'}
               </span>
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm leading-tight">{notification.message}</div>

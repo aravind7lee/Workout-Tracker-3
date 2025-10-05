@@ -4,7 +4,6 @@ import { useAuth } from './AuthContext';
 import { onlineService } from '../services/onlineService';
 import { workoutSync } from '../services/workoutSync';
 import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
-import { realTimeStreakSync } from '../services/realTimeStreakSync';
 import api from '../utils/api';
 
 const RealTimeContext = createContext();
@@ -22,10 +21,8 @@ export const RealTimeProvider = ({ children }) => {
   const [stats, setStats] = useState({
     workouts: 0,
     meals: 0,
-    streak: 0,
     totalWorkouts: 0,
     totalMeals: 0,
-    currentStreak: 0,
     todayWorkouts: 0,
     weeklyWorkouts: 0,
     monthlyWorkouts: 0,
@@ -55,9 +52,6 @@ export const RealTimeProvider = ({ children }) => {
           totalCalories: 0,
           totalDuration: 0,
           totalPlans: 0,
-          currentStreak: 0,
-          longestStreak: 0,
-          totalCheckIns: 0,
           isRealTime: false,
           lastSync: new Date().toISOString(),
           dataSource: 'No User'
@@ -65,10 +59,6 @@ export const RealTimeProvider = ({ children }) => {
       }
       
       const realtimeStats = realTimeWorkoutSync.getStats();
-      
-      // Get streak stats from realTimeStreakSync service
-      const streakStats = realTimeStreakSync.getStreakStats();
-      console.log(`🔥 User ${user.id} streak stats:`, streakStats);
       
       // Get plans count from localStorage - filter by current user only
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
@@ -79,7 +69,7 @@ export const RealTimeProvider = ({ children }) => {
       });
       const totalPlans = userPlans.length;
       
-      console.log(`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} user-specific plans, ${streakStats.currentStreak} streak`);
+      console.log(`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} user-specific plans`);
       
       return {
         workouts: realtimeStats.todayWorkouts,
@@ -90,9 +80,6 @@ export const RealTimeProvider = ({ children }) => {
         totalCalories: realtimeStats.totalCalories,
         totalDuration: realtimeStats.totalDuration,
         totalPlans: totalPlans,
-        currentStreak: streakStats.currentStreak || 0,
-        longestStreak: streakStats.longestStreak || 0,
-        totalCheckIns: streakStats.totalCheckIns || 0,
         isRealTime: true,
         lastSync: realtimeStats.lastUpdate || new Date().toISOString(),
         dataSource: `User-${user.id}-RealTimeSync`
@@ -108,9 +95,6 @@ export const RealTimeProvider = ({ children }) => {
         totalCalories: 0,
         totalDuration: 0,
         totalPlans: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        totalCheckIns: 0,
         isRealTime: false,
         lastSync: new Date().toISOString(),
         dataSource: 'Error'
@@ -125,10 +109,8 @@ export const RealTimeProvider = ({ children }) => {
       setStats({
         workouts: 0,
         meals: 0,
-        streak: 0,
         totalWorkouts: 0,
         totalMeals: 0,
-        currentStreak: 0,
         todayWorkouts: 0,
         weeklyWorkouts: 0,
         monthlyWorkouts: 0,
@@ -163,10 +145,8 @@ export const RealTimeProvider = ({ children }) => {
       let realTimeData = {
         ...localStats,
         meals: 0,
-        streak: 0,
         totalMeals: 0,
         totalPlans: localStats.totalPlans,
-        currentStreak: 0,
         weeklyGoal: { completed: localStats.weeklyWorkouts, target: 4, percentage: (localStats.weeklyWorkouts / 4) * 100 },
         isRealTime: true,
         dataSource: 'MongoDB + localStorage'
@@ -217,9 +197,7 @@ export const RealTimeProvider = ({ children }) => {
         realTimeData = {
           ...realTimeData,
           meals: data.meals || 0,
-          streak: data.streak || 0,
           totalMeals: data.meals || 0,
-          currentStreak: data.streak || 0,
           weeklyGoal: data.weeklyGoal || realTimeData.weeklyGoal
         };
       }
@@ -261,10 +239,8 @@ export const RealTimeProvider = ({ children }) => {
       setStats({
         workouts: 0,
         meals: 0,
-        streak: 0,
         totalWorkouts: 0,
         totalMeals: 0,
-        currentStreak: 0,
         todayWorkouts: 0,
         weeklyWorkouts: 0,
         monthlyWorkouts: 0,
@@ -283,27 +259,9 @@ export const RealTimeProvider = ({ children }) => {
     // Clean fake workouts first for current user
     realTimeWorkoutSync.cleanFakeWorkouts();
     
-    // Load local stats immediately (includes streak data)
+    // Load local stats immediately
     const localStats = loadWorkoutStats();
     setStats(prev => ({ ...prev, ...localStats }));
-    
-    // Subscribe to streak updates for real-time sync
-    const unsubscribeStreak = realTimeStreakSync.subscribe((streakData) => {
-      if (!user) {
-        console.log('🔒 No user - ignoring streak update');
-        return;
-      }
-      console.log(`🔥 Real-time streak update for user ${user.id}:`, streakData);
-      setStats(prev => ({
-        ...prev,
-        currentStreak: streakData.currentStreak || 0,
-        streak: streakData.currentStreak || 0,
-        longestStreak: streakData.longestStreak || 0,
-        totalCheckIns: streakData.totalCheckIns || 0,
-        lastSync: new Date().toISOString(),
-        dataSource: `User-${user.id}-StreakSync`
-      }));
-    });
     
     // Subscribe to real-time updates
     const unsubscribe = realTimeWorkoutSync.subscribe((newStats) => {
@@ -332,11 +290,10 @@ export const RealTimeProvider = ({ children }) => {
     
     return () => {
       if (unsubscribe) unsubscribe();
-      if (unsubscribeStreak) unsubscribeStreak();
     };
   }, [user, isAuthenticated, fetchRealTimeStats, loadWorkoutStats]);
 
-  // Listen for real-time events + INSTANT STREAK UPDATES
+  // Listen for real-time events
   useEffect(() => {
     const handleWorkoutCompleted = (event) => {
       console.log('🏋️ Workout completed - refreshing all stats');
@@ -369,36 +326,6 @@ export const RealTimeProvider = ({ children }) => {
         dataSource: 'Plan Created Update'
       }));
       setTimeout(fetchRealTimeStats, 1000);
-    };
-
-    // REAL-TIME STREAK UPDATE HANDLER - INSTANT UPDATES
-    const handleStreakUpdated = (event) => {
-      console.log('🔥 REAL-TIME: Streak updated - instant sync');
-      
-      if (event.detail) {
-        const streakData = event.detail;
-        
-        // INSTANT UPDATE - No API call needed, update immediately
-        setStats(prev => ({
-          ...prev,
-          currentStreak: streakData.currentStreak || 0,
-          streak: streakData.currentStreak || 0,
-          totalCheckIns: streakData.totalCheckIns || 0,
-          longestStreak: streakData.longestStreak || 0,
-          lastSync: new Date().toISOString(),
-          dataSource: 'Real-time Streak Update',
-          isRealTime: true
-        }));
-        
-        console.log('✅ INSTANT: Stats updated with streak data:', {
-          currentStreak: streakData.currentStreak,
-          totalCheckIns: streakData.totalCheckIns,
-          longestStreak: streakData.longestStreak
-        });
-      }
-      
-      // Also refresh full stats in background (non-blocking)
-      setTimeout(fetchRealTimeStats, 500);
     };
 
     // WORKOUT COMPLETION STATS UPDATE
@@ -437,10 +364,8 @@ export const RealTimeProvider = ({ children }) => {
       setStats({
         workouts: 0,
         meals: 0,
-        streak: 0,
         totalWorkouts: 0,
         totalMeals: 0,
-        currentStreak: 0,
         todayWorkouts: 0,
         weeklyWorkouts: 0,
         monthlyWorkouts: 0,
@@ -459,7 +384,6 @@ export const RealTimeProvider = ({ children }) => {
     window.addEventListener('realTimeStatsSync', handleRealTimeSync);
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
-    window.addEventListener('streakUpdated', handleStreakUpdated);
     window.addEventListener('userLoggedOut', handleUserLogout);
     
     // Also listen for plan updates to refresh totalPlans immediately
@@ -476,11 +400,6 @@ export const RealTimeProvider = ({ children }) => {
     
     window.addEventListener('planUpdated', handlePlanUpdate);
     window.addEventListener('planDeleted', handlePlanUpdate);
-    
-    // Listen for specific streak events for even faster updates
-    window.addEventListener('dashboardStreakUpdate', handleStreakUpdated);
-    window.addEventListener('homeStreakUpdate', handleStreakUpdated);
-    window.addEventListener('analyticsStreakUpdate', handleStreakUpdated);
 
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
@@ -488,10 +407,6 @@ export const RealTimeProvider = ({ children }) => {
       window.removeEventListener('realTimeStatsSync', handleRealTimeSync);
       window.removeEventListener('mealAdded', handleMealAdded);
       window.removeEventListener('planCreated', handlePlanCreated);
-      window.removeEventListener('streakUpdated', handleStreakUpdated);
-      window.removeEventListener('dashboardStreakUpdate', handleStreakUpdated);
-      window.removeEventListener('homeStreakUpdate', handleStreakUpdated);
-      window.removeEventListener('analyticsStreakUpdate', handleStreakUpdated);
       window.removeEventListener('planUpdated', handlePlanUpdate);
       window.removeEventListener('planDeleted', handlePlanUpdate);
       window.removeEventListener('userLoggedOut', handleUserLogout);
@@ -544,22 +459,6 @@ export const RealTimeProvider = ({ children }) => {
     }));
   }, []);
 
-  // REAL-TIME STREAK SYNC - Update streak data instantly
-  const updateStreakStats = useCallback((streakData) => {
-    setStats(prev => ({
-      ...prev,
-      currentStreak: streakData.currentStreak || 0,
-      streak: streakData.currentStreak || 0,
-      totalCheckIns: streakData.totalCheckIns || 0,
-      longestStreak: streakData.longestStreak || 0,
-      lastSync: new Date().toISOString(),
-      dataSource: 'Real-time Streak',
-      isRealTime: true
-    }));
-    
-    console.log('🔥 REAL-TIME: Streak stats updated instantly:', streakData);
-  }, []);
-
   const value = {
     stats,
     isOnline,
@@ -568,7 +467,6 @@ export const RealTimeProvider = ({ children }) => {
     refreshStats,
     updateStat,
     incrementStat,
-    updateStreakStats,
     updateWorkoutStats,
     addCompletedWorkout,
     loadWorkoutStats,

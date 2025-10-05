@@ -74,25 +74,7 @@ function testPlanWorkoutCompletion() {
         console.log('📡 Events dispatched for plan workout completion');
         console.log('📊 Current stats:', window.realTimeWorkoutSync.getStats());
         
-        // Show success message
-        const successMsg = document.createElement('div');
-        successMsg.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm animate-pulse';
-        successMsg.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="text-2xl">🧪</div>
-            <div>
-              <div class="font-bold">Test Plan Workout Completed!</div>
-              <div class="text-sm opacity-90">${testPlanWorkout.planName} • 30min • ${testPlanWorkout.caloriesBurned} cal</div>
-              <div class="text-xs opacity-75 mt-1">✅ Check /workouts page & stats!</div>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(successMsg);
-        setTimeout(() => {
-          if (document.body.contains(successMsg)) {
-            document.body.removeChild(successMsg);
-          }
-        }, 8000);
+        // Notification removed as requested
         
         return true;
       } else {

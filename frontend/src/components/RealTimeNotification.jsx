@@ -19,7 +19,7 @@ export default function RealTimeNotification({ message, type = 'success', onClos
       case 'success': return '🎉';
       case 'workout': return '💪';
       case 'xp': return '⭐';
-      case 'streak': return '🔥';
+
       case 'sync': return '🔄';
       default: return '✅';
     }
@@ -30,7 +30,7 @@ export default function RealTimeNotification({ message, type = 'success', onClos
       case 'success': return 'from-green-500/20 to-emerald-500/20 border-green-500/30';
       case 'workout': return 'from-blue-500/20 to-cyan-500/20 border-blue-500/30';
       case 'xp': return 'from-yellow-500/20 to-orange-500/20 border-yellow-500/30';
-      case 'streak': return 'from-red-500/20 to-pink-500/20 border-red-500/30';
+
       case 'sync': return 'from-purple-500/20 to-indigo-500/20 border-purple-500/30';
       default: return 'from-gray-500/20 to-slate-500/20 border-gray-500/30';
     }

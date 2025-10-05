@@ -6,7 +6,7 @@ import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-ro
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { RealTimeProvider } from './context/RealTimeContext';
-import { StreakProvider } from './context/StreakContext';
+
 
 import { WorkoutCompletionProvider } from './context/WorkoutCompletionContext';
 
@@ -26,9 +26,7 @@ import Forum from './pages/Forum';
 import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
 
-import CurrentStreakFixed from './pages/CurrentStreakFixed';
-const CurrentStreak = CurrentStreakFixed; // Use fixed version
-import StreakTest from './pages/StreakTest';
+
 import Workouts from './pages/Workouts';
 import WorkoutsTest from './pages/WorkoutsTest';
 import WorkoutsFixed from './pages/WorkoutsFixed';
@@ -48,15 +46,11 @@ import chromeErrorHandler from './utils/chromeErrorHandler';
 import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
 import './utils/errorSuppression'; // Suppress import errors
-import { realTimeStreakSync } from './services/realTimeStreakSync'; // Initialize real-time streak sync
+
 import './utils/testWorkoutCompletion'; // Test utilities for real-time updates
 import './utils/testPlanWorkoutCompletion'; // Test plan workout completion flow
 import './utils/cleanupFakeWorkouts'; // Cleanup fake workouts
-import './utils/cleanUserStreaks'; // Cleanup fake streaks and ensure user-specific tracking
-import './utils/testUserStreaks'; // Test user-specific streak implementation
-import './utils/forceStreakStatsRefresh'; // Force refresh streak stats across all pages
-import './utils/initializeStreakSync'; // Initialize streak synchronization across all pages
-import './utils/testStreakStatsSync'; // Test streak stats synchronization across all pages
+
 import './styles/button-improvements.css'; // Global button improvements
 
 // Inline components to avoid module loading errors
@@ -375,18 +369,11 @@ const ExerciseDetail = () => {
 };
 
 export default function App() {
-  // Initialize Chrome error handler and real-time streak sync
+  // Initialize Chrome error handler
   useEffect(() => {
     console.log('🛡️ Chrome error handler initialized');
     
-    // Initialize real-time streak synchronization
-    realTimeStreakSync.initialize();
-    console.log('🔥 Real-time streak sync initialized');
-    
-    // Cleanup on unmount
-    return () => {
-      realTimeStreakSync.destroy();
-    };
+
   }, []);
 
   return (
@@ -396,7 +383,7 @@ export default function App() {
           <ThemeProvider>
             <AuthProvider>
               <RealTimeProvider>
-                <StreakProvider>
+
                     <WorkoutCompletionProvider>
                   <div className="min-h-screen">
                     <Navbar />
@@ -421,8 +408,7 @@ export default function App() {
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/start-workout" element={<StartWorkout />} />
 
-                      <Route path="/current-streak" element={<CurrentStreakFixed />} />
-                      <Route path="/streak-test" element={<StreakTest />} />
+
                       <Route path="/workouts" element={<Workouts />} />
                       <Route path="/legends" element={<LegendsAndInfluencers />} />
                       <Route path="/search" element={<Search />} />
@@ -432,7 +418,7 @@ export default function App() {
                     <Footer />
                   </div>
                     </WorkoutCompletionProvider>
-                </StreakProvider>
+
               </RealTimeProvider>
             </AuthProvider>
           </ThemeProvider>

@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useStreak } from '../context/StreakContext';
 import { useRealTime } from '../context/RealTimeContext';
-
 
 export default function RealTimeStats() {
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     totalPlans: 0,
-    totalMeals: 0,
-    currentStreak: 0
+    totalMeals: 0
   });
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(false);
   const { user } = useAuth();
-  const { currentStreak } = useStreak();
   const { stats: contextStats, isOnline: contextOnline } = useRealTime();
-
   const navigate = useNavigate();
-  
-  const realTimeCurrentStreak = contextStats.currentStreak || currentStreak || 0;
 
   const loadRealTimeStats = async () => {
     if (!user) return;
@@ -43,8 +36,7 @@ export default function RealTimeStats() {
         setStats({
           totalWorkouts: Math.max(data.totalWorkouts || 0, contextStats.totalWorkouts || 0),
           totalPlans: Math.max(data.totalPlans || 0, contextStats.totalPlans || 0),
-          totalMeals: data.totalMeals || 0,
-          currentStreak: realTimeCurrentStreak
+          totalMeals: data.totalMeals || 0
         });
       } else {
         loadLocalStats();
@@ -70,16 +62,14 @@ export default function RealTimeStats() {
       setStats({
         totalWorkouts,
         totalPlans,
-        totalMeals: meals.length,
-        currentStreak: realTimeCurrentStreak
+        totalMeals: meals.length
       });
     } catch (error) {
       console.error('Error loading local stats:', error);
       setStats({
         totalWorkouts: 0,
         totalPlans: 0,
-        totalMeals: 0,
-        currentStreak: 0
+        totalMeals: 0
       });
     }
   };
@@ -89,11 +79,10 @@ export default function RealTimeStats() {
       setStats(prev => ({
         ...prev,
         totalWorkouts: contextStats.totalWorkouts,
-        totalPlans: contextStats.totalPlans || prev.totalPlans,
-        currentStreak: realTimeCurrentStreak
+        totalPlans: contextStats.totalPlans || prev.totalPlans
       }));
     }
-  }, [contextStats, realTimeCurrentStreak]);
+  }, [contextStats]);
 
   useEffect(() => {
     loadRealTimeStats();
@@ -107,26 +96,9 @@ export default function RealTimeStats() {
     };
     const handleMealAdded = () => loadRealTimeStats();
     
-    const handleStreakUpdate = (event) => {
-      console.log('🔥 Streak update received');
-      
-      if (event.detail && event.detail.currentStreak !== undefined) {
-        const streakData = event.detail;
-        const newStreak = streakData.currentStreak;
-        
-        setStats(prev => ({
-          ...prev,
-          currentStreak: newStreak
-        }));
-      }
-      
-      setTimeout(loadRealTimeStats, 500);
-    };
-    
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
-    window.addEventListener('streakUpdated', handleStreakUpdate);
     
     const interval = setInterval(loadRealTimeStats, 30000);
     
@@ -134,10 +106,9 @@ export default function RealTimeStats() {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
-      window.removeEventListener('streakUpdated', handleStreakUpdate);
       clearInterval(interval);
     };
-  }, [user, realTimeCurrentStreak]);
+  }, [user]);
 
   const formatNumber = (num) => {
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
@@ -150,17 +121,15 @@ export default function RealTimeStats() {
         return value > 0 ? `${value} completed!` : 'Start your first workout';
       case 'Workout Plans':
         return value > 0 ? `${value} plans ready` : 'Create your first plan';
-      case 'Current Streak':
-        return value > 0 ? `${value} days strong!` : 'Start your streak';
       default:
         return 'Ready to start!';
     }
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {loading ? (
-        Array.from({ length: 3 }).map((_, i) => (
+        Array.from({ length: 2 }).map((_, i) => (
           <div key={i} className="card">
             <div className="animate-pulse">
               <div className="h-8 bg-slate-700 rounded mb-2"></div>
@@ -184,13 +153,6 @@ export default function RealTimeStats() {
             color: 'text-green-400',
             icon: '📋',
             path: '/my-plans'
-          },
-          { 
-            label: 'Current Streak', 
-            value: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak}🔥` : '0🔥', 
-            color: 'text-orange-400',
-            icon: '🔥',
-            path: '/current-streak'
           }
         ].map((stat, index) => (
           <div 
@@ -217,15 +179,13 @@ export default function RealTimeStats() {
               </div>
               <div className={`text-xs ${
                 (stat.label === 'Total Workouts' && stats.totalWorkouts > 0) ||
-                (stat.label === 'Workout Plans' && stats.totalPlans > 0) ||
-                (stat.label === 'Current Streak' && realTimeCurrentStreak > 0)
+                (stat.label === 'Workout Plans' && stats.totalPlans > 0)
                   ? 'text-green-400' 
                   : 'text-gray-400'
               }`}>
                 {getStatMessage(stat.label, 
                   stat.label === 'Total Workouts' ? stats.totalWorkouts :
-                  stat.label === 'Workout Plans' ? stats.totalPlans :
-                  realTimeCurrentStreak
+                  stat.label === 'Workout Plans' ? stats.totalPlans : 0
                 )}
               </div>
             </div>

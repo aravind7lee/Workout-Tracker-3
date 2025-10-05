@@ -3,14 +3,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
-import { useStreak } from '../context/StreakContext';
+
 
 import { useRealTimeDashboard } from '../hooks/useRealTimeDashboard';
 import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
 import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
-import { getRealTimeStreak } from '../utils/streakUtils';
+
 import api from '../utils/api';
 import Dashboard1 from '../assets/Dashboard1.jpg';
 import Dashboard2 from '../assets/Dashboard2.jpg';
@@ -20,10 +20,9 @@ const Dashboard = () => {
   const { user: authUser, logout, isAuthenticated, loading: authLoading } = useAuth();
   const { stats, isOnline, loading: statsLoading, refreshStats } = useRealTime();
   const { stats: workoutStats, refreshStats: refreshWorkoutStats } = useRealTimeWorkouts();
-  const { currentStreak, longestStreak, totalCheckIns } = useStreak();
+
   
-  // Get real-time streak using utility function (same as Home page)
-  const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats?.currentStreak);
+
   // Achievement system removed
   
   // REAL-TIME DASHBOARD HOOK - INSTANT PLAN UPDATES
@@ -145,31 +144,7 @@ const Dashboard = () => {
       setTimeout(() => loadDashboardData(), 1000);
     };
     
-    // REAL-TIME STREAK UPDATE HANDLER - INSTANT UPDATES
-    const handleStreakUpdated = (event) => {
-      console.log('🔥 DASHBOARD: Real-time streak update received');
-      
-      if (event.detail) {
-        const streakData = event.detail;
-        console.log('🔥 DASHBOARD: Streak data:', streakData);
-        
-        // Show notification for streak updates
-        if (streakData.type === 'STREAK_UPDATED' && streakData.currentStreak > 0) {
-          setCompletionData({
-            exercise: 'Streak Check-in',
-            duration: 0,
-            sets: streakData.currentStreak,
-            offline: !streakData.synced
-          });
-          setShowCompletionMessage(true);
-          setTimeout(() => setShowCompletionMessage(false), 5000);
-        }
-      }
-      
-      // Refresh stats in background
-      refreshStats();
-      loadDashboardData();
-    };
+
     
     const handlePlanCreated = () => {
       console.log('📋 Plan created - refreshing dashboard');
@@ -182,8 +157,7 @@ const Dashboard = () => {
     };
     
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
-    window.addEventListener('streakUpdated', handleStreakUpdated);
-    window.addEventListener('dashboardStreakUpdate', handleStreakUpdated);
+
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
     
@@ -197,8 +171,7 @@ const Dashboard = () => {
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutCompleted);
-      window.removeEventListener('streakUpdated', handleStreakUpdated);
-      window.removeEventListener('dashboardStreakUpdate', handleStreakUpdated);
+
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
       // clearInterval(refreshInterval); // Disabled
@@ -361,7 +334,7 @@ const Dashboard = () => {
       </div>
 
       {/* Real-Time Stats - MongoDB Data Only */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
         <button 
           onClick={() => navigate('/workouts')}
           className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 text-left relative p-3 sm:p-4"
@@ -383,30 +356,7 @@ const Dashboard = () => {
           </div>
         </button>
         
-        <button 
-          onClick={() => navigate('/current-streak')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20 text-left relative p-3 sm:p-4"
-        >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">🔥</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className={`text-lg sm:text-xl lg:text-2xl font-bold text-white ${
-                realTimeCurrentStreak > 0 ? 'animate-pulse' : ''
-              }`}>
-                {realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak}🔥` : '0🔥'}
-              </div>
-              <div className="text-slate-400 text-xs sm:text-sm">Current Streak</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'}
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-red-400/70">
-            {isOnline && stats.isRealTime ? '🔴' : '❌'}
-          </div>
-        </button>
+
         
         <button 
           onClick={() => navigate('/analytics')}

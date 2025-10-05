@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
-import { useStreak } from '../context/StreakContext';
+
 import Heroimg from '../assets/Heroimg.jpg';
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
   const { stats, isOnline, lastSync, updateTrigger } = useRealTime();
-  const { currentStreak } = useStreak();
+
   const [loading, setLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
