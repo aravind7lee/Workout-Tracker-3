@@ -1129,12 +1129,12 @@ export default function PlansBuilder() {
           </div>
         </div>
 
-        {/* Workout Plan */}
+        {/* 🎯 Your Workout Plan - Mobile-First Responsive */}
         <div 
-          className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] transition-all duration-200 ${
+          className={`bg-slate-800/60 border border-slate-700 rounded-xl p-4 sm:p-5 md:p-6 min-h-[350px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px] transition-all duration-300 ${
             dragOverArea === 'plan' 
-              ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50' 
-              : ''
+              ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50 scale-[1.02]' 
+              : 'hover:bg-slate-800/80 hover:border-slate-600'
           }`}
           onDragOver={handleDragOver}
           onDragEnter={(e) => handleDragEnter(e, 'plan')}
@@ -1142,183 +1142,244 @@ export default function PlansBuilder() {
           onDrop={(e) => handleDrop(e, 'plan')}
           data-drop-zone="plan"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-4">
-            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white flex items-center gap-2">
-              <span className="animate-pulse">🎯</span> 
-              <span>Your Workout Plan</span>
+          {/* Mobile-Optimized Header */}
+          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between mb-5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                <span className="text-2xl sm:text-3xl animate-pulse">🎯</span> 
+                <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                  Your Workout Plan
+                </span>
+              </h3>
               {plan.length > 0 && (
-                <span className="text-xs sm:text-sm text-green-400 hidden sm:inline">• Ready to save!</span>
+                <span className="text-sm text-green-400 font-medium flex items-center gap-1 sm:ml-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  <span>Ready to save!</span>
+                </span>
               )}
-            </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-2 sm:px-3 py-1 rounded-full border border-slate-600">
+            </div>
+            
+            {/* Mobile-Friendly Status Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-medium text-slate-300 bg-slate-700/60 px-3 py-2 rounded-full border border-slate-600 shadow-sm">
+                <span className="text-blue-400 mr-1">📊</span>
                 {plan.length} {plan.length === 1 ? 'exercise' : 'exercises'}
               </span>
               {plan.length > 0 && (
-                <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full border border-blue-700">
-                  🔥 Active
+                <span className="text-sm bg-gradient-to-r from-blue-900/40 to-purple-900/40 text-blue-300 px-3 py-2 rounded-full border border-blue-700/50 shadow-sm">
+                  <span className="mr-1">🔥</span>
+                  Active Plan
+                </span>
+              )}
+              {isOnline && (
+                <span className="text-xs bg-green-900/30 text-green-300 px-2 py-1 rounded-full border border-green-700/50">
+                  <span className="mr-1">☁️</span>
+                  Live Sync
                 </span>
               )}
             </div>
           </div>
           
+          {/* Mobile-Optimized Empty State */}
           {plan.length === 0 ? (
-            <div className="flex items-center justify-center h-32 sm:h-40 lg:h-48 border-2 border-dashed border-slate-600 rounded-lg transition-all duration-300 hover:border-slate-500 hover:bg-slate-800/30">
-              <div className="text-center px-4">
-                <div className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 animate-bounce">🎯</div>
-                <p className="text-slate-400 text-sm sm:text-base font-medium">
-                  Drag exercises here or use + button
+            <div className="flex items-center justify-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px] border-2 border-dashed border-slate-600 rounded-xl transition-all duration-300 hover:border-slate-500 hover:bg-slate-800/30 mx-1">
+              <div className="text-center px-6 py-8">
+                <div className="text-4xl sm:text-5xl md:text-6xl mb-4 animate-bounce">🎯</div>
+                <h4 className="text-slate-300 text-base sm:text-lg md:text-xl font-semibold mb-2">
+                  Start Building Your Plan
+                </h4>
+                <p className="text-slate-400 text-sm sm:text-base mb-3 max-w-xs mx-auto leading-relaxed">
+                  Drag exercises here or tap the + button to add them
                 </p>
-                <p className="text-slate-500 text-xs sm:text-sm mt-1">
-                  Build your custom workout plan
-                </p>
-                <div className="mt-2 sm:mt-3 flex items-center justify-center gap-1 sm:gap-2 text-xs text-slate-500">
-                  <span>💪</span>
-                  <span className="text-center">Professional gym-level planning</span>
-                  <span>💪</span>
+                <div className="space-y-2">
+                  <p className="text-slate-500 text-xs sm:text-sm">
+                    Build your custom workout plan
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-500">
+                    <span className="text-base">💪</span>
+                    <span className="font-medium">Professional gym-level planning</span>
+                    <span className="text-base">💪</span>
+                  </div>
+                </div>
+                
+                {/* Mobile Hint */}
+                <div className="mt-4 sm:hidden">
+                  <p className="text-xs text-slate-600 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700">
+                    💡 Tap + buttons to add exercises on mobile
+                  </p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="space-y-2 sm:space-y-3">
+            <div className="space-y-3 sm:space-y-4 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
               {plan.map((exercise, index) => (
                 <div 
                   key={exercise.planId}
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, exercise, 'plan')}
                   onDragEnd={handleDragEnd}
-                  className="p-3 sm:p-4 rounded-lg bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-700/50 cursor-grab active:cursor-grabbing transition-all duration-200 hover:from-green-800/30 hover:to-blue-800/30 hover:border-green-600/70 hover:shadow-lg hover:shadow-green-900/20 select-none transform hover:scale-[1.02]"
+                  className="group p-4 sm:p-5 rounded-xl bg-gradient-to-r from-green-900/20 via-blue-900/20 to-purple-900/20 border border-green-700/50 cursor-grab active:cursor-grabbing transition-all duration-300 hover:from-green-800/30 hover:via-blue-800/30 hover:to-purple-800/30 hover:border-green-600/70 hover:shadow-xl hover:shadow-green-900/20 select-none transform hover:scale-[1.02] active:scale-[0.98]"
                   data-plan-id={exercise.planId}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-center justify-between">
+                  {/* Mobile-First Exercise Layout */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                    {/* Exercise Number & Info */}
                     <div className="flex items-center gap-3 flex-1">
-                      <span className="text-green-400 font-bold text-sm sm:text-base bg-gradient-to-r from-green-900/50 to-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm border border-green-700/50 shadow-lg">
-                        {index + 1}
-                      </span>
-                      <div className="flex-1">
-                        <div className="font-medium text-white text-sm sm:text-base flex items-center gap-2">
-                          <span>{exercise.name}</span>
-                          <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full border border-blue-700">
-                            ✓ Added
+                      <div className="flex-shrink-0">
+                        <span className="text-green-400 font-bold text-base sm:text-lg bg-gradient-to-r from-green-900/60 to-blue-900/60 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border border-green-700/50 shadow-lg group-hover:shadow-green-500/20 transition-all duration-300">
+                          {index + 1}
+                        </span>
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        {/* Exercise Name */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                          <h4 className="font-semibold text-white text-base sm:text-lg truncate">
+                            {exercise.name}
+                          </h4>
+                          <span className="text-xs bg-gradient-to-r from-blue-900/40 to-purple-900/40 text-blue-300 px-3 py-1 rounded-full border border-blue-700/50 w-fit">
+                            ✓ Added to Plan
                           </span>
                         </div>
-                        <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2 mt-1">
-                          <span className="flex items-center gap-1">
-                            <span>🏅</span>
-                            <span>{exercise.category}</span>
+                        
+                        {/* Exercise Details - Mobile Optimized */}
+                        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-400">
+                          <span className="flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded-md border border-slate-700">
+                            <span className="text-sm">🏅</span>
+                            <span className="font-medium">{exercise.category}</span>
                           </span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1">
-                            <span>🏋️</span>
-                            <span>{exercise.sets}</span>
+                          <span className="flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded-md border border-slate-700">
+                            <span className="text-sm">🏋️</span>
+                            <span className="font-medium">{exercise.sets}</span>
                           </span>
                           {exercise.difficulty && (
-                            <>
-                              <span>•</span>
-                              <span className={`px-2 py-1 rounded text-xs ${
-                                exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                                exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                                'bg-red-900/30 text-red-300'
-                              }`}>
-                                {exercise.difficulty}
-                              </span>
-                            </>
+                            <span className={`px-2 py-1 rounded-md text-xs font-medium border ${
+                              exercise.difficulty === 'beginner' ? 'bg-green-900/40 text-green-300 border-green-700/50' :
+                              exercise.difficulty === 'intermediate' ? 'bg-yellow-900/40 text-yellow-300 border-yellow-700/50' :
+                              'bg-red-900/40 text-red-300 border-red-700/50'
+                            }`}>
+                              {exercise.difficulty}
+                            </span>
                           )}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => moveUp(index)}
-                        disabled={index === 0}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600"
-                        title="Move up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        onClick={() => moveDown(index)}
-                        disabled={index === plan.length - 1}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600"
-                        title="Move down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        onClick={() => removeFromPlan(exercise.planId)}
-                        className="text-red-400 hover:text-red-300 text-lg font-bold w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-900/30 transition-all duration-200 ml-1 border border-transparent hover:border-red-700"
-                        title="Remove from plan"
-                      >
-                        ×
-                      </button>
-                      <div className="text-slate-500 text-lg sm:text-xl ml-2 cursor-grab">
-                        ⋮⋮
+                    
+                    {/* Mobile-Optimized Action Buttons */}
+                    <div className="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-slate-700/50 sm:border-t-0">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => moveUp(index)}
+                          disabled={index === 0}
+                          className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600 active:scale-95"
+                          title="Move up"
+                        >
+                          <span className="text-sm font-bold">↑</span>
+                        </button>
+                        <button
+                          onClick={() => moveDown(index)}
+                          disabled={index === plan.length - 1}
+                          className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600 active:scale-95"
+                          title="Move down"
+                        >
+                          <span className="text-sm font-bold">↓</span>
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => removeFromPlan(exercise.planId)}
+                          className="text-red-400 hover:text-red-300 text-xl font-bold w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-900/30 transition-all duration-200 border border-transparent hover:border-red-700/50 active:scale-95"
+                          title="Remove from plan"
+                        >
+                          ×
+                        </button>
+                        <div className="text-slate-500 text-xl cursor-grab hidden sm:block">
+                          ⋮⋮
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
               
-              {/* Plan Summary */}
+              {/* Mobile-Optimized Plan Summary */}
               {plan.length > 0 && (
-                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-lg">
-                  <div className="text-sm text-blue-300">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2">
-                        <span>📊</span>
-                        <span className="font-semibold text-sm sm:text-base">Professional Plan Summary</span>
+                <div className="mt-4 sm:mt-5 p-4 sm:p-5 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-indigo-900/30 border border-blue-700/50 rounded-xl shadow-lg">
+                  <div className="text-blue-300">
+                    {/* Summary Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">📊</span>
+                        <h4 className="font-bold text-base sm:text-lg text-white">
+                          Professional Plan Summary
+                        </h4>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2 bg-green-900/30 px-3 py-1 rounded-full border border-green-700/50">
                         <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        <span className="text-xs text-green-300">Real-time</span>
+                        <span className="text-xs font-medium text-green-300">Real-time Active</span>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs">
-                      <div className="flex items-center gap-1">
-                        <span>🏋️</span>
-                        <span>{plan.length} exercises</span>
+                    {/* Stats Grid - Mobile Responsive */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
+                        <div className="text-lg mb-1">🏋️</div>
+                        <div className="text-sm font-semibold text-white">{plan.length}</div>
+                        <div className="text-xs text-slate-400">exercises</div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span>🔥</span>
-                        <span>{planCategory}</span>
+                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
+                        <div className="text-lg mb-1">🔥</div>
+                        <div className="text-sm font-semibold text-white truncate">{planCategory}</div>
+                        <div className="text-xs text-slate-400">category</div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span>⏱️</span>
-                        <span>~{plan.length * 3}min</span>
+                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
+                        <div className="text-lg mb-1">⏱️</div>
+                        <div className="text-sm font-semibold text-white">~{plan.length * 3}min</div>
+                        <div className="text-xs text-slate-400">duration</div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span>💪</span>
-                        <span>Pro Level</span>
+                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
+                        <div className="text-lg mb-1">💪</div>
+                        <div className="text-sm font-semibold text-white">Pro</div>
+                        <div className="text-xs text-slate-400">level</div>
                       </div>
                     </div>
                     
-                    <div className="mt-2 text-xs text-slate-400">
-                      💡 This plan will sync to MongoDB and be available across all your devices
+                    {/* Mobile-Friendly Info */}
+                    <div className="bg-slate-800/30 p-3 rounded-lg border border-slate-700/30">
+                      <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-300">
+                        <span className="text-base flex-shrink-0">💡</span>
+                        <div className="leading-relaxed">
+                          <span className="font-medium">Cloud Sync Ready:</span> This plan will automatically sync to MongoDB and be available across all your devices with real-time updates.
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
               
-              {/* Real-time Sync Indicator */}
+              {/* Mobile-Optimized Real-time Sync Indicator */}
               {plan.length > 0 && (
-                <div className="mt-3 sm:mt-4 p-3 bg-slate-800/40 border border-slate-600 rounded-lg">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <span>☁️</span>
-                      <span>Real-time MongoDB Integration</span>
+                <div className="mt-4 p-4 bg-slate-800/50 border border-slate-600/50 rounded-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-3 text-slate-300">
+                      <span className="text-xl">☁️</span>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                        <span className="text-sm font-medium">Real-time MongoDB Integration</span>
+                        <span className="text-xs text-slate-500 sm:hidden">Professional cloud sync</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-slate-700/50 px-3 py-2 rounded-lg border border-slate-600/50">
                       {isOnline ? (
                         <>
-                          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                          <span className="text-green-300">Connected</span>
+                          <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+                          <span className="text-green-300 text-sm font-medium">Connected & Syncing</span>
                         </>
                       ) : (
                         <>
-                          <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
-                          <span className="text-orange-300">Offline Mode</span>
+                          <span className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></span>
+                          <span className="text-orange-300 text-sm font-medium">Offline Mode Active</span>
                         </>
                       )}
                     </div>
