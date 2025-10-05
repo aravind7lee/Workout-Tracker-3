@@ -221,29 +221,7 @@ const Dashboard = () => {
       {/* Dashboard Content */}
       <div className="space-y-4 sm:space-y-6 px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
       
-      {/* Workout Completion Notification */}
-      {showCompletionMessage && completionData && (
-        <div className="fixed top-20 right-4 z-50 bg-green-600 text-white p-4 rounded-lg shadow-lg border border-green-500 animate-pulse">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🎉</span>
-            <div>
-              <div className="font-bold">Workout Completed!</div>
-              <div className="text-sm opacity-90">
-                {completionData.exercise} • {Math.floor(completionData.duration / 60)}:{(completionData.duration % 60).toString().padStart(2, '0')} • {completionData.sets} sets
-              </div>
-              <div className="text-xs opacity-75">
-                {completionData.offline ? '💾 Saved offline' : '☁️ Synced online'} • +{completionData.sets * 10 + 50} XP
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowCompletionMessage(false)}
-              className="text-white hover:text-green-200 ml-2"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Notification removed as requested */}
       
       {/* Header */}
       <div className="card">

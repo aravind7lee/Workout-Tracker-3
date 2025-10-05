@@ -1008,35 +1008,7 @@ export default function Home() {
         </section>
       </div>
 
-      {/* Notification System */}
-      {notification && (
-        <div className="fixed top-4 right-4 z-50 max-w-sm animate-in slide-in-from-right duration-300">
-          <div className={`p-3 rounded-xl shadow-xl border backdrop-blur-sm transform transition-all duration-300 ${
-            notification.type === 'workout' 
-              ? 'bg-green-600/95 border-green-400 text-white' 
- 
-              : 'bg-blue-600/95 border-blue-400 text-white'
-          }`}>
-            <div className="flex items-start gap-3">
-              <span className="text-xl flex-shrink-0">
-                {notification.type === 'workout' ? '🎉' : '✨'}
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm leading-tight">{notification.message}</div>
-                <div className="text-xs opacity-75 mt-1">Just now</div>
-              </div>
-              <button 
-                onClick={() => setNotification(null)} 
-                className="text-white/80 hover:text-white rounded-full p-1 transition-all duration-200"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Notification system removed as requested */}
 
       {/* Simplified CSS */}
       <style>
