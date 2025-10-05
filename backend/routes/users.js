@@ -44,7 +44,7 @@ router.put('/profile', auth, async (req, res) => {
       totalCheckIns, 
       lastStreakCheckIn, 
       streakStartDate, 
-      xpPoints, 
+
       streakHistory,
       unlockedMilestones,
       streakLevel,
@@ -67,7 +67,7 @@ router.put('/profile', auth, async (req, res) => {
     if (totalCheckIns !== undefined) updateData.totalCheckIns = Math.max(0, totalCheckIns);
     if (lastStreakCheckIn !== undefined) updateData.lastStreakCheckIn = new Date(lastStreakCheckIn);
     if (streakStartDate !== undefined) updateData.streakStartDate = streakStartDate ? new Date(streakStartDate) : null;
-    if (xpPoints !== undefined) updateData.xpPoints = Math.max(0, xpPoints);
+
     if (streakHistory !== undefined) updateData.streakHistory = streakHistory;
     if (unlockedMilestones !== undefined) updateData.unlockedMilestones = unlockedMilestones;
     if (streakLevel !== undefined) updateData.streakLevel = streakLevel;
@@ -200,16 +200,7 @@ router.get('/stats', auth, async (req, res) => {
       }
     }
     
-    // Calculate XP from user model or from activities
-    const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
-    const userXP = user.xpPoints || calculatedXP;
-    
-    // Update user XP if it's different from calculated (non-blocking)
-    if (user.xpPoints !== calculatedXP) {
-      User.findByIdAndUpdate(req.user.id, { xpPoints: calculatedXP }).catch(err => 
-        console.warn('Failed to update XP:', err.message)
-      );
-    }
+
     
     // Get today's workouts for daily stats
     const today = new Date();
@@ -244,7 +235,7 @@ router.get('/stats', auth, async (req, res) => {
       totalPlans: plans.length || 0,
       totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
       currentStreak: currentStreak || 0,
-      xpPoints: calculatedXP || 0,
+
       totalCaloriesBurned: totalCaloriesBurned || 0,
       totalDuration: Math.round((totalDuration || 0) / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
@@ -259,7 +250,7 @@ router.get('/stats', auth, async (req, res) => {
       syncTimestamp: Date.now()
     };
     
-    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak, ${calculatedXP} XP`);
+    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak`);
     
     res.json(stats);
   } catch (error) {
@@ -343,180 +334,7 @@ router.get('/activity', auth, async (req, res) => {
   }
 });
 
-// Get user achievements with comprehensive tracking
-router.get('/achievements', auth, async (req, res) => {
-  try {
-    const [workouts, meals, user] = await Promise.all([
-      Workout.find({ userId: req.user.id }),
-      Meal.find({ userId: req.user.id }),
-      User.findById(req.user.id)
-    ]);
-    
-    const completedWorkouts = workouts.filter(w => w.completed);
-    const currentStreak = calculateStreak(completedWorkouts);
-    const totalCalories = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
-    const membershipDays = Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24));
-    
-    const achievements = [];
-    
-    // Workout achievements
-    if (completedWorkouts.length >= 1) {
-      achievements.push({
-        id: 'first-workout',
-        title: 'First Steps',
-        description: 'Complete your first workout',
-        icon: '🎯',
-        unlocked: true,
-        unlockedAt: completedWorkouts[0].createdAt,
-        category: 'workout'
-      });
-    }
-    
-    if (completedWorkouts.length >= 5) {
-      achievements.push({
-        id: 'workout-5',
-        title: 'Getting Started',
-        description: 'Complete 5 workouts',
-        icon: '🏃',
-        unlocked: true,
-        unlockedAt: completedWorkouts[4]?.createdAt,
-        category: 'workout'
-      });
-    }
-    
-    if (completedWorkouts.length >= 10) {
-      achievements.push({
-        id: 'workout-10',
-        title: 'Consistency Builder',
-        description: 'Complete 10 workouts',
-        icon: '💪',
-        unlocked: true,
-        unlockedAt: completedWorkouts[9]?.createdAt,
-        category: 'workout'
-      });
-    }
-    
-    if (completedWorkouts.length >= 25) {
-      achievements.push({
-        id: 'workout-25',
-        title: 'Dedicated Athlete',
-        description: 'Complete 25 workouts',
-        icon: '🏋️',
-        unlocked: true,
-        unlockedAt: completedWorkouts[24]?.createdAt,
-        category: 'workout'
-      });
-    }
-    
-    if (completedWorkouts.length >= 50) {
-      achievements.push({
-        id: 'workout-50',
-        title: 'Fitness Warrior',
-        description: 'Complete 50 workouts',
-        icon: '⚡',
-        unlocked: true,
-        unlockedAt: completedWorkouts[49]?.createdAt,
-        category: 'workout'
-      });
-    }
-    
-    // Streak achievements
-    if (currentStreak >= 3) {
-      achievements.push({
-        id: 'streak-3',
-        title: '3 Day Streak',
-        description: 'Workout for 3 consecutive days',
-        icon: '🔥',
-        unlocked: true,
-        unlockedAt: new Date(),
-        category: 'streak'
-      });
-    }
-    
-    if (currentStreak >= 7) {
-      achievements.push({
-        id: 'streak-7',
-        title: 'Week Warrior',
-        description: 'Workout for 7 consecutive days',
-        icon: '🔥',
-        unlocked: true,
-        unlockedAt: new Date(),
-        category: 'streak'
-      });
-    }
-    
-    if (currentStreak >= 30) {
-      achievements.push({
-        id: 'streak-30',
-        title: 'Monthly Master',
-        description: 'Workout for 30 consecutive days',
-        icon: '🏆',
-        unlocked: true,
-        unlockedAt: new Date(),
-        category: 'streak'
-      });
-    }
-    
-    // Nutrition achievements
-    if (meals.length >= 10) {
-      achievements.push({
-        id: 'nutrition-10',
-        title: 'Nutrition Tracker',
-        description: 'Log 10 meals',
-        icon: '🥗',
-        unlocked: true,
-        unlockedAt: meals[9]?.createdAt,
-        category: 'nutrition'
-      });
-    }
-    
-    // Calorie achievements
-    if (totalCalories >= 1000) {
-      achievements.push({
-        id: 'calories-1000',
-        title: 'Calorie Burner',
-        description: 'Burn 1000+ calories total',
-        icon: '🔥',
-        unlocked: true,
-        unlockedAt: new Date(),
-        category: 'calories'
-      });
-    }
-    
-    // Membership achievements
-    if (membershipDays >= 7) {
-      achievements.push({
-        id: 'member-week',
-        title: 'One Week Strong',
-        description: 'Member for 7 days',
-        icon: '📅',
-        unlocked: true,
-        unlockedAt: new Date(user.createdAt.getTime() + 7 * 24 * 60 * 60 * 1000),
-        category: 'membership'
-      });
-    }
-    
-    if (membershipDays >= 30) {
-      achievements.push({
-        id: 'member-month',
-        title: 'Monthly Member',
-        description: 'Member for 30 days',
-        icon: '🗓️',
-        unlocked: true,
-        unlockedAt: new Date(user.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000),
-        category: 'membership'
-      });
-    }
-    
-    // Sort by unlock date (most recent first)
-    achievements.sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt));
-    
-    res.json(achievements);
-  } catch (error) {
-    console.error('Achievements error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-});
+
 
 // Enhanced streak calculation with better logic and error handling
 function calculateStreak(workouts) {
@@ -648,7 +466,7 @@ router.get('/settings', settingsLimiter, auth, async (req, res) => {
         totalMeals: meals,
         totalPlans: plans,
         currentStreak: user.currentStreak || 0,
-        xpPoints: user.xpPoints || ((workouts * 100) + (plans * 50) + (meals * 25)),
+
         membershipDays: Math.floor((new Date() - new Date(user.createdAt)) / (1000 * 60 * 60 * 24))
       },
       lastSync: new Date().toISOString(),
@@ -837,34 +655,7 @@ router.put('/settings', settingsLimiter, auth, async (req, res) => {
   }
 });
 
-// Get XP details
-router.get('/xp-details', auth, async (req, res) => {
-  try {
-    const [workouts, meals, plans] = await Promise.all([
-      Workout.find({ userId: req.user.id, completed: true }),
-      Meal.find({ userId: req.user.id }),
-      Plan.find({ userId: req.user.id })
-    ]);
-    
-    const workoutXP = workouts.length * 100;
-    const mealXP = meals.length * 25;
-    const planXP = plans.length * 50;
-    const totalXP = workoutXP + mealXP + planXP;
-    
-    res.json({
-      totalXP,
-      workoutXP,
-      mealXP,
-      planXP,
-      xpSources: { workouts: workoutXP, meals: mealXP, plans: planXP, streaks: 0 },
-      xpHistory: [],
-      achievements: []
-    });
-  } catch (error) {
-    console.error('XP details error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+
 
 // Start/Continue streak - FIXED for real-time persistence
 router.post('/streak/check-in', auth, async (req, res) => {
@@ -922,7 +713,7 @@ router.post('/streak/check-in', auth, async (req, res) => {
       lastStreakCheckIn: today,
       streakStartDate: streakStartDate,
       totalCheckIns: (user.totalCheckIns || 0) + 1,
-      xpPoints: (user.xpPoints || 0) + 10,
+
       lastActiveDate: new Date(),
       lastSyncDate: new Date()
     };
@@ -931,7 +722,6 @@ router.post('/streak/check-in', auth, async (req, res) => {
     const streakEntry = {
       date: today,
       streakDay: newStreak,
-      xpEarned: 10,
       tier: newStreak <= 7 ? 'Beginner' : newStreak <= 30 ? 'Intermediate' : newStreak <= 100 ? 'Advanced' : 'Expert'
     };
 
@@ -956,7 +746,7 @@ router.post('/streak/check-in', auth, async (req, res) => {
       totalCheckIns: updatedUser.totalCheckIns,
       lastCheckInDate: todayStr,
       streakStartDate: streakStartDate.toISOString().split('T')[0],
-      xpEarned: 10,
+
       canCheckIn: false,
       isRealTime: true,
       message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Keep Going!`,
@@ -1171,7 +961,7 @@ async function getStatsForUser(userId) {
   const currentStreak = calculateStreak(completedWorkouts);
   const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
   const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
-  const calculatedXP = (completedWorkouts.length * 100) + (plans.length * 50) + (meals.length * 25);
+
   
   // Get today's and this week's workouts
   const today = new Date();
@@ -1198,7 +988,7 @@ async function getStatsForUser(userId) {
     totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
     currentStreak,
     longestStreak: user.longestStreak || currentStreak,
-    xpPoints: user.xpPoints || calculatedXP,
+
     totalCaloriesBurned,
     totalDuration: Math.round(totalDuration / 60),
     averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,

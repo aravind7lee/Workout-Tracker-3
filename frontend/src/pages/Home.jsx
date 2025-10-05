@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
-import { useAchievements } from '../context/AchievementsContext';
+
 import { getRealTimeStreak } from '../utils/streakUtils';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
@@ -22,13 +22,8 @@ export default function Home() {
   const auth = useAuth();
   const { stats, isOnline } = useRealTime();
   const { currentStreak } = useStreak();
-  const {
-    unlockedCount,
-    totalCount,
-    currentXP,
-    completionPercentage,
-    checkAchievements
-  } = useAchievements();
+  // Achievement system removed
+
 
   // Optimized state management
   const [notification, setNotification] = useState(null);
@@ -97,7 +92,7 @@ export default function Home() {
     { id: 'analytics', icon: '📊', title: 'PROGRESS ANALYTICS', desc: 'Advanced metrics with predictive insights', color: 'purple' },
     { id: 'goals', icon: '🎯', title: 'GOAL CRUSHING', desc: 'Smart goal setting with achievement tracking', color: 'green' },
     { id: 'streak', icon: '🔥', title: 'STREAK MASTER', desc: 'Maintain momentum with streak rewards', color: 'orange' },
-    { id: 'achieve', icon: '🏆', title: 'ACHIEVEMENT SYSTEM', desc: 'Unlock exclusive badges and earn XP points', color: 'yellow' },
+
     { id: 'nutrition', icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track meals, calories, and macros', color: 'green' }
   ]), []);
 
@@ -135,23 +130,8 @@ export default function Home() {
       path: '/current-streak',
       subtitle: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'
     },
-    {
-      label: 'Total XP',
-      value: currentXP ?? 0,
-      icon: '⭐',
-      color: 'yellow',
-      path: '/xp-points',
-      subtitle: currentXP > 0 ? `Level ${Math.floor((currentXP || 0) / 100) + 1}` : 'Earn XP by working out'
-    },
-    {
-      label: 'Achievements',
-      value: `${unlockedCount ?? 0}/${totalCount ?? 0}`,
-      icon: '🏆',
-      color: 'purple',
-      path: '/achievements',
-      subtitle: unlockedCount > 0 ? `${Math.round(completionPercentage || 0)}% complete` : 'Start earning achievements'
-    }
-  ], [totalWorkouts, realTimeCurrentStreak, currentXP, unlockedCount, totalCount, completionPercentage]);
+
+  ], [totalWorkouts, realTimeCurrentStreak]);
 
   const globalStats = useMemo(() => [
     { value: '15K+', label: 'ELITE ATHLETES', sublabel: 'WORLDWIDE', color: 'blue', icon: '🌍' },
@@ -259,11 +239,7 @@ export default function Home() {
         : `🎉 ${detail.exercise} completed!`;
       setNotification({ type: 'workout', message: msg });
       
-      try { 
-        checkAchievements(); 
-      } catch (err) { 
-        console.warn('Achievement check failed:', err);
-      }
+      // Achievement system removed
       
       setRefreshTrigger(prev => prev + 1);
       setTimeout(() => mountedRef.current && setNotification(null), 3000);
@@ -293,7 +269,7 @@ export default function Home() {
         window.removeEventListener(event, handler);
       });
     };
-  }, [checkAchievements, realTimeCurrentStreak]);
+  }, [realTimeCurrentStreak]);
 
   // Clean fake data on mount
   useEffect(() => {
@@ -330,16 +306,12 @@ export default function Home() {
         : `🎉 ${workoutState.exercise} completed!`;
       setNotification({ message, type: 'workout' });
       
-      try { 
-        checkAchievements(); 
-      } catch (err) {
-        console.warn('Achievement check failed:', err);
-      }
+      // Achievement system removed
       
       navigate(location.pathname, { replace: true });
       setTimeout(() => mountedRef.current && setNotification(null), 3000);
     }
-  }, [location.state, navigate, location.pathname, checkAchievements]);
+  }, [location.state, navigate, location.pathname]);
 
   // Loading completion handler
   const handleLoadingComplete = useCallback(() => {

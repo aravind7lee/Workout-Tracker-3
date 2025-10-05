@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
-import { useAchievements } from '../context/AchievementsContext';
+
 import { useRealTimeDashboard } from '../hooks/useRealTimeDashboard';
 import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
 import DashboardHero from '../components/DashboardHero';
@@ -24,7 +24,7 @@ const Dashboard = () => {
   
   // Get real-time streak using utility function (same as Home page)
   const realTimeCurrentStreak = getRealTimeStreak(currentStreak, stats?.currentStreak);
-  const { unlockedCount, totalCount, currentXP, completionPercentage, isOnline: achievementsOnline, checkAchievements } = useAchievements();
+  // Achievement system removed
   
   // REAL-TIME DASHBOARD HOOK - INSTANT PLAN UPDATES
   const {
@@ -138,9 +138,8 @@ const Dashboard = () => {
         setTimeout(() => setShowCompletionMessage(false), 5000);
       }
       
-      // Refresh stats and check achievements
+      // Refresh stats
       refreshStats();
-      checkAchievements();
       
       // Full refresh after short delay
       setTimeout(() => loadDashboardData(), 1000);
@@ -362,7 +361,7 @@ const Dashboard = () => {
       </div>
 
       {/* Real-Time Stats - MongoDB Data Only */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
         <button 
           onClick={() => navigate('/workouts')}
           className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 text-left relative p-3 sm:p-4"
@@ -430,26 +429,7 @@ const Dashboard = () => {
           </div>
         </button>
         
-        <button 
-          onClick={() => navigate('/xp-points')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 text-left relative p-3 sm:p-4"
-        >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">⭐</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentXP || 0}</div>
-              <div className="text-slate-400 text-xs sm:text-sm">XP Points</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {currentXP > 0 ? `Level ${Math.floor(currentXP / 100) + 1}` : 'Earn XP by working out'}
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-purple-400/70">
-            {isOnline && stats.isRealTime ? '🔴' : '❌'}
-          </div>
-        </button>
+
         
         <button 
           onClick={() => navigate('/my-plans')}
@@ -477,28 +457,7 @@ const Dashboard = () => {
           </div>
         </button>
         
-        <button 
-          onClick={() => navigate('/achievements')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20 text-left relative p-3 sm:p-4"
-        >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">🏆</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-                {unlockedCount}
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${achievementsOnline ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                  {achievementsOnline ? 'LIVE' : 'LOCAL'}
-                </span>
-              </div>
-              <div className="text-slate-400 text-xs sm:text-sm">Achievements</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {unlockedCount > 0 ? `${completionPercentage}% • ${currentXP.toLocaleString()} XP` : 'Start earning achievements'}
-              </div>
-            </div>
-          </div>
-        </button>
+
       </div>
 
       {/* Real-Time Quick Actions */}
@@ -572,7 +531,7 @@ const Dashboard = () => {
             <div className="text-2xl sm:text-3xl mb-2">📊</div>
             <div className="font-medium text-sm sm:text-base">Analytics</div>
             <div className="text-xs text-purple-200 mt-1">
-              {currentXP > 0 ? `${currentXP.toLocaleString()} XP earned` : 'View your progress'}
+              View your progress
             </div>
             <div className="absolute top-2 right-2 text-xs text-purple-300/70">
               {isOnline && stats.isRealTime ? '🔴' : '❌'}
@@ -736,7 +695,7 @@ const Dashboard = () => {
                     <span>•</span>
                     <span className="text-green-400 font-medium">✓ Completed</span>
                     {workout.synced && <span className="text-blue-400">☁️ Synced</span>}
-                    {workout.xpEarned && <span className="text-purple-400">+{workout.xpEarned} XP</span>}
+
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

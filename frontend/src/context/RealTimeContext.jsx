@@ -21,7 +21,6 @@ export const RealTimeProvider = ({ children }) => {
   const [stats, setStats] = useState({
     workouts: 0,
     meals: 0,
-    xpPoints: 0,
     streak: 0,
     totalWorkouts: 0,
     totalMeals: 0,
@@ -110,7 +109,6 @@ export const RealTimeProvider = ({ children }) => {
       let realTimeData = {
         ...localStats,
         meals: 0,
-        xpPoints: 0,
         streak: 0,
         totalMeals: 0,
         totalPlans: localStats.totalPlans,
@@ -155,7 +153,6 @@ export const RealTimeProvider = ({ children }) => {
         realTimeData = {
           ...realTimeData,
           meals: data.meals || 0,
-          xpPoints: data.xpPoints || 0,
           streak: data.streak || 0,
           totalMeals: data.meals || 0,
           currentStreak: data.streak || 0,

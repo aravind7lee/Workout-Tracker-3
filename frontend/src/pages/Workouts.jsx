@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
-import { useAchievements } from '../context/AchievementsContext';
+
 import CompletedWorkouts from '../components/CompletedWorkouts';
 import RealTimeNotification from '../components/RealTimeNotification';
 import YourWorkoutsImg from '../assets/Yourworkouts.jpg';

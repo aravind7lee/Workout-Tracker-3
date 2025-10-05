@@ -490,7 +490,7 @@ class OnlineService {
         meals: data.meals || 0,
         currentStreak: data.streak || 0,
         streak: data.streak || 0,
-        xpPoints: data.xpPoints || 0,
+
         weeklyGoal: {
           completed: data.weeklyGoal?.completed || 0,
           target: data.weeklyGoal?.target || 4,
@@ -516,7 +516,7 @@ class OnlineService {
         meals: 0,
         currentStreak: 0,
         streak: 0,
-        xpPoints: 0,
+
         weeklyGoal: {
           completed: 0,
           target: 4,

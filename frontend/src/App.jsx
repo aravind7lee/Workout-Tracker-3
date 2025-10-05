@@ -1,4 +1,5 @@
 import './utils/comprehensiveErrorHandler'; // Must be first to catch all errors
+// XP Points System Removed - Cache Bust v1.0
 import './utils/immediateCleanup'; // Clean fake workouts immediately
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useSearchParams, useNavigate, useParams } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { RealTimeProvider } from './context/RealTimeContext';
 import { StreakProvider } from './context/StreakContext';
-import { AchievementsProvider } from './context/AchievementsContext';
+
 import { WorkoutCompletionProvider } from './context/WorkoutCompletionContext';
 
 import Home from './pages/Home';
@@ -18,13 +19,13 @@ import PlansBuilder from './pages/PlansBuilder';
 import MyPlans from './pages/MyPlans';
 import EditPlan from './pages/EditPlan';
 import WorkoutSession from './pages/WorkoutSession';
-import Achievements from './pages/Achievements';
+
 import ProfileAdvanced from './pages/ProfileAdvanced';
 import Settings from './pages/Settings';
 import Forum from './pages/Forum';
 import Contact from './pages/Contact';
 import StartWorkout from './pages/StartWorkout';
-import XPPoints from './pages/XPPoints';
+
 import CurrentStreakFixed from './pages/CurrentStreakFixed';
 const CurrentStreak = CurrentStreakFixed; // Use fixed version
 import StreakTest from './pages/StreakTest';
@@ -387,7 +388,6 @@ export default function App() {
             <AuthProvider>
               <RealTimeProvider>
                 <StreakProvider>
-                  <AchievementsProvider>
                     <WorkoutCompletionProvider>
                   <div className="min-h-screen">
                     <Navbar />
@@ -405,13 +405,13 @@ export default function App() {
                       <Route path="/my-plans" element={<MyPlans />} />
                       <Route path="/edit-plan/:planId" element={<EditPlan />} />
                       <Route path="/workout/:planId" element={<WorkoutSession />} />
-                      <Route path="/achievements" element={<Achievements />} />
+
                       <Route path="/profile" element={<ProfileAdvanced />} />
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/forum" element={<Forum />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/start-workout" element={<StartWorkout />} />
-                      <Route path="/xp-points" element={<XPPoints />} />
+
                       <Route path="/current-streak" element={<CurrentStreakFixed />} />
                       <Route path="/streak-test" element={<StreakTest />} />
                       <Route path="/workouts" element={<Workouts />} />
@@ -423,7 +423,6 @@ export default function App() {
                     <Footer />
                   </div>
                     </WorkoutCompletionProvider>
-                  </AchievementsProvider>
                 </StreakProvider>
               </RealTimeProvider>
             </AuthProvider>

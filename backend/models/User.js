@@ -51,10 +51,7 @@ const userSchema = new mongoose.Schema({
       type: Number,
       default: 0
     },
-    xp: {
-      type: Number,
-      default: 0
-    }
+
   },
   fitnessGoals: {
     goal: {
@@ -95,10 +92,7 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
-    achievementAlerts: {
-      type: Boolean,
-      default: true
-    }
+
   },
   privacy: {
     profileVisibility: {
@@ -181,11 +175,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
     min: 0
   },
-  xpPoints: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
+
   streakHistory: [{
     date: {
       type: Date,
@@ -196,11 +186,7 @@ const userSchema = new mongoose.Schema({
       required: true,
       min: 1
     },
-    xpEarned: {
-      type: Number,
-      default: 10,
-      min: 0
-    },
+
     milestone: {
       type: String,
       default: null
