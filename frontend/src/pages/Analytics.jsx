@@ -16,35 +16,43 @@ Chart.register(...registerables);
 function AnalyticsHero() {
   const { theme } = useTheme();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
     img.src = progressAnalyticsImg;
+    img.loading = 'eager';
   }, []);
 
   return (
     <div className="analytics-hero relative h-96 w-full overflow-hidden mb-6">
-      <motion.div
-        className="analytics-hero-image-container absolute inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: imageLoaded ? 1 : 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <img
-          src={progressAnalyticsImg}
-          alt="Progress & Analytics"
-          className="w-full h-full object-cover"
-          loading="eager"
-        />
-      </motion.div>
-      
-      <div className={`absolute inset-0 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-b from-black/40 via-black/60 to-black/80' 
-          : 'bg-gradient-to-b from-black/20 via-black/40 to-black/60'
-      }`} />
+      <div className="absolute inset-0">
+        {/* Main Image */}
+        {!imageError && (
+          <img
+            src={progressAnalyticsImg}
+            alt="Progress & Analytics"
+            className="w-full h-full object-cover object-center transition-opacity duration-300"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            style={{ opacity: imageLoaded ? 1 : 0 }}
+          />
+        )}
+        
+        {/* Fallback */}
+        {imageError && (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 absolute inset-0"></div>
+        )}
+        
+        {/* Light Gradient Overlay - Preserve Image Clarity */}
+        <div className="absolute inset-0" 
+             style={{
+               background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)'
+             }}></div>
+      </div>
       
       {imageLoaded && (
         <div className="absolute inset-0 flex items-center justify-center px-4">
@@ -54,10 +62,17 @@ function AnalyticsHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-amber-400">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-2xl"
+                style={{
+                  color: '#f59e0b',
+                  textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6)'
+                }}>
               Progress & Analytics
             </h1>
-            <p className="text-lg text-white mb-8">
+            <p className="text-lg text-white mb-8 drop-shadow-lg"
+               style={{
+                 textShadow: '0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)'
+               }}>
               Track your fitness journey and analyze your progress
             </p>
           </motion.div>

@@ -95,7 +95,7 @@ export default function WorkoutPlanBuilderHeader() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="text-sm sm:text-base md:text-lg max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
+              className="text-sm text-white sm:text-base md:text-lg max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
               style={{
                 color: 'var(--color-text-secondary, rgba(255,255,255,0.95))',
                 textShadow: '0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)'
