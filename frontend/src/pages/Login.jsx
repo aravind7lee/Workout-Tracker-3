@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { loginUser, checkBackendStatus } from '../services/authService';
+import heroImg from '../assets/Heroimg.jpg';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -69,10 +70,17 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-neutral-900 to-stone-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Fight Club Atmosphere */}
-      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/10 via-transparent to-red-950/5"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,69,19,0.1),transparent_50%)] animate-pulse"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImg})` }}
+      ></div>
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Gym Atmosphere */}
+      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/20 via-transparent to-red-950/10"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,69,19,0.15),transparent_50%)] animate-pulse"></div>
       
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
@@ -89,7 +97,7 @@ const Login = () => {
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-zinc-900/90 to-neutral-900/90 backdrop-blur-xl border border-amber-900/20 rounded-lg p-8 shadow-2xl space-y-6">
+        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-amber-600/30 rounded-xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-6">
           <h2 className="text-2xl font-bold text-amber-100 mb-6 tracking-wide">Login</h2>
           
           {error && (
