@@ -69,36 +69,42 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-neutral-900 to-stone-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Fight Club Atmosphere */}
+      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/10 via-transparent to-red-950/5"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,69,19,0.1),transparent_50%)] animate-pulse"></div>
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-slate-400">Sign in to your workout tracker account</p>
-          <div className={`mt-2 px-3 py-1 rounded-full text-xs ${
+          <h1 className="text-4xl font-black text-amber-100 mb-3 tracking-tight drop-shadow-2xl">
+            Welcome Back
+          </h1>
+          <p className="text-amber-200/70 font-medium tracking-wide">Sign in to your workout tracker account</p>
+          <div className={`mt-4 px-4 py-2 rounded border border-amber-800/30 text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
-              ? 'bg-green-600/20 text-green-400' 
-              : 'bg-yellow-600/20 text-yellow-400'
+              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
+              : 'bg-amber-950/40 text-amber-300 border-amber-800/50'
           }`}>
-            {backendStatus === 'online' ? '✅ Online Mode - Full functionality' : '⚠️ Offline Mode - Limited functionality'}
+            {backendStatus === 'online' ? '● SYSTEM ONLINE' : '● OFFLINE MODE'}
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="card space-y-4">
-          <h2 className="text-xl font-semibold text-white mb-4">Login</h2>
+        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-zinc-900/90 to-neutral-900/90 backdrop-blur-xl border border-amber-900/20 rounded-lg p-8 shadow-2xl space-y-6">
+          <h2 className="text-2xl font-bold text-amber-100 mb-6 tracking-wide">Login</h2>
           
           {error && (
-            <div className="bg-red-900/20 border border-red-500 rounded p-3 text-red-300 text-sm">
-              {error}
+            <div className="bg-red-950/50 border border-red-600/50 rounded-lg p-4 text-red-200 text-sm font-medium backdrop-blur-sm">
+              ⚠ {error}
             </div>
           )}
           
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
+            <label className="block text-sm font-bold text-amber-200 mb-3 tracking-wide uppercase">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
-              className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              className="w-full p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
               value={formData.email}
               onChange={handleChange}
               required
@@ -106,13 +112,13 @@ const Login = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
+            <label className="block text-sm font-bold text-amber-200 mb-3 tracking-wide uppercase">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
-                className="w-full p-3 pr-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+                className="w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -120,7 +126,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -140,16 +146,16 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white w-full disabled:opacity-50"
+            className="w-full p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
           
 
           
-          <p className="text-center text-sm text-slate-400 mt-6">
+          <p className="text-center text-sm text-amber-300/70 mt-8 font-medium">
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link to="/register" className="text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors duration-200">
               Sign up here
             </Link>
           </p>

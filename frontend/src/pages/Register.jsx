@@ -67,35 +67,41 @@ const Register = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="card w-full max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-slate-400">Join the ultimate fitness experience</p>
-          <div className={`mt-2 px-3 py-1 rounded-full text-xs ${
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-neutral-900 to-stone-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Fight Club Atmosphere */}
+      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/10 via-transparent to-red-950/5"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,69,19,0.1),transparent_50%)] animate-pulse"></div>
+      
+      <div className="bg-gradient-to-b from-zinc-900/90 to-neutral-900/90 backdrop-blur-xl border border-amber-900/20 rounded-lg p-8 shadow-2xl w-full max-w-md relative z-10">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-black text-amber-100 mb-3 tracking-tight drop-shadow-2xl">
+            Create Account
+          </h1>
+          <p className="text-amber-200/70 font-medium tracking-wide">Join the ultimate fitness experience</p>
+          <div className={`mt-4 px-4 py-2 rounded border border-amber-800/30 text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
-              ? 'bg-green-600/20 text-green-400' 
-              : 'bg-yellow-600/20 text-yellow-400'
+              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
+              : 'bg-amber-950/40 text-amber-300 border-amber-800/50'
           }`}>
             {backendStatus === 'online' 
-              ? '✅ Online Mode - Account will be saved to database' 
-              : '⚠️ Offline Mode - Account will be stored locally'}
+              ? '● DATABASE CONNECTED' 
+              : '● LOCAL STORAGE MODE'}
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-900/20 border border-red-500 rounded-lg p-3 mb-4">
-            <p className="text-red-300 text-sm">{error}</p>
+          <div className="bg-red-950/50 border border-red-600/50 rounded-lg p-4 mb-6 backdrop-blur-sm">
+            <p className="text-red-200 text-sm font-medium">⚠ {error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <input
               type="text"
               name="name"
               placeholder="Full Name"
-              className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none transition-colors"
+              className="w-full p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm uppercase tracking-wide"
               value={formData.name}
               onChange={handleChange}
               required
@@ -108,7 +114,7 @@ const Register = () => {
               type="email"
               name="email"
               placeholder="Email Address"
-              className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none transition-colors"
+              className="w-full p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
               value={formData.email}
               onChange={handleChange}
               required
@@ -122,7 +128,7 @@ const Register = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
-                className="w-full p-3 pr-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -131,7 +137,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
                 tabIndex={-1}
                 disabled={loading}
               >
@@ -155,7 +161,7 @@ const Register = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Confirm Password"
-                className="w-full p-3 pr-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
@@ -164,7 +170,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
                 tabIndex={-1}
                 disabled={loading}
               >
@@ -185,7 +191,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
@@ -193,18 +199,18 @@ const Register = () => {
 
 
 
-        <div className="mt-6 text-center">
-          <p className="text-slate-400 text-sm">
+        <div className="mt-8 text-center">
+          <p className="text-amber-300/70 text-sm font-medium">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link to="/login" className="text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors duration-200">
               Sign In
             </Link>
           </p>
         </div>
 
         {/* Quick Registration for Testing */}
-        <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
-          <p className="text-slate-300 text-sm text-center mb-3">Quick Test Registration:</p>
+        <div className="mt-6 p-4 bg-zinc-800/50 border border-amber-900/20 rounded-lg backdrop-blur-sm">
+          <p className="text-amber-300/70 text-sm text-center mb-3 font-medium">Quick Test Registration:</p>
           <button
             onClick={() => setFormData({
               name: 'Test User',
@@ -212,7 +218,7 @@ const Register = () => {
               password: 'password123',
               confirmPassword: 'password123'
             })}
-            className="w-full px-3 py-2 bg-slate-700/50 hover:bg-slate-700 rounded text-sm text-slate-300 transition-colors"
+            className="w-full px-4 py-2 bg-amber-800/30 hover:bg-amber-700/40 rounded text-sm text-amber-300 transition-all duration-200 font-medium tracking-wide border border-amber-800/30"
             disabled={loading}
           >
             📝 Fill Test Data
