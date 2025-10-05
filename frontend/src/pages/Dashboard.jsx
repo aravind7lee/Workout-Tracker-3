@@ -374,7 +374,7 @@ const Dashboard = () => {
               <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
               <div className="text-xs text-green-400 hidden sm:block">
-                {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} completed!` : 'Start your first workout'}
+                {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} completed by you!` : 'Start your first workout'}
               </div>
             </div>
           </div>
@@ -420,7 +420,7 @@ const Dashboard = () => {
               <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
               <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
               <div className="text-xs text-green-400 hidden sm:block">
-                {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} this week!` : 'No workouts yet'}
+                {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} by you this week!` : 'No workouts yet'}
               </div>
             </div>
           </div>
@@ -653,10 +653,10 @@ const Dashboard = () => {
           <div className="text-center py-6 sm:py-8">
             <div className="text-3xl sm:text-4xl mb-4">🏋️</div>
             <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-              {isOnline ? 'No completed workouts found in your account.' : 'No completed workouts found locally.'}
+              {isOnline ? `No completed workouts found for your account (${authUser?.name || 'User'}).` : 'No completed workouts found in your local storage.'}
             </p>
             <p className="text-xs text-slate-500 mb-4">
-              {isOnline ? 'Real-time data from MongoDB' : 'Offline data from device storage'}
+              {isOnline ? `Real-time data from MongoDB for user: ${authUser?.id || 'Unknown'}` : 'Offline data from device storage'}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button 
@@ -678,10 +678,10 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-green-400 flex items-center gap-1">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                {isOnline ? 'Real-time MongoDB data' : 'Local completed workouts'}
+                {isOnline ? `Real-time data for ${authUser?.name || 'you'}` : 'Your local workouts'}
               </span>
               <span className="text-xs text-slate-400">
-                {recentWorkouts.length} completed workout{recentWorkouts.length !== 1 ? 's' : ''}
+                {recentWorkouts.length} your workout{recentWorkouts.length !== 1 ? 's' : ''}
               </span>
             </div>
             {(showAllWorkouts ? recentWorkouts : recentWorkouts.slice(0, 5)).map((workout, index) => (

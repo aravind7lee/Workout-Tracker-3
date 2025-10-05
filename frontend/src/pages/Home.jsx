@@ -103,35 +103,66 @@ export default function Home() {
   );
   
   const totalWorkouts = useMemo(() => {
+    // Only show workout count if user is authenticated
+    if (!isAuthenticated() || !auth?.user) {
+      return 0;
+    }
     const count = stats?.totalWorkouts ?? 0;
     return count > 0 ? count : 0;
-  }, [stats?.totalWorkouts, refreshTrigger]);
+  }, [stats?.totalWorkouts, refreshTrigger, isAuthenticated, auth?.user]);
   
   const todayWorkouts = useMemo(() => {
+    // Only show today's workout count if user is authenticated
+    if (!isAuthenticated() || !auth?.user) {
+      return 0;
+    }
     const count = stats?.todayWorkouts ?? 0;
     return count > 0 ? count : 0;
-  }, [stats?.todayWorkouts, refreshTrigger]);
+  }, [stats?.todayWorkouts, refreshTrigger, isAuthenticated, auth?.user]);
 
-  // Optimized quick stats
-  const quickStats = useMemo(() => [
-    {
-      label: "Total Workouts",
-      value: totalWorkouts,
-      icon: '💪',
-      color: 'blue',
-      path: '/workouts',
-      subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'No workouts yet - Start your journey!'
-    },
-    {
-      label: 'Current Streak',
-      value: realTimeCurrentStreak,
-      icon: '🔥',
-      color: 'orange',
-      path: '/current-streak',
-      subtitle: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'
-    },
-
-  ], [totalWorkouts, realTimeCurrentStreak]);
+  // Optimized quick stats - USER SPECIFIC
+  const quickStats = useMemo(() => {
+    // Only show stats if user is authenticated
+    if (!isAuthenticated() || !auth?.user) {
+      return [
+        {
+          label: "Total Workouts",
+          value: 0,
+          icon: '💪',
+          color: 'blue',
+          path: '/login',
+          subtitle: 'Login to track your workouts'
+        },
+        {
+          label: 'Current Streak',
+          value: 0,
+          icon: '🔥',
+          color: 'orange',
+          path: '/login',
+          subtitle: 'Login to start your streak'
+        }
+      ];
+    }
+    
+    return [
+      {
+        label: "Total Workouts",
+        value: totalWorkouts,
+        icon: '💪',
+        color: 'blue',
+        path: '/workouts',
+        subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'No workouts yet - Start your journey!'
+      },
+      {
+        label: 'Current Streak',
+        value: realTimeCurrentStreak,
+        icon: '🔥',
+        color: 'orange',
+        path: '/current-streak',
+        subtitle: realTimeCurrentStreak > 0 ? `${realTimeCurrentStreak} days strong!` : 'Start your streak'
+      }
+    ];
+  }, [totalWorkouts, realTimeCurrentStreak, isAuthenticated, auth?.user]);
 
   const globalStats = useMemo(() => [
     { value: '15K+', label: 'ELITE ATHLETES', sublabel: 'WORLDWIDE', color: 'blue', icon: '🌍' },
@@ -271,31 +302,53 @@ export default function Home() {
     };
   }, [realTimeCurrentStreak]);
 
-  // Clean fake data on mount
+  // Clean fake data on mount - USER SPECIFIC
   useEffect(() => {
+    // Only clean data if user is authenticated
+    if (!isAuthenticated() || !auth?.user) {
+      console.log('🔒 No authenticated user - skipping workout cleanup');
+      return;
+    }
+    
     // Clean any fake workout data when component mounts
     try {
+      const currentUser = auth.user;
       const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
-      const realWorkouts = workouts.filter(workout => {
-        return workout.exercise && 
-               workout.exercise !== 'Workout' && 
-               workout.exercise !== 'Test Workout' &&
-               (workout.duration > 0 || workout.caloriesBurned > 0) &&
-               workout.completedAt &&
-               !workout.id?.includes('test_') &&
-               !workout.id?.includes('fake_') &&
-               !workout.id?.includes('demo_');
+      
+      // Filter for real workouts belonging to current user
+      const realUserWorkouts = workouts.filter(workout => {
+        const isRealWorkout = workout.exercise && 
+                             workout.exercise !== 'Workout' && 
+                             workout.exercise !== 'Test Workout' &&
+                             (workout.duration > 0 || workout.caloriesBurned > 0) &&
+                             workout.completedAt &&
+                             !workout.id?.includes('test_') &&
+                             !workout.id?.includes('fake_') &&
+                             !workout.id?.includes('demo_');
+        
+        // Check if workout belongs to current user
+        const belongsToUser = workout.userId === currentUser.id || 
+                             workout.userId === currentUser._id ||
+                             (!workout.userId && isRealWorkout); // Backward compatibility
+        
+        return isRealWorkout && belongsToUser;
       });
       
-      if (realWorkouts.length !== workouts.length) {
-        localStorage.setItem('workoutSync_workouts', JSON.stringify(realWorkouts));
+      if (realUserWorkouts.length !== workouts.length) {
+        // Keep other users' workouts and add current user's real workouts
+        const otherUsersWorkouts = workouts.filter(w => 
+          w.userId && w.userId !== currentUser.id && w.userId !== currentUser._id
+        );
+        const allWorkouts = [...otherUsersWorkouts, ...realUserWorkouts];
+        
+        localStorage.setItem('workoutSync_workouts', JSON.stringify(allWorkouts));
         setRefreshTrigger(prev => prev + 1);
-        console.log(`🧹 Cleaned fake workouts: ${workouts.length} → ${realWorkouts.length}`);
+        console.log(`🧹 Cleaned fake workouts for user ${currentUser.id}: ${workouts.length} → ${realUserWorkouts.length} user workouts`);
       }
     } catch (error) {
       console.warn('Error cleaning fake workouts:', error);
     }
-  }, []);
+  }, [isAuthenticated, auth?.user]);
 
   // Handle location state
   useEffect(() => {
@@ -362,6 +415,9 @@ export default function Home() {
     const c = colorClasses[stat.color] || colorClasses.blue;
     const numericValue = typeof stat.value === 'number' ? stat.value : parseInt(stat.value) || 0;
     const count = useCountUp(numericValue, 300);
+    
+    // Show lock icon if not authenticated
+    const isLocked = !isAuthenticated() || !auth?.user;
 
     return (
       <button
@@ -376,16 +432,16 @@ export default function Home() {
             
             <div className="flex flex-col items-end gap-1">
               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${c.text} bg-gradient-to-r ${c.bgSoft} border ${c.border}`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${isOnline && stats?.isRealTime ? 'bg-green-400' : 'bg-gray-400'}`} />
-                {isOnline && stats?.isRealTime ? 'LIVE' : 'OFF'}
+                <div className={`w-1.5 h-1.5 rounded-full ${isLocked ? 'bg-gray-400' : (isOnline && stats?.isRealTime ? 'bg-green-400' : 'bg-gray-400')}`} />
+                {isLocked ? '🔒' : (isOnline && stats?.isRealTime ? 'LIVE' : 'OFF')}
               </span>
             </div>
           </div>
           
           <div className="space-y-1">
-            <div className={`text-xl sm:text-2xl font-black text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 ? 'animate-pulse' : ''}`}>
-              {typeof stat.value === 'number' ? count : stat.value}
-              {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && <span className="ml-2 animate-bounce">🔥</span>}
+            <div className={`text-xl sm:text-2xl font-black text-white ${stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && !isLocked ? 'animate-pulse' : ''}`}>
+              {isLocked ? '🔒' : (typeof stat.value === 'number' ? count : stat.value)}
+              {stat.label === 'Current Streak' && realTimeCurrentStreak > 0 && !isLocked && <span className="ml-2 animate-bounce">🔥</span>}
             </div>
             
             <div className="text-xs sm:text-sm font-semibold text-slate-300">
@@ -393,7 +449,7 @@ export default function Home() {
             </div>
             
             <div className="text-xs text-slate-400 line-clamp-1">
-              {stat.subtitle}
+              {isLocked ? 'Login to view your stats' : stat.subtitle}
             </div>
           </div>
         </div>
@@ -558,29 +614,30 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Stats - Only show when logged in */}
-        {isAuthenticated() && (
-          <section data-animate data-id="quick-stats" className="mb-12">
-            <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              <div className="text-center mb-8">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
-                    YOUR STATUS
-                  </span>
-                </h2>
-                <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-                  Real-time performance metrics for champions
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                {quickStats.map((stat, i) => (
-                  <StatCard key={`stat-${i}`} stat={stat} />
-                ))}
-              </div>
+        {/* Quick Stats - Show for all users but with different content */}
+        <section data-animate data-id="quick-stats" className="mb-12">
+          <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <div className="text-center mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                  {isAuthenticated() && auth?.user ? 'YOUR STATUS' : 'GET STARTED'}
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+                {isAuthenticated() && auth?.user 
+                  ? 'Real-time performance metrics for champions' 
+                  : 'Login to track your personal fitness journey'
+                }
+              </p>
             </div>
-          </section>
-        )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {quickStats.map((stat, i) => (
+                <StatCard key={`stat-${i}`} stat={stat} />
+              ))}
+            </div>
+          </div>
+        </section>
 
 
 

@@ -59,20 +59,46 @@ class RealTimeWorkoutSync {
     }
   }
 
-  // Get workouts from workoutSync service
+  // Get workouts from workoutSync service - USER SPECIFIC ONLY
   getWorkoutSyncData() {
     try {
+      // Get current user from auth context
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - returning empty workouts');
+        return [];
+      }
+      
       const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
-      return workouts.filter(w => w.completed && w.completedAt);
+      
+      // Filter by current user ID and only completed workouts
+      const userWorkouts = workouts.filter(w => {
+        const isCompleted = w.completed && w.completedAt;
+        const isUserWorkout = w.userId === currentUser.id || w.userId === currentUser._id;
+        
+        // If no userId is set, assume it's from current user (backward compatibility)
+        const belongsToCurrentUser = isUserWorkout || (!w.userId && isCompleted);
+        
+        return isCompleted && belongsToCurrentUser;
+      });
+      
+      console.log(`📊 User ${currentUser.id} has ${userWorkouts.length} completed workouts`);
+      return userWorkouts;
     } catch (error) {
       console.warn('⚠️ Error loading workoutSync data:', error);
       return [];
     }
   }
 
-  // Get workouts from MongoDB/API cache
+  // Get workouts from MongoDB/API cache - USER SPECIFIC
   getMongoWorkouts() {
     try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - no MongoDB workouts');
+        return [];
+      }
+      
       // Check for cached MongoDB data
       const cached = localStorage.getItem('mongodb_workouts_cache');
       if (cached) {
@@ -81,7 +107,18 @@ class RealTimeWorkoutSync {
         
         // Use cache if less than 5 minutes old
         if (cacheAge < 5 * 60 * 1000) {
-          return data.workouts.filter(w => w.completed || w.completedAt);
+          // Filter by current user
+          const userWorkouts = data.workouts.filter(w => {
+            const isCompleted = w.completed || w.completedAt;
+            const belongsToUser = w.user === currentUser.id || 
+                                 w.user === currentUser._id ||
+                                 w.userId === currentUser.id ||
+                                 w.userId === currentUser._id;
+            return isCompleted && belongsToUser;
+          });
+          
+          console.log(`📊 MongoDB cache: ${userWorkouts.length} workouts for user ${currentUser.id}`);
+          return userWorkouts;
         }
       }
       return [];
@@ -141,9 +178,16 @@ class RealTimeWorkoutSync {
     };
   }
 
-  // Add a completed workout and update stats
+  // Add a completed workout and update stats - USER SPECIFIC
   addCompletedWorkout(workoutData) {
     try {
+      // Get current user
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - cannot save workout');
+        return null;
+      }
+      
       // Validate workout data - reject fake/empty workouts
       if (!workoutData.exercise || 
           workoutData.exercise === 'Workout' || 
@@ -153,9 +197,10 @@ class RealTimeWorkoutSync {
         return null;
       }
 
-      // Ensure workout has required fields
+      // Ensure workout has required fields + USER ID
       const workout = {
         id: workoutData.id || `workout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        userId: currentUser.id || currentUser._id, // CRITICAL: Associate with current user
         exercise: workoutData.exercise,
         completed: true,
         completedAt: workoutData.completedAt || new Date().toISOString(),
@@ -306,34 +351,53 @@ class RealTimeWorkoutSync {
     }
   }
 
-  // Clean fake workouts
+  // Clean fake workouts and ensure user-specific data
   cleanFakeWorkouts() {
     try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - clearing all workout data');
+        localStorage.removeItem('workoutSync_workouts');
+        return;
+      }
+      
       const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
-      const realWorkouts = workouts.filter(workout => {
-        return workout.exercise && 
-               workout.exercise !== 'Workout' && 
-               (workout.duration > 0 || workout.caloriesBurned > 0) &&
-               workout.completedAt &&
-               !workout.id.includes('test_') &&
-               !workout.id.includes('fake_');
+      
+      // Filter for real workouts belonging to current user
+      const realUserWorkouts = workouts.filter(workout => {
+        const isRealWorkout = workout.exercise && 
+                             workout.exercise !== 'Workout' && 
+                             (workout.duration > 0 || workout.caloriesBurned > 0) &&
+                             workout.completedAt &&
+                             !workout.id?.includes('test_') &&
+                             !workout.id?.includes('fake_') &&
+                             !workout.id?.includes('demo_');
+        
+        // Check if workout belongs to current user
+        const belongsToUser = workout.userId === currentUser.id || 
+                             workout.userId === currentUser._id ||
+                             (!workout.userId && isRealWorkout); // Backward compatibility
+        
+        return isRealWorkout && belongsToUser;
       });
       
-      // Remove duplicates based on exercise name and completion time
+      // Remove duplicates based on exercise name and completion time for current user
       const uniqueWorkouts = [];
       const seen = new Set();
       
-      for (const workout of realWorkouts) {
-        const key = `${workout.exercise}_${new Date(workout.completedAt).toDateString()}`;
+      for (const workout of realUserWorkouts) {
+        const key = `${currentUser.id}_${workout.exercise}_${new Date(workout.completedAt).toDateString()}`;
         if (!seen.has(key)) {
           seen.add(key);
+          // Ensure userId is set
+          workout.userId = workout.userId || currentUser.id || currentUser._id;
           uniqueWorkouts.push(workout);
         }
       }
       
       if (uniqueWorkouts.length !== workouts.length) {
         localStorage.setItem('workoutSync_workouts', JSON.stringify(uniqueWorkouts));
-        console.log(`🧹 Cleaned workouts: ${workouts.length} → ${uniqueWorkouts.length}`);
+        console.log(`🧹 Cleaned workouts for user ${currentUser.id}: ${workouts.length} → ${uniqueWorkouts.length}`);
       }
     } catch (error) {
       console.warn('⚠️ Error cleaning fake workouts:', error);
@@ -360,13 +424,53 @@ class RealTimeWorkoutSync {
     }
   }
 
-  // Clear all workout data (for testing)
+  // Get current authenticated user
+  getCurrentUser() {
+    try {
+      // Try to get user from various sources
+      const authUser = localStorage.getItem('user');
+      if (authUser) {
+        return JSON.parse(authUser);
+      }
+      
+      // Try auth token
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          return { id: payload.userId || payload.id, _id: payload.userId || payload.id };
+        } catch (e) {
+          console.warn('⚠️ Invalid token format');
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('⚠️ Error getting current user:', error);
+      return null;
+    }
+  }
+  
+  // Clear all workout data (for testing) - USER SPECIFIC
   clearAllData() {
-    localStorage.removeItem('workoutSync_workouts');
-    localStorage.removeItem('mongodb_workouts_cache');
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      console.log('🔒 No authenticated user - clearing all data');
+      localStorage.removeItem('workoutSync_workouts');
+      localStorage.removeItem('mongodb_workouts_cache');
+    } else {
+      // Only clear current user's data
+      const allWorkouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
+      const otherUsersWorkouts = allWorkouts.filter(w => 
+        w.userId && w.userId !== currentUser.id && w.userId !== currentUser._id
+      );
+      localStorage.setItem('workoutSync_workouts', JSON.stringify(otherUsersWorkouts));
+      console.log(`🧹 Cleared data for user ${currentUser.id}, kept ${otherUsersWorkouts.length} workouts from other users`);
+    }
+    
     this.refreshStats();
     this.broadcastUpdate();
-    console.log('🧹 RealTimeWorkoutSync: All data cleared');
+    console.log('🧹 RealTimeWorkoutSync: User-specific data cleared');
   }
 }
 

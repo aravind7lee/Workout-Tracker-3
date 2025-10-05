@@ -81,9 +81,31 @@ export default function Analytics() {
     try {
       setIsLoading(true);
       
-      const workouts = [];
+      // Only load data if user is authenticated
+      if (!isAuthenticated()) {
+        console.log('🔒 No authenticated user - setting zero analytics data');
+        setAnalyticsData({
+          stats: {
+            totalWorkouts: 0,
+            totalPlans: 0,
+            todayWorkouts: 0,
+            weeklyWorkouts: 0,
+            currentStreak: 0
+          },
+          caloriesTrend: null,
+          workoutFrequency: null,
+          muscleDistribution: null
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Get user-specific workouts from realTimeWorkoutSync
+      const workouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      
+      console.log(`📊 Analytics: Loading data for authenticated user - ${workouts.length} workouts, ${plans.length} plans`);
       
       const last7Days = [];
       const today = new Date();
@@ -149,7 +171,13 @@ export default function Analytics() {
     } catch (error) {
       console.error('Error loading analytics data:', error);
       setAnalyticsData({
-        stats: null,
+        stats: {
+          totalWorkouts: 0,
+          totalPlans: 0,
+          todayWorkouts: 0,
+          weeklyWorkouts: 0,
+          currentStreak: 0
+        },
         caloriesTrend: null,
         workoutFrequency: null,
         muscleDistribution: null
@@ -237,7 +265,7 @@ export default function Analytics() {
                   ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                   : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
               }`}>
-                {isOnline ? '🔥 LIVE' : '📱 LOCAL'}
+                {isOnline ? '🔥 LIVE USER DATA' : '📱 YOUR LOCAL DATA'}
               </span>
             </p>
           </div>
@@ -257,6 +285,15 @@ export default function Analytics() {
         </div>
         
         <div id="real-time-stats">
+          <div className="mb-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-blue-400">📊</span>
+              <h3 className="text-lg font-semibold text-white">Your Real-Time MongoDB Analytics</h3>
+            </div>
+            <p className="text-sm text-slate-400">
+              {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}
+            </p>
+          </div>
           <RealTimeStats />
         </div>
 
@@ -300,15 +337,15 @@ export default function Analytics() {
             <h3 className="text-xl font-semibold text-white mb-4">Quick Stats</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Total Workouts</span>
+                <span className="text-slate-400">Your Total Workouts</span>
                 <span className="text-white font-bold">{analyticsData?.stats?.totalWorkouts || 0}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Workout Plans</span>
+                <span className="text-slate-400">Your Workout Plans</span>
                 <span className="text-white font-bold">{analyticsData?.stats?.totalPlans || 0}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Current Streak</span>
+                <span className="text-slate-400">Your Current Streak</span>
                 <span className="text-orange-400 font-bold">{analyticsData?.stats?.currentStreak || 0} days</span>
               </div>
 

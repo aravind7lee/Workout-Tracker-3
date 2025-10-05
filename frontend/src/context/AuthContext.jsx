@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { setAuthToken } from '../utils/api';
 import { profileStorage } from '../utils/profileStorage';
+import { initializeUserData } from '../utils/cleanUserWorkouts';
 
 const AuthContext = createContext();
 
@@ -23,11 +24,19 @@ export const AuthProvider = ({ children }) => {
         profileStorage.clearCurrentUser();
       }
       
+      // Clear user-specific cached data
+      localStorage.removeItem('mongodb_workouts_cache');
+      
       setUser(null);
       setToken(null);
       setAuthToken(null);
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      
+      // Dispatch logout event to clean up components
+      window.dispatchEvent(new CustomEvent('userLoggedOut'));
+      
+      console.log('🔓 User logged out and data cleared');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -45,6 +54,15 @@ export const AuthProvider = ({ children }) => {
             setToken(savedToken);
             setUser(parsedUser);
             setAuthToken(savedToken);
+            
+            // Initialize user data on app startup
+            console.log('🔄 Initializing user data on app startup...');
+            const initResult = initializeUserData(parsedUser);
+            if (initResult.success) {
+              console.log('✅ User data initialized on startup');
+            } else {
+              console.warn('⚠️ User data initialization failed on startup:', initResult.message);
+            }
           } catch (parseError) {
             console.warn('Failed to parse saved user data, logging out');
             logout();
@@ -91,6 +109,15 @@ export const AuthProvider = ({ children }) => {
       setAuthToken(authToken);
       localStorage.setItem('token', authToken);
       localStorage.setItem('user', JSON.stringify(userWithPhoto));
+      
+      // Clean up fake workouts and initialize user-specific data
+      console.log('🧹 Initializing user-specific data after login...');
+      const initResult = initializeUserData(userWithPhoto);
+      if (initResult.success) {
+        console.log('✅ User data initialized successfully');
+      } else {
+        console.warn('⚠️ User data initialization failed:', initResult.message);
+      }
     } catch (error) {
       console.error('Login error:', error);
     }

@@ -209,7 +209,7 @@ export default function Workouts() {
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                  Track your completed workouts and progress in real-time
+                  Track your personal completed workouts and progress in real-time
                 </motion.p>
                 
                 {/* Compact Action Buttons */}
@@ -253,7 +253,7 @@ export default function Workouts() {
                   </div>
                 </motion.div>
 
-                {/* Compact Stats Grid */}
+                {/* Compact Stats Grid - USER SPECIFIC */}
                 <motion.div 
                   className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 20 }}
@@ -262,22 +262,22 @@ export default function Workouts() {
                 >
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
                     <div className="text-lg font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Today</div>
+                    <div className="text-xs text-white/80">Your Today</div>
                     <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
                     <div className="text-lg font-black text-green-400">{stats?.totalWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Total</div>
+                    <div className="text-xs text-white/80">Your Total</div>
                     <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
                     <div className="text-lg font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Week</div>
+                    <div className="text-xs text-white/80">Your Week</div>
                     <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
                     <div className="text-lg font-black text-orange-400">{stats?.totalCalories || 0}</div>
-                    <div className="text-xs text-white/80">Calories</div>
+                    <div className="text-xs text-white/80">Your Calories</div>
                     <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                 </motion.div>

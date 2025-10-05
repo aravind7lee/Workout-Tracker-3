@@ -39,14 +39,38 @@ export const RealTimeProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
 
-  // Load workout stats using real-time workout sync service
+  // Load workout stats using real-time workout sync service - USER SPECIFIC
   const loadWorkoutStats = useCallback(() => {
     try {
+      // Only load stats if user is authenticated
+      if (!isAuthenticated() || !user) {
+        console.log('🔒 No authenticated user - returning zero stats');
+        return {
+          workouts: 0,
+          totalWorkouts: 0,
+          todayWorkouts: 0,
+          weeklyWorkouts: 0,
+          monthlyWorkouts: 0,
+          totalCalories: 0,
+          totalDuration: 0,
+          totalPlans: 0,
+          isRealTime: false,
+          lastSync: new Date().toISOString(),
+          dataSource: 'No User'
+        };
+      }
+      
       const realtimeStats = realTimeWorkoutSync.getStats();
       
-      // Get plans count from localStorage like Home and Dashboard pages
+      // Get plans count from localStorage - filter by user if possible
       const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-      const totalPlans = plans.length;
+      const userPlans = plans.filter(plan => {
+        // Filter by user ID if available
+        return !plan.userId || plan.userId === user.id || plan.userId === user._id;
+      });
+      const totalPlans = userPlans.length;
+      
+      console.log(`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} plans`);
       
       return {
         workouts: realtimeStats.todayWorkouts,
@@ -59,7 +83,7 @@ export const RealTimeProvider = ({ children }) => {
         totalPlans: totalPlans,
         isRealTime: true,
         lastSync: realtimeStats.lastUpdate || new Date().toISOString(),
-        dataSource: 'RealTimeWorkoutSync'
+        dataSource: `User-${user.id}-RealTimeSync`
       };
     } catch (error) {
       console.error('Error loading workout stats:', error);
@@ -77,7 +101,7 @@ export const RealTimeProvider = ({ children }) => {
         dataSource: 'Error'
       };
     }
-  }, []);
+  }, [user, isAuthenticated]);
 
   // Fetch real-time stats from MongoDB with instant sync
   const fetchRealTimeStats = useCallback(async () => {
@@ -118,32 +142,42 @@ export const RealTimeProvider = ({ children }) => {
         dataSource: 'MongoDB + localStorage'
       };
 
-      // Process MongoDB workout data if available
+      // Process MongoDB workout data if available - USER SPECIFIC
       if (workoutsData.status === 'fulfilled' && workoutsData.value?.data) {
         const mongoWorkouts = workoutsData.value.data;
         if (Array.isArray(mongoWorkouts) && mongoWorkouts.length > 0) {
-          const today = new Date().toDateString();
-          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          // Filter MongoDB workouts by current user
+          const userMongoWorkouts = mongoWorkouts.filter(w => {
+            return w.user === user.id || w.user === user._id || 
+                   w.userId === user.id || w.userId === user._id;
+          });
           
-          const mongoTodayWorkouts = mongoWorkouts.filter(w => 
-            new Date(w.completedAt || w.createdAt).toDateString() === today
-          ).length;
+          console.log(`📊 MongoDB: ${userMongoWorkouts.length} workouts for user ${user.id}`);
           
-          const mongoWeeklyWorkouts = mongoWorkouts.filter(w => 
-            new Date(w.completedAt || w.createdAt) >= weekAgo
-          ).length;
-          
-          const mongoTotalCalories = mongoWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
-          
-          // Use MongoDB data if it has more recent data
-          realTimeData = {
-            ...realTimeData,
-            totalWorkouts: Math.max(mongoWorkouts.length, localStats.totalWorkouts),
-            todayWorkouts: Math.max(mongoTodayWorkouts, localStats.todayWorkouts),
-            weeklyWorkouts: Math.max(mongoWeeklyWorkouts, localStats.weeklyWorkouts),
-            totalCalories: Math.max(mongoTotalCalories, localStats.totalCalories),
-            dataSource: 'MongoDB Real-time Sync'
-          };
+          if (userMongoWorkouts.length > 0) {
+            const today = new Date().toDateString();
+            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            
+            const mongoTodayWorkouts = userMongoWorkouts.filter(w => 
+              new Date(w.completedAt || w.createdAt).toDateString() === today
+            ).length;
+            
+            const mongoWeeklyWorkouts = userMongoWorkouts.filter(w => 
+              new Date(w.completedAt || w.createdAt) >= weekAgo
+            ).length;
+            
+            const mongoTotalCalories = userMongoWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
+            
+            // Use MongoDB data if it has more recent data
+            realTimeData = {
+              ...realTimeData,
+              totalWorkouts: Math.max(userMongoWorkouts.length, localStats.totalWorkouts),
+              todayWorkouts: Math.max(mongoTodayWorkouts, localStats.todayWorkouts),
+              weeklyWorkouts: Math.max(mongoWeeklyWorkouts, localStats.weeklyWorkouts),
+              totalCalories: Math.max(mongoTotalCalories, localStats.totalCalories),
+              dataSource: `User-${user.id}-MongoDB-Sync`
+            };
+          }
         }
       }
 
@@ -186,9 +220,35 @@ export const RealTimeProvider = ({ children }) => {
     }
   }, [user, isAuthenticated, loadWorkoutStats]);
 
-  // Initialize and load stats immediately
+  // Initialize and load stats immediately - USER SPECIFIC
   useEffect(() => {
-    // Clean fake workouts first
+    // Only proceed if user is authenticated
+    if (!isAuthenticated() || !user) {
+      console.log('🔒 No authenticated user - setting zero stats');
+      setStats({
+        workouts: 0,
+        meals: 0,
+        streak: 0,
+        totalWorkouts: 0,
+        totalMeals: 0,
+        currentStreak: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0,
+        monthlyWorkouts: 0,
+        totalCalories: 0,
+        totalDuration: 0,
+        weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+        isRealTime: false,
+        lastSync: new Date().toISOString(),
+        dataSource: 'No User'
+      });
+      setLoading(false);
+      return;
+    }
+    
+    console.log(`🚀 Initializing stats for user: ${user.id}`);
+    
+    // Clean fake workouts first for current user
     realTimeWorkoutSync.cleanFakeWorkouts();
     
     // Load local stats immediately
@@ -197,6 +257,7 @@ export const RealTimeProvider = ({ children }) => {
     
     // Subscribe to real-time updates
     const unsubscribe = realTimeWorkoutSync.subscribe((newStats) => {
+      console.log(`📊 Real-time stats update for user ${user.id}:`, newStats);
       setStats(prev => ({
         ...prev,
         workouts: newStats.todayWorkouts,
@@ -208,16 +269,12 @@ export const RealTimeProvider = ({ children }) => {
         totalDuration: newStats.totalDuration,
         isRealTime: true,
         lastSync: newStats.lastUpdate || new Date().toISOString(),
-        dataSource: 'RealTimeWorkoutSync'
+        dataSource: `User-${user.id}-RealTimeSync`
       }));
     });
     
     // Then try to fetch from MongoDB
-    if (isAuthenticated() && user) {
-      fetchRealTimeStats();
-    } else {
-      setLoading(false);
-    }
+    fetchRealTimeStats();
     
     return unsubscribe;
   }, [user, isAuthenticated, fetchRealTimeStats, loadWorkoutStats]);
