@@ -106,9 +106,24 @@ export const RealTimeProvider = ({ children }) => {
   // Fetch real-time stats from MongoDB with instant sync
   const fetchRealTimeStats = useCallback(async () => {
     if (!isAuthenticated() || !user) {
-      console.log('🔒 User not authenticated, loading local stats only');
-      const localStats = loadWorkoutStats();
-      setStats(prev => ({ ...prev, ...localStats }));
+      console.log('🔒 User not authenticated, setting zero stats');
+      setStats({
+        workouts: 0,
+        meals: 0,
+        streak: 0,
+        totalWorkouts: 0,
+        totalMeals: 0,
+        currentStreak: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0,
+        monthlyWorkouts: 0,
+        totalCalories: 0,
+        totalDuration: 0,
+        weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+        isRealTime: false,
+        lastSync: new Date().toISOString(),
+        dataSource: 'No User'
+      });
       setLoading(false);
       return;
     }
@@ -222,6 +237,9 @@ export const RealTimeProvider = ({ children }) => {
 
   // Initialize and load stats immediately - USER SPECIFIC
   useEffect(() => {
+    // Always set loading to false first
+    setLoading(false);
+    
     // Only proceed if user is authenticated
     if (!isAuthenticated() || !user) {
       console.log('🔒 No authenticated user - setting zero stats');
@@ -242,7 +260,6 @@ export const RealTimeProvider = ({ children }) => {
         lastSync: new Date().toISOString(),
         dataSource: 'No User'
       });
-      setLoading(false);
       return;
     }
     
@@ -257,6 +274,10 @@ export const RealTimeProvider = ({ children }) => {
     
     // Subscribe to real-time updates
     const unsubscribe = realTimeWorkoutSync.subscribe((newStats) => {
+      if (!user) {
+        console.log('🔒 No user - ignoring stats update');
+        return;
+      }
       console.log(`📊 Real-time stats update for user ${user.id}:`, newStats);
       setStats(prev => ({
         ...prev,
@@ -276,7 +297,9 @@ export const RealTimeProvider = ({ children }) => {
     // Then try to fetch from MongoDB
     fetchRealTimeStats();
     
-    return unsubscribe;
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [user, isAuthenticated, fetchRealTimeStats, loadWorkoutStats]);
 
   // Listen for real-time events + INSTANT STREAK UPDATES
@@ -374,6 +397,28 @@ export const RealTimeProvider = ({ children }) => {
       }
     };
 
+    // Listen for user logout to clear stats
+    const handleUserLogout = () => {
+      console.log('👤 User logged out - clearing all stats');
+      setStats({
+        workouts: 0,
+        meals: 0,
+        streak: 0,
+        totalWorkouts: 0,
+        totalMeals: 0,
+        currentStreak: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0,
+        monthlyWorkouts: 0,
+        totalCalories: 0,
+        totalDuration: 0,
+        weeklyGoal: { completed: 0, target: 4, percentage: 0 },
+        isRealTime: false,
+        lastSync: new Date().toISOString(),
+        dataSource: 'User Logged Out'
+      });
+    };
+    
     // Listen for custom events
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
     window.addEventListener('realTimeStatsUpdate', handleWorkoutStatsUpdate);
@@ -381,6 +426,7 @@ export const RealTimeProvider = ({ children }) => {
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('streakUpdated', handleStreakUpdated);
+    window.addEventListener('userLoggedOut', handleUserLogout);
     
     // Also listen for plan updates to refresh totalPlans immediately
     const handlePlanUpdate = () => {
@@ -414,6 +460,7 @@ export const RealTimeProvider = ({ children }) => {
       window.removeEventListener('analyticsStreakUpdate', handleStreakUpdated);
       window.removeEventListener('planUpdated', handlePlanUpdate);
       window.removeEventListener('planDeleted', handlePlanUpdate);
+      window.removeEventListener('userLoggedOut', handleUserLogout);
     };
   }, [fetchRealTimeStats, loadWorkoutStats]);
 

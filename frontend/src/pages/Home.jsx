@@ -6,6 +6,7 @@ import { useRealTime } from '../context/RealTimeContext';
 import { useStreak } from '../context/StreakContext';
 
 import { getRealTimeStreak } from '../utils/streakUtils';
+import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -451,6 +452,13 @@ export default function Home() {
             <div className="text-xs text-slate-400 line-clamp-1">
               {isLocked ? 'Login to view your stats' : stat.subtitle}
             </div>
+            
+            {/* Debug info for development */}
+            {process.env.NODE_ENV === 'development' && !isLocked && (
+              <div className="text-xs text-slate-500 mt-1">
+                Source: {stats?.dataSource || 'Unknown'}
+              </div>
+            )}
           </div>
         </div>
       </button>
@@ -1021,6 +1029,19 @@ export default function Home() {
                   >
                     🔑 LOGIN
                   </button>
+                  
+                  {/* Debug button for development */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <button 
+                      onClick={() => {
+                        forceStatsRefresh();
+                        setRefreshTrigger(prev => prev + 1);
+                      }}
+                      className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      🔧 Debug: Refresh Stats
+                    </button>
+                  )}
                 </>
               )}
             </div>

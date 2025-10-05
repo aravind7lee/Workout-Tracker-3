@@ -14,8 +14,16 @@ class RealTimeWorkoutSync {
       lastUpdate: null
     };
     
-    // Initialize stats on startup
-    this.refreshStats();
+    // Initialize stats on startup - but only if user is authenticated
+    setTimeout(() => {
+      const currentUser = this.getCurrentUser();
+      if (currentUser) {
+        console.log(`🚀 Initializing stats for user: ${currentUser.id}`);
+        this.refreshStats();
+      } else {
+        console.log('🔒 No user authenticated - keeping zero stats');
+      }
+    }, 100);
     
     // Listen for storage changes from other tabs
     window.addEventListener('storage', (e) => {
@@ -24,16 +32,65 @@ class RealTimeWorkoutSync {
         this.broadcastUpdate();
       }
     });
+    
+    // Listen for user login/logout events
+    window.addEventListener('userDataInitialized', () => {
+      console.log('👤 User data initialized - refreshing stats');
+      this.refreshStats();
+      this.broadcastUpdate();
+    });
+    
+    window.addEventListener('userLoggedOut', () => {
+      console.log('👤 User logged out - clearing stats');
+      this.stats = {
+        totalWorkouts: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0,
+        monthlyWorkouts: 0,
+        totalCalories: 0,
+        totalDuration: 0,
+        lastUpdate: new Date().toISOString()
+      };
+      this.broadcastUpdate();
+    });
   }
 
-  // Get current stats
+  // Get current stats - ensure user-specific
   getStats() {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      console.log('🔒 No authenticated user - returning zero stats');
+      return {
+        totalWorkouts: 0,
+        todayWorkouts: 0,
+        weeklyWorkouts: 0,
+        monthlyWorkouts: 0,
+        totalCalories: 0,
+        totalDuration: 0,
+        lastUpdate: new Date().toISOString()
+      };
+    }
     return { ...this.stats };
   }
 
   // Refresh stats from all data sources
   refreshStats() {
     try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('🔒 No authenticated user - setting zero stats');
+        this.stats = {
+          totalWorkouts: 0,
+          todayWorkouts: 0,
+          weeklyWorkouts: 0,
+          monthlyWorkouts: 0,
+          totalCalories: 0,
+          totalDuration: 0,
+          lastUpdate: new Date().toISOString()
+        };
+        return this.stats;
+      }
+      
       // Clean fake workouts first
       this.cleanFakeWorkouts();
       
@@ -50,7 +107,7 @@ class RealTimeWorkoutSync {
       this.stats = this.calculateStats(uniqueWorkouts);
       this.stats.lastUpdate = new Date().toISOString();
       
-      console.log('📊 RealTimeWorkoutSync: Stats refreshed:', this.stats);
+      console.log(`📊 RealTimeWorkoutSync: Stats refreshed for user ${currentUser.id}:`, this.stats);
       
       return this.stats;
     } catch (error) {
