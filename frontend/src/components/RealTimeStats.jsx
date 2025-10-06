@@ -145,7 +145,7 @@ export default function RealTimeStats() {
             value: formatNumber(stats.totalWorkouts), 
             color: 'text-blue-400',
             icon: '💪',
-            path: '/library'
+            path: '/workouts'
           },
           { 
             label: 'Workout Plans', 
