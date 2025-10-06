@@ -19,6 +19,7 @@ import Library7 from '../assets/Library7.jpg';
 import Library8 from '../assets/Library8.jpg';
 import Library11 from '../assets/Library11.jpg';
 import '../styles/shimmer.css';
+import '../styles/library-header.css';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -265,11 +266,7 @@ export default function LibrarySimple() {
                 1440px
               "
               alt="Exercise Library header – gym workout background"
-              className="w-full h-full object-cover absolute inset-0"
-              style={{
-                objectPosition: window.innerWidth <= 480 ? '60% center' : 
-                               window.innerWidth <= 768 ? '55% center' : 'center center'
-              }}
+              className="library-hero-image absolute inset-0"
               loading="eager"
               decoding="async"
               fetchPriority="high"
