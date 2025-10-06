@@ -27,6 +27,10 @@ export default function StartWorkout() {
   const [isResting, setIsResting] = useState(false);
   const [restTimer, setRestTimer] = useState(0);
   const [workoutStarted, setWorkoutStarted] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [currentSetInProgress, setCurrentSetInProgress] = useState(false);
+  const [isInRestPeriod, setIsInRestPeriod] = useState(false);
+  const [showRestChoice, setShowRestChoice] = useState(false);
 
   useEffect(() => {
     // Get exercise and configuration from navigation state
@@ -74,21 +78,27 @@ export default function StartWorkout() {
     checkOnlineStatus();
   }, [location.state]);
 
-  // Timer effect - only runs when workout is started
+  // Timer effect - workout timer pauses during rest and choice selection
   useEffect(() => {
-    if (!workoutStarted) return;
+    if (!workoutStarted || isPaused || showRestChoice) return;
     
     const interval = setInterval(() => {
-      setTimer(prev => prev + 1);
+      // Only increment workout timer when NOT resting and NOT showing choice
+      if (!isResting) {
+        setTimer(prev => prev + 1);
+      }
+      
+      // Handle rest timer separately
       if (isResting && restTimer > 0) {
         setRestTimer(prev => prev - 1);
       } else if (isResting && restTimer === 0) {
         setIsResting(false);
+        setIsInRestPeriod(false);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [workoutStarted, isResting, restTimer]);
+  }, [workoutStarted, isPaused, isResting, restTimer, showRestChoice]);
 
   const checkOnlineStatus = async () => {
     try {
@@ -105,7 +115,7 @@ export default function StartWorkout() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const addSet = () => {
+  const finishSet = () => {
     if (currentSet.reps && currentSet.weight) {
       const newSet = {
         ...currentSet,
@@ -119,13 +129,24 @@ export default function StartWorkout() {
         sets: [...prev.sets, newSet]
       }));
       
-      // Start rest timer
-      setIsResting(true);
-      setRestTimer(currentSet.rest || 60);
+      // Show rest choice instead of automatically starting rest
+      setShowRestChoice(true);
       
       // Reset current set
       setCurrentSet(prev => ({ ...prev, reps: '', weight: '' }));
     }
+  };
+  
+  const startRest = () => {
+    setIsResting(true);
+    setIsInRestPeriod(true);
+    setRestTimer(currentSet.rest || 60);
+    setShowRestChoice(false);
+  };
+  
+  const skipRest = () => {
+    setShowRestChoice(false);
+    // Ready for next set immediately
   };
 
   const finishWorkout = async () => {
@@ -235,14 +256,22 @@ export default function StartWorkout() {
       </div>
 
       {/* Exercise Info */}
-      <div className="card">
+      <div className={`card ${isPaused ? 'ring-2 ring-yellow-500/50 bg-yellow-900/10' : ''}`}>
         <div className="flex items-center gap-4 mb-4">
-          <div className={`w-16 h-16 ${exercise.color} rounded-lg flex items-center justify-center`}>
+          <div className={`w-16 h-16 ${exercise.color} rounded-lg flex items-center justify-center relative`}>
             <span className="text-3xl">{exercise.icon}</span>
+            {isPaused && (
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+                <span className="text-xs text-black">⏸️</span>
+              </div>
+            )}
           </div>
           <div>
             <h1 className="text-2xl font-bold text-white">{exercise.name}</h1>
             <p className="text-slate-400">{exercise.category} • {exercise.sets}</p>
+            {isPaused && (
+              <p className="text-yellow-400 text-sm font-medium animate-pulse">⏸️ Workout Paused</p>
+            )}
           </div>
         </div>
 
@@ -308,7 +337,42 @@ export default function StartWorkout() {
           <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30 rounded-lg p-6 mb-6 text-center">
             <div className="text-2xl font-bold text-white mb-2">Ready to Start?</div>
             <p className="text-slate-300 mb-2">Target: {workoutData.targetSets} {workoutData.targetSets === 1 ? 'set' : 'sets'}</p>
-            <p className="text-slate-400 mb-4 text-sm">Take your time to get ready. Click below when you're prepared to begin your workout.</p>
+            <p className="text-slate-400 mb-4 text-sm">Enter your reps and weight before starting the workout.</p>
+            
+            {/* Pre-workout validation inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 max-w-md mx-auto">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Reps</label>
+                <input
+                  type="number"
+                  value={currentSet.reps}
+                  onChange={(e) => setCurrentSet(prev => ({ ...prev, reps: e.target.value }))}
+                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center"
+                  placeholder="12"
+                  min="1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Weight (kg)</label>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={currentSet.weight}
+                  onChange={(e) => setCurrentSet(prev => ({ ...prev, weight: e.target.value }))}
+                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center"
+                  placeholder="20"
+                  min="0"
+                />
+              </div>
+            </div>
+            
+            {/* Validation message */}
+            {(!currentSet.reps || !currentSet.weight) && (
+              <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-3 mb-4 text-yellow-300 text-sm">
+                ⚠️ Please enter both reps and weight to start your workout
+              </div>
+            )}
+            
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => setShowSetSelector(true)}
@@ -317,8 +381,15 @@ export default function StartWorkout() {
                 ⚙️ Change Sets
               </button>
               <button
-                onClick={() => setWorkoutStarted(true)}
-                className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold"
+                onClick={() => {
+                  if (!currentSet.reps || !currentSet.weight) {
+                    alert('Please enter both reps and weight before starting the workout!');
+                    return;
+                  }
+                  setWorkoutStarted(true);
+                }}
+                disabled={!currentSet.reps || !currentSet.weight}
+                className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 🚀 Start Workout
               </button>
@@ -332,7 +403,25 @@ export default function StartWorkout() {
               <div className="text-3xl font-bold text-blue-400 mb-2">
                 {formatTime(timer)}
               </div>
-              <div className="text-sm text-slate-400">Workout Duration</div>
+              <div className="text-sm text-slate-400">
+                {showRestChoice ? 'Timer Paused (Choose Rest Option)' : isResting ? 'Active Workout Time (Rest Paused)' : 'Workout Duration'}
+              </div>
+              
+              {/* Pause/Resume Button */}
+              <div className="mt-3">
+                <button
+                  onClick={() => setIsPaused(!isPaused)}
+                  className={`btn ${isPaused ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white px-6 py-2`}
+                >
+                  {isPaused ? '▶️ Resume Workout' : '⏸️ Pause Workout'}
+                </button>
+              </div>
+              
+              {isPaused && (
+                <div className="mt-2 text-yellow-400 text-sm animate-pulse">
+                  ⏸️ Workout paused - Timer stopped
+                </div>
+              )}
             </div>
             
             {/* Progress Bar */}
@@ -357,18 +446,48 @@ export default function StartWorkout() {
           </div>
         )}
 
+        {/* Rest Choice Modal */}
+        {showRestChoice && (
+          <div className="bg-blue-600/20 border border-blue-500 rounded-lg p-6 mb-6 text-center">
+            <div className="text-2xl font-bold text-white mb-3">✅ Set Completed!</div>
+            <p className="text-slate-300 mb-4">What would you like to do next?</p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={startRest}
+                className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3"
+              >
+                🛌 Take Rest ({Math.floor(currentSet.rest / 60)}:{(currentSet.rest % 60).toString().padStart(2, '0')})
+              </button>
+              <button
+                onClick={skipRest}
+                className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3"
+              >
+                🚀 Next Set Now
+              </button>
+            </div>
+          </div>
+        )}
+        
         {/* Rest Timer */}
         {isResting && (
           <div className="bg-orange-600/20 border border-orange-500 rounded-lg p-4 mb-6 text-center">
             <div className="text-2xl font-bold text-orange-400 mb-2">
-              Rest: {formatTime(restTimer)}
+              🛌 Rest: {isPaused ? '⏸️ Paused' : formatTime(restTimer)}
             </div>
             <div className="text-sm text-orange-300">
-              Take a break before your next set ({Math.floor(currentSet.rest / 60)}:{(currentSet.rest % 60).toString().padStart(2, '0')} total)
+              {isPaused ? 'Rest timer paused' : `Take a break before your next set (${Math.floor(currentSet.rest / 60)}:${(currentSet.rest % 60).toString().padStart(2, '0')} total)`}
             </div>
-            {restTimer <= 10 && restTimer > 0 && (
+            <div className="text-xs text-blue-300 mt-1">
+              💡 Workout timer paused during rest
+            </div>
+            {!isPaused && restTimer <= 10 && restTimer > 0 && (
               <div className="text-xs text-orange-200 mt-1 animate-pulse">
                 ⚠️ Get ready for your next set!
+              </div>
+            )}
+            {isPaused && (
+              <div className="text-xs text-yellow-200 mt-1">
+                ⏸️ Resume to continue rest timer
               </div>
             )}
           </div>
@@ -384,6 +503,7 @@ export default function StartWorkout() {
               onChange={(e) => setCurrentSet(prev => ({ ...prev, reps: e.target.value }))}
               className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
               placeholder="12"
+              disabled={isPaused}
             />
           </div>
           <div>
@@ -395,6 +515,7 @@ export default function StartWorkout() {
               onChange={(e) => setCurrentSet(prev => ({ ...prev, weight: e.target.value }))}
               className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
               placeholder="20"
+              disabled={isPaused}
             />
           </div>
           <div>
@@ -404,7 +525,8 @@ export default function StartWorkout() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentSet(prev => ({ ...prev, rest: Math.max(15, prev.rest - 15) }))}
-                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm"
+                disabled={isPaused}
+                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm disabled:opacity-50"
               >
                 -
               </button>
@@ -416,10 +538,12 @@ export default function StartWorkout() {
                 min="15"
                 max="900"
                 placeholder="60"
+                disabled={isPaused}
               />
               <button
                 onClick={() => setCurrentSet(prev => ({ ...prev, rest: prev.rest + 15 }))}
-                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm"
+                disabled={isPaused}
+                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm disabled:opacity-50"
               >
                 +
               </button>
@@ -429,7 +553,8 @@ export default function StartWorkout() {
                 <button
                   key={time}
                   onClick={() => setCurrentSet(prev => ({ ...prev, rest: time }))}
-                  className={`px-2 py-1 rounded text-xs transition-colors ${
+                  disabled={isPaused}
+                  className={`px-2 py-1 rounded text-xs transition-colors disabled:opacity-50 ${
                     currentSet.rest === time 
                       ? 'bg-blue-600 text-white' 
                       : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -444,11 +569,11 @@ export default function StartWorkout() {
 
         {workoutStarted && (
           <button
-            onClick={addSet}
-            disabled={!currentSet.reps || !currentSet.weight || isResting}
+            onClick={finishSet}
+            disabled={!currentSet.reps || !currentSet.weight || isResting || isPaused || showRestChoice}
             className="btn bg-blue-600 hover:bg-blue-700 text-white w-full mb-6 disabled:opacity-50"
           >
-            {isResting ? 'Resting...' : 'Add Set'}
+            {isPaused ? 'Workout Paused' : isResting ? 'Resting...' : showRestChoice ? 'Choose Rest Option Above' : '✅ Finish Set'}
           </button>
         )}
 
@@ -477,6 +602,7 @@ export default function StartWorkout() {
             className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
             rows={3}
             placeholder="How did this exercise feel? Any observations..."
+            disabled={isPaused}
           />
         </div>
 
@@ -490,31 +616,34 @@ export default function StartWorkout() {
           </button>
           <button
             onClick={finishWorkout}
-            disabled={workoutData.sets.length === 0}
+            disabled={workoutData.sets.length === 0 || isPaused}
             className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 font-semibold"
           >
-            ✅ Finish Workout ({workoutData.sets.length}/{workoutData.targetSets} sets)
+            {isPaused ? '⏸️ Resume to Finish' : `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets} sets)`}
           </button>
         </div>
       </div>
 
       {/* Real-time Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card text-center">
+        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
           <div className="text-2xl font-bold text-blue-400">{workoutData.sets.length}</div>
           <div className="text-sm text-slate-400">Sets Completed</div>
         </div>
-        <div className="card text-center">
+        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
           <div className="text-2xl font-bold text-green-400">
             {workoutData.sets.reduce((total, set) => total + set.reps, 0)}
           </div>
           <div className="text-sm text-slate-400">Total Reps</div>
         </div>
-        <div className="card text-center">
+        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
           <div className="text-2xl font-bold text-purple-400">
             {Math.floor(timer / 60 * 5)}
           </div>
           <div className="text-sm text-slate-400">Est. Calories</div>
+          {isPaused && (
+            <div className="text-xs text-yellow-400 mt-1">⏸️ Paused</div>
+          )}
         </div>
       </div>
     </div>
