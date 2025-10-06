@@ -10,6 +10,7 @@ import { useRealTime } from '../context/RealTimeContext';
 import AuthGuard from '../components/AuthGuard';
 import RealTimeStats from '../components/RealTimeStats';
 import progressAnalyticsImg from '../assets/Progress-Analytics.jpg';
+import '../styles/analytics-mobile.css';
 
 Chart.register(...registerables);
 
@@ -34,7 +35,7 @@ function AnalyticsHero() {
           <img
             src={progressAnalyticsImg}
             alt="Progress & Analytics"
-            className="w-full h-full object-cover object-center transition-opacity duration-300"
+            className="analytics-hero-mobile w-full h-full object-cover transition-opacity duration-300"
             loading="eager"
             decoding="async"
             fetchPriority="high"

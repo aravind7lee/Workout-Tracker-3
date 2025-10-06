@@ -55,8 +55,8 @@ export const useRealTimeDashboard = () => {
       const planStatsData = realTimePlanService.getPlanStats();
       setPlanStats(planStatsData);
 
-      // Update recent plans (last 3)
-      setRecentPlans(plans.slice(0, 3));
+      // Update recent plans (all plans for Show More functionality)
+      setRecentPlans(plans);
 
       console.log('✅ Dashboard data loaded - Plans:', plans.length, 'Workouts:', stats?.totalWorkouts || 0);
     } catch (error) {
@@ -86,7 +86,7 @@ export const useRealTimeDashboard = () => {
       }));
 
       // INSTANT recent plans update
-      setRecentPlans(prev => [data.plan, ...prev.slice(0, 2)]);
+      setRecentPlans(prev => [data.plan, ...prev]);
     };
 
     const handlePlanDeleted = (data) => {

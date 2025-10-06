@@ -43,6 +43,7 @@ const Dashboard = () => {
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [completionData, setCompletionData] = useState(null);
   const [showAllWorkouts, setShowAllWorkouts] = useState(false);
+  const [showAllPlans, setShowAllPlans] = useState(false);
 
   const navigate = useNavigate();
 
@@ -472,12 +473,22 @@ const Dashboard = () => {
       <div className="card">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
           <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">My Workout Plans</h2>
-          <button
-            onClick={() => navigate('/plans')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm w-full sm:w-auto"
-          >
-            + Create Plan
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {recentPlans && recentPlans.length > 3 && (
+              <button
+                onClick={() => setShowAllPlans(!showAllPlans)}
+                className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm"
+              >
+                {showAllPlans ? 'Show Less' : `Show More (${recentPlans.length})`}
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/plans')}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm w-full sm:w-auto"
+            >
+              + Create Plan
+            </button>
+          </div>
         </div>
         {!recentPlans || recentPlans.length === 0 ? (
           <div className="text-center py-6 sm:py-8">
@@ -507,7 +518,7 @@ const Dashboard = () => {
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {recentPlans.map((plan, index) => (
+              {(showAllPlans ? recentPlans : recentPlans.slice(0, 3)).map((plan, index) => (
                 <div key={plan.id || index} className="p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors relative">
                   {/* Sync Status Badge */}
                   <div className="absolute top-2 right-2">

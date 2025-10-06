@@ -80,7 +80,7 @@ export default function StartWorkout() {
     checkOnlineStatus();
   }, [location.state]);
 
-  // Timer effect - current set timer, rest timer, and total workout timer
+  // Timer effect - current set timer and rest timer
   useEffect(() => {
     if (!workoutStarted || isPaused) return;
     
@@ -88,10 +88,9 @@ export default function StartWorkout() {
       // Current set timer - only runs when not resting and not showing choice
       if (!isResting && !showRestChoice) {
         setCurrentSetTimer(prev => prev + 1);
-        setTimer(prev => prev + 1); // Total workout timer
       }
       
-      // Handle rest timer separately (rest time doesn't count toward workout duration)
+      // Handle rest timer separately
       if (isResting && restTimer > 0) {
         setRestTimer(prev => prev - 1);
       } else if (isResting && restTimer === 0) {
@@ -165,33 +164,23 @@ export default function StartWorkout() {
       return;
     }
 
-    // Calculate total active workout time (excluding rest periods)
-    const totalActiveTime = totalWorkoutTime + currentSetTimer;
-    
     const completedWorkout = {
       id: Date.now(),
       exercise: exercise.name,
       name: exercise.name,
-      category: exercise.category || exercise.muscle || 'Other',
-      muscle: exercise.category || exercise.muscle || 'Other',
+      category: exercise.category,
       difficulty: exercise.difficulty,
       completedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      duration: totalActiveTime, // Use active time instead of total time
-      totalTime: timer, // Keep total time including rest
-      activeTime: totalActiveTime, // Explicit active time tracking
-      caloriesBurned: Math.floor(totalActiveTime / 60 * 5) + workoutData.sets.length * 10,
+      duration: timer,
+      caloriesBurned: Math.floor(timer / 60 * 5) + workoutData.sets.length * 10,
       sets: workoutData.sets.length,
       reps: workoutData.sets.reduce((total, set) => total + set.reps, 0),
       totalWeight: workoutData.sets.reduce((total, set) => total + (set.weight * set.reps), 0),
       userId: user?.id,
-      user: user?.id,
       savedOffline: !isOnline,
-      notes: workoutData.notes || `Completed ${workoutData.sets.length} sets in ${formatTime(totalActiveTime)} active time`,
+      notes: workoutData.notes || `Completed ${workoutData.sets.length} sets in ${formatTime(timer)}`,
       setsData: workoutData.sets
     };
-    
-    console.log('🎯 StartWorkout: Saving completed workout:', completedWorkout);
 
     try {
       // Save to localStorage for /workouts page
@@ -210,7 +199,7 @@ export default function StartWorkout() {
         return workoutDate >= weekAgo;
       }).length;
       
-      // Trigger comprehensive real-time events with duration data
+      // Trigger comprehensive real-time events
       window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: completedWorkout }));
       
       window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
@@ -218,20 +207,9 @@ export default function StartWorkout() {
           todayWorkouts,
           totalWorkouts: updatedWorkouts.length,
           weeklyWorkouts,
-          totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0),
-          totalDuration: updatedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0)
+          totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
         }
       }));
-      
-      // Trigger analytics refresh specifically
-      window.dispatchEvent(new CustomEvent('analyticsRefresh', { 
-        detail: { 
-          workout: completedWorkout,
-          duration: totalActiveTime
-        }
-      }));
-      
-      console.log('📡 Events dispatched: workoutCompleted, realTimeStatsUpdate, analyticsRefresh');
       
       // Trigger streak update
       window.dispatchEvent(new CustomEvent('streakUpdated', { 
@@ -242,15 +220,14 @@ export default function StartWorkout() {
         }
       }));
       
-      console.log('🎯 Workout saved to localStorage:', completedWorkout);
-      console.log('🎯 Total workouts in storage:', updatedWorkouts.length);
+      console.log('🎯 Workout completed from StartWorkout:', completedWorkout);
       
-      // Navigate to analytics page to show the updated charts
-      navigate('/analytics', { 
+      // Navigate to workouts page to show the completed workout
+      navigate('/workouts', { 
         state: { 
           workoutCompleted: true, 
           exercise: exercise.name,
-          duration: formatTime(totalActiveTime),
+          duration: formatTime(timer),
           sets: workoutData.sets.length,
           calories: completedWorkout.caloriesBurned
         } 
@@ -678,9 +655,9 @@ export default function StartWorkout() {
         </div>
         <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
           <div className="text-2xl font-bold text-purple-400">
-            {formatTime(totalWorkoutTime + currentSetTimer)}
+            {Math.floor((totalWorkoutTime + currentSetTimer) / 60 * 5)}
           </div>
-          <div className="text-sm text-slate-400">Active Time</div>
+          <div className="text-sm text-slate-400">Est. Calories</div>
           {isPaused && (
             <div className="text-xs text-yellow-400 mt-1">⏸️ Paused</div>
           )}
