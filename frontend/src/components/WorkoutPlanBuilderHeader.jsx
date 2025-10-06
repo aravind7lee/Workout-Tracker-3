@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import MyPlansHeaderImg from '../assets/Myplansheader.jpg';
+import '../styles/my-plans-hero.css';
 
 export default function WorkoutPlanBuilderHeader() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -36,7 +37,7 @@ export default function WorkoutPlanBuilderHeader() {
           <img
             src={MyPlansHeaderImg}
             alt="My Plans – Professional gym workout plans background"
-            className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
+            className="myplans-hero-image absolute inset-0 transition-opacity duration-300"
             loading="eager"
             decoding="async"
             fetchPriority="high"

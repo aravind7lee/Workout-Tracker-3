@@ -1,0 +1,48 @@
+/* Library Header Image Responsive Styling */
+.library-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: opacity 0.4s ease-out, scale 0.4s ease-out;
+}
+
+/* Mobile devices - Ensure head is visible */
+@media (max-width: 640px) {
+  .library-hero-image {
+    object-position: center 15%;
+    min-height: 100vh;
+  }
+}
+
+/* Tablet devices */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .library-hero-image {
+    object-position: center 20%;
+  }
+}
+
+/* Desktop devices */
+@media (min-width: 1025px) {
+  .library-hero-image {
+    object-position: center top;
+  }
+}
+
+/* Ensure proper aspect ratio and prevent head cutting */
+.hero-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20%;
+  background: linear-gradient(to bottom, transparent 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}

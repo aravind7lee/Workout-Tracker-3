@@ -1,0 +1,12 @@
+/* Mobile-specific positioning to center the woman properly */
+@media (max-width: 640px) {
+  .analytics-hero-mobile {
+    object-position: 75% center !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .analytics-hero-mobile {
+    object-position: center center !important;
+  }
+}
