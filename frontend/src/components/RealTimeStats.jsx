@@ -54,10 +54,17 @@ export default function RealTimeStats() {
   const loadLocalStats = () => {
     try {
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      
+      // Filter plans by current user - same as Analytics
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      const userPlans = currentUser ? allPlans.filter(plan => {
+        return plan.userId === currentUser.id || plan.userId === currentUser._id ||
+               (!plan.userId && plan.synced === false);
+      }) : [];
       
       const totalWorkouts = contextStats.totalWorkouts || 0;
-      const totalPlans = plans.length;
+      const totalPlans = contextStats.totalPlans || userPlans.length;
       
       setStats({
         totalWorkouts,
@@ -91,22 +98,59 @@ export default function RealTimeStats() {
       console.log('🏋️ Workout completed - refreshing stats');
       loadRealTimeStats();
     };
-    const handlePlanCreated = () => {
-      loadRealTimeStats();
+    
+    // INSTANT PLAN UPDATES - Same as Analytics
+    const getUserPlanCount = () => {
+      const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!currentUser) return 0;
+      
+      const userPlans = allPlans.filter(plan => {
+        return plan.userId === currentUser.id || plan.userId === currentUser._id ||
+               (!plan.userId && plan.synced === false);
+      });
+      return userPlans.length;
     };
+    
+    const handlePlanCreated = () => {
+      console.log('📋 RealTimeStats: Plan created - instant update');
+      const userPlanCount = getUserPlanCount();
+      setStats(prev => ({ ...prev, totalPlans: userPlanCount }));
+    };
+    
+    const handlePlanUpdated = () => {
+      const userPlanCount = getUserPlanCount();
+      setStats(prev => ({ ...prev, totalPlans: userPlanCount }));
+    };
+    
+    const handlePlanDeleted = () => {
+      const userPlanCount = getUserPlanCount();
+      setStats(prev => ({ ...prev, totalPlans: userPlanCount }));
+    };
+    
+    const handleDashboardUpdate = (event) => {
+      if (event.detail && (event.detail.type === 'planCreated' || event.detail.type === 'planDeleted' || event.detail.type === 'planSynced')) {
+        const userPlanCount = getUserPlanCount();
+        setStats(prev => ({ ...prev, totalPlans: userPlanCount }));
+      }
+    };
+    
     const handleMealAdded = () => loadRealTimeStats();
     
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('planCreated', handlePlanCreated);
+    window.addEventListener('planUpdated', handlePlanUpdated);
+    window.addEventListener('planDeleted', handlePlanDeleted);
+    window.addEventListener('dashboardUpdate', handleDashboardUpdate);
     window.addEventListener('mealAdded', handleMealAdded);
-    
-    const interval = setInterval(loadRealTimeStats, 30000);
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
       window.removeEventListener('planCreated', handlePlanCreated);
+      window.removeEventListener('planUpdated', handlePlanUpdated);
+      window.removeEventListener('planDeleted', handlePlanDeleted);
+      window.removeEventListener('dashboardUpdate', handleDashboardUpdate);
       window.removeEventListener('mealAdded', handleMealAdded);
-      clearInterval(interval);
     };
   }, [user]);
 

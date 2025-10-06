@@ -108,7 +108,7 @@ export default function Analytics() {
             weeklyWorkouts: 0,
 
           },
-          caloriesTrend: null,
+          durationTrend: null,
           workoutFrequency: null,
           muscleDistribution: null
         });
@@ -118,8 +118,15 @@ export default function Analytics() {
       
       // Get user-specific workouts from realTimeWorkoutSync
       const workouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      
+      // Filter plans by current user - same as Dashboard
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      const plans = currentUser ? allPlans.filter(plan => {
+        return plan.userId === currentUser.id || plan.userId === currentUser._id ||
+               (!plan.userId && plan.synced === false); // Backward compatibility for local plans
+      }) : [];
       
       console.log(`📊 Analytics: Loading data for authenticated user - ${workouts.length} workouts, ${plans.length} plans`);
       
@@ -136,27 +143,45 @@ export default function Analytics() {
           return workoutDate.toDateString() === date.toDateString();
         });
         
-        const dayMeals = meals.filter(m => {
-          const mealDate = new Date(m.consumedAt || m.createdAt);
-          return mealDate.toDateString() === date.toDateString();
-        });
+        const dayDuration = dayWorkouts.reduce((sum, workout) => {
+          return sum + (workout.activeTime || workout.duration || 0);
+        }, 0);
         
         last7Days.push({
           day: dayName,
           workouts: dayWorkouts.length,
-          calories: dayMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0)
+          duration: Math.round(dayDuration / 60) // Convert seconds to minutes
         });
       }
       
+      // Calculate muscle group distribution from workouts
+      const muscleGroups = {};
+      workouts.forEach(workout => {
+        const muscle = workout.muscle || workout.category || 'Other';
+        muscleGroups[muscle] = (muscleGroups[muscle] || 0) + 1;
+      });
+      
+      const muscleColors = {
+        'Chest': '#ef4444',
+        'Back': '#3b82f6', 
+        'Shoulders': '#f59e0b',
+        'Arms': '#10b981',
+        'Legs': '#8b5cf6',
+        'Core': '#f97316',
+        'Cardio': '#06b6d4',
+        'Other': '#6b7280'
+      };
+      
       const chartData = {
-        caloriesData: {
+        durationData: {
           labels: last7Days.map(d => d.day),
           datasets: [{
-            label: 'Calories',
-            data: last7Days.map(d => d.calories),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            tension: 0.4
+            label: 'Duration (minutes)',
+            data: last7Days.map(d => d.duration),
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            tension: 0.4,
+            fill: true
           }]
         },
         workoutData: {
@@ -168,21 +193,32 @@ export default function Analytics() {
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             tension: 0.4
           }]
-        }
+        },
+        muscleData: Object.keys(muscleGroups).length > 0 ? {
+          labels: Object.keys(muscleGroups),
+          datasets: [{
+            data: Object.values(muscleGroups),
+            backgroundColor: Object.keys(muscleGroups).map(muscle => 
+              muscleColors[muscle] || muscleColors['Other']
+            ),
+            borderWidth: 2,
+            borderColor: '#1e293b'
+          }]
+        } : null
       };
       
       setAnalyticsData({
         stats: {
           totalWorkouts: stats.totalWorkouts || 0,
-          totalPlans: plans.length,
+          totalPlans: stats.totalPlans || plans.length, // Use stats.totalPlans first
           todayWorkouts: stats.todayWorkouts || 0,
           weeklyWorkouts: stats.weeklyWorkouts || 0,
 
           // Achievement system removed
         },
-        caloriesTrend: chartData.caloriesData,
+        durationTrend: chartData.durationData,
         workoutFrequency: chartData.workoutData,
-        muscleDistribution: null
+        muscleDistribution: chartData.muscleData
       });
     } catch (error) {
       console.error('Error loading analytics data:', error);
@@ -194,7 +230,7 @@ export default function Analytics() {
           weeklyWorkouts: 0,
 
         },
-        caloriesTrend: null,
+        durationTrend: null,
         workoutFrequency: null,
         muscleDistribution: null
       });
@@ -208,16 +244,118 @@ export default function Analytics() {
     
     const handleWorkoutComplete = () => loadAnalyticsData();
     const handleMealAdded = () => loadAnalyticsData();
-    const handlePlanCreated = () => loadAnalyticsData();
+    
+    // INSTANT PLAN UPDATES - Same as Dashboard with user filtering
+    const getUserPlanCount = () => {
+      const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!currentUser) return 0;
+      
+      const userPlans = allPlans.filter(plan => {
+        return plan.userId === currentUser.id || plan.userId === currentUser._id ||
+               (!plan.userId && plan.synced === false); // Backward compatibility
+      });
+      return userPlans.length;
+    };
+    
+    const handlePlanCreated = () => {
+      console.log('📋 Analytics: Plan created - instant update');
+      // Update plan count immediately with user-specific filtering
+      const userPlanCount = getUserPlanCount();
+      setAnalyticsData(prev => prev ? {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          totalPlans: userPlanCount
+        }
+      } : null);
+      // Then do full reload
+      setTimeout(() => loadAnalyticsData(), 100);
+    };
+    
+    // Listen to all plan-related events for instant updates
+    const handlePlanUpdated = () => {
+      console.log('📋 Analytics: Plan updated - instant refresh');
+      const userPlanCount = getUserPlanCount();
+      setAnalyticsData(prev => prev ? {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          totalPlans: userPlanCount
+        }
+      } : null);
+    };
+    
+    const handlePlanDeleted = () => {
+      console.log('📋 Analytics: Plan deleted - instant refresh');
+      const userPlanCount = getUserPlanCount();
+      setAnalyticsData(prev => prev ? {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          totalPlans: userPlanCount
+        }
+      } : null);
+    };
+    
+    // Listen to real-time stats updates
+    const handleRealTimeStatsUpdate = (event) => {
+      console.log('📊 Analytics: Real-time stats update received');
+      if (event.detail) {
+        setAnalyticsData(prev => prev ? {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            totalWorkouts: event.detail.totalWorkouts || prev.stats.totalWorkouts,
+            todayWorkouts: event.detail.todayWorkouts || prev.stats.todayWorkouts,
+            weeklyWorkouts: event.detail.weeklyWorkouts || prev.stats.weeklyWorkouts
+          }
+        } : null);
+      }
+    };
+    
+    // INSTANT ANALYTICS REFRESH - Same as Dashboard instant updates
+    const handleAnalyticsRefresh = (event) => {
+      console.log('🔄 Analytics: Analytics refresh triggered - instant update');
+      // Immediately reload all analytics data
+      loadAnalyticsData();
+    };
+    
+    // INSTANT DASHBOARD UPDATE LISTENER - Same as Dashboard
+    const handleDashboardUpdate = (event) => {
+      console.log('⚡ Analytics: Dashboard update received - instant plan count update');
+      if (event.detail && (event.detail.type === 'planCreated' || event.detail.type === 'planDeleted' || event.detail.type === 'planSynced')) {
+        // Instantly update plan count with user-specific filtering
+        const userPlanCount = getUserPlanCount();
+        setAnalyticsData(prev => prev ? {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            totalPlans: userPlanCount
+          }
+        } : null);
+        console.log('✅ Analytics: Plan count updated instantly to', userPlanCount);
+      }
+    };
     
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
+    window.addEventListener('planUpdated', handlePlanUpdated);
+    window.addEventListener('planDeleted', handlePlanDeleted);
+    window.addEventListener('realTimeStatsUpdate', handleRealTimeStatsUpdate);
+    window.addEventListener('analyticsRefresh', handleAnalyticsRefresh);
+    window.addEventListener('dashboardUpdate', handleDashboardUpdate);
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
       window.removeEventListener('mealAdded', handleMealAdded);
       window.removeEventListener('planCreated', handlePlanCreated);
+      window.removeEventListener('planUpdated', handlePlanUpdated);
+      window.removeEventListener('planDeleted', handlePlanDeleted);
+      window.removeEventListener('realTimeStatsUpdate', handleRealTimeStatsUpdate);
+      window.removeEventListener('analyticsRefresh', handleAnalyticsRefresh);
+      window.removeEventListener('dashboardUpdate', handleDashboardUpdate);
     };
   }, [stats]);
 
@@ -226,7 +364,7 @@ export default function Analytics() {
     loadAnalyticsData();
   };
 
-  const caloriesData = analyticsData?.caloriesTrend;
+  const durationData = analyticsData?.durationTrend;
   const frequencyData = analyticsData?.workoutFrequency;
   const muscleData = analyticsData?.muscleDistribution;
 
@@ -315,12 +453,48 @@ export default function Analytics() {
 
         <div id="analytics-charts" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4">Weekly Calories</h3>
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <span className="text-amber-400">⏱️</span>
+              Weekly Duration
+            </h3>
             <div className="h-64">
-              {caloriesData ? (
-                <Line data={caloriesData} options={chartOptions} />
+              {durationData ? (
+                <Line data={durationData} options={{
+                  ...chartOptions,
+                  plugins: {
+                    ...chartOptions.plugins,
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          const minutes = context.parsed.y;
+                          const hours = Math.floor(minutes / 60);
+                          const mins = minutes % 60;
+                          return hours > 0 
+                            ? `Duration: ${hours}h ${mins}m`
+                            : `Duration: ${mins} minutes`;
+                        }
+                      }
+                    }
+                  },
+                  scales: {
+                    ...chartOptions.scales,
+                    y: {
+                      ...chartOptions.scales.y,
+                      ticks: {
+                        ...chartOptions.scales.y.ticks,
+                        callback: function(value) {
+                          return value >= 60 ? `${Math.floor(value/60)}h ${value%60}m` : `${value}m`;
+                        }
+                      }
+                    }
+                  }
+                }} />
               ) : (
-                <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
+                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                  <span className="text-4xl mb-2">⏱️</span>
+                  <span>No workout duration data</span>
+                  <span className="text-xs mt-1">Complete workouts to see your time trends</span>
+                </div>
               )}
             </div>
           </div>
@@ -339,12 +513,61 @@ export default function Analytics() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4 text-center">Muscle Groups</h3>
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center justify-center gap-2">
+              <span className="text-purple-400">💪</span>
+              Muscle Groups
+            </h3>
             <div className="h-64">
               {muscleData ? (
-                <Doughnut data={muscleData} options={doughnutOptions} />
+                <Doughnut data={muscleData} options={{
+                  ...doughnutOptions,
+                  plugins: {
+                    ...doughnutOptions.plugins,
+                    tooltip: {
+                      titleColor: '#ffffff',
+                      bodyColor: '#ffffff',
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      callbacks: {
+                        label: function(context) {
+                          const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                          const percentage = ((context.parsed / total) * 100).toFixed(1);
+                          return `${context.label}: ${context.parsed} workouts (${percentage}%)`;
+                        }
+                      }
+                    },
+                    legend: {
+                      ...doughnutOptions.plugins.legend,
+                      labels: {
+                        color: '#e2e8f0',
+                        font: { size: 12 },
+                        padding: 15,
+                        generateLabels: function(chart) {
+                          const data = chart.data;
+                          const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                          return data.labels.map((label, i) => {
+                            const value = data.datasets[0].data[i];
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return {
+                              text: `${label} (${percentage}%)`,
+                              fillStyle: data.datasets[0].backgroundColor[i],
+                              strokeStyle: data.datasets[0].backgroundColor[i],
+                              fontColor: '#ffffff',
+                              lineWidth: 0,
+                              hidden: false,
+                              index: i
+                            };
+                          });
+                        }
+                      }
+                    }
+                  }
+                }} />
               ) : (
-                <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
+                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                  <span className="text-4xl mb-2">💪</span>
+                  <span>No muscle group data</span>
+                  <span className="text-xs mt-1">Complete workouts to see muscle distribution</span>
+                </div>
               )}
             </div>
           </div>

@@ -114,7 +114,7 @@ export default function Hero() {
                 variants={itemVariants}
               >
                 Welcome to{' '}
-                <span className="font-heading text-amber-400 font-black" style={{ 
+                <span className="font-heading text-red-500 font-black" style={{ 
                   textShadow: '3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8)',
                   fontSize: '1.1em'
                 }}>

@@ -149,7 +149,7 @@ const DashboardHero = () => {
                        className="font-heading font-black mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tight"
                        variants={itemVariants}
                        style={{
-                         color: '#00d4ff',
+                         color: '#f59e0b',
                          textShadow: '0 8px 32px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2)',
                          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))'
                        }}
