@@ -85,12 +85,12 @@ export default function StartWorkout() {
     if (!workoutStarted || isPaused) return;
     
     const interval = setInterval(() => {
-      // Only increment workout timer when NOT resting and NOT showing choice
-      if (!isResting) {
-        setTimer(prev => prev + 1);
+      // Current set timer - only runs when not resting and not showing choice
+      if (!isResting && !showRestChoice) {
+        setCurrentSetTimer(prev => prev + 1);
       }
       
-      // Handle rest timer separately (rest time doesn't count toward workout duration)
+      // Handle rest timer separately
       if (isResting && restTimer > 0) {
         setRestTimer(prev => prev - 1);
       } else if (isResting && restTimer === 0) {
@@ -677,7 +677,7 @@ export default function StartWorkout() {
         </div>
         <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
           <div className="text-2xl font-bold text-purple-400">
-            {Math.floor(timer / 60 * 5)}
+            {formatTime(totalWorkoutTime + currentSetTimer)}
           </div>
           <div className="text-sm text-slate-400">Active Time</div>
           {isPaused && (
