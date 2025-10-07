@@ -17,6 +17,7 @@ const Register = () => {
   const [backendStatus, setBackendStatus] = useState('checking');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -30,7 +31,20 @@ const Register = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // Real-time password matching validation
+    if (name === 'confirmPassword' || (name === 'password' && formData.confirmPassword)) {
+      const password = name === 'password' ? value : formData.password;
+      const confirmPassword = name === 'confirmPassword' ? value : formData.confirmPassword;
+      
+      if (confirmPassword.length > 0) {
+        setPasswordMatch(password === confirmPassword);
+      } else {
+        setPasswordMatch(null);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -169,7 +183,13 @@ const Register = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Confirm Password"
-                className="w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
+                className={`w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border text-amber-100 placeholder-amber-600/50 focus:outline-none focus:ring-2 transition-all duration-300 font-medium backdrop-blur-sm ${
+                  passwordMatch === null 
+                    ? 'border-amber-900/30 focus:border-amber-600 focus:ring-amber-600/20'
+                    : passwordMatch 
+                    ? 'border-green-500/50 focus:border-green-500 focus:ring-green-500/20'
+                    : 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+                }`}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
@@ -194,6 +214,29 @@ const Register = () => {
                 )}
               </button>
             </div>
+            
+            {/* Password Match Indicator */}
+            {passwordMatch !== null && formData.confirmPassword.length > 0 && (
+              <div className={`mt-2 text-sm font-medium flex items-center gap-2 ${
+                passwordMatch ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {passwordMatch ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Passwords match
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Passwords do not match
+                  </>
+                )}
+              </div>
+            )}
           </div>
           
           <button
