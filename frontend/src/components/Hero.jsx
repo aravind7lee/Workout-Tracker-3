@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
-import { useRealTime } from '../context/RealTimeContext';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
+import { useRealTime } from "../context/RealTimeContext";
 
-import Heroimg from '../assets/Heroimg.jpg';
+import Heroimg from "../assets/Heroimg.jpg";
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
@@ -14,25 +14,24 @@ export default function Hero() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-
-
   const formatNumber = (num) => {
-    if (typeof num !== 'number' || isNaN(num)) return '0';
+    if (typeof num !== "number" || isNaN(num)) return "0";
     if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K';
+      return (num / 1000).toFixed(1) + "K";
     }
     return num.toString();
   };
 
   // LQIP for Home hero
-  const HOME_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+  const HOME_LQIP =
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
     img.src = Heroimg;
-    img.loading = 'eager';
+    img.loading = "eager";
   }, []);
 
   // Animation variants
@@ -42,9 +41,9 @@ export default function Hero() {
       opacity: 1,
       transition: {
         duration: 0.6,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -52,8 +51,8 @@ export default function Hero() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
   };
 
   return (
@@ -76,12 +75,12 @@ export default function Hero() {
             className="w-full h-full object-cover blur-sm transition-opacity duration-300"
             style={{ opacity: imageLoaded ? 0 : 1 }}
           />
-          
+
           {/* Main Image */}
           {!imageError && (
-            <img 
-              src={Heroimg} 
-              alt="Welcome to GymTracker - Professional Fitness Tracking" 
+            <img
+              src={Heroimg}
+              alt="Welcome to GymTracker - Professional Fitness Tracking"
               className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
               loading="eager"
               decoding="async"
@@ -89,19 +88,22 @@ export default function Hero() {
               style={{ opacity: imageLoaded ? 1 : 0 }}
             />
           )}
-          
+
           {/* Fallback */}
           {imageError && (
             <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 absolute inset-0"></div>
           )}
-          
+
           {/* Gradient Overlay - Semantic overlay for proper text contrast */}
-          <div className="absolute inset-0 hero-overlay" style={{ background: 'rgba(0,0,0,0.15)' }}></div>
+          <div
+            className="absolute inset-0 hero-overlay"
+            style={{ background: "rgba(0,0,0,0.15)" }}
+          ></div>
         </div>
 
         {/* Content Overlay */}
         {imageLoaded && (
-          <motion.div 
+          <motion.div
             className="relative z-10 h-full flex items-center justify-center"
             variants={containerVariants}
             initial="hidden"
@@ -109,56 +111,75 @@ export default function Hero() {
           >
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
               {/* Main Title */}
-              <motion.h1 
+              <motion.h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
                 variants={itemVariants}
               >
-                Welcome to{' '}
-                <span className="font-heading text-red-500 font-black" style={{ 
-                  textShadow: '3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8)',
-                  fontSize: '1.1em'
-                }}>
-                  GRIND-X
+                Welcome to{" "}
+                <span
+                  className="font-heading font-black"
+                  style={{ fontSize: "1.1em" }}
+                >
+                  <span
+                    style={{
+                      color: "#C62828", // Red for "GRIND"
+                      textShadow:
+                        "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                    }}
+                  >
+                    GRIND
+                  </span>
+                  <span
+                    style={{
+                      color: "#4DB6AC", // Aqua-green for "X"
+                      textShadow:
+                        "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                    }}
+                  >
+                    X
+                  </span>
                 </span>
               </motion.h1>
 
               {/* Subtitle */}
-              <motion.p 
+              <motion.p
                 className="text-sm sm:text-base md:text-lg font-bold mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed px-2 font-body"
-                style={{ color: '#ffffff', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
+                style={{
+                  color: "#ffffff",
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
+                }}
                 variants={itemVariants}
               >
-                Track workouts, monitor progress, and achieve your fitness goals efficiently.
+                Track workouts, monitor progress, and achieve your fitness goals
+                efficiently.
               </motion.p>
 
               {/* CTA Buttons - Very Compact on Mobile */}
-              <motion.div 
+              <motion.div
                 className="flex flex-row gap-2 sm:gap-3 justify-center items-center"
                 variants={itemVariants}
               >
-                <Link 
+                <Link
                   to={isAuthenticated?.() ? "/dashboard" : "/register"}
                   className="px-3 py-2 sm:px-4 sm:py-2 hero-button-primary font-semibold rounded-md text-xs sm:text-sm shadow-lg transition-all duration-300 font-body"
                 >
-                  {isAuthenticated?.() ? 'Dashboard' : 'Start Now'}
+                  {isAuthenticated?.() ? "Dashboard" : "Start Now"}
                 </Link>
-                
-                <Link 
-                  to="/library" 
+
+                <Link
+                  to="/library"
                   className="px-3 py-2 sm:px-4 sm:py-2 hero-button-secondary font-medium rounded-md text-xs sm:text-sm transition-all duration-300 font-body"
                 >
                   Exercises
                 </Link>
               </motion.div>
-
-
             </div>
           </motion.div>
         )}
-        
+
         {/* Real-time update indicator */}
         {isAuthenticated?.() && isOnline && (
-          <motion.div 
+          <motion.div
             className="absolute bottom-4 right-4 bg-green-500/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-green-300 border border-green-500/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
