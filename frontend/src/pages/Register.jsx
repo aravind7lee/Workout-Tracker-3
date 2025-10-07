@@ -69,7 +69,7 @@ const Register = () => {
       });
       
       login(result.user, result.token);
-      navigate("/dashboard");
+      navigate("/");
       
     } catch (err) {
       console.error('Registration error:', err);

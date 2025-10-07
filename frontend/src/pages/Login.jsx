@@ -49,9 +49,9 @@ const Login = () => {
         password: formData.password
       });
       
-      console.log('✅ Login successful, navigating to dashboard');
+      console.log('✅ Login successful, navigating to home');
       login(result.user, result.token);
-      navigate('/dashboard');
+      navigate('/');
       
     } catch (err) {
       console.error('❌ Login error details:', {
