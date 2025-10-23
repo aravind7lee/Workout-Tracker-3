@@ -598,6 +598,30 @@ export default function StartWorkout() {
             <div className="text-xs text-blue-300 mt-1">
               💡 Workout timer paused during rest
             </div>
+            
+            {/* Finish Rest Button */}
+            {!isPaused && (
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    setIsResting(false);
+                    setIsInRestPeriod(false);
+                    setRestTimer(0);
+                    // Clear inputs for next set - user must enter new values
+                    setCurrentSet(prev => ({ ...prev, reps: '', weight: '' }));
+                    // Reset set started state - user must start next set manually
+                    setCurrentSetStarted(false);
+                  }}
+                  className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 text-sm font-semibold"
+                >
+                  ✅ Finish Rest Early
+                </button>
+                <div className="text-xs text-slate-400 mt-2">
+                  Ready to continue? Skip the remaining rest time
+                </div>
+              </div>
+            )}
+            
             {!isPaused && restTimer <= 10 && restTimer > 0 && (
               <div className="text-xs text-orange-200 mt-1 animate-pulse">
                 ⚠️ Get ready for your next set!
