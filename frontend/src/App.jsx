@@ -43,6 +43,7 @@ import PRNotification from './components/PRNotification';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import LegendsAndInfluencers from './pages/LegendsAndInfluencers';
+import WorkoutSplits from './pages/WorkoutSplits';
 import chromeErrorHandler from './utils/chromeErrorHandler';
 import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
@@ -401,6 +402,7 @@ export default function App() {
                       <Route path="/nutrition" element={<Nutrition />} />
                       <Route path="/plans" element={<PlansBuilder />} />
                       <Route path="/my-plans" element={<MyPlans />} />
+                      <Route path="/splits" element={<WorkoutSplits />} />
                       <Route path="/edit-plan/:planId" element={<EditPlan />} />
                       <Route path="/workout/:planId" element={<WorkoutSession />} />
 

@@ -36,6 +36,7 @@ export default function Navbar() {
     { to: "/library", label: "Library" },
     { to: "/my-plans", label: "My Plans" },
     { to: "/plans", label: "Plan Builder" },
+    { to: "/splits", label: "Splits" },
     { to: "/nutrition", label: "Nutrition" },
     { to: "/analytics", label: "Analytics" },
     { to: "/legends", label: "Champs" },

@@ -29,6 +29,7 @@ const menuItems = [
   { to: "/library", label: "Library", icon: Dumbbell, color: "#8b5cf6" },
   { to: "/my-plans", label: "My Plans", icon: Calendar, color: "#00ff88" },
   { to: "/plans", label: "Plan Builder", icon: Target, color: "#ff6b6b" },
+  { to: "/splits", label: "Splits", icon: BarChart3, color: "#ff9500" },
   { to: "/nutrition", label: "Nutrition", icon: Apple, color: "#ffa502" },
   { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#00d4ff" },
   { to: "/legends", label: "Champs", icon: Award, color: "#ffd700" },

@@ -16,6 +16,7 @@ import analyticsRoutes from './routes/analytics.js';
 import dashboardRoutes from './routes/dashboard.js';
 import reviewRoutes from './routes/reviews.js';
 import syncRoutes from './routes/sync.js';
+import workoutSplitsRoutes from './routes/workoutSplits.js';
 
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
@@ -103,6 +104,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
+app.use('/api/workout-splits', workoutSplitsRoutes);
 
 // Enhanced preflight handling
 app.use((req, res, next) => {
