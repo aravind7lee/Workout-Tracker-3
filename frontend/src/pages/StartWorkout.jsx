@@ -4,6 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { onlineService } from '../services/onlineService';
+import PRService from '../services/prService';
+import PRNotification from '../components/PRNotification';
+import { getFormTips } from '../data/exerciseFormTips';
 
 export default function StartWorkout() {
   const navigate = useNavigate();
@@ -35,6 +38,8 @@ export default function StartWorkout() {
   const [totalWorkoutTime, setTotalWorkoutTime] = useState(0);
   const [currentSetStarted, setCurrentSetStarted] = useState(false);
   const [showWorkoutComplete, setShowWorkoutComplete] = useState(false);
+  const [editingSetIndex, setEditingSetIndex] = useState(null);
+  const [editSetData, setEditSetData] = useState({ reps: '', weight: '' });
 
   useEffect(() => {
     // Get exercise and configuration from navigation state
@@ -222,6 +227,19 @@ export default function StartWorkout() {
       setsData: workoutData.sets
     };
     
+    // Check for new Personal Records (PRs)
+    if (user?.id) {
+      const newPRs = PRService.checkAndUpdatePR(user.id, exercise.name, {
+        id: completedWorkout.id,
+        sets: workoutData.sets
+      });
+      
+      if (newPRs.length > 0) {
+        console.log('🏆 New PR detected!', newPRs);
+        // PR notification will be shown automatically via event listener
+      }
+    }
+    
     console.log('🎯 StartWorkout: Saving completed workout:', completedWorkout);
 
     try {
@@ -303,6 +321,7 @@ export default function StartWorkout() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <PRNotification />
       {/* Header */}
       <div className="flex items-center justify-between">
         <button
@@ -541,6 +560,44 @@ export default function StartWorkout() {
                 </div>
               </div>
             </div>
+            
+            {/* Quick Notes - How did the workout feel? */}
+            <div className="bg-slate-800/30 border border-slate-600 rounded-lg p-6 mb-6">
+              <div className="text-lg font-semibold text-white mb-3">How did this workout feel?</div>
+              <div className="text-sm text-slate-300 mb-4">Select how you felt during this workout:</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <button
+                  onClick={() => setWorkoutData(prev => ({ ...prev, notes: prev.notes ? `${prev.notes} • Easy` : 'Easy' }))}
+                  className="btn bg-green-600/20 border border-green-500 text-green-300 hover:bg-green-600/40 px-4 py-3 transition-all duration-200"
+                >
+                  😊 Easy
+                </button>
+                <button
+                  onClick={() => setWorkoutData(prev => ({ ...prev, notes: prev.notes ? `${prev.notes} • Hard` : 'Hard' }))}
+                  className="btn bg-red-600/20 border border-red-500 text-red-300 hover:bg-red-600/40 px-4 py-3 transition-all duration-200"
+                >
+                  😤 Hard
+                </button>
+                <button
+                  onClick={() => setWorkoutData(prev => ({ ...prev, notes: prev.notes ? `${prev.notes} • Perfect` : 'Perfect' }))}
+                  className="btn bg-blue-600/20 border border-blue-500 text-blue-300 hover:bg-blue-600/40 px-4 py-3 transition-all duration-200"
+                >
+                  🎯 Perfect
+                </button>
+                <button
+                  onClick={() => setWorkoutData(prev => ({ ...prev, notes: prev.notes ? `${prev.notes} • Struggled` : 'Struggled' }))}
+                  className="btn bg-orange-600/20 border border-orange-500 text-orange-300 hover:bg-orange-600/40 px-4 py-3 transition-all duration-200"
+                >
+                  😓 Struggled
+                </button>
+              </div>
+              {workoutData.notes && (
+                <div className="text-sm text-slate-400 bg-slate-700/50 rounded-lg p-3">
+                  <span className="font-medium">Your feedback:</span> {workoutData.notes}
+                </div>
+              )}
+            </div>
+            
             <div className="text-lg text-green-300 mb-6">💪 Outstanding effort! You've crushed your workout goals!</div>
             <div className="flex gap-3 justify-center">
               <button
@@ -588,10 +645,72 @@ export default function StartWorkout() {
         
         {/* Rest Timer */}
         {isResting && (
-          <div className="bg-orange-600/20 border border-orange-500 rounded-lg p-4 mb-6 text-center">
-            <div className="text-2xl font-bold text-orange-400 mb-2">
+          <div className={`border rounded-lg p-4 mb-6 text-center transition-all duration-300 ${
+            !isPaused && restTimer <= 10 && restTimer > 0 
+              ? 'bg-red-600/30 border-red-400 animate-pulse shadow-lg shadow-red-500/20' 
+              : 'bg-orange-600/20 border-orange-500'
+          }`}>
+            <div className={`text-2xl font-bold mb-2 transition-all duration-300 ${
+              !isPaused && restTimer <= 10 && restTimer > 0 
+                ? 'text-red-300 animate-bounce text-3xl' 
+                : 'text-orange-400'
+            }`}>
               🛌 Rest: {isPaused ? '⏸️ Paused' : formatTime(restTimer)}
             </div>
+            
+            {/* Form Reminders During Rest */}
+            {!isPaused && restTimer > 10 && (
+              <div className="mb-4 p-4 bg-blue-600/20 border border-blue-400/50 rounded-lg">
+                <div className="text-sm font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                  📋 Form Reminder for {exercise.name}
+                </div>
+                {(() => {
+                  const tips = getFormTips(exercise.name);
+                  const randomTip = tips.formTips[Math.floor(restTimer / 10) % tips.formTips.length];
+                  return (
+                    <div className="space-y-2">
+                      <div className="text-sm text-blue-200 flex items-start gap-2">
+                        <span className="text-blue-400 mt-0.5">•</span>
+                        <span>{randomTip}</span>
+                      </div>
+                      <div className="text-xs text-blue-300 bg-blue-600/20 rounded p-2 border border-blue-500/30">
+                        💨 <span className="font-medium">Remember:</span> {tips.breathingTip}
+                      </div>
+                      <div className="text-xs text-orange-300 bg-orange-600/20 rounded p-2 border border-orange-500/30">
+                        🧘 <span className="font-medium">Rest Focus:</span> {tips.restPeriodTip}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            
+            {/* 10-Second Warning Alert */}
+            {!isPaused && restTimer <= 10 && restTimer > 0 && (
+              <div className="mb-4 p-4 bg-red-600/50 border-2 border-red-400 rounded-lg animate-pulse">
+                <div className="text-xl font-bold text-red-200 mb-2 animate-bounce">
+                  ⚠️ {restTimer} SECONDS LEFT!
+                </div>
+                <div className="text-sm text-red-300 font-semibold">
+                  🔥 Get ready for your next set!
+                </div>
+                <div className="text-xs text-red-200 mt-1">
+                  Prepare yourself - rest time almost over!
+                </div>
+                {(() => {
+                  const tips = getFormTips(exercise.name);
+                  const urgentTip = tips.formTips[0]; // Show first/most important tip
+                  return (
+                    <div className="mt-3 p-2 bg-red-700/30 rounded border border-red-500/50">
+                      <div className="text-xs text-red-200 font-medium">
+                        🎯 Quick Form Check: {urgentTip}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            
             <div className="text-sm text-orange-300">
               {isPaused ? 'Rest timer paused' : `Take a break before your next set (${Math.floor(currentSet.rest / 60)}:${(currentSet.rest % 60).toString().padStart(2, '0')} total)`}
             </div>
@@ -599,34 +718,6 @@ export default function StartWorkout() {
               💡 Workout timer paused during rest
             </div>
             
-            {/* Finish Rest Button */}
-            {!isPaused && (
-              <div className="mt-4">
-                <button
-                  onClick={() => {
-                    setIsResting(false);
-                    setIsInRestPeriod(false);
-                    setRestTimer(0);
-                    // Clear inputs for next set - user must enter new values
-                    setCurrentSet(prev => ({ ...prev, reps: '', weight: '' }));
-                    // Reset set started state - user must start next set manually
-                    setCurrentSetStarted(false);
-                  }}
-                  className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 text-sm font-semibold"
-                >
-                  ✅ Finish Rest Early
-                </button>
-                <div className="text-xs text-slate-400 mt-2">
-                  Ready to continue? Skip the remaining rest time
-                </div>
-              </div>
-            )}
-            
-            {!isPaused && restTimer <= 10 && restTimer > 0 && (
-              <div className="text-xs text-orange-200 mt-1 animate-pulse">
-                ⚠️ Get ready for your next set!
-              </div>
-            )}
             {isPaused && (
               <div className="text-xs text-yellow-200 mt-1">
                 ⏸️ Resume to continue rest timer
@@ -806,15 +897,102 @@ export default function StartWorkout() {
             <h3 className="text-lg font-semibold text-white mb-4">Completed Sets</h3>
             <div className="space-y-2">
               {workoutData.sets.map((set, index) => (
-                <div key={index} className="flex items-center justify-between bg-slate-800/30 rounded-lg p-3">
-                  <div className="flex flex-col">
-                    <span className="text-white font-medium">Set {index + 1}</span>
-                    <span className="text-xs text-slate-400">⏱️ {formatTime(set.duration || 0)}</span>
-                  </div>
-                  <span className="text-slate-300">{set.reps} reps × {set.weight}kg</span>
-                  <span className="text-green-400">✓</span>
+                <div key={index} className={`rounded-lg p-3 transition-all duration-200 ${
+                  editingSetIndex === index 
+                    ? 'bg-blue-600/20 border-2 border-blue-400' 
+                    : 'bg-slate-800/30 hover:bg-slate-700/40 cursor-pointer'
+                }`}>
+                  {editingSetIndex === index ? (
+                    // Edit Mode
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-blue-300 font-medium">✏️ Editing Set {index + 1}</span>
+                        <span className="text-xs text-slate-400">⏱️ {formatTime(set.duration || 0)}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs text-slate-300 mb-1">Reps</label>
+                          <input
+                            type="number"
+                            value={editSetData.reps}
+                            onChange={(e) => setEditSetData(prev => ({ ...prev, reps: e.target.value }))}
+                            className="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white text-center"
+                            min="1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-slate-300 mb-1">Weight (kg)</label>
+                          <input
+                            type="number"
+                            step="0.5"
+                            value={editSetData.weight}
+                            onChange={(e) => setEditSetData(prev => ({ ...prev, weight: e.target.value }))}
+                            className="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white text-center"
+                            min="0"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => {
+                            setEditingSetIndex(null);
+                            setEditSetData({ reps: '', weight: '' });
+                          }}
+                          className="px-3 py-1 text-xs bg-slate-600 hover:bg-slate-700 text-white rounded"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (editSetData.reps && editSetData.weight) {
+                              const updatedSets = [...workoutData.sets];
+                              updatedSets[index] = {
+                                ...updatedSets[index],
+                                reps: parseInt(editSetData.reps),
+                                weight: parseFloat(editSetData.weight)
+                              };
+                              setWorkoutData(prev => ({ ...prev, sets: updatedSets }));
+                              setEditingSetIndex(null);
+                              setEditSetData({ reps: '', weight: '' });
+                            }
+                          }}
+                          disabled={!editSetData.reps || !editSetData.weight}
+                          className="px-3 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded disabled:opacity-50"
+                        >
+                          ✅ Save
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // View Mode
+                    <div 
+                      onClick={() => {
+                        setEditingSetIndex(index);
+                        setEditSetData({ 
+                          reps: set.reps.toString(), 
+                          weight: set.weight.toString() 
+                        });
+                      }}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-white font-medium">Set {index + 1}</span>
+                        <span className="text-xs text-slate-400">⏱️ {formatTime(set.duration || 0)}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-slate-300">{set.reps} reps × {set.weight}kg</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-green-400">✓</span>
+                          <span className="text-xs text-slate-500 hover:text-blue-400">✏️</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
+            </div>
+            <div className="text-xs text-slate-500 mt-2 text-center">
+              💡 Click any completed set to edit it
             </div>
           </div>
         )}

@@ -38,6 +38,7 @@ import ChromeErrorBoundary from './components/ChromeErrorBoundary';
 import ThemeErrorBoundary from './components/ThemeErrorBoundary';
 
 import WorkoutCompletionHandler from './components/WorkoutCompletionHandler';
+import PRNotification from './components/PRNotification';
 
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -386,6 +387,7 @@ export default function App() {
 
                     <WorkoutCompletionProvider>
                   <div className="min-h-screen">
+                    <PRNotification />
                     <Navbar />
                     <WorkoutCompletionHandler />
                     <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

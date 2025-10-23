@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
+import { getFormTips } from '../data/exerciseFormTips';
 import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import WorkoutSuccessNotification from '../components/WorkoutSuccessNotification';
@@ -67,6 +68,7 @@ export default function LibrarySimple() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showQuickPlan, setShowQuickPlan] = useState(null);
   const [showAddToExisting, setShowAddToExisting] = useState(null);
+  const [expandedFormTips, setExpandedFormTips] = useState({});
   
   // Optimized image preloading
   useEffect(() => {
@@ -592,6 +594,71 @@ export default function LibrarySimple() {
                 </div>
               </div>
               
+              {/* Form Tips Section */}
+              <div className="mb-4">
+                <button
+                  onClick={() => setExpandedFormTips(prev => ({
+                    ...prev,
+                    [exercise.id]: !prev[exercise.id]
+                  }))}
+                  className="w-full flex items-center justify-between p-2 bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-colors duration-200"
+                >
+                  <span className="text-sm font-medium text-blue-300 flex items-center gap-2">
+                    📋 Form Tips
+                  </span>
+                  <span className={`text-blue-300 transition-transform duration-200 ${
+                    expandedFormTips[exercise.id] ? 'rotate-180' : ''
+                  }`}>
+                    ▼
+                  </span>
+                </button>
+                
+                {expandedFormTips[exercise.id] && (
+                  <div className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                    {(() => {
+                      const tips = getFormTips(exercise.name);
+                      return (
+                        <>
+                          <div>
+                            <h4 className="text-xs font-semibold text-green-300 mb-2 flex items-center gap-1">
+                              ✅ Proper Form
+                            </h4>
+                            <ul className="space-y-1">
+                              {tips.formTips.slice(0, 3).map((tip, index) => (
+                                <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                                  <span className="text-green-400 mt-0.5">•</span>
+                                  <span>{tip}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-xs font-semibold text-red-300 mb-2 flex items-center gap-1">
+                              ⚠️ Avoid These
+                            </h4>
+                            <ul className="space-y-1">
+                              {tips.commonMistakes.slice(0, 2).map((mistake, index) => (
+                                <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                                  <span className="text-red-400 mt-0.5">•</span>
+                                  <span>{mistake}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div className="pt-2 border-t border-slate-600/50">
+                            <p className="text-xs text-blue-300 font-medium flex items-center gap-1">
+                              💨 {tips.breathingTip}
+                            </p>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+              
               <div className="space-y-2">
                 <button
                   onClick={() => setSelectedExercise(exercise)}
@@ -695,7 +762,7 @@ export default function LibrarySimple() {
       {/* Exercise Detail Modal */}
       {selectedExercise && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-md w-full" onClick={e => e.stopPropagation()}>
+          <div className="card max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
               <button
@@ -715,6 +782,60 @@ export default function LibrarySimple() {
                   <div className="font-medium text-white">{selectedExercise.category}</div>
                   <div className="text-sm text-slate-400">{selectedExercise.sets}</div>
                 </div>
+              </div>
+              
+              {/* Detailed Form Tips in Modal */}
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-600/50">
+                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                  📋 Complete Form Guide
+                </h4>
+                {(() => {
+                  const tips = getFormTips(selectedExercise.name);
+                  return (
+                    <div className="space-y-4">
+                      <div>
+                        <h5 className="text-xs font-semibold text-green-300 mb-2 flex items-center gap-1">
+                          ✅ Proper Form Checklist
+                        </h5>
+                        <ul className="space-y-1">
+                          {tips.formTips.map((tip, index) => (
+                            <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                              <span className="text-green-400 mt-0.5">•</span>
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 className="text-xs font-semibold text-red-300 mb-2 flex items-center gap-1">
+                          ⚠️ Common Mistakes to Avoid
+                        </h5>
+                        <ul className="space-y-1">
+                          {tips.commonMistakes.map((mistake, index) => (
+                            <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                              <span className="text-red-400 mt-0.5">•</span>
+                              <span>{mistake}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 gap-3 pt-3 border-t border-slate-600/50">
+                        <div className="bg-blue-600/10 border border-blue-500/20 rounded-lg p-3">
+                          <p className="text-xs text-blue-300 font-medium flex items-center gap-1">
+                            💨 <span className="font-semibold">Breathing:</span> {tips.breathingTip}
+                          </p>
+                        </div>
+                        <div className="bg-orange-600/10 border border-orange-500/20 rounded-lg p-3">
+                          <p className="text-xs text-orange-300 font-medium flex items-center gap-1">
+                            🧘 <span className="font-semibold">Rest Focus:</span> {tips.restPeriodTip}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
               
               <div className="grid grid-cols-2 gap-4">
