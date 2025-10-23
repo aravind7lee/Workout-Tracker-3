@@ -9,14 +9,42 @@ class NutritionAPI {
       timeout: 10000
     });
 
-    // Add auth token to requests
+    // Add auth token to requests with validation
     this.api.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (token && token !== 'null' && token !== 'undefined') {
+        try {
+          // Basic token format validation
+          const parts = token.split('.');
+          if (parts.length === 3) {
+            config.headers.Authorization = `Bearer ${token}`;
+          } else {
+            console.warn('Invalid token format detected');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        } catch (e) {
+          console.warn('Token validation failed');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
       return config;
     });
+    
+    // Add response interceptor for auth errors
+    this.api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          console.log('🔓 Authentication failed, clearing tokens');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.dispatchEvent(new CustomEvent('userLoggedOut'));
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   // Real-time nutrition lookup using Nutritionix API
@@ -118,6 +146,11 @@ class NutritionAPI {
       };
     } catch (error) {
       console.error('Failed to add meal:', error);
+      
+      if (error.response?.status === 401) {
+        throw new Error('Please log in again to add meals');
+      }
+      
       throw new Error(error.response?.data?.message || 'Failed to add meal');
     }
   }

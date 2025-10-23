@@ -179,6 +179,17 @@ export default function StartWorkout() {
     setCurrentSetStarted(false);
   };
 
+  const finishRest = () => {
+    // Immediately end the rest period
+    setIsResting(false);
+    setIsInRestPeriod(false);
+    setRestTimer(0);
+    // Clear inputs for next set - user must enter new values
+    setCurrentSet(prev => ({ ...prev, reps: '', weight: '' }));
+    // Reset set started state - user must start next set manually
+    setCurrentSetStarted(false);
+  };
+
   const finishWorkout = async () => {
     if (workoutData.sets.length === 0) {
       alert('Please add at least one set before finishing the workout.');
@@ -595,6 +606,21 @@ export default function StartWorkout() {
             {isPaused && (
               <div className="text-xs text-yellow-200 mt-1">
                 ⏸️ Resume to continue rest timer
+              </div>
+            )}
+            
+            {/* Finish Rest Button */}
+            {!isPaused && (
+              <div className="mt-4">
+                <button
+                  onClick={finishRest}
+                  className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 font-semibold transition-all duration-200 transform hover:scale-105"
+                >
+                  🚀 Finish Rest Now
+                </button>
+                <div className="text-xs text-green-300 mt-2">
+                  💪 Ready to continue? Skip the remaining rest time!
+                </div>
               </div>
             )}
           </div>

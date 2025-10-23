@@ -56,19 +56,33 @@ const api = axios.create({
 
 console.log('🔗 API Base URL:', getApiBaseUrl());
 
-// Request interceptor
+// Enhanced request interceptor with token validation
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (token && token !== 'null' && token !== 'undefined') {
+      try {
+        // Basic token format validation
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          config.headers.Authorization = `Bearer ${token}`;
+        } else {
+          console.warn('Invalid token format, removing from storage');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      } catch (e) {
+        console.warn('Token validation failed, removing from storage');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Simplified response interceptor
+// Enhanced response interceptor with better token handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -79,10 +93,21 @@ api.interceptors.response.use(
     
     // Handle authentication errors
     if (error.response?.status === 401) {
+      const errorData = error.response?.data;
+      
+      // Clear invalid/expired tokens
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      
+      // Dispatch logout event to clean up auth context
+      window.dispatchEvent(new CustomEvent('userLoggedOut'));
+      
+      // Only redirect if not already on auth pages
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-        window.location.href = '/login';
+        console.log('🔓 Token invalid/expired, redirecting to login');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 100);
       }
     }
     

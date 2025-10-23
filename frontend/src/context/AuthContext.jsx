@@ -54,9 +54,25 @@ export const AuthProvider = ({ children }) => {
         const savedToken = localStorage.getItem('token');
         const savedUser = localStorage.getItem('user');
 
-        if (savedToken && savedUser) {
+        if (savedToken && savedUser && savedToken !== 'null' && savedUser !== 'null') {
           try {
+            // Validate token format
+            const tokenParts = savedToken.split('.');
+            if (tokenParts.length !== 3) {
+              console.warn('Invalid token format, clearing auth data');
+              logout();
+              return;
+            }
+            
             const parsedUser = JSON.parse(savedUser);
+            
+            // Validate user data
+            if (!parsedUser || (!parsedUser.id && !parsedUser._id)) {
+              console.warn('Invalid user data, clearing auth data');
+              logout();
+              return;
+            }
+            
             setToken(savedToken);
             setUser(parsedUser);
             setAuthToken(savedToken);
@@ -90,6 +106,16 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
+    // Listen for logout events from API interceptors
+    const handleLogoutEvent = () => {
+      console.log('🔓 Received logout event, clearing auth state');
+      setUser(null);
+      setToken(null);
+      setAuthToken(null);
+    };
+    
+    window.addEventListener('userLoggedOut', handleLogoutEvent);
+
     // Use setTimeout to prevent blocking and add error boundary
     try {
       setTimeout(initializeAuth, 0);
@@ -97,6 +123,10 @@ export const AuthProvider = ({ children }) => {
       console.warn('Failed to initialize auth timeout');
       setLoading(false);
     }
+    
+    return () => {
+      window.removeEventListener('userLoggedOut', handleLogoutEvent);
+    };
   }, [logout]);
 
   const login = (userData, authToken) => {
@@ -172,7 +202,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = () => {
-    return !!(token && user && (user.id || user._id));
+    if (!token || !user) return false;
+    
+    // Check token format
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return false;
+    } catch (e) {
+      return false;
+    }
+    
+    // Check user has valid ID
+    return !!(user.id || user._id);
   };
 
   const value = {
