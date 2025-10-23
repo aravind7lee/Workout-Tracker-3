@@ -22,6 +22,7 @@ import {
 import workoutSplitsService from '../services/workoutSplitsService';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import splitImg from '../assets/split.jpg';
 
 const WorkoutSplits = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -31,6 +32,8 @@ const WorkoutSplits = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState([]);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [heroImageError, setHeroImageError] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -44,12 +47,19 @@ const WorkoutSplits = () => {
     { id: 'advanced', name: 'Advanced', icon: Target, color: '#ffd700' }
   ];
 
-  // Load splits data on component mount
+  // Load splits data and preload hero image on component mount
   useEffect(() => {
     loadSplits();
     if (isAuthenticated()) {
       loadFavorites();
     }
+    
+    // Preload hero image
+    const img = new Image();
+    img.onload = () => setHeroImageLoaded(true);
+    img.onerror = () => setHeroImageError(true);
+    img.src = splitImg;
+    img.loading = 'eager';
   }, []);
 
   const loadSplits = async () => {
@@ -445,38 +455,90 @@ const WorkoutSplits = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-slate-700/50">
-        <div className="absolute inset-0 bg-[url('/api/placeholder/1920/400')] bg-cover bg-center opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 py-16 sm:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-              Workout <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Splits</span>
-            </h1>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
-              Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
-              we have the ideal training program to maximize your results.
-            </p>
-            <div className="flex items-center justify-center space-x-6 text-sm text-slate-400">
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-blue-400" />
-                <span>13 Different Splits</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Target className="w-5 h-5 text-green-400" />
-                <span>All Fitness Goals</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="w-5 h-5 text-purple-400" />
-                <span>Flexible Schedules</span>
-              </div>
+      <div className="relative overflow-hidden border-b border-slate-700/50">
+        {/* Hero Image Container */}
+        <div className="relative w-full h-screen min-h-[100vh] max-h-screen">
+          {/* Skeleton Loader */}
+          {!heroImageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
             </div>
-          </motion.div>
+          )}
+
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            {!heroImageError && (
+              <motion.img
+                src={splitImg}
+                alt="Professional workout splits training - Choose your perfect fitness routine"
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ 
+                  opacity: heroImageLoaded ? 1 : 0,
+                  scale: heroImageLoaded ? 1 : 1.05
+                }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              />
+            )}
+
+            {/* Fallback */}
+            {heroImageError && (
+              <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
+            )}
+
+            {/* Dark Overlay for Text Contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          </div>
+
+          {/* Content Overlay */}
+          <div className="relative z-10 h-full flex items-center justify-center">
+            <div className="text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 drop-shadow-2xl" style={{ color: 'rgb(245, 158, 11)' }}>
+                  Workout Splits
+                </h1>
+                <motion.p
+                  className="text-sm sm:text-base lg:text-lg text-slate-200 max-w-3xl mx-auto mb-6 drop-shadow-lg font-medium"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
+                  we have the ideal training program to maximize your results.
+                </motion.p>
+                <motion.div
+                  className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <Users className="w-5 h-5 text-blue-400" />
+                    <span className="font-medium">13 Different Splits</span>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <Target className="w-5 h-5 text-green-400" />
+                    <span className="font-medium">All Fitness Goals</span>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <Clock className="w-5 h-5 text-purple-400" />
+                    <span className="font-medium">Flexible Schedules</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
         </div>
+        
+        {/* Additional spacing for mobile */}
+        <div className="h-4 sm:h-8"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -507,15 +569,25 @@ const WorkoutSplits = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search splits..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 w-full lg:w-64"
-              />
+            <div className="relative w-full lg:w-auto">
+              <div className="relative flex items-center">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 z-10" />
+                <input
+                  type="text"
+                  placeholder="Search splits..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 w-full lg:w-72 shadow-lg backdrop-blur-sm"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors duration-200"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
