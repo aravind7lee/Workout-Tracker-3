@@ -493,52 +493,67 @@ const WorkoutSplits = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           </div>
 
-          {/* Content Overlay */}
-          <div className="relative z-10 h-full flex items-center justify-center">
-            <div className="text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-              <motion.div
+          {/* Title Overlay */}
+          <div className="relative z-10 h-full flex items-center justify-center" style={{ paddingTop: '10vh' }}>
+            <div className="text-center px-4 sm:px-6 lg:px-8">
+              <motion.h1
+                className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold drop-shadow-2xl"
+                style={{ color: 'rgb(245, 158, 11)' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
               >
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 drop-shadow-2xl" style={{ color: 'rgb(245, 158, 11)' }}>
-                  Workout Splits
-                </h1>
-                <motion.p
-                  className="text-sm sm:text-base lg:text-lg text-slate-200 max-w-3xl mx-auto mb-6 drop-shadow-lg font-medium"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                >
-                  Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
-                  we have the ideal training program to maximize your results.
-                </motion.p>
-                <motion.div
-                  className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
-                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <Users className="w-5 h-5 text-blue-400" />
-                    <span className="font-medium">13 Different Splits</span>
-                  </div>
-                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <Target className="w-5 h-5 text-green-400" />
-                    <span className="font-medium">All Fitness Goals</span>
-                  </div>
-                  <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <Clock className="w-5 h-5 text-purple-400" />
-                    <span className="font-medium">Flexible Schedules</span>
-                  </div>
-                </motion.div>
-              </motion.div>
+                Workout Splits
+              </motion.h1>
             </div>
           </div>
+
+
         </div>
         
         {/* Additional spacing for mobile */}
         <div className="h-4 sm:h-8"></div>
+      </div>
+
+      {/* Header Content Section */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 border-b border-slate-700/50">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+           
+            <motion.p
+              className="text-sm sm:text-base lg:text-lg text-slate-200 max-w-3xl mx-auto mb-6 font-medium"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
+              we have the ideal training program to maximize your results.
+            </motion.p>
+            <motion.div
+              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
+                <Users className="w-4 h-4 text-blue-400" />
+                <span className="font-medium">13 Different Splits</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
+                <Target className="w-4 h-4 text-green-400" />
+                <span className="font-medium">All Fitness Goals</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
+                <Clock className="w-4 h-4 text-purple-400" />
+                <span className="font-medium">Flexible Schedules</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
