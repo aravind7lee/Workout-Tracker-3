@@ -111,7 +111,7 @@ export default function Hero() {
           >
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
               {/* Main Title */}
-t              <motion.h1
+             <motion.h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
                 variants={itemVariants}
               >
