@@ -34,7 +34,7 @@ const WorkoutSplits = () => {
   const [favorites, setFavorites] = useState([]);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [heroImageError, setHeroImageError] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, token } = useAuth();
   const navigate = useNavigate();
 
   // Workout Split Categories
@@ -50,9 +50,7 @@ const WorkoutSplits = () => {
   // Load splits data and preload hero image on component mount
   useEffect(() => {
     loadSplits();
-    if (isAuthenticated()) {
-      loadFavorites();
-    }
+    loadFavorites(); // Always call loadFavorites, it handles auth check internally
     
     // Preload hero image
     const img = new Image();
@@ -61,6 +59,11 @@ const WorkoutSplits = () => {
     img.src = splitImg;
     img.loading = 'eager';
   }, []);
+
+  // Reload favorites when authentication state changes
+  useEffect(() => {
+    loadFavorites();
+  }, [isAuthenticated]);
 
   const loadSplits = async () => {
     try {
@@ -81,8 +84,42 @@ const WorkoutSplits = () => {
 
   const loadFavorites = async () => {
     try {
-      // Use localStorage for favorites for now
-      const savedFavorites = localStorage.getItem('workout_splits_favorites');
+      if (!isAuthenticated()) {
+        setFavorites([]);
+        return;
+      }
+
+      const userId = user?.id || user?._id;
+      const authToken = token || localStorage.getItem('token');
+      
+      if (!userId || !authToken) {
+        setFavorites([]);
+        return;
+      }
+
+      // Try to load from backend first
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/favorites/splits`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setFavorites(data.favorites || []);
+          // Also save to localStorage as backup
+          localStorage.setItem(`workout_splits_favorites_${userId}`, JSON.stringify(data.favorites || []));
+          return;
+        }
+      } catch (fetchError) {
+        console.log('Backend not available, using localStorage');
+      }
+      
+      // Fallback to localStorage
+      const savedFavorites = localStorage.getItem(`workout_splits_favorites_${userId}`);
       setFavorites(savedFavorites ? JSON.parse(savedFavorites) : []);
     } catch (err) {
       console.error('Error loading favorites:', err);
@@ -96,20 +133,50 @@ const WorkoutSplits = () => {
       return;
     }
 
+    const userId = user?.id || user?._id;
+    const authToken = token || localStorage.getItem('token');
+    
+    if (!userId || !authToken) {
+      alert('Please login again');
+      return;
+    }
+
     try {
       const isFavorite = favorites.includes(splitId);
-      let newFavorites;
+      const newFavorites = isFavorite 
+        ? favorites.filter(id => id !== splitId)
+        : [...favorites, splitId];
       
-      if (isFavorite) {
-        newFavorites = favorites.filter(id => id !== splitId);
-      } else {
-        newFavorites = [...favorites, splitId];
-      }
-      
+      // Update UI immediately
       setFavorites(newFavorites);
-      localStorage.setItem('workout_splits_favorites', JSON.stringify(newFavorites));
+      
+      // Save to localStorage immediately
+      localStorage.setItem(`workout_splits_favorites_${userId}`, JSON.stringify(newFavorites));
+      
+      // Try to save to backend
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/favorites/splits`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            splitId, 
+            action: isFavorite ? 'remove' : 'add' 
+          })
+        });
+
+        if (!response.ok) {
+          console.log('Backend save failed, using localStorage only');
+        }
+      } catch (fetchError) {
+        console.log('Backend not available, saved to localStorage only');
+      }
     } catch (err) {
       console.error('Error toggling favorite:', err);
+      // Revert UI change on error
+      setFavorites(favorites);
     }
   };
 

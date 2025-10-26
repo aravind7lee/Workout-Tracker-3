@@ -282,6 +282,78 @@ router.get('/achievements', auth, async (req, res) => {
   }
 });
 
+// Get user's favorite workout splits
+router.get('/favorites/splits', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('favoriteWorkoutSplits');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ 
+      success: true,
+      favorites: user.favoriteWorkoutSplits || [] 
+    });
+  } catch (error) {
+    console.error('Error loading favorite splits:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to load favorites',
+      favorites: [] 
+    });
+  }
+});
+
+// Add/Remove favorite workout split
+router.post('/favorites/splits', auth, async (req, res) => {
+  try {
+    const { splitId, action } = req.body;
+    
+    if (!splitId || !action || !['add', 'remove'].includes(action)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid request. splitId and action (add/remove) required' 
+      });
+    }
+    
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
+    }
+    
+    let favorites = user.favoriteWorkoutSplits || [];
+    
+    if (action === 'add') {
+      if (!favorites.includes(splitId)) {
+        favorites.push(splitId);
+      }
+    } else if (action === 'remove') {
+      favorites = favorites.filter(id => id !== splitId);
+    }
+    
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { favoriteWorkoutSplits: favorites },
+      { new: true }
+    );
+    
+    res.json({ 
+      success: true,
+      favorites,
+      message: `Split ${action === 'add' ? 'added to' : 'removed from'} favorites`
+    });
+  } catch (error) {
+    console.error('Error updating favorite splits:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to update favorites' 
+    });
+  }
+});
+
 // Get user activity with enhanced details
 router.get('/activity', auth, async (req, res) => {
   try {

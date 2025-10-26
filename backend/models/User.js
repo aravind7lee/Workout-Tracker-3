@@ -278,6 +278,11 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: true
     }
+  },
+  // Favorite workout splits for persistence
+  favoriteWorkoutSplits: {
+    type: [Number],
+    default: []
   }
 }, {
   timestamps: true
