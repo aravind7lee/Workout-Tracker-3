@@ -13,7 +13,15 @@ import ArnoldBg from '../assets/Arnold Schwarzenegge1.jpg';
 import ChrisBg from '../assets/ChrisBumstead1.jpg';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  // Initialize user from localStorage immediately to prevent flash
+  const [user, setUser] = useState(() => {
+    try {
+      const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+      return localUser.name ? localUser : null;
+    } catch {
+      return null;
+    }
+  });
   const [stats, setStats] = useState(null);
   const [activity, setActivity] = useState([]);
 
@@ -23,7 +31,14 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [lastSync, setLastSync] = useState(null);
-  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [formData, setFormData] = useState(() => {
+    try {
+      const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+      return { name: localUser.name || '', email: localUser.email || '' };
+    } catch {
+      return { name: '', email: '' };
+    }
+  });
   const navigate = useNavigate();
 
   // Force browser refresh - ENHANCED PROFILE LOADED
@@ -265,7 +280,43 @@ const Profile = () => {
     );
   }
 
-  if (!user) {
+  // Show loading state while checking authentication and fetching data
+  if (loading) {
+    return (
+      <div className="relative min-h-screen overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 z-10"></div>
+          <motion.div 
+            className="absolute inset-0 opacity-20"
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+          >
+            <img 
+              src={GymBg1} 
+              alt="Gym Background" 
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
+        <div className="relative z-30 flex items-center justify-center min-h-screen">
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-400 mx-auto mb-6"></div>
+            <h2 className="text-2xl font-bold text-white mb-2">Loading Profile...</h2>
+            <p className="text-slate-400">🏋️ Syncing your gym data</p>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // Only show "Profile Not Found" if we're not loading and have no user after auth check
+  if (!loading && !user) {
     return (
       <motion.div 
         className="text-center py-12"
