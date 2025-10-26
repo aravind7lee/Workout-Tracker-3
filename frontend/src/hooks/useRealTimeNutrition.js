@@ -21,13 +21,24 @@ export const useRealTimeNutrition = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load initial data
+  // Load initial data only if authenticated
   useEffect(() => {
-    loadNutritionData();
-    loadTargets();
+    const token = localStorage.getItem('token');
+    if (token && token !== 'null' && token !== 'undefined') {
+      loadNutritionData();
+      loadTargets();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const loadNutritionData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -46,13 +57,20 @@ export const useRealTimeNutrition = () => {
       }
     } catch (err) {
       console.error('Failed to load nutrition data:', err);
-      setError('Failed to load nutrition data');
+      if (err.response?.status !== 401) {
+        setError('Failed to load nutrition data');
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const loadTargets = async () => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      return;
+    }
+
     try {
       const result = await nutritionApi.getNutritionTargets();
       if (result.success) {
@@ -72,6 +90,11 @@ export const useRealTimeNutrition = () => {
 
   // Real-time food lookup
   const lookupFood = useCallback(async (query) => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      throw new Error('Please log in to lookup food nutrition');
+    }
+
     try {
       setError(null);
       console.log('🔍 Looking up food:', query);
@@ -86,6 +109,9 @@ export const useRealTimeNutrition = () => {
       }
     } catch (err) {
       console.error('❌ Food lookup error:', err);
+      if (err.response?.status === 401) {
+        throw new Error('Please log in again to lookup food');
+      }
       setError(`Failed to lookup "${query}". Using estimated values.`);
       
       // Return estimated nutrition with all required properties
@@ -108,6 +134,11 @@ export const useRealTimeNutrition = () => {
 
   // Add meal with real-time updates
   const addMeal = useCallback(async (mealData) => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      throw new Error('Please log in to add meals');
+    }
+
     try {
       setError(null);
       
@@ -134,12 +165,11 @@ export const useRealTimeNutrition = () => {
       const result = await nutritionApi.addMeal(mealData);
       
       if (result.success) {
-        // Replace temp meal with real meal
-        setMeals(prev => prev.map(meal => 
-          meal.id === tempMeal.id 
-            ? { ...result.data, synced: true }
-            : meal
-        ));
+        // Replace temp meal with real meal and remove any duplicates
+        setMeals(prev => {
+          const filtered = prev.filter(meal => meal.id !== tempMeal.id);
+          return [{ ...result.data, synced: true }, ...filtered];
+        });
         
         console.log('✅ Meal added successfully:', result.data);
       }
@@ -149,7 +179,7 @@ export const useRealTimeNutrition = () => {
       console.error('❌ Failed to add meal:', err);
       
       // Revert optimistic update
-      setMeals(prev => prev.filter(meal => meal.id !== `temp-${Date.now()}`));
+      setMeals(prev => prev.filter(meal => meal.id !== tempMeal.id));
       setTotals(prev => ({
         calories: prev.calories - (mealData.calories || 0),
         protein: Math.round((prev.protein - (mealData.protein || 0)) * 10) / 10,
@@ -165,6 +195,11 @@ export const useRealTimeNutrition = () => {
 
   // Delete meal with real-time updates
   const deleteMeal = useCallback(async (mealId) => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      throw new Error('Please log in to delete meals');
+    }
+
     try {
       setError(null);
       
@@ -214,7 +249,37 @@ export const useRealTimeNutrition = () => {
 
   // Refresh data
   const refresh = useCallback(() => {
-    loadNutritionData();
+    const token = localStorage.getItem('token');
+    if (token && token !== 'null' && token !== 'undefined') {
+      loadNutritionData();
+    }
+  }, []);
+
+  // Listen for auth changes
+  useEffect(() => {
+    const handleAuthChange = () => {
+      const token = localStorage.getItem('token');
+      if (!token || token === 'null' || token === 'undefined') {
+        // Clear data when logged out
+        setMeals([]);
+        setTotals({ calories: 0, protein: 0, carbs: 0, fat: 0, mealsCount: 0 });
+        setTargets({ baselineCalories: 2000, calories: 2000, goalType: 'maintain', protein: 150, carbs: 200, fat: 65 });
+        setError(null);
+        setIsLoading(false);
+      } else {
+        // Reload data when logged in
+        loadNutritionData();
+        loadTargets();
+      }
+    };
+
+    window.addEventListener('userLoggedOut', handleAuthChange);
+    window.addEventListener('storage', handleAuthChange);
+    
+    return () => {
+      window.removeEventListener('userLoggedOut', handleAuthChange);
+      window.removeEventListener('storage', handleAuthChange);
+    };
   }, []);
 
   return {

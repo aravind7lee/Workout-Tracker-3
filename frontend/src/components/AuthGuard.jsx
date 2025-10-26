@@ -82,7 +82,10 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
           
           <div className="flex gap-4 justify-center">
             <motion.button
-              onClick={() => navigate('/login')}
+              onClick={() => {
+                console.log('Navigating to login...');
+                navigate('/login', { replace: true });
+              }}
               className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -91,7 +94,10 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
             </motion.button>
             
             <motion.button
-              onClick={() => navigate('/register')}
+              onClick={() => {
+                console.log('Navigating to register...');
+                navigate('/register', { replace: true });
+              }}
               className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -103,6 +109,32 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
           <p className="text-xs text-slate-500 mt-4">
             Your data will be securely stored and synced across all your devices
           </p>
+          
+          <div className="mt-6 pt-4 border-t border-slate-700">
+            <p className="text-sm text-slate-400 mb-3">Or continue browsing:</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <button
+                onClick={() => navigate('/', { replace: true })}
+                className="text-blue-400 hover:text-blue-300 text-sm underline"
+              >
+                Home
+              </button>
+              <span className="text-slate-600">•</span>
+              <button
+                onClick={() => navigate('/library', { replace: true })}
+                className="text-blue-400 hover:text-blue-300 text-sm underline"
+              >
+                Exercise Library
+              </button>
+              <span className="text-slate-600">•</span>
+              <button
+                onClick={() => navigate('/dashboard', { replace: true })}
+                className="text-blue-400 hover:text-blue-300 text-sm underline"
+              >
+                Dashboard
+              </button>
+            </div>
+          </div>
         </div>
       </motion.div>
     );
