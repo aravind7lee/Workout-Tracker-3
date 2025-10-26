@@ -32,6 +32,7 @@ const Profile = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [lastSync, setLastSync] = useState(null);
   const [showPhotoViewer, setShowPhotoViewer] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [formData, setFormData] = useState(() => {
     try {
       const localUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -462,11 +463,14 @@ const Profile = () => {
                         return;
                       }
                       
-                      // Convert to base64 and update immediately
+                      setUploadingPhoto(true);
+                      
+                      // Convert to base64 and update
                       const reader = new FileReader();
-                      reader.onload = (event) => {
+                      reader.onload = async (event) => {
                         const imageUrl = event.target.result;
-                        handleImageUpdate(imageUrl);
+                        await handleImageUpdate(imageUrl);
+                        setTimeout(() => setUploadingPhoto(false), 800);
                       };
                       reader.readAsDataURL(file);
                     }}
@@ -689,6 +693,16 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* Photo Upload Loading Overlay */}
+      {uploadingPhoto && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+          <div className="bg-slate-800 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-2xl border border-slate-600">
+            <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="text-white font-bold text-sm">Updating Photo...</div>
+          </div>
+        </div>
+      )}
+
       {/* Fullscreen Photo Viewer Modal */}
       {showPhotoViewer && user?.profileImage && (
         <div
@@ -719,10 +733,12 @@ const Profile = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setShowPhotoViewer(false);
-                setTimeout(() => {
-                  fileInputRef.current?.click();
-                }, 100);
+                if (!uploadingPhoto) {
+                  setShowPhotoViewer(false);
+                  setTimeout(() => {
+                    fileInputRef.current?.click();
+                  }, 100);
+                }
               }}
               className="bg-black/70 text-white rounded-full p-4 min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto select-none"
               style={{ touchAction: 'manipulation' }}
@@ -755,10 +771,12 @@ const Profile = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setShowPhotoViewer(false);
-                    setTimeout(() => {
-                      fileInputRef.current?.click();
-                    }, 100);
+                    if (!uploadingPhoto) {
+                      setShowPhotoViewer(false);
+                      setTimeout(() => {
+                        fileInputRef.current?.click();
+                      }, 100);
+                    }
                   }}
                   className="bg-blue-600 text-white px-4 py-3 rounded-full text-sm font-bold flex items-center gap-2 min-h-[44px] select-none"
                   style={{ touchAction: 'manipulation' }}
