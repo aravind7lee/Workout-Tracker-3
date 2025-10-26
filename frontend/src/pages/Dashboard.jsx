@@ -157,10 +157,16 @@ const Dashboard = () => {
       refreshStats();
     };
     
+    const handleMealDeleted = () => {
+      console.log('🗑️ Meal deleted - refreshing stats');
+      refreshStats();
+    };
+    
     window.addEventListener('workoutCompleted', handleWorkoutCompleted);
 
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('mealDeleted', handleMealDeleted);
     
     // NO AUTOMATIC REFRESH - MANUAL ONLY
     // const refreshInterval = setInterval(() => {
@@ -175,6 +181,7 @@ const Dashboard = () => {
 
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('mealDeleted', handleMealDeleted);
       // clearInterval(refreshInterval); // Disabled
     };
   }, [isAuthenticated, refreshStats]);

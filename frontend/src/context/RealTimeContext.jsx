@@ -315,6 +315,11 @@ export const RealTimeProvider = ({ children }) => {
       setTimeout(fetchRealTimeStats, 1000);
     };
 
+    const handleMealDeleted = () => {
+      console.log('🗑️ Meal deleted - refreshing stats');
+      setTimeout(fetchRealTimeStats, 1000);
+    };
+
     const handlePlanCreated = () => {
       console.log('📋 Plan created - refreshing stats');
       // Update plans count immediately
@@ -383,6 +388,7 @@ export const RealTimeProvider = ({ children }) => {
     window.addEventListener('realTimeStatsUpdate', handleWorkoutStatsUpdate);
     window.addEventListener('realTimeStatsSync', handleRealTimeSync);
     window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('mealDeleted', handleMealDeleted);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('userLoggedOut', handleUserLogout);
     
@@ -406,6 +412,7 @@ export const RealTimeProvider = ({ children }) => {
       window.removeEventListener('realTimeStatsUpdate', handleWorkoutStatsUpdate);
       window.removeEventListener('realTimeStatsSync', handleRealTimeSync);
       window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('mealDeleted', handleMealDeleted);
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('planUpdated', handlePlanUpdate);
       window.removeEventListener('planDeleted', handlePlanUpdate);

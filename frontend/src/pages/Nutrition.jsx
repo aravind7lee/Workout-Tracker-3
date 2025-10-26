@@ -204,6 +204,11 @@ export default function Nutrition() {
       // Trigger profile refresh after meal deletion
       realTimeEvents.triggerProfileRefresh();
       
+      // Dispatch meal deleted event for Dashboard
+      window.dispatchEvent(new CustomEvent('mealDeleted', {
+        detail: { mealId, timestamp: new Date().toISOString() }
+      }));
+      
     } catch (error) {
       console.error('Delete meal error:', error);
       throw error; // Re-throw to let the component handle notifications
