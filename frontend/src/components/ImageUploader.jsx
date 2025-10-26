@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const ImageUploader = ({ currentImage, onImageUpdate }) => {
+const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef(null);
@@ -147,35 +147,30 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
 
   return (
     <div className="flex flex-col items-center space-y-3">
-      <div 
-        onClick={() => fileInputRef.current?.click()}
-        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-slate-600 hover:border-blue-500 transition-all duration-300"
-      >
+      <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-slate-600 hover:border-blue-500 transition-all duration-300">
+        {/* Base image - always visible */}
         {currentImage ? (
           <img 
             src={currentImage} 
             alt="Profile" 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={onImageClick}
           />
         ) : (
-          <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
+          <div 
+            className="w-full h-full bg-slate-700 flex items-center justify-center cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <div className="text-center">
               <div className="text-3xl text-slate-400 mb-1">👤</div>
               <div className="text-xs text-slate-400">Click to upload</div>
             </div>
           </div>
         )}
-        
-        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="text-white text-center">
-            <div className="text-2xl mb-1" style={{display: 'none'}}>📷</div>
-            <div className="text-2xl mb-1" style={{display: 'none'}}>🗑</div>
-            <div className="text-xs">Change Photo</div>
-          </div>
-        </div>
 
+        {/* Upload loading overlay */}
         {uploading && (
-          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
             <div className="text-white text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
               <div className="text-xs">Uploading...</div>

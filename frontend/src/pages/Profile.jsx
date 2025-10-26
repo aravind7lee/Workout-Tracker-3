@@ -25,12 +25,13 @@ const Profile = () => {
   const [stats, setStats] = useState(null);
   const [activity, setActivity] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [lastSync, setLastSync] = useState(null);
+  const [showPhotoViewer, setShowPhotoViewer] = useState(false);
   const [formData, setFormData] = useState(() => {
     try {
       const localUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -40,6 +41,7 @@ const Profile = () => {
     }
   });
   const navigate = useNavigate();
+  const fileInputRef = React.useRef(null);
 
   // Force browser refresh - ENHANCED PROFILE LOADED
   console.log('🔥 ENHANCED GYM PROFILE v2.0 LOADED - NEW UI ACTIVE! 💪');
@@ -47,7 +49,6 @@ const Profile = () => {
   // Real-time data fetching
   const fetchProfileData = useCallback(async () => {
     try {
-      setLoading(true);
       setError(null);
       
       const token = localStorage.getItem('token');
@@ -107,7 +108,7 @@ const Profile = () => {
         setStats(getFallbackStats());
       }
     } finally {
-      setLoading(false);
+      // No loading state change needed
     }
   }, [navigate]);
 
@@ -248,6 +249,27 @@ const Profile = () => {
     navigate('/login');
   };
 
+  // Handle escape key to close photo viewer
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && showPhotoViewer) {
+        setShowPhotoViewer(false);
+      }
+    };
+    
+    if (showPhotoViewer) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showPhotoViewer]);
+
   if (error && !user) {
     return (
       <motion.div 
@@ -280,43 +302,8 @@ const Profile = () => {
     );
   }
 
-  // Show loading state while checking authentication and fetching data
-  if (loading) {
-    return (
-      <div className="relative min-h-screen overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 z-10"></div>
-          <motion.div 
-            className="absolute inset-0 opacity-20"
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-          >
-            <img 
-              src={GymBg1} 
-              alt="Gym Background" 
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </div>
-        <div className="relative z-30 flex items-center justify-center min-h-screen">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-400 mx-auto mb-6"></div>
-            <h2 className="text-2xl font-bold text-white mb-2">Loading Profile...</h2>
-            <p className="text-slate-400">🏋️ Syncing your gym data</p>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
-
-  // Only show "Profile Not Found" if we're not loading and have no user after auth check
-  if (!loading && !user) {
+  // Only show "Profile Not Found" if no user exists
+  if (!user) {
     return (
       <motion.div 
         className="text-center py-12"
@@ -395,10 +382,9 @@ const Profile = () => {
               </div>
               <button
                 onClick={fetchProfileData}
-                disabled={loading}
-                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base whitespace-nowrap"
+                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all duration-300 text-sm sm:text-base whitespace-nowrap"
               >
-                {loading ? '🔄 SYNCING...' : '🔄 REFRESH'}
+                🔄 REFRESH
               </button>
               <button
                 onClick={handleLogout}
@@ -451,6 +437,40 @@ const Profile = () => {
                   <ImageUploader
                     currentImage={user?.profileImage}
                     onImageUpdate={handleImageUpdate}
+                    onImageClick={() => user?.profileImage && setShowPhotoViewer(true)}
+                  />
+                  
+                  {/* Hidden file input for fullscreen viewer */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      
+                      // Reset file input
+                      e.target.value = '';
+                      
+                      if (!file.type.startsWith('image/')) {
+                        alert('Please select an image file');
+                        return;
+                      }
+                      
+                      if (file.size > 5242880) {
+                        alert(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum size is 5MB.`);
+                        return;
+                      }
+                      
+                      // Convert to base64 and update immediately
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const imageUrl = event.target.result;
+                        handleImageUpdate(imageUrl);
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    className="hidden"
                   />
                   <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-xl sm:rounded-2xl border border-slate-600/30">
                     <div className="flex items-center gap-2 text-green-400 text-xs sm:text-sm mb-2">
@@ -668,6 +688,91 @@ const Profile = () => {
 
         </div>
       </div>
+
+      {/* Fullscreen Photo Viewer Modal */}
+      {showPhotoViewer && user?.profileImage && (
+        <div
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[9998] flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowPhotoViewer(false);
+            }
+          }}
+        >
+          {/* Top Controls */}
+          <div className="absolute top-4 left-4 right-4 z-[9999] flex justify-between items-center pointer-events-none">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowPhotoViewer(false);
+              }}
+              className="bg-black/70 text-white rounded-full p-4 min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto select-none"
+              style={{ touchAction: 'manipulation' }}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowPhotoViewer(false);
+                setTimeout(() => {
+                  fileInputRef.current?.click();
+                }, 100);
+              }}
+              className="bg-black/70 text-white rounded-full p-4 min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto select-none"
+              style={{ touchAction: 'manipulation' }}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Photo Container */}
+          <div
+            className="relative max-w-4xl max-h-full w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={user.profileImage}
+              alt="Profile Picture"
+              className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
+              style={{ maxHeight: '90vh', maxWidth: '90vw' }}
+            />
+            
+            {/* Photo Info Overlay */}
+            <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-xl p-4">
+              <div className="flex items-center justify-between text-white">
+                <div>
+                  <h3 className="font-bold text-lg">{user.name || 'Profile Picture'}</h3>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPhotoViewer(false);
+                    setTimeout(() => {
+                      fileInputRef.current?.click();
+                    }, 100);
+                  }}
+                  className="bg-blue-600 text-white px-4 py-3 rounded-full text-sm font-bold flex items-center gap-2 min-h-[44px] select-none"
+                  style={{ touchAction: 'manipulation' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Change Photo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AuthGuard>
   );
 };
