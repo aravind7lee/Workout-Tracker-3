@@ -9,6 +9,10 @@ import FoodCategories from '../components/FoodCategories';
 import NutritionErrorBoundary from '../components/NutritionErrorBoundary';
 import NutritionHero from '../components/NutritionHero';
 import NutritionGallery from '../components/NutritionGallery';
+import RealTimeNutritionProgress from '../components/RealTimeNutritionProgress';
+import NutritionInsights from '../components/NutritionInsights';
+import NutritionSocialDashboard from '../components/NutritionSocialDashboard';
+import NutritionAnalytics from '../components/NutritionAnalytics';
 import AuthGuard from '../components/AuthGuard';
 import realTimeEvents from '../utils/realTimeEvents';
 
@@ -248,50 +252,7 @@ export default function Nutrition() {
     }
   };
 
-  const getProgressColor = (current, target) => {
-    const percentage = (current / target) * 100;
-    if (percentage < 50) return 'bg-red-500';
-    if (percentage < 80) return 'bg-yellow-500';
-    if (percentage <= 100) return 'bg-green-500';
-    return 'bg-blue-500';
-  };
 
-  const getGoalGuidance = () => {
-    const goalType = targets.goalType || 'maintain';
-    const currentTarget = customCalorieTarget || targets.baselineCalories || 2000;
-    const caloriesDiff = currentTarget - (totals.calories || 0);
-    
-    switch (goalType) {
-      case 'cut':
-        if (caloriesDiff > 200) return { text: `${caloriesDiff} calories remaining - good for cutting!`, color: 'text-green-400' };
-        if (caloriesDiff > 0) return { text: `${caloriesDiff} calories remaining - on track`, color: 'text-yellow-400' };
-        return { text: `${Math.abs(caloriesDiff)} calories over target`, color: 'text-red-400' };
-      
-      case 'bulk':
-        if (caloriesDiff < -200) return { text: `${Math.abs(caloriesDiff)} calories over - great for bulking!`, color: 'text-green-400' };
-        if (caloriesDiff < 0) return { text: `${Math.abs(caloriesDiff)} calories over target`, color: 'text-yellow-400' };
-        return { text: `Need ${caloriesDiff} more calories for bulking`, color: 'text-blue-400' };
-      
-      case 'recomp':
-        if (Math.abs(caloriesDiff) < 100) return { text: 'Perfect for body recomposition!', color: 'text-green-400' };
-        return { text: `${Math.abs(caloriesDiff)} calories ${caloriesDiff > 0 ? 'under' : 'over'} target`, color: 'text-yellow-400' };
-      
-      default:
-        if (Math.abs(caloriesDiff) < 100) return { text: 'Maintaining calorie balance!', color: 'text-green-400' };
-        return { text: `${Math.abs(caloriesDiff)} calories ${caloriesDiff > 0 ? 'remaining' : 'over'}`, color: 'text-blue-400' };
-    }
-  };
-
-  const guidance = getGoalGuidance();
-  const currentCalorieTarget = customCalorieTarget || targets.calories || 2000;
-  
-  // Calculate progress percentages
-  const progress = {
-    calories: ((totals.calories || 0) / currentCalorieTarget) * 100,
-    protein: ((totals.protein || 0) / (targets.protein || 150)) * 100,
-    carbs: ((totals.carbs || 0) / (targets.carbs || 250)) * 100,
-    fat: ((totals.fat || 0) / (targets.fat || 67)) * 100
-  };
 
   return (
     <AuthGuard>
@@ -330,107 +291,38 @@ export default function Nutrition() {
         isLoading={isLookingUp}
       />
 
-      {/* Today's Progress */}
-      <div 
-        data-progress-section
-        className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow"
-      >
-        <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
-          <span>📊</span> Today's Progress
-        </h3>
-        
-        {/* Calorie Target Selector */}
-        <div className="mb-4 p-3 bg-gray-50 dark:bg-dark-bg-tertiary/50 backdrop-blur-xs rounded-lg border border-gray-200 dark:border-dark-border">
-          <div className="flex items-center justify-between gap-4">
-            <div className={`text-sm font-medium ${guidance.color.replace('text-', 'text-').replace('-400', '-600 dark:text-').replace('-600', '-400')}`}>
-              {guidance.text}
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-light-text-muted dark:text-dark-text-muted">Daily Target:</label>
-              <select
-                value={customCalorieTarget || targets.calories || 2000}
-                onChange={(e) => setCustomCalorieTarget(parseInt(e.target.value))}
-                className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-blue-500 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-dark-accent/20 transition-all"
-              >
-                <option value={1600}>1600 cal</option>
-                <option value={1800}>1800 cal</option>
-                <option value={2000}>2000 cal</option>
-                <option value={2200}>2200 cal</option>
-                <option value={2300}>2300 cal</option>
-                <option value={2500}>2500 cal</option>
-                <option value={2800}>2800 cal</option>
-                <option value={3000}>3000 cal</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Calories */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-light-text-muted dark:text-dark-text-muted">Calories</span>
-              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round(totals.calories || 0)} / {currentCalorieTarget}</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
-              <motion.div 
-                className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.calories || 0, currentCalorieTarget)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(((totals.calories || 0) / currentCalorieTarget) * 100, 100)}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
+      {/* Enhanced Real-Time Progress Section */}
+      <RealTimeNutritionProgress 
+        totals={totals}
+        targets={targets}
+        meals={meals}
+        customCalorieTarget={customCalorieTarget}
+        setCustomCalorieTarget={setCustomCalorieTarget}
+      />
 
-          {/* Protein */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-light-text-muted dark:text-dark-text-muted">Protein</span>
-              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.protein || 0) * 10) / 10}g / {targets.protein || 150}g</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
-              <motion.div 
-                className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.protein || 0, targets.protein || 150)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(progress.protein, 100)}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
+      {/* Smart Nutrition Insights */}
+      <NutritionInsights 
+        totals={totals}
+        targets={targets}
+        meals={meals}
+        customCalorieTarget={customCalorieTarget}
+      />
 
-          {/* Carbs */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-light-text-muted dark:text-dark-text-muted">Carbs</span>
-              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.carbs || 0) * 10) / 10}g / {targets.carbs || 250}g</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
-              <motion.div 
-                className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.carbs || 0, targets.carbs || 250)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(progress.carbs, 100)}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
+      {/* Social Dashboard */}
+      <NutritionSocialDashboard 
+        totals={totals}
+        targets={targets}
+        meals={meals}
+        customCalorieTarget={customCalorieTarget}
+      />
 
-          {/* Fat */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-light-text-muted dark:text-dark-text-muted">Fat</span>
-              <span className="text-light-text-primary dark:text-dark-text-primary font-medium">{Math.round((totals.fat || 0) * 10) / 10}g / {targets.fat || 67}g</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2">
-              <motion.div 
-                className={`h-2 rounded-full transition-all duration-500 ${getProgressColor(totals.fat || 0, targets.fat || 67)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(progress.fat, 100)}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Advanced Analytics */}
+      <NutritionAnalytics 
+        totals={totals}
+        targets={targets}
+        meals={meals}
+        customCalorieTarget={customCalorieTarget}
+      />
 
       {/* Meals List */}
       <div className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow">

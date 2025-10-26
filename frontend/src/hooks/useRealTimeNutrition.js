@@ -12,6 +12,7 @@ export const useRealTimeNutrition = () => {
   });
   const [targets, setTargets] = useState({
     baselineCalories: 2000,
+    calories: 2000,
     goalType: 'maintain',
     protein: 150,
     carbs: 200,
@@ -57,6 +58,7 @@ export const useRealTimeNutrition = () => {
       if (result.success) {
         setTargets({
           baselineCalories: result.data.baselineCalories,
+          calories: result.data.baselineCalories || result.data.calories || 2000,
           goalType: result.data.goalType,
           protein: result.data.macroTargets?.protein || 150,
           carbs: result.data.macroTargets?.carbs || 200,

@@ -453,15 +453,15 @@ const WorkoutSplits = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900">
       {/* Hero Section */}
-      <div className="relative overflow-hidden border-b border-slate-700/50">
+      <div className="relative overflow-hidden">
         {/* Hero Image Container */}
         <div className="relative w-full h-screen min-h-[100vh] max-h-screen">
           {/* Skeleton Loader */}
           {!heroImageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 animate-pulse">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/10 to-transparent animate-shimmer"></div>
             </div>
           )}
 
@@ -486,118 +486,126 @@ const WorkoutSplits = () => {
 
             {/* Fallback */}
             {heroImageError && (
-              <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
+              <div className="w-full h-full bg-gradient-to-br from-orange-900 via-red-900 to-black"></div>
             )}
 
-            {/* Dark Overlay for Text Contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+            {/* Modern Gym Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-transparent to-red-500/20"></div>
           </div>
 
-          {/* Title Overlay */}
-          <div className="relative z-10 h-full flex items-center justify-center" style={{ paddingTop: '10vh' }}>
-            <div className="text-center px-4 sm:px-6 lg:px-8">
+          {/* Enhanced Title Overlay */}
+          <div className="relative z-10 h-full flex items-center justify-center" style={{ paddingTop: '8vh' }}>
+            <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl">
+              <motion.div
+                className="mb-4"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md rounded-full border border-orange-500/30 mb-6">
+                  <Dumbbell className="w-5 h-5 text-orange-400 mr-2" />
+                  <span className="text-orange-300 font-semibold text-sm tracking-wide">PROFESSIONAL GYM TRACKER</span>
+                </div>
+              </motion.div>
+              
               <motion.h1
-                className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold drop-shadow-2xl"
-                style={{ color: 'rgb(245, 158, 11)' }}
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6"
+                style={{ 
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #f59e0b 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '0 0 30px rgba(245, 158, 11, 0.5), 0 0 60px rgba(239, 68, 68, 0.3)'
+                }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Workout Splits
+                WORKOUT SPLITS
               </motion.h1>
+              
+              <motion.p
+                className="text-base sm:text-lg lg:text-xl text-gray-200 font-medium mb-8 max-w-3xl mx-auto leading-relaxed"
+                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
+                we have the ideal training program to maximize your results.
+              </motion.p>
+              
+              <motion.div
+                className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+              >
+                <div className="group flex items-center space-x-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-orange-500/40 hover:border-orange-400/60 transition-all duration-300">
+                  <Users className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                  <span className="font-semibold text-white text-sm tracking-wide">13 DIFFERENT SPLITS</span>
+                </div>
+                <div className="group flex items-center space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-green-500/40 hover:border-green-400/60 transition-all duration-300">
+                  <Target className="w-5 h-5 text-green-400 group-hover:text-green-300 transition-colors" />
+                  <span className="font-semibold text-white text-sm tracking-wide">ALL FITNESS GOALS</span>
+                </div>
+                <div className="group flex items-center space-x-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-purple-500/40 hover:border-purple-400/60 transition-all duration-300">
+                  <Clock className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                  <span className="font-semibold text-white text-sm tracking-wide">FLEXIBLE SCHEDULES</span>
+                </div>
+              </motion.div>
             </div>
           </div>
-
-
-        </div>
-        
-        {/* Additional spacing for mobile */}
-        <div className="h-4 sm:h-8"></div>
-      </div>
-
-      {/* Header Content Section */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 border-b border-slate-700/50">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-           
-            <motion.p
-              className="text-sm sm:text-base lg:text-lg text-slate-200 max-w-3xl mx-auto mb-6 font-medium"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              Choose the perfect workout split for your goals. Whether you're bulking, cutting, or maintaining, 
-              we have the ideal training program to maximize your results.
-            </motion.p>
-            <motion.div
-              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
-                <Users className="w-4 h-4 text-blue-400" />
-                <span className="font-medium">13 Different Splits</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
-                <Target className="w-4 h-4 text-green-400" />
-                <span className="font-medium">All Fitness Goals</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/30">
-                <Clock className="w-4 h-4 text-purple-400" />
-                <span className="font-medium">Flexible Schedules</span>
-              </div>
-            </motion.div>
-          </motion.div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Filters Section */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
+      {/* Modern Control Panel */}
+      <div className="bg-gradient-to-r from-gray-950 via-black to-gray-950 border-y border-orange-500/20">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+            {/* Enhanced Category Filter */}
+            <div className="flex flex-wrap gap-3">
               {categories.map((category) => {
                 const Icon = category.icon;
                 return (
                   <motion.button
                     key={category.id}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
+                    className={`group relative flex items-center space-x-3 px-5 py-3 rounded-2xl transition-all duration-300 overflow-hidden ${
                       selectedCategory === category.id
-                        ? 'bg-blue-500/20 text-white border border-blue-500/30'
-                        : 'bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-700/50'
+                        ? 'bg-gradient-to-r from-orange-500/30 to-red-500/30 text-white border border-orange-500/50 shadow-lg shadow-orange-500/25'
+                        : 'bg-gray-900/80 text-gray-300 hover:text-white hover:bg-gray-800/90 border border-gray-700/50 hover:border-gray-600/50'
                     }`}
                   >
-                    <Icon size={16} style={{ color: selectedCategory === category.id ? category.color : '#94a3b8' }} />
-                    <span className="text-sm font-medium">{category.name}</span>
+                    <div className={`absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                      selectedCategory === category.id ? 'from-orange-500/20 to-red-500/20' : 'from-gray-700/20 to-gray-600/20'
+                    }`}></div>
+                    <Icon size={18} className={`relative z-10 transition-colors duration-300 ${
+                      selectedCategory === category.id ? 'text-orange-400' : 'text-gray-400 group-hover:text-white'
+                    }`} />
+                    <span className="relative z-10 text-sm font-semibold tracking-wide">{category.name.toUpperCase()}</span>
                   </motion.button>
                 );
               })}
             </div>
 
-            {/* Search Bar */}
+            {/* Enhanced Search Bar */}
             <div className="relative w-full lg:w-auto">
-              <div className="relative flex items-center">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 z-10" />
+              <div className="relative flex items-center group">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-orange-400 w-5 h-5 z-10 transition-colors duration-300" />
                 <input
                   type="text"
-                  placeholder="Search splits..."
+                  placeholder="Search workout splits..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 w-full lg:w-72 shadow-lg backdrop-blur-sm"
+                  className="pl-12 pr-12 py-4 bg-gray-900/80 border border-gray-700/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 w-full lg:w-80 shadow-lg backdrop-blur-sm hover:bg-gray-800/90"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors duration-200"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-300 bg-gray-700/50 hover:bg-gray-600/50 rounded-full p-1"
                   >
                     ✕
                   </button>
@@ -606,103 +614,147 @@ const WorkoutSplits = () => {
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Loading State */}
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="flex items-center space-x-3">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
-              <span className="text-slate-300">Loading workout splits...</span>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-400"></div>
+              <span className="text-gray-300">Loading workout splits...</span>
             </div>
           </div>
         )}
 
-        {/* Splits Grid */}
+        {/* Enhanced Splits Grid */}
         {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence>
             {filteredSplits.map((split, index) => (
               <motion.div
                 key={split.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 hover:border-blue-500/30 transition-all duration-300 cursor-pointer"
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="group relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-md border border-gray-700/50 rounded-3xl p-6 hover:border-orange-500/50 transition-all duration-500 cursor-pointer overflow-hidden"
                 onClick={() => setSelectedSplit(split)}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-xl font-bold text-white mb-2">{split.name}</h3>
-                  <div className="flex items-center space-x-2">
-                    {isAuthenticated() && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleFavorite(split.id);
-                        }}
-                        className={`p-1 rounded-full transition-colors ${
-                          favorites.includes(split.id)
-                            ? 'text-red-400 hover:text-red-300'
-                            : 'text-slate-400 hover:text-red-400'
-                        }`}
-                      >
-                        <Heart size={16} fill={favorites.includes(split.id) ? 'currentColor' : 'none'} />
-                      </button>
-                    )}
-                    <ChevronRight className="w-5 h-5 text-slate-400" />
-                  </div>
-                </div>
+                {/* Animated Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                 
-                <p className="text-slate-300 text-sm mb-4">{split.description}</p>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-400">Frequency:</span>
-                    <span className="text-blue-400 font-medium">{split.frequency}</span>
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Dumbbell className="w-5 h-5 text-orange-400" />
+                        <span className="text-xs font-semibold text-orange-400 tracking-wider">WORKOUT SPLIT</span>
+                      </div>
+                      <h3 className="text-xl font-black text-white mb-2 group-hover:text-orange-100 transition-colors duration-300">{split.name}</h3>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {isAuthenticated() && (
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleFavorite(split.id);
+                          }}
+                          className={`p-2 rounded-full transition-all duration-300 ${
+                            favorites.includes(split.id)
+                              ? 'text-red-400 hover:text-red-300 bg-red-500/20'
+                              : 'text-gray-400 hover:text-red-400 hover:bg-red-500/20'
+                          }`}
+                        >
+                          <Heart size={18} fill={favorites.includes(split.id) ? 'currentColor' : 'none'} />
+                        </motion.button>
+                      )}
+                      <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-orange-400 transition-colors duration-300" />
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-400">Difficulty:</span>
-                    <span className="text-green-400 font-medium">{split.difficulty}</span>
+                  
+                  <p className="text-gray-300 text-sm mb-6 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">{split.description}</p>
+                  
+                  <div className="grid grid-cols-1 gap-3 mb-6">
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="w-4 h-4 text-blue-400" />
+                        <span className="text-gray-400 text-sm font-medium">Frequency</span>
+                      </div>
+                      <span className="text-blue-400 font-semibold text-sm">{split.frequency}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                      <div className="flex items-center space-x-2">
+                        <Target className="w-4 h-4 text-green-400" />
+                        <span className="text-gray-400 text-sm font-medium">Difficulty</span>
+                      </div>
+                      <span className="text-green-400 font-semibold text-sm">{split.difficulty}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                      <div className="flex items-center space-x-2">
+                        <Clock className="w-4 h-4 text-purple-400" />
+                        <span className="text-gray-400 text-sm font-medium">Duration</span>
+                      </div>
+                      <span className="text-purple-400 font-semibold text-sm">{split.duration}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-400">Duration:</span>
-                    <span className="text-purple-400 font-medium">{split.duration}</span>
-                  </div>
-                </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-700/50">
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     {split.category.map((cat) => {
                       const categoryInfo = categories.find(c => c.id === cat);
                       return (
                         <span
                           key={cat}
-                          className="px-2 py-1 bg-slate-700/50 text-slate-300 rounded-md text-xs"
-                          style={{ color: categoryInfo?.color }}
+                          className="px-3 py-1 bg-gradient-to-r from-gray-700/50 to-gray-600/50 text-gray-300 rounded-full text-xs font-medium border border-gray-600/30 group-hover:border-orange-500/30 transition-all duration-300"
                         >
                           {categoryInfo?.name}
                         </span>
                       );
                     })}
                   </div>
+                  
+                  {/* Action Button */}
+                  <div className="mt-6 pt-4 border-t border-gray-700/30">
+                    <div className="flex items-center justify-center space-x-2 text-orange-400 group-hover:text-orange-300 transition-colors duration-300">
+                      <Play className="w-4 h-4" />
+                      <span className="text-sm font-semibold tracking-wide">VIEW DETAILS</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
-
         )}
 
-        {/* No Results */}
+        {/* Enhanced No Results */}
         {!loading && filteredSplits.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-slate-400 mb-4">
-              <Filter className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-medium text-white mb-2">No splits found</h3>
-              <p>Try adjusting your filters or search terms</p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16"
+          >
+            <div className="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-md border border-gray-700/50 rounded-3xl p-12 max-w-md mx-auto">
+              <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <Filter className="w-10 h-10 text-orange-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">No Workout Splits Found</h3>
+              <p className="text-gray-400 mb-6">Try adjusting your filters or search terms to find the perfect split for your goals.</p>
+              <button
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSearchTerm('');
+                }}
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+              >
+                Reset Filters
+              </button>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
 
@@ -720,37 +772,37 @@ const WorkoutSplits = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-slate-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-gradient-to-br from-gray-900 to-black rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-700/50 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold text-white mb-2">{selectedSplit.name}</h2>
-                    <p className="text-slate-300">{selectedSplit.description}</p>
+                    <p className="text-gray-300">{selectedSplit.description}</p>
                   </div>
                   <button
                     onClick={() => setSelectedSplit(null)}
-                    className="text-slate-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors"
                   >
                     ✕
                   </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                  <div className="bg-gray-800/50 rounded-lg p-4 text-center">
                     <Calendar className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                    <div className="text-sm text-slate-400">Frequency</div>
+                    <div className="text-sm text-gray-400">Frequency</div>
                     <div className="text-white font-medium">{selectedSplit.frequency}</div>
                   </div>
-                  <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                  <div className="bg-gray-800/50 rounded-lg p-4 text-center">
                     <Target className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                    <div className="text-sm text-slate-400">Difficulty</div>
+                    <div className="text-sm text-gray-400">Difficulty</div>
                     <div className="text-white font-medium">{selectedSplit.difficulty}</div>
                   </div>
-                  <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                  <div className="bg-gray-800/50 rounded-lg p-4 text-center">
                     <Clock className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-                    <div className="text-sm text-slate-400">Duration</div>
+                    <div className="text-sm text-gray-400">Duration</div>
                     <div className="text-white font-medium">{selectedSplit.duration}</div>
                   </div>
                 </div>
@@ -762,20 +814,20 @@ const WorkoutSplits = () => {
                       {Object.entries(selectedSplit.weeklySchedule).map(([day, workout]) => (
                         <div key={day} className={`rounded-lg p-3 border ${
                           workout.includes('Rest') 
-                            ? 'bg-slate-700/20 border-slate-600/30' 
+                            ? 'bg-gray-700/20 border-gray-600/30' 
                             : 'bg-blue-500/10 border-blue-500/20'
                         }`}>
                           <div className="flex items-center justify-between">
                             <div className="font-medium text-blue-400">{day}</div>
                             <div className={`text-xs px-2 py-1 rounded-full ${
                               workout.includes('Rest') 
-                                ? 'bg-slate-600 text-slate-300' 
+                                ? 'bg-gray-600 text-gray-300' 
                                 : 'bg-blue-500/20 text-blue-300'
                             }`}>
                               {workout.includes('Rest') ? '😴 Rest' : '💪 Workout'}
                             </div>
                           </div>
-                          <div className="text-slate-300 text-sm mt-1">{workout}</div>
+                          <div className="text-gray-300 text-sm mt-1">{workout}</div>
                         </div>
                       ))}
                     </div>
@@ -785,9 +837,9 @@ const WorkoutSplits = () => {
                     <h3 className="text-lg font-semibold text-white mb-3">🎯 Muscle Group Focus</h3>
                     <div className="space-y-2">
                       {Object.entries(selectedSplit.muscles).map(([day, muscles]) => (
-                        <div key={day} className="bg-slate-700/30 rounded-lg p-3">
+                        <div key={day} className="bg-gray-700/30 rounded-lg p-3">
                           <div className="font-medium text-green-400 mb-1">{day}</div>
-                          <div className="text-slate-300 text-sm">{muscles}</div>
+                          <div className="text-gray-300 text-sm">{muscles}</div>
                         </div>
                       ))}
                     </div>
@@ -797,7 +849,7 @@ const WorkoutSplits = () => {
                     <h3 className="text-lg font-semibold text-white mb-3">Benefits</h3>
                     <ul className="space-y-2">
                       {selectedSplit.benefits.map((benefit, index) => (
-                        <li key={index} className="flex items-center space-x-2 text-slate-300">
+                        <li key={index} className="flex items-center space-x-2 text-gray-300">
                           <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                           <span>{benefit}</span>
                         </li>
@@ -807,18 +859,18 @@ const WorkoutSplits = () => {
 
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-3">Best For</h3>
-                    <p className="text-slate-300 bg-slate-700/30 rounded-lg p-3">{selectedSplit.bestFor}</p>
+                    <p className="text-gray-300 bg-gray-700/30 rounded-lg p-3">{selectedSplit.bestFor}</p>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-slate-700/50">
+                <div className="mt-6 pt-6 border-t border-gray-700/50">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button
                       onClick={() => {
                         setSelectedSplit(null);
                         navigate('/library');
                       }}
-                      className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors duration-200"
+                      className="flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium py-3 rounded-xl transition-colors duration-200"
                     >
                       <Play size={16} />
                       <span>Start Split</span>
@@ -829,7 +881,7 @@ const WorkoutSplits = () => {
                         className={`flex items-center justify-center space-x-2 font-medium py-3 rounded-xl transition-colors duration-200 ${
                           favorites.includes(selectedSplit.id)
                             ? 'bg-red-600 hover:bg-red-700 text-white'
-                            : 'bg-slate-700 hover:bg-slate-600 text-white'
+                            : 'bg-gray-700 hover:bg-gray-600 text-white'
                         }`}
                       >
                         <Heart size={16} fill={favorites.includes(selectedSplit.id) ? 'currentColor' : 'none'} />
