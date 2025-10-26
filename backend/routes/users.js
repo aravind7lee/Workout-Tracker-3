@@ -185,20 +185,7 @@ router.get('/stats', auth, async (req, res) => {
     const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
     const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
     
-    // Get real streak from user model or calculate from workouts
-    let currentStreak = user.currentStreak || 0;
-    if (!user.currentStreak && completedWorkouts.length > 0) {
-      try {
-        currentStreak = calculateStreak(completedWorkouts);
-        // Update user with calculated streak (non-blocking)
-        User.findByIdAndUpdate(req.user.id, { currentStreak }).catch(err => 
-          console.warn('Failed to update streak:', err.message)
-        );
-      } catch (streakError) {
-        console.warn('Streak calculation failed:', streakError.message);
-        currentStreak = 0;
-      }
-    }
+
     
 
     
@@ -234,12 +221,12 @@ router.get('/stats', auth, async (req, res) => {
       totalMeals: meals.length || 0,
       totalPlans: plans.length || 0,
       totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
-      currentStreak: currentStreak || 0,
+
 
       totalCaloriesBurned: totalCaloriesBurned || 0,
       totalDuration: Math.round((totalDuration || 0) / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
-      longestStreak: user.longestStreak || currentStreak || 0,
+      longestStreak: user.longestStreak || 0,
       totalCheckIns: user.totalCheckIns || 0,
       joinDate: user.createdAt || new Date(),
       lastActive: new Date(),
@@ -264,8 +251,7 @@ router.get('/stats', auth, async (req, res) => {
       totalMeals: 0,
       totalPlans: 0,
       totalExercises: 0,
-      currentStreak: 0,
-      xpPoints: 0,
+
       totalCaloriesBurned: 0,
       totalDuration: 0,
       averageWorkoutDuration: 0,
@@ -282,6 +268,17 @@ router.get('/stats', auth, async (req, res) => {
     };
     
     res.json(fallbackStats);
+  }
+});
+
+// Get user achievements (simple endpoint to prevent 404)
+router.get('/achievements', auth, async (req, res) => {
+  try {
+    // Return empty achievements array since achievements are removed
+    res.json([]);
+  } catch (error) {
+    console.error('Achievements error:', error);
+    res.json([]);
   }
 });
 
@@ -336,62 +333,7 @@ router.get('/activity', auth, async (req, res) => {
 
 
 
-// Enhanced streak calculation with better logic and error handling
-function calculateStreak(workouts) {
-  try {
-    if (!workouts || !Array.isArray(workouts) || !workouts.length) return 0;
-    
-    // Get unique workout dates (only completed workouts)
-    const workoutDates = [...new Set(
-      workouts
-        .filter(w => w && w.completed && w.createdAt)
-        .map(w => {
-          try {
-            const date = new Date(w.createdAt);
-            if (isNaN(date.getTime())) return null;
-            date.setHours(0, 0, 0, 0);
-            return date.getTime();
-          } catch {
-            return null;
-          }
-        })
-        .filter(date => date !== null)
-    )].sort((a, b) => b - a); // Sort descending (most recent first)
-    
-    if (!workoutDates.length) return 0;
-    
-    let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayTime = today.getTime();
-    
-    const yesterday = new Date(todayTime - 24 * 60 * 60 * 1000);
-    const yesterdayTime = yesterday.getTime();
-    
-    // Check if streak is current (today or yesterday)
-    const mostRecentWorkout = workoutDates[0];
-    if (mostRecentWorkout !== todayTime && mostRecentWorkout !== yesterdayTime) {
-      return 0; // Streak is broken
-    }
-    
-    // Count consecutive days
-    let expectedDate = mostRecentWorkout;
-    
-    for (const workoutTime of workoutDates) {
-      if (workoutTime === expectedDate) {
-        streak++;
-        expectedDate -= 24 * 60 * 60 * 1000; // Move to previous day
-      } else {
-        break; // Gap found, streak ends
-      }
-    }
-    
-    return Math.max(0, streak);
-  } catch (error) {
-    console.warn('Streak calculation error:', error.message);
-    return 0;
-  }
-}
+
 
 // Get user settings with improved error handling and rate limiting
 router.get('/settings', settingsLimiter, auth, async (req, res) => {
@@ -958,7 +900,7 @@ async function getStatsForUser(userId) {
   ]);
   
   const completedWorkouts = workouts.filter(w => w.completed);
-  const currentStreak = calculateStreak(completedWorkouts);
+
   const totalCaloriesBurned = completedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
   const totalDuration = completedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0);
 
@@ -986,8 +928,7 @@ async function getStatsForUser(userId) {
     totalMeals: meals.length,
     totalPlans: plans.length,
     totalExercises: completedWorkouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0),
-    currentStreak,
-    longestStreak: user.longestStreak || currentStreak,
+    longestStreak: user.longestStreak || 0,
 
     totalCaloriesBurned,
     totalDuration: Math.round(totalDuration / 60),

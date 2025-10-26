@@ -29,7 +29,6 @@ import { onlineService } from '../services/onlineService';
 
 export default function Settings() {
   const { user, updateUser, isAuthenticated } = useAuth();
-  // Theme is always dark mode - no toggle functionality
   const [activeTab, setActiveTab] = useState('profile');
   const [isSaving, setIsSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -39,8 +38,6 @@ export default function Settings() {
     totalWorkouts: 0,
     totalMeals: 0,
     totalPlans: 0,
-    currentStreak: 0,
-    xpPoints: 0,
     membershipDays: 0,
     lastSync: null
   });
@@ -63,8 +60,7 @@ export default function Settings() {
       emailNotifications: user?.notifications?.emailNotifications ?? true,
       pushNotifications: user?.notifications?.pushNotifications ?? true,
       workoutReminders: user?.notifications?.workoutReminders ?? true,
-      mealReminders: user?.notifications?.mealReminders ?? false,
-      achievementAlerts: user?.notifications?.achievementAlerts ?? true
+      mealReminders: user?.notifications?.mealReminders ?? false
     },
     privacy: {
       profileVisibility: user?.privacy?.profileVisibility || 'public',
@@ -72,7 +68,7 @@ export default function Settings() {
       analyticsOptOut: user?.privacy?.analyticsOptOut || false
     },
     preferences: {
-      theme: 'dark', // Always dark mode
+      theme: 'dark',
       language: user?.preferences?.language || 'en',
       units: user?.preferences?.units || 'metric',
       dateFormat: user?.preferences?.dateFormat || 'MM/DD/YYYY',
@@ -95,7 +91,6 @@ export default function Settings() {
     { id: 'help', label: 'Help & Support', icon: HelpCircle, color: 'from-gray-500 to-slate-500' }
   ];
 
-  // Initialize auto-save function with error handling
   const autoSave = useCallback(
     settingsService.setupAutoSave((result) => {
       setLastSyncResult(result);
@@ -104,7 +99,6 @@ export default function Settings() {
     []
   );
 
-  // Load real-time data with error handling
   const loadRealTimeData = useCallback(async () => {
     if (!isAuthenticated()) return;
     
@@ -112,9 +106,8 @@ export default function Settings() {
       const token = localStorage.getItem('token');
       if (!token) return;
       
-      // Load real-time stats with timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       
       const statsResponse = await fetch(`${import.meta.env.VITE_API_BASE}/users/stats`, {
         headers: {
@@ -132,8 +125,6 @@ export default function Settings() {
           totalWorkouts: stats.totalWorkouts || 0,
           totalMeals: stats.totalMeals || 0,
           totalPlans: stats.totalPlans || 0,
-          currentStreak: stats.currentStreak || 0,
-          xpPoints: stats.xpPoints || 0,
           membershipDays: stats.membershipDays || 0,
           lastSync: new Date().toISOString()
         });
@@ -150,7 +141,6 @@ export default function Settings() {
     }
   }, [isAuthenticated]);
 
-  // Load settings with FORCE MongoDB connection
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -158,8 +148,6 @@ export default function Settings() {
         setSyncStatus('loading');
         console.log('🚀 FORCE LOAD FROM MONGODB - Global Sync Priority');
         
-        // Load both settings and real-time data
-        // Load settings first, then stats
         const result = await chromeErrorHandler.safeExecuteAsync(async () => {
           return await settingsService.loadSettings();
         });
@@ -176,7 +164,6 @@ export default function Settings() {
           }
         }
         
-        // Load real-time data separately with delay
         setTimeout(() => {
           loadRealTimeData();
         }, 1000);
@@ -190,17 +177,16 @@ export default function Settings() {
 
     loadSettings();
 
-    // Network status listeners with FORCE MongoDB reconnection
     const handleOnline = () => {
       chromeErrorHandler.safeExecute(() => {
         console.log('🌐 Network back online - FORCE MongoDB reconnection');
         setIsOnline(true);
         setSyncStatus('syncing');
         setTimeout(() => {
-          loadSettings(); // Delayed sync to prevent spam
+          loadSettings();
         }, 2000);
         setTimeout(() => {
-          loadRealTimeData(); // Delayed reload
+          loadRealTimeData();
         }, 3000);
       });
     };
@@ -213,20 +199,19 @@ export default function Settings() {
       });
     };
     
-    // Listen for real-time events
     const handleWorkoutCompleted = () => {
       console.log('🏋️ Workout completed - refreshing real-time data');
-      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
+      setTimeout(() => loadRealTimeData(), 1000);
     };
     
     const handleMealAdded = () => {
       console.log('🍽️ Meal added - refreshing real-time data');
-      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
+      setTimeout(() => loadRealTimeData(), 1000);
     };
     
     const handlePlanCreated = () => {
       console.log('📋 Plan created - refreshing real-time data');
-      setTimeout(() => loadRealTimeData(), 1000); // Delayed refresh
+      setTimeout(() => loadRealTimeData(), 1000);
     };
     
     window.addEventListener('online', handleOnline);
@@ -235,7 +220,6 @@ export default function Settings() {
     window.addEventListener('mealAdded', handleMealAdded);
     window.addEventListener('planCreated', handlePlanCreated);
     
-    // Real-time refresh every 60 seconds (reduced frequency)
     const refreshInterval = setInterval(() => {
       if (isAuthenticated() && navigator.onLine && !loading) {
         loadRealTimeData();
@@ -262,9 +246,6 @@ export default function Settings() {
     }));
   }, []);
 
-  // Theme is always dark mode - no theme change functionality
-
-  // Auto-save with improved debouncing
   useEffect(() => {
     if (Object.keys(settings).length > 0 && settings.profile.name !== undefined && !loading) {
       console.log('🔄 Auto-save triggered');
@@ -284,7 +265,6 @@ export default function Settings() {
     try {
       console.log('🚀 FORCE SAVE TO MONGODB - Global Sync Initiated');
       
-      // Update user profile if changed
       if (settings.profile.name !== user?.name || settings.profile.email !== user?.email) {
         updateUser({
           ...user,
@@ -293,7 +273,6 @@ export default function Settings() {
         });
       }
 
-      // FORCE MongoDB save with enhanced error handling
       const result = await chromeErrorHandler.safeExecuteAsync(async () => {
         return await settingsService.saveSettings({
           ...settings,
@@ -331,8 +310,8 @@ export default function Settings() {
   };
 
   const renderProfileSettings = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
             <User size={16} />
@@ -390,8 +369,8 @@ export default function Settings() {
   );
 
   const renderFitnessGoalsSettings = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
             <Target size={16} />
@@ -463,8 +442,7 @@ export default function Settings() {
         </div>
       </div>
       
-      {/* Real-time Goal Status with Progress */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/50 rounded-lg">
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/50 rounded-xl sm:rounded-2xl">
         <div className="text-green-300 text-sm flex items-center gap-2 mb-3">
           <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
           <span className="font-medium">Current Fitness Goals & Progress</span>
@@ -499,7 +477,6 @@ export default function Settings() {
           </div>
         </div>
         
-        {/* Weekly Progress Bar */}
         <div className="mt-3">
           <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
             <span>Weekly Progress</span>
@@ -517,43 +494,53 @@ export default function Settings() {
   );
 
   const renderNotificationsSettings = () => (
-    <div className="space-y-6">
-      <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl sm:rounded-2xl border border-slate-700/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+          <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+            🔔 NOTIFICATION CENTER
+          </h3>
+          <div className="px-2 sm:px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
+            REAL-TIME
+          </div>
+        </div>
+        <p className="text-slate-300 text-sm sm:text-base">Professional gym notifications • Instant MongoDB sync • Cross-device alerts</p>
+      </div>
+
+      <div className="space-y-3 sm:space-y-4">
         {[
           {
             key: 'emailNotifications',
             title: 'Email Notifications',
-            description: 'Receive updates and reminders via email',
+            description: 'Receive workout updates and progress reports via email',
             icon: Mail,
-            color: 'from-blue-500 to-cyan-500'
+            color: 'from-blue-500 to-cyan-500',
+            emoji: '📧'
           },
           {
             key: 'pushNotifications',
             title: 'Push Notifications',
-            description: 'Get instant notifications on your device',
+            description: 'Get instant workout alerts and reminders on your device',
             icon: Bell,
-            color: 'from-yellow-500 to-orange-500'
+            color: 'from-yellow-500 to-orange-500',
+            emoji: '🔔'
           },
           {
             key: 'workoutReminders',
             title: 'Workout Reminders',
-            description: 'Daily reminders to stay on track with your fitness goals',
+            description: 'Daily gym reminders to stay consistent with your fitness goals',
             icon: Target,
-            color: 'from-green-500 to-emerald-500'
+            color: 'from-green-500 to-emerald-500',
+            emoji: '🏋️'
           },
           {
             key: 'mealReminders',
-            title: 'Meal Reminders',
-            description: 'Reminders to log your meals and track nutrition',
+            title: 'Nutrition Reminders',
+            description: 'Smart reminders to log meals and track your nutrition intake',
             icon: Activity,
-            color: 'from-purple-500 to-violet-500'
-          },
-          {
-            key: 'achievementAlerts',
-            title: 'Achievement Alerts',
-            description: 'Celebrate your milestones and achievements',
-            icon: Trophy,
-            color: 'from-red-500 to-pink-500'
+            color: 'from-purple-500 to-violet-500',
+            emoji: '🍎'
           }
         ].map((notification) => {
           const isEnabled = settings.notifications[notification.key];
@@ -561,89 +548,112 @@ export default function Settings() {
           return (
             <motion.div
               key={notification.key}
-              whileHover={{ scale: 1.01 }}
-              className={`p-4 rounded-xl border transition-all duration-300 ${
+              whileHover={{ scale: 1.02 }}
+              className={`relative overflow-hidden rounded-xl sm:rounded-2xl border transition-all duration-300 ${
                 isEnabled
-                  ? `border-green-500/50 bg-gradient-to-r ${notification.color}/10 shadow-lg`
-                  : 'border-slate-600/50 bg-slate-800/30'
+                  ? `border-green-500/50 bg-gradient-to-br from-slate-800/80 to-slate-900/80 shadow-xl shadow-green-500/10`
+                  : 'border-slate-600/50 bg-gradient-to-br from-slate-800/40 to-slate-900/40'
               }`}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg transition-all ${
-                    isEnabled
-                      ? `bg-gradient-to-r ${notification.color}/20 text-white shadow-md`
-                      : 'bg-slate-700/50 text-slate-400'
-                  }`}>
-                    <notification.icon size={18} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-white font-medium flex items-center gap-2">
-                      {notification.title}
-                      {isEnabled && (
-                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
-                          Active
-                        </span>
-                      )}
+              <div className="absolute inset-0 opacity-5">
+                <div className={`w-full h-full bg-gradient-to-r ${notification.color}`}></div>
+              </div>
+              
+              <div className="relative z-10 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
+                    <div className={`p-2 sm:p-3 rounded-xl transition-all flex-shrink-0 ${
+                      isEnabled
+                        ? `bg-gradient-to-r ${notification.color}/20 text-white shadow-lg border border-white/10`
+                        : 'bg-slate-700/50 text-slate-400'
+                    }`}>
+                      <div className="text-xl sm:text-2xl">{notification.emoji}</div>
                     </div>
-                    <div className="text-slate-400 text-sm">{notification.description}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                        <h4 className="text-white font-bold text-sm sm:text-base">{notification.title}</h4>
+                        {isEnabled && (
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 w-fit">
+                            ✅ ACTIVE
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{notification.description}</p>
+                    </div>
                   </div>
-                </div>
-                
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleSettingChange('notifications', notification.key, !isEnabled)}
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
-                    isEnabled
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg'
-                      : 'bg-slate-600'
-                  }`}
-                >
-                  <motion.div
-                    animate={{ x: isEnabled ? 24 : 2 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                    className={`absolute top-1 w-4 h-4 rounded-full transition-all ${
-                      isEnabled ? 'bg-white shadow-md' : 'bg-slate-300'
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleSettingChange('notifications', notification.key, !isEnabled)}
+                    className={`relative w-14 h-7 sm:w-16 sm:h-8 rounded-full transition-all duration-300 flex-shrink-0 ${
+                      isEnabled
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg shadow-green-500/25'
+                        : 'bg-slate-600'
                     }`}
-                  />
-                </motion.button>
+                  >
+                    <motion.div
+                      animate={{ x: isEnabled ? (window.innerWidth >= 640 ? 32 : 28) : 2 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      className={`absolute top-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all ${
+                        isEnabled ? 'bg-white shadow-md' : 'bg-slate-300'
+                      }`}
+                    />
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           );
         })}
       </div>
       
-      {/* Real-time Notification Status */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-700/50 rounded-lg">
-        <div className="text-yellow-300 text-sm flex items-center gap-2 mb-3">
-          <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-          <span className="font-medium">Notification Status</span>
+      <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl sm:rounded-2xl border border-slate-700/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+          <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+            📊 NOTIFICATION STATUS
+          </h3>
+          <div className="px-2 sm:px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+            LIVE SYNC
+          </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+        
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {Object.entries(settings.notifications).map(([key, enabled]) => {
             const labels = {
-              emailNotifications: 'Email',
-              pushNotifications: 'Push',
-              workoutReminders: 'Workouts',
-              mealReminders: 'Meals',
-              achievementAlerts: 'Achievements'
+              emailNotifications: { name: 'Email', emoji: '📧' },
+              pushNotifications: { name: 'Push', emoji: '🔔' },
+              workoutReminders: { name: 'Workouts', emoji: '🏋️' },
+              mealReminders: { name: 'Nutrition', emoji: '🍎' }
             };
             
             return (
-              <div key={key} className="text-center">
-                <div className={`font-bold text-lg ${
+              <motion.div 
+                key={key} 
+                className={`text-center p-3 sm:p-4 rounded-xl border transition-all ${
+                  enabled 
+                    ? 'bg-green-500/10 border-green-500/30 shadow-lg' 
+                    : 'bg-slate-800/30 border-slate-600/30'
+                }`}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{labels[key]?.emoji}</div>
+                <div className={`font-bold text-lg sm:text-xl mb-1 ${
                   enabled ? 'text-green-400' : 'text-red-400'
                 }`}>
                   {enabled ? '✅' : '❌'}
                 </div>
-                <div className="text-slate-300">{labels[key]}</div>
-              </div>
+                <div className="text-slate-300 text-xs sm:text-sm font-medium">{labels[key]?.name}</div>
+              </motion.div>
             );
           })}
         </div>
-        <div className="mt-3 text-xs text-slate-400 text-center">
-          Changes are applied instantly • Synced to MongoDB in real-time
+        
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-full border border-green-500/30">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-green-400 text-xs sm:text-sm font-bold">Changes applied instantly • MongoDB real-time sync</span>
+          </div>
         </div>
       </div>
     </div>
@@ -651,8 +661,8 @@ export default function Settings() {
 
   const renderPreferencesSettings = () => {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
               <Moon size={16} />
@@ -680,7 +690,6 @@ export default function Settings() {
               </motion.div>
             </div>
             
-            {/* Dark Mode Info */}
             <div className="mt-4 p-3 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/50 rounded-lg">
               <div className="text-blue-300 text-sm flex items-center gap-2">
                 <span className="animate-pulse">🎨</span>
@@ -714,7 +723,6 @@ export default function Settings() {
           </div>
         </div>
         
-        {/* Real-time Activity Summary */}
         <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg">
           <div className="text-blue-300 text-sm flex items-center gap-2 mb-2">
             <BarChart3 size={16} />
@@ -726,12 +734,12 @@ export default function Settings() {
               <div className="text-slate-300">Total Workouts</div>
             </div>
             <div className="text-center">
-              <div className="text-green-400 font-bold">{realTimeStats.currentStreak}</div>
-              <div className="text-slate-300">Current Streak</div>
+              <div className="text-green-400 font-bold">{realTimeStats.totalMeals}</div>
+              <div className="text-slate-300">Total Meals</div>
             </div>
             <div className="text-center">
-              <div className="text-yellow-400 font-bold">{realTimeStats.xpPoints}</div>
-              <div className="text-slate-300">XP Points</div>
+              <div className="text-yellow-400 font-bold">{realTimeStats.totalPlans}</div>
+              <div className="text-slate-300">Total Plans</div>
             </div>
           </div>
         </div>
@@ -746,8 +754,8 @@ export default function Settings() {
       case 'notifications': return renderNotificationsSettings();
       case 'preferences': return renderPreferencesSettings();
       case 'data': return (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-600/30">
               <h4 className="text-white font-medium mb-3 flex items-center gap-2">
                 <Database size={16} />
@@ -858,93 +866,92 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-6">
-
-      {/* Status Bar */}
-      <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="text-green-400 text-sm font-medium">
-              ⚡ Real-Time Settings
-            </span>
-            <span className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 ${statusDisplay.color}`}>
-              <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse"></span>
-              {statusDisplay.icon} {statusDisplay.text}
-            </span>
-            <span className="text-xs text-blue-300 bg-blue-900/30 px-2 py-1 rounded-full">
-              🔄 Auto-Sync
-            </span>
-          </div>
-          <div className="text-xs text-slate-400">
-            Professional Gym Tracker • Real-Time Experience
+    <div className="space-y-4 sm:space-y-6">
+      {/* Enhanced Hero Header */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-cyan-900/10"></div>
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="text-3xl sm:text-4xl">⚙️</div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mb-1" style={{ fontFamily: 'var(--font-heading)' }}>
+                  💪 GYM SETTINGS
+                </h1>
+                <p className="text-slate-300 text-sm sm:text-base">Professional Configuration • Real-Time MongoDB Sync</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-xs font-bold ${statusDisplay.color}`}>
+                <div className="w-2 h-2 bg-current rounded-full animate-pulse"></div>
+                {statusDisplay.icon} {statusDisplay.text}
+              </div>
+              <div className="px-3 py-2 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+                🔄 AUTO-SYNC
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl lg:text-3xl font-semibold text-white flex items-center gap-2">
-            <span>⚙️</span>
-            <span>Settings</span>
-            <span className="text-lg">🏋️</span>
-            <span className="text-sm bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
-              LIVE
-            </span>
-          </h2>
-          <p className="text-slate-400 mt-1">Professional Gym Tracker</p>
-        </div>
+      {/* Save Button Section */}
+      <div className="flex justify-center sm:justify-end">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
           disabled={isSaving}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2 shadow-lg"
+          className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-xl shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-3 text-sm sm:text-base"
         >
           {isSaving ? (
-            <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+            <div className="animate-spin w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full" />
           ) : (
-            <Save size={16} />
+            <Save size={18} />
           )}
-          <span>{isSaving ? 'Syncing...' : 'Save Changes'}</span>
+          <span>{isSaving ? '🔄 SYNCING TO MONGODB...' : '💾 SAVE TO CLOUD'}</span>
         </motion.button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="lg:col-span-1">
-          <div className="card p-0 overflow-hidden">
-            <div className="p-4 border-b border-slate-700/50">
-              <h3 className="font-semibold text-white flex items-center gap-2">
-                <span>⚙️</span>
-                <span>Settings Menu</span>
-                <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+            <div className="p-4 sm:p-6 border-b border-slate-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="text-xl sm:text-2xl">🎛️</div>
+                <h3 className="font-black text-white text-sm sm:text-base" style={{ fontFamily: 'var(--font-heading)' }}>
+                  CONTROL PANEL
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
                   LIVE
-                </span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">Professional Configuration • Real-Time Sync</p>
+                </div>
+                <div className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+                  MONGODB
+                </div>
+              </div>
             </div>
-            <div className="space-y-1 p-2">
+            <div className="space-y-1 sm:space-y-2 p-3 sm:p-4">
               {settingsTabs.map((tab) => (
                 <motion.button
                   key={tab.id}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-4 rounded-xl transition-all duration-300 ${
                     activeTab === tab.id
-                      ? `bg-gradient-to-r ${tab.color}/20 border border-blue-500/30 text-white shadow-lg`
+                      ? `bg-gradient-to-r ${tab.color}/20 border border-white/20 text-white shadow-lg backdrop-blur-sm`
                       : 'text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent'
                   }`}
                 >
-                  <div className={`p-1 rounded-lg ${
-                    activeTab === tab.id ? 'bg-white/10' : 'bg-slate-700/50'
+                  <div className={`p-2 rounded-lg transition-all ${
+                    activeTab === tab.id ? 'bg-white/10 shadow-md' : 'bg-slate-700/50'
                   }`}>
                     <tab.icon size={16} />
                   </div>
-                  <span className="font-medium text-sm">{tab.label}</span>
+                  <span className="font-bold text-xs sm:text-sm flex-1 text-left">{tab.label}</span>
                   {activeTab === tab.id && (
-                    <div className="ml-auto text-blue-400">
-                      ▶
-                    </div>
+                    <div className="text-white text-lg">▶</div>
                   )}
                 </motion.button>
               ))}
@@ -957,36 +964,44 @@ export default function Settings() {
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}  
-            className="card"
+            transition={{ duration: 0.3 }}
+            className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl"
           >
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className={`p-2 rounded-lg bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color}/20`}>
-                  {React.createElement(settingsTabs.find(tab => tab.id === activeTab)?.icon, { size: 20, className: 'text-white' })}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-semibold text-white">
-                      {settingsTabs.find(tab => tab.id === activeTab)?.label}
-                    </h3>
-                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse">
-                      LIVE
-                    </span>
-                  </div>
-                  <div className="text-xs text-slate-400">Professional Configuration Panel • Real-Time MongoDB • Instant Updates</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-slate-400">Last Update</div>
-                  <div className="text-xs text-green-400">
-                    {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Loading...'}
-                  </div>
-                </div>
-              </div>
-              <div className={`h-px bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color} w-24`}></div>
+            <div className="absolute inset-0 opacity-5">
+              <div className={`w-full h-full bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color}`}></div>
             </div>
             
-            {renderTabContent()}
+            <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+              <div className="mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color}/20 border border-white/10 shadow-lg`}>
+                      {React.createElement(settingsTabs.find(tab => tab.id === activeTab)?.icon, { size: 24, className: 'text-white' })}
+                    </div>
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <h3 className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                          {settingsTabs.find(tab => tab.id === activeTab)?.label}
+                        </h3>
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse w-fit">
+                          🔥 LIVE
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-400 mt-1">Professional Configuration • Real-Time MongoDB • Cross-Device Sync</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-slate-400">Last Sync</div>
+                    <div className="text-xs sm:text-sm text-green-400 font-bold">
+                      {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Loading...'}
+                    </div>
+                  </div>
+                </div>
+                <div className={`h-1 bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color} rounded-full w-16 sm:w-24`}></div>
+              </div>
+              
+              {renderTabContent()}
+            </div>
           </motion.div>
         </div>
       </div>

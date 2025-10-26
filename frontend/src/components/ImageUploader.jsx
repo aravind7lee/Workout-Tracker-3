@@ -10,7 +10,9 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     formData.append('profileImage', file);
     
     const token = localStorage.getItem('token');
-    const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/upload-profile-picture`, {
+    const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+    
+    const response = await fetch(`${apiBase}/users/upload-profile-picture`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -19,19 +21,30 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Upload failed');
+      let errorMessage = 'Upload failed';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        errorMessage = `Upload failed (${response.status})`;
+      }
+      throw new Error(errorMessage);
     }
 
-    return await response.json();
+    try {
+      return await response.json();
+    } catch {
+      throw new Error('Invalid response from server');
+    }
   };
 
   const updateBackend = async (imageUrl) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return; // Skip backend update if no token
+      if (!token) return;
       
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile-picture`, {
+      const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/profile-picture`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,20 +85,43 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     setMessage('');
 
     try {
-      // Upload to backend with Cloudinary integration
-      const uploadResult = await uploadToBackend(file);
-      const imageUrl = uploadResult.profileImage;
-      
-      // Update UI immediately
-      onImageUpdate(imageUrl);
-      
-      // Update localStorage
-      const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      userData.profileImage = imageUrl;
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      setMessage('Profile photo updated successfully ✅');
-      setTimeout(() => setMessage(''), 3000);
+      // Try backend upload first
+      try {
+        const uploadResult = await uploadToBackend(file);
+        const imageUrl = uploadResult.profileImage;
+        
+        // Update UI immediately
+        onImageUpdate(imageUrl);
+        
+        // Update localStorage
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        userData.profileImage = imageUrl;
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        setMessage('Profile photo updated successfully ✅');
+        setTimeout(() => setMessage(''), 3000);
+        return;
+      } catch (backendError) {
+        console.warn('Backend upload failed, using local storage:', backendError);
+        
+        // Fallback: Convert to base64 and store locally
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageUrl = e.target.result;
+          
+          // Update UI immediately
+          onImageUpdate(imageUrl);
+          
+          // Update localStorage
+          const userData = JSON.parse(localStorage.getItem('user') || '{}');
+          userData.profileImage = imageUrl;
+          localStorage.setItem('user', JSON.stringify(userData));
+          
+          setMessage('Profile photo updated locally ✅');
+          setTimeout(() => setMessage(''), 3000);
+        };
+        reader.readAsDataURL(file);
+      }
       
     } catch (error) {
       console.error('Upload error:', error);
@@ -96,7 +132,7 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
       } else if (error.message.includes('image')) {
         setMessage('Only image files are allowed.');
       } else {
-        setMessage(error.message || 'Upload failed. Please try again.');
+        setMessage('Upload failed. Using local storage as fallback.');
       }
       
       setTimeout(() => setMessage(''), 4000);

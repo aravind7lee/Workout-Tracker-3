@@ -20,7 +20,7 @@ import MyPlans from './pages/MyPlans';
 import EditPlan from './pages/EditPlan';
 import WorkoutSession from './pages/WorkoutSession';
 
-import ProfileAdvanced from './pages/ProfileAdvanced';
+import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Forum from './pages/Forum';
 import Contact from './pages/Contact';
@@ -406,7 +406,7 @@ export default function App() {
                       <Route path="/edit-plan/:planId" element={<EditPlan />} />
                       <Route path="/workout/:planId" element={<WorkoutSession />} />
 
-                      <Route path="/profile" element={<ProfileAdvanced />} />
+                      <Route path="/profile" element={<Profile />} />
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/forum" element={<Forum />} />
                       <Route path="/contact" element={<Contact />} />
