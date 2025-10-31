@@ -44,6 +44,9 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import LegendsAndInfluencers from './pages/LegendsAndInfluencers';
 import WorkoutSplits from './pages/WorkoutSplits';
+import CustomSplitBuilder from './pages/CustomSplitBuilder';
+import YourWorkoutSplits from './pages/YourWorkoutSplits';
+import EditSplit from './pages/EditSplit';
 import chromeErrorHandler from './utils/chromeErrorHandler';
 import './utils/finalErrorCleanup'; // Stop continuous API calls
 import './utils/silentMode'; // Complete console silence
@@ -403,6 +406,10 @@ export default function App() {
                       <Route path="/plans" element={<PlansBuilder />} />
                       <Route path="/my-plans" element={<MyPlans />} />
                       <Route path="/splits" element={<WorkoutSplits />} />
+                      <Route path="/workout-splits" element={<WorkoutSplits />} />
+                      <Route path="/custom-split-builder" element={<CustomSplitBuilder />} />
+                      <Route path="/your-workout-splits" element={<YourWorkoutSplits />} />
+                      <Route path="/edit-split/:splitId" element={<EditSplit />} />
                       <Route path="/edit-plan/:planId" element={<EditPlan />} />
                       <Route path="/workout/:planId" element={<WorkoutSession />} />
 

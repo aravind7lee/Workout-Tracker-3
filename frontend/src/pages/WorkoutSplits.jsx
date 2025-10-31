@@ -40,6 +40,7 @@ const WorkoutSplits = () => {
   // Workout Split Categories
   const categories = [
     { id: 'all', name: 'All Splits', icon: Dumbbell, color: '#00d4ff' },
+    { id: 'custom', name: 'Custom', icon: Zap, color: '#ff6b6b' },
     { id: 'bulking', name: 'Bulking', icon: TrendingUp, color: '#00ff88' },
     { id: 'cutting', name: 'Cutting', icon: TrendingDown, color: '#ff6b6b' },
     { id: 'recomp', name: 'Body Recomp', icon: BarChart3, color: '#ffa502' },
@@ -508,8 +509,19 @@ const WorkoutSplits = () => {
     }
   ];
 
-  // Always use fallback data for now to ensure it works
-  const workoutSplits = fallbackSplits;
+  // Load custom splits and combine with fallback data
+  const loadCustomSplits = () => {
+    try {
+      const customSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
+      return customSplits;
+    } catch (error) {
+      console.error('Error loading custom splits:', error);
+      return [];
+    }
+  };
+  
+  const customSplits = loadCustomSplits();
+  const workoutSplits = [...fallbackSplits, ...customSplits];
 
   // Filter splits based on category and search
   const filteredSplits = workoutSplits.filter(split => {
@@ -621,6 +633,42 @@ const WorkoutSplits = () => {
                   <span className="font-semibold text-white text-sm tracking-wide">FLEXIBLE SCHEDULES</span>
                 </div>
               </motion.div>
+              
+              {/* Action Buttons */}
+              <motion.div
+                className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.0 }}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/custom-split-builder')}
+                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-purple-500/25"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center space-x-3">
+                    <Dumbbell className="w-6 h-6 animate-pulse" />
+                    <span className="text-lg tracking-wide">CREATE YOUR OWN WORKOUT SPLIT</span>
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/your-workout-splits')}
+                  className="group relative overflow-hidden bg-gradient-to-r from-orange-600 via-red-600 to-pink-500 hover:from-orange-700 hover:via-red-700 hover:to-pink-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-orange-500/25"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center space-x-3">
+                    <Target className="w-6 h-6 animate-pulse" />
+                    <span className="text-lg tracking-wide">YOUR WORKOUT SPLITS</span>
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                </motion.button>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -718,7 +766,14 @@ const WorkoutSplits = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <Dumbbell className="w-5 h-5 text-orange-400" />
-                        <span className="text-xs font-semibold text-orange-400 tracking-wider">WORKOUT SPLIT</span>
+                        <span className="text-xs font-semibold text-orange-400 tracking-wider">
+                          {split.isCustom ? 'CUSTOM SPLIT' : 'WORKOUT SPLIT'}
+                        </span>
+                        {split.isCustom && (
+                          <span className="text-xs bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-300 px-2 py-1 rounded-full border border-purple-500/30">
+                            ⚡ YOUR CREATION
+                          </span>
+                        )}
                       </div>
                       <h3 className="text-xl font-black text-white mb-2 group-hover:text-orange-100 transition-colors duration-300">{split.name}</h3>
                     </div>
