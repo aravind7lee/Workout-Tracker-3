@@ -320,40 +320,70 @@ export default function StartWorkout() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
       <PRNotification />
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate('/library')}
-          className="text-slate-400 hover:text-white flex items-center gap-2"
-        >
-          ← Back to Library
-        </button>
-        <div className={`px-3 py-1 rounded-full text-xs ${
-          isOnline ? 'bg-green-600/20 text-green-400' : 'bg-yellow-600/20 text-yellow-400'
-        }`}>
-          {isOnline ? '🟢 Online - Auto-sync' : '🟡 Offline - Local save'}
+      {/* Professional Gym Header */}
+      <div className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-orange-600/10 border-b border-orange-500/20 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/library')}
+              className="flex items-center gap-3 px-4 py-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-600/50 text-slate-300 hover:text-white transition-all duration-300 backdrop-blur-sm"
+            >
+              <span className="text-orange-400">←</span>
+              <span className="font-semibold">EXERCISE LIBRARY</span>
+            </button>
+            <div className={`px-4 py-2 rounded-xl font-bold text-sm border backdrop-blur-sm ${
+              isOnline 
+                ? 'bg-green-600/20 text-green-400 border-green-500/30 shadow-lg shadow-green-500/20' 
+                : 'bg-yellow-600/20 text-yellow-400 border-yellow-500/30 shadow-lg shadow-yellow-500/20'
+            }`}>
+              {isOnline ? '🔥 LIVE SYNC ACTIVE' : '⚡ OFFLINE MODE'}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Exercise Info */}
-      <div className={`card ${isPaused ? 'ring-2 ring-yellow-500/50 bg-yellow-900/10' : ''}`}>
-        <div className="flex items-center gap-4 mb-4">
-          <div className={`w-16 h-16 ${exercise.color} rounded-lg flex items-center justify-center relative`}>
-            <span className="text-3xl">{exercise.icon}</span>
-            {isPaused && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                <span className="text-xs text-black">⏸️</span>
-              </div>
-            )}
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        {/* Professional Exercise Header */}
+        <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/90 via-gray-800/90 to-slate-900/90 border border-orange-500/20 backdrop-blur-sm ${
+          isPaused ? 'ring-2 ring-yellow-500/50 shadow-2xl shadow-yellow-500/20' : 'shadow-2xl shadow-orange-500/10'
+        }`}>
+          {/* Gym-style background pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 25% 25%, #ff6b35 0%, transparent 50%), radial-gradient(circle at 75% 75%, #f7931e 0%, transparent 50%)'
+            }}></div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">{exercise.name}</h1>
-            <p className="text-slate-400">{exercise.category} • {exercise.sets}</p>
-            {isPaused && (
-              <p className="text-yellow-400 text-sm font-medium animate-pulse">⏸️ Workout Paused</p>
-            )}
+          
+          <div className="relative p-6">
+            <div className="flex items-center gap-6 mb-6">
+              <div className={`w-20 h-20 ${exercise.color} rounded-2xl flex items-center justify-center relative shadow-2xl border-2 border-orange-500/30`}>
+                <span className="text-4xl">{exercise.icon}</span>
+                {isPaused && (
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-sm text-black font-bold">⏸️</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-black text-white mb-2 tracking-wide" style={{
+                  textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                }}>{exercise.name.toUpperCase()}</h1>
+                <div className="flex items-center gap-4">
+                  <span className="px-3 py-1 bg-orange-600/20 text-orange-400 rounded-lg text-sm font-bold border border-orange-500/30">
+                    {exercise.category.toUpperCase()}
+                  </span>
+                  <span className="text-slate-300 font-medium">{exercise.sets}</span>
+                </div>
+                {isPaused && (
+                  <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-lg text-sm font-bold animate-pulse border border-yellow-500/30">
+                    ⏸️ WORKOUT PAUSED
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1026,31 +1056,41 @@ export default function StartWorkout() {
             {isPaused ? '⏸️ Resume to Finish' : `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets} sets)`}
           </button>
         </div>
-      </div>
-
-      {/* Real-time Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
-          <div className="text-2xl font-bold text-blue-400">{workoutData.sets.length}</div>
-          <div className="text-sm text-slate-400">Sets Completed</div>
-        </div>
-        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
-          <div className="text-2xl font-bold text-green-400">
-            {workoutData.sets.reduce((total, set) => total + set.reps, 0)}
+        {/* Professional Stats Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600/20 via-blue-700/20 to-blue-800/20 border border-blue-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent"></div>
+            <div className="relative">
+              <div className="text-4xl font-black text-blue-400 mb-2">{workoutData.sets.length}</div>
+              <div className="text-sm font-bold text-blue-300 uppercase tracking-wider">🏆 SETS COMPLETED</div>
+            </div>
           </div>
-          <div className="text-sm text-slate-400">Total Reps</div>
-        </div>
-        <div className={`card text-center ${isPaused ? 'opacity-60' : ''}`}>
-          <div className="text-2xl font-bold text-purple-400">
-            {showWorkoutComplete ? formatTime(totalWorkoutTime) : formatTime(totalWorkoutTime + currentSetTimer)}
+          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600/20 via-green-700/20 to-green-800/20 border border-green-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent"></div>
+            <div className="relative">
+              <div className="text-4xl font-black text-green-400 mb-2">
+                {workoutData.sets.reduce((total, set) => total + set.reps, 0)}
+              </div>
+              <div className="text-sm font-bold text-green-300 uppercase tracking-wider">💥 TOTAL REPS</div>
+            </div>
           </div>
-          <div className="text-sm text-slate-400">{showWorkoutComplete ? 'Final Active Time' : 'Active Time'}</div>
-          {isPaused && !showWorkoutComplete && (
-            <div className="text-xs text-yellow-400 mt-1">⏸️ Paused</div>
-          )}
-          {showWorkoutComplete && (
-            <div className="text-xs text-green-400 mt-1">✅ Completed</div>
-          )}
+          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600/20 via-purple-700/20 to-purple-800/20 border border-purple-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent"></div>
+            <div className="relative">
+              <div className="text-4xl font-black text-purple-400 mb-2">
+                {showWorkoutComplete ? formatTime(totalWorkoutTime) : formatTime(totalWorkoutTime + currentSetTimer)}
+              </div>
+              <div className="text-sm font-bold text-purple-300 uppercase tracking-wider">
+                ⚡ {showWorkoutComplete ? 'FINAL ACTIVE TIME' : 'ACTIVE TIME'}
+              </div>
+              {isPaused && !showWorkoutComplete && (
+                <div className="text-xs text-yellow-400 mt-2 font-bold animate-pulse">⏸️ PAUSED</div>
+              )}
+              {showWorkoutComplete && (
+                <div className="text-xs text-green-400 mt-2 font-bold">✅ COMPLETED</div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

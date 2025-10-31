@@ -589,109 +589,112 @@ const Dashboard = () => {
 
       {/* Enhanced Workout Plans Section */}
       <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5 rounded-3xl blur-xl"></div>
-        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-3xl border border-green-500/20 p-8 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5 rounded-2xl sm:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-green-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-2xl font-black text-white uppercase tracking-wider mb-2">MY WORKOUT PLANS</h2>
-              <p className="text-slate-400 text-sm">Your personalized training arsenal</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black text-white uppercase tracking-wider mb-1 sm:mb-2">MY WORKOUT PLANS</h2>
+              <p className="text-slate-400 text-xs sm:text-sm">Your personalized training arsenal</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               {recentPlans && recentPlans.length > 3 && (
                 <button
                   onClick={() => setShowAllPlans(!showAllPlans)}
-                  className="bg-orange-500/20 border border-orange-500/30 text-orange-400 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-orange-500/30 transition-all duration-300"
+                  className="bg-orange-500/20 border border-orange-500/30 text-orange-400 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-orange-500/30 transition-all duration-300"
                 >
-                  {showAllPlans ? 'Show Less' : `Show More (${recentPlans.length})`}
+                  <span className="hidden sm:inline">{showAllPlans ? 'Show Less' : `Show More (${recentPlans.length})`}</span>
+                  <span className="sm:hidden">{showAllPlans ? 'Less' : `More (${recentPlans.length})`}</span>
                 </button>
               )}
               <button
                 onClick={() => navigate('/plans')}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
               >
-                ⚡ CREATE PLAN
+                ⚡ <span className="hidden sm:inline">CREATE PLAN</span><span className="sm:hidden">CREATE</span>
               </button>
             </div>
           </div>
           {!recentPlans || recentPlans.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-4xl">📋</span>
+            <div className="text-center py-8 sm:py-12">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <span className="text-3xl sm:text-4xl">📋</span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 uppercase tracking-wide">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide">
                 {dashboardStats.loading ? 'LOADING ARSENAL...' : 'BUILD YOUR ARSENAL'}
               </h3>
-              <p className="text-slate-400 mb-6 text-base max-w-md mx-auto">
+              <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4">
                 {dashboardStats.loading ? 'Syncing your workout plans...' : 'No workout plans yet. Time to create your first masterpiece!'}
               </p>
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 mb-6">
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 mb-4 sm:mb-6">
                 <span className={`w-2 h-2 rounded-full ${plansOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></span>
-                {plansOnline ? 'REAL-TIME MONGODB DATA' : 'OFFLINE MODE'}
+                <span className="hidden sm:inline">{plansOnline ? 'REAL-TIME MONGODB DATA' : 'OFFLINE MODE'}</span>
+                <span className="sm:hidden">{plansOnline ? 'LIVE' : 'OFFLINE'}</span>
               </div>
               <button 
                 onClick={() => navigate('/plans')}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
+                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 sm:px-8 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 text-sm sm:text-base"
               >
-                🚀 CREATE FIRST PLAN
+                🚀 <span className="hidden sm:inline">CREATE FIRST PLAN</span><span className="sm:hidden">CREATE PLAN</span>
               </button>
             </div>
           ) : (
             <div>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
                 <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/20 px-3 py-2 rounded-full">
                   <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  {plansOnline ? 'REAL-TIME MONGODB PLANS' : 'LOCAL PLANS'}
+                  <span className="hidden sm:inline">{plansOnline ? 'REAL-TIME MONGODB PLANS' : 'LOCAL PLANS'}</span>
+                  <span className="sm:hidden">{plansOnline ? 'LIVE PLANS' : 'LOCAL'}</span>
                 </div>
                 <div className="text-xs text-slate-400 bg-slate-700/50 px-3 py-2 rounded-full">
-                  {dashboardStats.totalPlans} TOTAL • {planStats.syncedPlans} SYNCED
+                  {dashboardStats.totalPlans} TOTAL • {planStats.syncedPlans} <span className="hidden sm:inline">SYNCED</span><span className="sm:hidden">SYNC</span>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {(showAllPlans ? recentPlans : recentPlans.slice(0, 3)).map((plan, index) => (
-                  <div key={plan.id || index} className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-slate-600/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:border-green-500/30 overflow-hidden">
+                  <div key={plan.id || index} className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-slate-600/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:border-green-500/30 overflow-hidden">
                     {/* Sync Status Badge */}
                     <div className="absolute top-3 right-3">
                       {plan.synced ? (
-                        <div className="w-3 h-3 bg-green-400 rounded-full shadow-lg" title="Synced to MongoDB"></div>
+                        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full shadow-lg" title="Synced to MongoDB"></div>
                       ) : (
-                        <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg" title="Pending sync"></div>
+                        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg" title="Pending sync"></div>
                       )}
                     </div>
                     
                     <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     
                     <div className="relative z-10">
-                      <div className="flex items-start justify-between mb-4 pr-6">
-                        <h3 className="font-bold text-white text-lg uppercase tracking-wide truncate">{plan.name || 'UNNAMED PLAN'}</h3>
+                      <div className="mb-3 sm:mb-4 pr-4 sm:pr-6">
+                        <h3 className="font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate">{plan.name || 'UNNAMED PLAN'}</h3>
                       </div>
                       
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-xs text-slate-400 bg-slate-600/50 px-3 py-1 rounded-full uppercase tracking-wide">
+                      <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                        <span className="text-xs text-slate-400 bg-slate-600/50 px-2 py-1 sm:px-3 sm:py-1 rounded-full uppercase tracking-wide">
                           {plan.category || 'GENERAL'}
                         </span>
                         <span className="text-xs text-green-400 font-semibold">
-                          {plan.exercises?.length || 0} EXERCISES
+                          {plan.exercises?.length || 0} <span className="hidden sm:inline">EXERCISES</span><span className="sm:hidden">EX</span>
                         </span>
-                        {plan.isTemp && <span className="text-xs text-yellow-400 font-semibold">• CREATING...</span>}
+                        {plan.isTemp && <span className="text-xs text-yellow-400 font-semibold">• <span className="hidden sm:inline">CREATING...</span><span className="sm:hidden">NEW</span></span>}
                       </div>
                       
-                      <div className="flex gap-3">
+                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                         <button 
                           onClick={() => {
                             const workoutId = plan.id || plan.tempId || `temp_${Date.now()}`;
                             console.log('🚀 Starting workout for plan:', plan.name, 'ID:', workoutId);
                             navigate(`/workout/${workoutId}`);
                           }}
-                          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wide flex-1 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+                          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide flex-1 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
                           title={`Start workout: ${plan.name}`}
                         >
-                          🏋️ START
+                          🏋️ <span className="hidden sm:inline">START</span><span className="sm:hidden">GO</span>
                         </button>
                         <button 
                           onClick={() => navigate('/my-plans')}
-                          className="bg-slate-600/50 border border-slate-500/30 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wide flex-1 hover:bg-slate-500/50 transition-all duration-300"
+                          className="bg-slate-600/50 border border-slate-500/30 text-slate-300 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold uppercase tracking-wide flex-1 hover:bg-slate-500/50 transition-all duration-300"
                         >
-                          📋 VIEW
+                          📋 <span className="hidden sm:inline">VIEW</span><span className="sm:hidden">SEE</span>
                         </button>
                       </div>
                     </div>
@@ -701,7 +704,8 @@ const Dashboard = () => {
                 ))}
               </div>
             </div>
-        )}
+          )}
+        </div>
       </div>
 
 
@@ -836,7 +840,6 @@ const Dashboard = () => {
       </div>
         </div>
       </div>
-        </div>
       </AuthGuard>
     </DashboardErrorBoundary>
   );

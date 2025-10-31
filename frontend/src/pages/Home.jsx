@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 
-
-
 import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
@@ -22,9 +20,6 @@ export default function Home() {
   const location = useLocation();
   const auth = useAuth();
   const { stats, isOnline } = useRealTime();
-
-  // Achievement system removed
-
 
   // Optimized state management
   const [notification, setNotification] = useState(null);
@@ -92,15 +87,10 @@ export default function Home() {
     { id: 'workout', icon: '🏋️', title: 'WORKOUT DOMINATION', desc: 'AI-powered training with real-time form analysis', color: 'blue' },
     { id: 'analytics', icon: '📊', title: 'PROGRESS ANALYTICS', desc: 'Advanced metrics with predictive insights', color: 'purple' },
     { id: 'goals', icon: '🎯', title: 'GOAL CRUSHING', desc: 'Smart goal setting with achievement tracking', color: 'green' },
-
-
     { id: 'nutrition', icon: '🥗', title: 'NUTRITION TRACKING', desc: 'Track meals, calories, and macros', color: 'green' }
   ]), []);
 
-
-  
   const totalWorkouts = useMemo(() => {
-    // Only show workout count if user is authenticated
     if (!isAuthenticated() || !auth?.user) {
       return 0;
     }
@@ -109,7 +99,6 @@ export default function Home() {
   }, [stats?.totalWorkouts, refreshTrigger, isAuthenticated, auth?.user]);
   
   const todayWorkouts = useMemo(() => {
-    // Only show today's workout count if user is authenticated
     if (!isAuthenticated() || !auth?.user) {
       return 0;
     }
@@ -119,7 +108,6 @@ export default function Home() {
 
   // Optimized quick stats - USER SPECIFIC
   const quickStats = useMemo(() => {
-    // Only show stats if user is authenticated
     if (!isAuthenticated() || !auth?.user) {
       return [
         {
@@ -130,7 +118,6 @@ export default function Home() {
           path: '/login',
           subtitle: 'Login to track your workouts'
         },
-
       ];
     }
     
@@ -143,7 +130,6 @@ export default function Home() {
         path: '/workouts',
         subtitle: totalWorkouts > 0 ? `${totalWorkouts} completed!` : 'No workouts yet - Start your journey!'
       },
-
     ];
   }, [totalWorkouts, isAuthenticated, auth?.user]);
 
@@ -158,22 +144,20 @@ export default function Home() {
   useEffect(() => {
     mountedRef.current = true;
     
-    // Single timer for time updates (reduced frequency)
     timersRef.current.time = setInterval(() => {
       if (mountedRef.current) {
         setCurrentTime(new Date());
       }
-    }, 5000); // Reduced from 1000ms to 5000ms
+    }, 5000);
     
-    // Live users simulation (less frequent)
     timersRef.current.liveUsers = setInterval(() => {
       if (mountedRef.current) {
         setLiveUsers(prev => {
-          const delta = Math.floor(Math.random() * 6) - 2; // Reduced range
+          const delta = Math.floor(Math.random() * 6) - 2;
           return Math.max(100, prev + delta);
         });
       }
-    }, 10000); // Reduced from 5000ms to 10000ms
+    }, 10000);
 
     return () => {
       mountedRef.current = false;
@@ -184,8 +168,8 @@ export default function Home() {
   // Optimized intersection observer
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.1, // Reduced from 0.12
-      rootMargin: '50px' // Added root margin for better performance
+      threshold: 0.1,
+      rootMargin: '50px'
     };
 
     observerRef.current = new IntersectionObserver(
@@ -204,7 +188,6 @@ export default function Home() {
       observerOptions
     );
 
-    // Observe elements with a delay to prevent initial render blocking
     const timeoutId = setTimeout(() => {
       const elements = document.querySelectorAll('[data-animate]');
       elements.forEach(el => observerRef.current?.observe(el));
@@ -222,7 +205,7 @@ export default function Home() {
       if (mountedRef.current) {
         setActiveFeature(prev => (prev + 1) % features.length);
       }
-    }, 5000); // Increased from 4200ms to 5000ms
+    }, 5000);
 
     return () => {
       if (timersRef.current.features) {
@@ -233,8 +216,6 @@ export default function Home() {
 
   // Optimized event listeners
   useEffect(() => {
-
-
     const handleWorkoutComplete = (e) => {
       const detail = e?.detail;
       if (!detail || !mountedRef.current) return;
@@ -243,8 +224,6 @@ export default function Home() {
         ? `🎉 ${detail.exercise} completed! (Saved offline)`
         : `🎉 ${detail.exercise} completed!`;
       setNotification({ type: 'workout', message: msg });
-      
-      // Achievement system removed
       
       setRefreshTrigger(prev => prev + 1);
       setTimeout(() => mountedRef.current && setNotification(null), 3000);
@@ -256,9 +235,7 @@ export default function Home() {
       }
     };
     
-    // Add event listeners
     const events = [
-
       ['workoutCompleted', handleWorkoutComplete],
       ['realTimeStatsUpdate', handleStatsUpdate],
       ['analyticsWorkoutUpdate', handleStatsUpdate]
@@ -277,18 +254,15 @@ export default function Home() {
 
   // Clean fake data on mount - USER SPECIFIC
   useEffect(() => {
-    // Only clean data if user is authenticated
     if (!isAuthenticated() || !auth?.user) {
       console.log('🔒 No authenticated user - skipping workout cleanup');
       return;
     }
     
-    // Clean any fake workout data when component mounts
     try {
       const currentUser = auth.user;
       const workouts = JSON.parse(localStorage.getItem('workoutSync_workouts') || '[]');
       
-      // Filter for real workouts belonging to current user
       const realUserWorkouts = workouts.filter(workout => {
         const isRealWorkout = workout.exercise && 
                              workout.exercise !== 'Workout' && 
@@ -299,16 +273,14 @@ export default function Home() {
                              !workout.id?.includes('fake_') &&
                              !workout.id?.includes('demo_');
         
-        // Check if workout belongs to current user
         const belongsToUser = workout.userId === currentUser.id || 
                              workout.userId === currentUser._id ||
-                             (!workout.userId && isRealWorkout); // Backward compatibility
+                             (!workout.userId && isRealWorkout);
         
         return isRealWorkout && belongsToUser;
       });
       
       if (realUserWorkouts.length !== workouts.length) {
-        // Keep other users' workouts and add current user's real workouts
         const otherUsersWorkouts = workouts.filter(w => 
           w.userId && w.userId !== currentUser.id && w.userId !== currentUser._id
         );
@@ -332,8 +304,6 @@ export default function Home() {
         : `🎉 ${workoutState.exercise} completed!`;
       setNotification({ message, type: 'workout' });
       
-      // Achievement system removed
-      
       navigate(location.pathname, { replace: true });
       setTimeout(() => mountedRef.current && setNotification(null), 3000);
     }
@@ -348,7 +318,7 @@ export default function Home() {
   const handleNav = useCallback((path) => navigate(path), [navigate]);
 
   // Optimized count-up hook
-  function useCountUp(value, duration = 400) { // Reduced duration
+  function useCountUp(value, duration = 400) {
     const [display, setDisplay] = useState(value);
     const rafRef = useRef(null);
 
@@ -364,7 +334,7 @@ export default function Home() {
 
       const step = (now) => {
         const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 2); // Simplified easing
+        const eased = 1 - Math.pow(1 - progress, 2);
         const next = Math.round(fromValue + delta * eased);
         setDisplay(next);
         
@@ -389,7 +359,6 @@ export default function Home() {
     const numericValue = typeof stat.value === 'number' ? stat.value : parseInt(stat.value) || 0;
     const count = useCountUp(numericValue, 300);
     
-    // Show lock icon if not authenticated
     const isLocked = !isAuthenticated() || !auth?.user;
 
     return (
@@ -414,7 +383,6 @@ export default function Home() {
           <div className="space-y-1">
             <div className="text-xl sm:text-2xl font-black text-white">
               {isLocked ? '🔒' : (typeof stat.value === 'number' ? count : stat.value)}
-
             </div>
             
             <div className="text-xs sm:text-sm font-semibold text-slate-300">
@@ -425,7 +393,6 @@ export default function Home() {
               {isLocked ? 'Login to view your stats' : stat.subtitle}
             </div>
             
-            {/* Debug info for development */}
             {process.env.NODE_ENV === 'development' && !isLocked && (
               <div className="text-xs text-slate-500 mt-1">
                 Source: {stats?.dataSource || 'Unknown'}
@@ -449,19 +416,15 @@ export default function Home() {
         aria-pressed={isActive}
         className={`relative group cursor-pointer transform transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-white/20 ${isActive ? 'scale-105' : 'hover:scale-102'}`}
       >
-        {/* Glow Effect */}
         <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500 ${isActive ? 'opacity-40' : ''}`} />
         
-        {/* Main Card */}
         <div className={`relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-500 ${isActive ? 'border-white/30 shadow-3xl' : 'border-white/10 hover:border-white/20'}`}>
-          {/* Icon */}
           <div className="mb-4 sm:mb-6">
             <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110 ${isActive ? 'scale-110' : ''}`}>
               <span className="text-2xl sm:text-3xl">{feature.icon}</span>
             </div>
           </div>
           
-          {/* Content */}
           <div className="space-y-3 sm:space-y-4">
             <h3 className={`font-black text-base sm:text-lg transition-all duration-300 ${isActive ? `text-transparent bg-clip-text bg-gradient-to-r ${c.text.replace('text-', 'from-')} to-white` : `${c.text} group-hover:text-white`}`}>
               {feature.title}
@@ -470,11 +433,8 @@ export default function Home() {
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed min-h-[48px] sm:min-h-[60px] group-hover:text-slate-300 transition-colors duration-300">
               {feature.desc}
             </p>
-            
-
           </div>
           
-          {/* Active Indicator */}
           {isActive && (
             <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
               <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-white to-blue-200 rounded-full animate-ping" />
@@ -482,7 +442,6 @@ export default function Home() {
             </div>
           )}
           
-          {/* Decorative Elements */}
           <div className={`absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br ${c.bg}/10 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 ${isActive ? 'opacity-30' : ''}`} />
           <div className={`absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-tr ${c.bg}/5 rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
         </div>
@@ -494,58 +453,45 @@ export default function Home() {
     const c = colorClasses[stat.color] || colorClasses.blue;
     return (
       <div className="relative group transform transition-all duration-500 hover:scale-105">
-        {/* Glow Effect */}
         <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
         
-        {/* Main Card */}
         <div className="relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-white/20 group-hover:shadow-3xl transition-all duration-500">
-          {/* Icon */}
           <div className="mb-4 sm:mb-6">
             <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110`}>
               <span className="text-2xl sm:text-3xl">{stat.icon}</span>
             </div>
           </div>
           
-          {/* Value */}
           <div className={`text-2xl sm:text-3xl lg:text-4xl font-black mb-2 transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:${c.text.replace('text-', 'from-')} group-hover:to-white ${c.text}`}>
             {stat.value}
           </div>
           
-          {/* Label */}
           <div className="text-white font-bold text-xs sm:text-sm mb-1 sm:mb-2 group-hover:text-slate-100 transition-colors duration-300">
             {stat.label}
           </div>
           
-          {/* Sublabel */}
           <div className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300 font-medium">
             {stat.sublabel}
           </div>
           
-          {/* Decorative Elements */}
           <div className={`absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${c.bg}/10 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
         </div>
       </div>
     );
   };
 
-  /* --------------------------
-     Main render
-     -------------------------- */
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black relative overflow-hidden">
-      {/* Loading Screen Component */}
       {isLoading && (
         <LoadingScreen onLoadingComplete={handleLoadingComplete} />
       )}
 
-      {/* Simplified Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-64 -right-64 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl" />
         <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-bl from-purple-500/8 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 left-1/3 w-[300px] h-[300px] bg-gradient-to-r from-green-500/6 to-transparent rounded-full blur-2xl" />
       </div>
 
-      {/* Hero Section */}
       <div className="relative">
         <Hero />
       </div>
@@ -586,7 +532,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Stats - Show for all users but with different content */}
+        {/* Quick Stats */}
         <section data-animate data-id="quick-stats" className="mb-12">
           <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
             <div className="text-center mb-8">
@@ -611,13 +557,10 @@ export default function Home() {
           </div>
         </section>
 
-
-
         {/* Elite Training Experience - Home1.jpg */}
         <section data-animate data-id="training-experience" id="training-experience" className="mb-20">
           <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Premium Glow Effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
@@ -631,7 +574,6 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    {/* Premium Overlay Stats */}
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex items-center justify-between">
                         <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
@@ -647,7 +589,6 @@ export default function Home() {
                   </div>
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    {/* Premium Decorative Elements */}
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
@@ -683,16 +624,11 @@ export default function Home() {
         <section data-animate data-id="strength-power" id="strength-power" className="mb-20">
           <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Premium Glow Effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-
-                
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
-                 
-                    
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-red-400 to-orange-400 rounded-full" />
@@ -728,7 +664,6 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-l from-red-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    {/* Premium Overlay Stats */}
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex items-center justify-between">
                         <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
@@ -752,12 +687,9 @@ export default function Home() {
         <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-20">
           <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Premium Glow Effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-teal-500 to-green-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-
-                
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
@@ -768,7 +700,6 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-green-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    {/* Premium Overlay Stats */}
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex items-center justify-between">
                         <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
@@ -784,8 +715,6 @@ export default function Home() {
                   </div>
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    {/* Premium Decorative Elements */}
-                    
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-green-400 to-teal-400 rounded-full" />
@@ -821,16 +750,11 @@ export default function Home() {
         <section data-animate data-id="functional-training" id="functional-training" className="mb-20">
           <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Premium Glow Effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-
-                
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
-                    {/* Premium Decorative Elements */}
-                    
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full" />
@@ -865,8 +789,6 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-l from-purple-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-
                   </div>
                 </div>
               </div>
@@ -878,12 +800,9 @@ export default function Home() {
         <section data-animate data-id="elite-community" id="elite-community" className="mb-20">
           <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="relative group">
-              {/* Premium Glow Effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
-
-                
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
                     <img 
@@ -893,13 +812,9 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-             
                   </div>
                   
                   <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    {/* Premium Decorative Elements */}
-                  
                     <div className="mb-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
@@ -933,7 +848,6 @@ export default function Home() {
 
         {/* Enhanced CTA Section */}
         <section data-animate data-id="cta" id="cta" className="text-center relative">
-          {/* Background Effects */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-br from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-slow-pulse" />
             <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-gradient-to-tl from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-full blur-3xl animate-slow-pulse" style={{ animationDelay: '2s' }} />
@@ -970,8 +884,6 @@ export default function Home() {
                   >
                     🚀 GO TO DASHBOARD
                   </button>
-                  
-
                 </>
               ) : (
                 <>
@@ -989,7 +901,6 @@ export default function Home() {
                     🔑 LOGIN
                   </button>
                   
-                  {/* Debug button for development */}
                   {process.env.NODE_ENV === 'development' && (
                     <button 
                       onClick={() => {
@@ -1008,9 +919,6 @@ export default function Home() {
         </section>
       </div>
 
-      {/* Notification system removed as requested */}
-
-      {/* Simplified CSS */}
       <style>
         {`
           @keyframes animate-in {
