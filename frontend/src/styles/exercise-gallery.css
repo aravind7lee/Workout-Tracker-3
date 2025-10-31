@@ -1,0 +1,165 @@
+/* Exercise Gallery Styles - Nutrition Gallery Performance */
+.exercise-gallery-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Enhanced card hover effects */
+.exercise-card {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, box-shadow;
+}
+
+.exercise-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .exercise-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+              0 0 30px rgba(74, 222, 128, 0.1);
+}
+
+/* Image optimization */
+.exercise-card img {
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.exercise-card:hover img {
+  transform: scale(1.1);
+}
+
+/* Text shadow enhancements for better readability */
+.exercise-card-title {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  font-weight: 700;
+}
+
+.exercise-card-subtitle {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+}
+
+.exercise-card-description {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+}
+
+/* Skeleton loader animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-loader {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-loader {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200px 100%;
+}
+
+/* Responsive performance adjustments */
+@media (max-width: 768px) {
+  .exercise-card {
+    margin-bottom: 1rem;
+  }
+  
+  .exercise-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+/* Accessibility improvements */
+.exercise-card:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Performance optimizations for all elements */
+.exercise-gallery-container * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .exercise-card {
+    border: 2px solid currentColor;
+  }
+  
+  .exercise-card-title,
+  .exercise-card-subtitle,
+  .exercise-card-description {
+    text-shadow: none;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .exercise-card,
+  .exercise-card-image {
+    transition: none;
+  }
+  
+  .exercise-card:hover {
+    transform: none;
+  }
+  
+  .skeleton-loader {
+    animation: none;
+  }
+}
+
+/* GPU acceleration for smooth scrolling */
+.exercise-card,
+.exercise-card-image {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Optimize for 60fps animations */
+@media (min-width: 1024px) {
+  .exercise-card {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Smooth scrolling optimization */
+.exercise-gallery-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent layout shifts during image loading */
+.exercise-card-image {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+/* Optimize rendering performance */
+.exercise-card {
+  contain: layout style paint;
+}
+
+/* Intersection observer optimization */
+.exercise-card[data-loaded="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.exercise-card[data-loaded="false"] {
+  opacity: 0;
+  transform: translateY(20px);
+}

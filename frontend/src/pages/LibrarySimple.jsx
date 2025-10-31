@@ -21,6 +21,7 @@ import Library8 from '../assets/Library8.jpg';
 import Library11 from '../assets/Library11.jpg';
 import '../styles/shimmer.css';
 import '../styles/library-header.css';
+import '../styles/exercise-gallery.css';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -86,6 +87,8 @@ export default function LibrarySimple() {
   useEffect(() => {
     setIsOnline(realTimeOnline);
   }, [realTimeOnline]);
+  
+
   
   // Simple data fetching
   useEffect(() => {
@@ -192,7 +195,7 @@ export default function LibrarySimple() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900" style={{ scrollBehavior: 'smooth' }}>
       {/* Premium Exercise Library Hero Section - Full Viewport */}
       <motion.div 
         className="relative w-full h-screen min-h-screen overflow-hidden hero-image-container"
@@ -330,111 +333,88 @@ export default function LibrarySimple() {
       </motion.div>
 
       {/* Exercise Categories Gallery Section */}
-      <section className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-16 sm:py-20">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+        <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
-              <span className="text-xs font-bold tracking-[0.3em] text-blue-400 uppercase">Exercise Categories</span>
-              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200">
-                PREMIUM TRAINING
-              </span>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300">
-                COLLECTION
-              </span>
-            </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Discover our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-semibold">elite exercise library</span> with professional-grade workouts
-            </p>
+          <motion.div 
+            className="text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.h2 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Exercise Categories
+            </motion.h2>
+            
+            <motion.p 
+              className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Discover powerful features designed to transform your fitness journey with precision tracking, 
+              smart insights, and personalized recommendations.
+            </motion.p>
+          </motion.div>
+
+          {/* Gallery Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[
+              { image: Library1, title: "Strength Training", subtitle: "Build Raw Power", description: "Compound movements for maximum strength gains", category: "strength" },
+              { image: Library2, title: "Muscle Building", subtitle: "Mass & Definition", description: "Hypertrophy training for maximum muscle growth", category: "muscle" },
+              { image: Library4, title: "Functional Fitness", subtitle: "Real-World Movement", description: "Practical exercises for daily performance", category: "functional" },
+              { image: Library5, title: "Flexibility & Mobility", subtitle: "Recovery & Movement", description: "Enhance range of motion and recovery", category: "flexibility" },
+              { image: Library6, title: "Heavy Lifting", subtitle: "Elite Technique", description: "Advanced lifting techniques and form", category: "lifting" },
+              { image: Library7, title: "Bodyweight Training", subtitle: "No Equipment Needed", description: "Master your bodyweight movements", category: "bodyweight" },
+              { image: Library8, title: "Sports Performance", subtitle: "Athletic Excellence", description: "Sport-specific training protocols", category: "sports" },
+              { image: Library11, title: "Power Training", subtitle: "Explosive Movement", description: "Develop explosive power and athletic performance", category: "power" }
+            ].map((item, index) => (
+              <ExerciseCard
+                key={index}
+                image={item.image}
+                title={item.title}
+                subtitle={item.subtitle}
+                description={item.description}
+                category={item.category}
+                index={index}
+              />
+            ))}
           </div>
 
-          {/* Exercise Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {/* Strength Training */}
-            <ExerciseCard
-              image={Library1}
-              title="Strength Training"
-              subtitle="Build Raw Power"
-              description="Compound movements for maximum strength gains"
-              category="strength"
-              delay={0.1}
-            />
-            
-            {/* Muscle Building */}
-            <ExerciseCard
-              image={Library2}
-              title="Muscle Building"
-              subtitle="Mass & Definition"
-              description="Hypertrophy training for maximum muscle growth"
-              category="muscle"
-              delay={0.2}
-            />
-            
-            {/* Functional Fitness */}
-            <ExerciseCard
-              image={Library4}
-              title="Functional Fitness"
-              subtitle="Real-World Movement"
-              description="Practical exercises for daily performance"
-              category="functional"
-              delay={0.3}
-            />
-            
-            {/* Flexibility & Mobility */}
-            <ExerciseCard
-              image={Library5}
-              title="Flexibility & Mobility"
-              subtitle="Recovery & Movement"
-              description="Enhance range of motion and recovery"
-              category="flexibility"
-              delay={0.4}
-            />
-            
-            {/* Olympic Lifting */}
-            <ExerciseCard
-              image={Library6}
-              title="Heavy Lifting"
-              subtitle="Elite Technique"
-              description="Advanced lifting techniques and form"
-              category="lifting"
-              delay={0.5}
-            />
-            
-            {/* Bodyweight Training */}
-            <ExerciseCard
-              image={Library7}
-              title="Bodyweight Training"
-              subtitle="No Equipment Needed"
-              description="Master your bodyweight movements"
-              category="bodyweight"
-              delay={0.6}
-            />
-            
-            {/* Sports Performance */}
-            <ExerciseCard
-              image={Library8}
-              title="Sports Performance"
-              subtitle="Athletic Excellence"
-              description="Sport-specific training protocols"
-              category="sports"
-              delay={0.7}
-            />
-            
-            {/* Power Training */}
-            <ExerciseCard
-              image={Library11}
-              title="Power Training"
-              subtitle="Explosive Movement"
-              description="Develop explosive power and athletic performance"
-              category="power"
-              delay={0.8}
-            />
-          </div>
+          {/* Call to Action */}
+          <motion.div 
+            className="text-center mt-12 sm:mt-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <motion.button
+              onClick={() => {
+                const exerciseGrid = document.getElementById('exercise-grid');
+                if (exerciseGrid) {
+                  exerciseGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  setTimeout(() => {
+                    const searchInput = document.querySelector('input[placeholder*="Search exercises"]');
+                    if (searchInput) searchInput.focus();
+                  }, 500);
+                }
+              }}
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Start Your Exercise Journey
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -939,79 +919,110 @@ export default function LibrarySimple() {
   );
 }
 
-// Optimized Exercise Card Component
-const ExerciseCard = ({ image, title, subtitle, description, category, delay = 0 }) => {
-  // Category color mapping
+// Exercise Card with Nutrition Gallery Performance
+const ExerciseCard = ({ image, title, subtitle, description, category, index }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = image;
+  }, [image]);
+
   const categoryColors = {
-    strength: 'from-red-500 to-orange-500',
-    muscle: 'from-blue-500 to-cyan-500',
-    functional: 'from-green-500 to-emerald-500',
-    flexibility: 'from-purple-500 to-pink-500',
-    lifting: 'from-yellow-500 to-orange-500',
-    bodyweight: 'from-indigo-500 to-blue-500',
-    sports: 'from-teal-500 to-green-500',
-    power: 'from-violet-500 to-purple-500'
+    strength: 'from-red-500 to-orange-500', muscle: 'from-blue-500 to-cyan-500',
+    functional: 'from-green-500 to-emerald-500', flexibility: 'from-purple-500 to-pink-500',
+    lifting: 'from-yellow-500 to-orange-500', bodyweight: 'from-indigo-500 to-blue-500',
+    sports: 'from-teal-500 to-green-500', power: 'from-violet-500 to-purple-500'
   };
   
   const categoryIcons = {
-    strength: '💪',
-    muscle: '🔥',
-    functional: '⚡',
-    flexibility: '🧘',
-    lifting: '🏋️',
-    bodyweight: '🤸',
-    sports: '🏆',
-    power: '💥'
+    strength: '💪', muscle: '🔥', functional: '⚡', flexibility: '🧘',
+    lifting: '🏋️', bodyweight: '🤸', sports: '🏆', power: '💥'
   };
   
   const gradientClass = categoryColors[category] || 'from-blue-500 to-cyan-500';
   const icon = categoryIcons[category] || '💪';
   
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
-      {/* Premium Glow Effect */}
-      <div className={`absolute -inset-1 bg-gradient-to-r ${gradientClass} rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition-all duration-500`} />
-      
-      {/* Image Container */}
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ 
+        duration: 0.8, 
+        delay: index * 0.15,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      whileHover={{ 
+        y: -8,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      className="exercise-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 backdrop-blur-sm"
+    >
       <div className="relative h-64 sm:h-72 lg:h-80 overflow-hidden">
-        {/* Main Image */}
-        <img
-          src={image}
-          alt={`${title} - ${subtitle}`}
-          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-          loading="lazy"
-          decoding="async"
-        />
-        
-        {/* Dark Mode Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent dark:from-black/90 dark:via-black/40" />
-        
-        {/* Category Badge */}
-        <div className="absolute top-4 right-4">
-          <div className={`flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r ${gradientClass} rounded-full text-white text-xs font-bold shadow-lg`}>
-            <span>{icon}</span>
-            <span className="uppercase tracking-wider">{category}</span>
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0">
+            <div className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-2xl" />
           </div>
+        )}
+        
+        {!imageError && (
+          <motion.img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            style={{ opacity: imageLoaded ? 1 : 0 }}
+            loading="lazy"
+            decoding="async"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        )}
+        
+        {imageError && (
+          <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
+            <div className="text-white text-6xl">{icon}</div>
+          </div>
+        )}
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        
+        <div className="absolute inset-0 flex flex-col justify-end p-6">
+          <motion.h3 
+            className="text-xl sm:text-2xl font-bold mb-2 text-white"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.15 + 0.3 }}
+          >
+            {title}
+          </motion.h3>
+          
+          <motion.p 
+            className={`text-sm sm:text-base font-medium mb-3 bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.15 + 0.4 }}
+          >
+            {subtitle}
+          </motion.p>
+          
+          <motion.p 
+            className="text-xs sm:text-sm text-gray-300 opacity-90 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.15 + 0.5 }}
+          >
+            {description}
+          </motion.p>
         </div>
         
-        {/* Content Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-          <div>
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white mb-2 leading-tight drop-shadow-lg">
-              {title}
-            </h3>
-            <p className={`text-sm sm:text-base font-bold bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent mb-3 drop-shadow-sm`}>
-              {subtitle}
-            </p>
-            <p className="text-sm sm:text-base text-slate-100 leading-relaxed opacity-95 drop-shadow-sm">
-              {description}
-            </p>
-          </div>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
-      
-      {/* Hover Effect Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-    </div>
+    </motion.div>
   );
 };
