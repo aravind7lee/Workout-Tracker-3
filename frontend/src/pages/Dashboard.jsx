@@ -1,6 +1,7 @@
 // Real-Time MongoDB Dashboard - INSTANT PLAN UPDATES
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 
@@ -227,31 +228,32 @@ const Dashboard = () => {
         <DashboardHero />
       
       {/* Dashboard Content */}
-      <div className="space-y-4 sm:space-y-6 px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+      <div className="space-y-3 sm:space-y-4 md:space-y-6 px-2 sm:px-3 md:px-4 lg:px-6 py-3 sm:py-4 md:py-6 lg:py-8">
       
       {/* Notification removed as requested */}
       
       {/* Header */}
-      <div className="card">
-        <div className="flex flex-col gap-4">
+      <div className="card p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {/* Welcome Section */}
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
               Welcome back{authUser?.name ? `, ${authUser.name}` : ''}! 👋
             </h1>
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
               Track your progress, manage workouts, and achieve your fitness goals efficiently.
             </p>
           </div>
           
           {/* Status Section */}
           <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className={`flex items-center gap-1 px-2 py-1 rounded-full ${
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs">
+              <span className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
                 plansOnline ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
               }`}>
                 {plansOnline ? '🚀' : '❌'}
-                {plansOnline ? 'REAL-TIME MongoDB + INSTANT Plan Updates' : 'MongoDB connection failed'}
+                <span className="hidden sm:inline">{plansOnline ? 'REAL-TIME MongoDB + INSTANT Plan Updates' : 'MongoDB connection failed'}</span>
+                <span className="sm:hidden">{plansOnline ? 'LIVE' : 'OFFLINE'}</span>
               </span>
               {planLastSync && (
                 <span className="text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
@@ -274,410 +276,567 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row gap-2">
             <button
               onClick={handleRefresh}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm flex-1 sm:flex-none"
+              className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none"
             >
-              🔄 Refresh
+              🔄 <span className="hidden sm:inline">Refresh</span>
             </button>
             <button
               onClick={handleForceSync}
               disabled={planSyncStatus === 'syncing'}
-              className="btn bg-green-600 hover:bg-green-700 text-white text-sm flex-1 sm:flex-none disabled:opacity-50"
+              className="btn bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none disabled:opacity-50"
             >
-              {planSyncStatus === 'syncing' ? '🔄 Syncing...' : '⚡ Force Sync'}
+              {planSyncStatus === 'syncing' ? '🔄' : '⚡'} <span className="hidden sm:inline">{planSyncStatus === 'syncing' ? 'Syncing...' : 'Force Sync'}</span>
             </button>
 
             <button
               onClick={handleLogout}
-              className="btn bg-red-600 hover:bg-red-700 text-white text-sm flex-1 sm:flex-none"
+              className="btn bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none"
             >
-              Logout
+              <span className="hidden sm:inline">Logout</span><span className="sm:hidden">Exit</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Dashboard Feature Sections - After Header */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        <DashboardImageCard
-          image={Dashboard1}
-          title="TRANSFORM YOUR FITNESS JOURNEY"
-          description="Track every rep, celebrate every milestone, and watch your strength transform with intelligent analytics that fuel your motivation."
-          gradient="from-blue-400 to-cyan-400"
-          glowColor="blue"
-          badgeText=""
-          badgeIcon="✨"
-        />
-
-        <DashboardImageCard
-          image={Dashboard2}
-          title="ELEVATE YOUR PERFORMANCE"
-          description="Unlock your potential with custom workout plans designed for your goals, backed by smart insights that evolve with your journey."
-          gradient="from-green-400 to-emerald-400"
-          glowColor="green"
-          badgeText=""
-          badgeIcon="💫"
-        />
-      </div>
-
-      {/* Real-Time Stats - MongoDB Data Only */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
-        <button 
-          onClick={() => navigate('/workouts')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 text-left relative p-3 sm:p-4"
-        >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">💪</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
-              <div className="text-slate-400 text-xs sm:text-sm">Total Workouts</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} completed by you!` : 'Start your first workout'}
+      {/* Enhanced Gym-Style Feature Hero */}
+      <div className="relative mb-4 sm:mb-6 md:mb-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-red-500/10 to-yellow-500/10 rounded-2xl sm:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-orange-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                  <span className="text-xl sm:text-2xl">🔥</span>
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider">BEAST MODE</h3>
+                  <p className="text-orange-400 text-xs sm:text-sm font-semibold">ACTIVATED</p>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+                Transform your physique with precision tracking, real-time analytics, and the mindset of champions.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button 
+                  onClick={() => navigate('/my-plans')}
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/25 text-sm sm:text-base"
+                >
+                  🏋️ <span className="hidden sm:inline">START TRAINING</span><span className="sm:hidden">TRAIN</span>
+                </button>
+                <button 
+                  onClick={() => navigate('/analytics')}
+                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:bg-slate-600/50 transition-all duration-300 text-sm sm:text-base"
+                >
+                  📊 <span className="hidden sm:inline">VIEW STATS</span><span className="sm:hidden">STATS</span>
+                </button>
               </div>
             </div>
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-lg"></div>
+              <img 
+                src={Dashboard1} 
+                alt="Gym Training" 
+                className="relative w-full h-48 sm:h-64 md:h-72 lg:h-96 object-contain rounded-2xl border border-orange-500/30 bg-slate-800/50"
+              />
+            </motion.div>
           </div>
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-blue-400/70">
-            {workoutStats?.lastUpdate ? '🔴' : isOnline && stats.isRealTime ? '🔴' : '❌'}
+        </div>
+      </div>
+
+      {/* Second Enhanced Gym Feature Section */}
+      <div className="relative mb-4 sm:mb-6 md:mb-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 rounded-2xl sm:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-blue-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+            <motion.div 
+              className="relative order-2 lg:order-1"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-lg"></div>
+              <img 
+                src={Dashboard2} 
+                alt="Elite Performance" 
+                className="relative w-full h-48 sm:h-64 md:h-72 lg:h-96 object-contain rounded-2xl border border-blue-500/30 bg-slate-800/50"
+              />
+            </motion.div>
+            <motion.div 
+              className="space-y-6 order-1 lg:order-2"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+            >
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                  <span className="text-xl sm:text-2xl">⚡</span>
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider">ELITE PERFORMANCE</h3>
+                  <p className="text-blue-400 text-xs sm:text-sm font-semibold">UNLEASHED</p>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+                Elevate your training with advanced analytics, personalized insights, and the power to break every limit.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button 
+                  onClick={() => navigate('/analytics')}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 text-sm sm:text-base"
+                >
+                  📊 <span className="hidden sm:inline">VIEW ANALYTICS</span><span className="sm:hidden">ANALYTICS</span>
+                </button>
+                <button 
+                  onClick={() => navigate('/library')}
+                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:bg-slate-600/50 transition-all duration-300 text-sm sm:text-base"
+                >
+                  📚 <span className="hidden sm:inline">EXERCISE LIBRARY</span><span className="sm:hidden">LIBRARY</span>
+                </button>
+              </div>
+            </motion.div>
           </div>
+        </div>
+      </div>
+
+      {/* Enhanced Gym-Style Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+        <button 
+          onClick={() => navigate('/workouts')}
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-blue-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 text-left overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-lg sm:text-xl md:text-2xl">💪</span>
+              </div>
+              <div className="text-xs text-blue-400 bg-blue-500/20 px-2 py-1 rounded-full">
+                {workoutStats?.lastUpdate ? 'LIVE' : isOnline && stats.isRealTime ? 'LIVE' : 'OFF'}
+              </div>
+            </div>
+            <div className="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
+            <div className="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-1 sm:mb-2">TOTAL WORKOUTS</div>
+            <div className="text-xs text-blue-400 font-medium">
+              <span className="hidden sm:inline">{(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} sessions crushed!` : 'Ready to dominate?'}</span>
+              <span className="sm:hidden">{(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} done!` : 'Start now!'}</span>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         </button>
         
 
         
         <button 
           onClick={() => navigate('/analytics')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20 text-left relative p-3 sm:p-4"
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-green-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 text-left overflow-hidden"
         >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">📊</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
-              <div className="text-slate-400 text-xs sm:text-sm">This Week</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} by you this week!` : 'No workouts yet'}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-2xl">📊</span>
+              </div>
+              <div className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-full">
+                {isOnline && stats.isRealTime ? 'LIVE' : 'OFFLINE'}
               </div>
             </div>
+            <div className="text-3xl font-black text-white mb-2">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
+            <div className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">THIS WEEK</div>
+            <div className="text-xs text-green-400 font-medium">
+              {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} sessions this week!` : 'Time to get started!'}
+            </div>
           </div>
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-green-400/70">
-            {isOnline && stats.isRealTime ? '🔴' : '❌'}
-          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         </button>
         
 
         
         <button 
           onClick={() => navigate('/my-plans')}
-          className="card cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20 text-left relative p-3 sm:p-4"
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-orange-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 text-left overflow-hidden"
         >
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-base sm:text-lg lg:text-2xl">📋</span>
-            </div>
-            <div className="min-w-0 text-center sm:text-left">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-                {dashboardStats.totalPlans}
-                {planSyncStatus === 'syncing' && (
-                  <div className="animate-spin w-3 h-3 sm:w-4 sm:h-4 border border-orange-500 border-t-transparent rounded-full"></div>
-                )}
-              </div>
-              <div className="text-slate-400 text-xs sm:text-sm">Workout Plans</div>
-              <div className="text-xs text-green-400 hidden sm:block">
-                {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans ready • REAL-TIME` : 'Create your first plan'}
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-orange-400/70">
-            {plansOnline && isRealTime ? '🚀' : '❌'}
-          </div>
-        </button>
-        
-
-      </div>
-
-      {/* Real-Time Quick Actions */}
-      <div className="card">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Quick Actions</h2>
-          <div className="text-xs text-green-400 flex items-center gap-1">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            Real-time Data
-          </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-          <button 
-            onClick={() => navigate('/library')}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white flex-col h-auto py-3 sm:py-4 lg:py-6 transition-all hover:scale-105 relative text-center"
-          >
-            <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2">📚</div>
-            <div className="font-medium text-xs sm:text-sm lg:text-base">Exercise Library</div>
-            <div className="text-xs text-blue-200 mt-1 hidden sm:block">
-              Browse exercises
-            </div>
-            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-blue-300/70">
-              {isOnline && stats.isRealTime ? '🔴' : '❌'}
-            </div>
-          </button>
-          
-          <button 
-            onClick={() => navigate('/my-plans')}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-col h-auto py-3 sm:py-4 lg:py-6 transition-all hover:scale-105 relative text-center"
-          >
-            <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2">📋</div>
-            <div className="font-medium text-xs sm:text-sm lg:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
-              <span className="whitespace-nowrap">My Plans ({dashboardStats.totalPlans})</span>
-              {planSyncStatus === 'syncing' && (
-                <div className="animate-spin w-3 h-3 border border-green-300 border-t-transparent rounded-full"></div>
-              )}
-            </div>
-            <div className="text-xs text-green-200 mt-1 px-1 leading-tight">
-              {dashboardStats.totalPlans > 0 ? (
-                <>
-                  <span className="block sm:hidden">{dashboardStats.totalPlans} plans</span>
-                  <span className="hidden sm:block">{dashboardStats.totalPlans} plans • INSTANT</span>
-                </>
-              ) : (
-                <span className="block">Create first plan</span>
-              )}
-            </div>
-            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 text-xs text-green-300/70">
-              {plansOnline && isRealTime ? '🚀' : '❌'}
-            </div>
-          </button>
-          
-          <button 
-            onClick={() => navigate('/nutrition')}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
-          >
-            <div className="text-2xl sm:text-3xl mb-2">🍎</div>
-            <div className="font-medium text-sm sm:text-base">Meal Planner</div>
-            <div className="text-xs text-orange-200 mt-1">
-              {stats.totalMeals > 0 ? `${stats.totalMeals} meals logged` : 'Track your nutrition'}
-            </div>
-            <div className="absolute top-2 right-2 text-xs text-orange-300/70">
-              {isOnline && stats.isRealTime ? '🔴' : '❌'}
-            </div>
-          </button>
-          
-          <button 
-            onClick={() => navigate('/analytics')}
-            className="btn bg-purple-600 hover:bg-purple-700 text-white flex-col h-auto py-4 sm:py-6 transition-all hover:scale-105 relative"
-          >
-            <div className="text-2xl sm:text-3xl mb-2">📊</div>
-            <div className="font-medium text-sm sm:text-base">Analytics</div>
-            <div className="text-xs text-purple-200 mt-1">
-              View your progress
-            </div>
-            <div className="absolute top-2 right-2 text-xs text-purple-300/70">
-              {isOnline && stats.isRealTime ? '🔴' : '❌'}
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Saved Plans */}
-      <div className="card">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">My Workout Plans</h2>
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            {recentPlans && recentPlans.length > 3 && (
-              <button
-                onClick={() => setShowAllPlans(!showAllPlans)}
-                className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm"
-              >
-                {showAllPlans ? 'Show Less' : `Show More (${recentPlans.length})`}
-              </button>
-            )}
-            <button
-              onClick={() => navigate('/plans')}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm w-full sm:w-auto"
-            >
-              + Create Plan
-            </button>
-          </div>
-        </div>
-        {!recentPlans || recentPlans.length === 0 ? (
-          <div className="text-center py-6 sm:py-8">
-            <div className="text-3xl sm:text-4xl mb-4">📋</div>
-            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-              {dashboardStats.loading ? 'Loading plans...' : 'No workout plans yet. Create your first plan!'}
-            </p>
-            <div className="text-xs text-slate-500 mb-4">
-              {plansOnline ? '🚀 Real-time MongoDB data' : '📱 Offline mode'}
-            </div>
-            <button 
-              onClick={() => navigate('/plans')}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
-            >
-              Create Plan
-            </button>
-          </div>
-        ) : (
-          <div>
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs text-green-400 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                {plansOnline ? 'REAL-TIME MongoDB Plans' : 'Local Plans'}
-              </span>
-              <span className="text-xs text-slate-400">
-                {dashboardStats.totalPlans} total • {planStats.syncedPlans} synced
-              </span>
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-2xl">📋</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {planSyncStatus === 'syncing' && (
+                  <div className="animate-spin w-3 h-3 border border-orange-500 border-t-transparent rounded-full"></div>
+                )}
+                <div className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-full">
+                  {plansOnline && isRealTime ? 'SYNC' : 'OFFLINE'}
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {(showAllPlans ? recentPlans : recentPlans.slice(0, 3)).map((plan, index) => (
-                <div key={plan.id || index} className="p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors relative">
-                  {/* Sync Status Badge */}
-                  <div className="absolute top-2 right-2">
-                    {plan.synced ? (
-                      <div className="w-2 h-2 bg-green-400 rounded-full" title="Synced to MongoDB"></div>
-                    ) : (
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" title="Pending sync"></div>
-                    )}
+            <div className="text-3xl font-black text-white mb-2">{dashboardStats.totalPlans}</div>
+            <div className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">WORKOUT PLANS</div>
+            <div className="text-xs text-orange-400 font-medium">
+              {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans locked & loaded!` : 'Build your arsenal!'}
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-yellow-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+        </button>
+      </div>
+
+      {/* Enhanced Quick Actions - Gym Style */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-cyan-500/5 rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-3xl border border-purple-500/20 p-8 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-black text-white uppercase tracking-wider mb-2">QUICK ACTIONS</h2>
+              <p className="text-slate-400 text-sm">Your fitness arsenal at your fingertips</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/20 px-3 py-2 rounded-full">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              REAL-TIME DATA
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <button 
+              onClick={() => navigate('/library')}
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-blue-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 text-center overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-2xl">📚</span>
+                </div>
+                <div className="font-bold text-white text-sm uppercase tracking-wide mb-2">EXERCISE LIBRARY</div>
+                <div className="text-xs text-blue-400 font-medium">Browse arsenal</div>
+                <div className="absolute top-2 right-2 text-xs text-blue-400">
+                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            </button>
+            
+            <button 
+              onClick={() => navigate('/my-plans')}
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-green-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 text-center overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-2xl">📋</span>
+                </div>
+                <div className="font-bold text-white text-sm uppercase tracking-wide mb-1 flex items-center justify-center gap-2">
+                  MY PLANS ({dashboardStats.totalPlans})
+                  {planSyncStatus === 'syncing' && (
+                    <div className="animate-spin w-3 h-3 border border-green-300 border-t-transparent rounded-full"></div>
+                  )}
+                </div>
+                <div className="text-xs text-green-400 font-medium">
+                  {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} ready` : 'Build arsenal'}
+                </div>
+                <div className="absolute top-2 right-2 text-xs text-green-400">
+                  {plansOnline && isRealTime ? '🚀' : '❌'}
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            </button>
+            
+            <button 
+              onClick={() => navigate('/nutrition')}
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-orange-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/20 text-center overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-2xl">🍎</span>
+                </div>
+                <div className="font-bold text-white text-sm uppercase tracking-wide mb-2">MEAL PLANNER</div>
+                <div className="text-xs text-orange-400 font-medium">
+                  {stats.totalMeals > 0 ? `${stats.totalMeals} meals` : 'Fuel up'}
+                </div>
+                <div className="absolute top-2 right-2 text-xs text-orange-400">
+                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-yellow-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            </button>
+            
+            <button 
+              onClick={() => navigate('/analytics')}
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-purple-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 text-center overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-2xl">📊</span>
+                </div>
+                <div className="font-bold text-white text-sm uppercase tracking-wide mb-2">ANALYTICS</div>
+                <div className="text-xs text-purple-400 font-medium">Track progress</div>
+                <div className="absolute top-2 right-2 text-xs text-purple-400">
+                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Workout Plans Section */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-blue-500/5 to-purple-500/5 rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-3xl border border-green-500/20 p-8 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-black text-white uppercase tracking-wider mb-2">MY WORKOUT PLANS</h2>
+              <p className="text-slate-400 text-sm">Your personalized training arsenal</p>
+            </div>
+            <div className="flex gap-3">
+              {recentPlans && recentPlans.length > 3 && (
+                <button
+                  onClick={() => setShowAllPlans(!showAllPlans)}
+                  className="bg-orange-500/20 border border-orange-500/30 text-orange-400 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-orange-500/30 transition-all duration-300"
+                >
+                  {showAllPlans ? 'Show Less' : `Show More (${recentPlans.length})`}
+                </button>
+              )}
+              <button
+                onClick={() => navigate('/plans')}
+                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+              >
+                ⚡ CREATE PLAN
+              </button>
+            </div>
+          </div>
+          {!recentPlans || recentPlans.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">📋</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4 uppercase tracking-wide">
+                {dashboardStats.loading ? 'LOADING ARSENAL...' : 'BUILD YOUR ARSENAL'}
+              </h3>
+              <p className="text-slate-400 mb-6 text-base max-w-md mx-auto">
+                {dashboardStats.loading ? 'Syncing your workout plans...' : 'No workout plans yet. Time to create your first masterpiece!'}
+              </p>
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 mb-6">
+                <span className={`w-2 h-2 rounded-full ${plansOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></span>
+                {plansOnline ? 'REAL-TIME MONGODB DATA' : 'OFFLINE MODE'}
+              </div>
+              <button 
+                onClick={() => navigate('/plans')}
+                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
+              >
+                🚀 CREATE FIRST PLAN
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/20 px-3 py-2 rounded-full">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  {plansOnline ? 'REAL-TIME MONGODB PLANS' : 'LOCAL PLANS'}
+                </div>
+                <div className="text-xs text-slate-400 bg-slate-700/50 px-3 py-2 rounded-full">
+                  {dashboardStats.totalPlans} TOTAL • {planStats.syncedPlans} SYNCED
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(showAllPlans ? recentPlans : recentPlans.slice(0, 3)).map((plan, index) => (
+                  <div key={plan.id || index} className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-slate-600/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:border-green-500/30 overflow-hidden">
+                    {/* Sync Status Badge */}
+                    <div className="absolute top-3 right-3">
+                      {plan.synced ? (
+                        <div className="w-3 h-3 bg-green-400 rounded-full shadow-lg" title="Synced to MongoDB"></div>
+                      ) : (
+                        <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg" title="Pending sync"></div>
+                      )}
+                    </div>
+                    
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between mb-4 pr-6">
+                        <h3 className="font-bold text-white text-lg uppercase tracking-wide truncate">{plan.name || 'UNNAMED PLAN'}</h3>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-xs text-slate-400 bg-slate-600/50 px-3 py-1 rounded-full uppercase tracking-wide">
+                          {plan.category || 'GENERAL'}
+                        </span>
+                        <span className="text-xs text-green-400 font-semibold">
+                          {plan.exercises?.length || 0} EXERCISES
+                        </span>
+                        {plan.isTemp && <span className="text-xs text-yellow-400 font-semibold">• CREATING...</span>}
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => {
+                            const workoutId = plan.id || plan.tempId || `temp_${Date.now()}`;
+                            console.log('🚀 Starting workout for plan:', plan.name, 'ID:', workoutId);
+                            navigate(`/workout/${workoutId}`);
+                          }}
+                          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wide flex-1 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+                          title={`Start workout: ${plan.name}`}
+                        >
+                          🏋️ START
+                        </button>
+                        <button 
+                          onClick={() => navigate('/my-plans')}
+                          className="bg-slate-600/50 border border-slate-500/30 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wide flex-1 hover:bg-slate-500/50 transition-all duration-300"
+                        >
+                          📋 VIEW
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+        )}
+      </div>
+
+
+
+      {/* Enhanced Recent Workouts Section */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-orange-500/5 to-yellow-500/5 rounded-2xl sm:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-red-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
+            <div>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black text-white uppercase tracking-wider mb-1 sm:mb-2">RECENT WORKOUTS</h2>
+              <p className="text-slate-400 text-xs sm:text-sm">Your training history and achievements</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              {recentWorkouts.length > 5 && (
+                <button
+                  onClick={() => setShowAllWorkouts(!showAllWorkouts)}
+                  className="bg-blue-500/20 border border-blue-500/30 text-blue-400 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-blue-500/30 transition-all duration-300"
+                >
+                  <span className="hidden sm:inline">{showAllWorkouts ? 'Show Less' : `Show More (${recentWorkouts.length})`}</span>
+                  <span className="sm:hidden">{showAllWorkouts ? 'Less' : `More (${recentWorkouts.length})`}</span>
+                </button>
+              )}
+              <button
+                onClick={() => navigate('/my-plans')}
+                className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25"
+              >
+                🔥 <span className="hidden sm:inline">START WORKOUT</span><span className="sm:hidden">START</span>
+              </button>
+            </div>
+          </div>
+          {!recentWorkouts || recentWorkouts.length === 0 ? (
+            <div className="text-center py-8 sm:py-12">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <span className="text-3xl sm:text-4xl">🏋️</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide">
+                TIME TO DOMINATE
+              </h3>
+              <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4">
+                {isOnline ? `No completed workouts found for ${authUser?.name || 'your account'}. Ready to make history?` : 'No completed workouts found in local storage. Time to get started!'}
+              </p>
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 mb-4 sm:mb-6">
+                <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></span>
+                <span className="hidden sm:inline">{isOnline ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || 'USER'}` : 'OFFLINE DATA FROM DEVICE'}</span>
+                <span className="sm:hidden">{isOnline ? 'LIVE DATA' : 'OFFLINE'}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+                <button 
+                  onClick={() => navigate('/my-plans')}
+                  className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25 text-sm sm:text-base"
+                >
+                  📋 <span className="hidden sm:inline">VIEW PLANS</span><span className="sm:hidden">PLANS</span>
+                </button>
+                <button 
+                  onClick={() => navigate('/library')}
+                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold uppercase tracking-wide hover:bg-slate-600/50 transition-all duration-300 text-sm sm:text-base"
+                >
+                  📚 <span className="hidden sm:inline">BROWSE EXERCISES</span><span className="sm:hidden">LIBRARY</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+                <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/20 px-3 py-2 rounded-full">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="hidden sm:inline">{isOnline ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || 'YOU'}` : 'YOUR LOCAL WORKOUTS'}</span>
+                  <span className="sm:hidden">{isOnline ? 'LIVE DATA' : 'LOCAL'}</span>
+                </div>
+                <div className="text-xs text-slate-400 bg-slate-700/50 px-3 py-2 rounded-full">
+                  {recentWorkouts.length} WORKOUT{recentWorkouts.length !== 1 ? 'S' : ''} <span className="hidden sm:inline">COMPLETED</span>
+                </div>
+              </div>
+              {(showAllWorkouts ? recentWorkouts : recentWorkouts.slice(0, 5)).map((workout, index) => (
+                <div key={workout.id || index} className="group relative bg-gradient-to-r from-slate-800/80 to-slate-700/80 border border-slate-600/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-green-500/30 overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-emerald-500 rounded-l-xl sm:rounded-l-2xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm sm:text-lg">✓</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate">
+                          {workout.exercise || workout.planName || workout.exerciseName || 'WORKOUT SESSION'}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mt-1">
+                          <span className="bg-slate-600/50 px-2 py-1 rounded-full">
+                            {workout.exercises?.length || 1} EX{(workout.exercises?.length || 1) !== 1 ? 'S' : ''}
+                          </span>
+                          <span className="text-green-400 font-semibold">✓ DONE</span>
+                          {workout.synced && <span className="text-blue-400 font-semibold hidden sm:inline">☁️ SYNCED</span>}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs text-slate-400 font-semibold uppercase tracking-wide">
+                        {workout.completedAt ? (
+                          new Date(workout.completedAt).toLocaleDateString() === new Date().toLocaleDateString() 
+                            ? 'TODAY' 
+                            : new Date(workout.completedAt).toLocaleDateString().toUpperCase()
+                        ) : 'TODAY'}
+                      </div>
+                      <button
+                        onClick={() => {
+                          const workoutId = workout.planId || workout.id;
+                          if (workoutId) {
+                            console.log('🔄 Repeating workout:', workout.exercise || workout.planName, 'ID:', workoutId);
+                            navigate(`/workout/${workoutId}`);
+                          } else {
+                            console.warn('⚠️ Workout ID missing, redirecting to plans');
+                            navigate('/my-plans');
+                          }
+                        }}
+                        className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/25"
+                        title={`Repeat workout: ${workout.exercise || workout.planName || 'Workout Session'}`}
+                      >
+                        🔄 <span className="hidden sm:inline">REPEAT</span>
+                      </button>
+                    </div>
                   </div>
                   
-                  <div className="flex items-start justify-between mb-3 pr-4">
-                    <h3 className="font-medium text-white text-sm sm:text-base truncate">{plan.name || 'Unnamed Plan'}</h3>
-                    <span className="text-xs text-slate-400 bg-slate-600/50 px-2 py-1 rounded flex-shrink-0 ml-2">
-                      {plan.category || 'General'}
-                    </span>
-                  </div>
-                  <div className="text-xs sm:text-sm text-slate-400 mb-3">
-                    {plan.exercises?.length || 0} {(plan.exercises?.length || 0) === 1 ? 'exercise' : 'exercises'}
-                    {plan.isTemp && <span className="text-yellow-400 ml-2">• Creating...</span>}
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        const workoutId = plan.id || plan.tempId || `temp_${Date.now()}`;
-                        console.log('🚀 Starting workout for plan:', plan.name, 'ID:', workoutId);
-                        navigate(`/workout/${workoutId}`);
-                      }}
-                      className="btn bg-green-600 hover:bg-green-700 text-white text-xs flex-1 font-medium"
-                      title={`Start workout: ${plan.name}`}
-                    >
-                      🏋️ Start Workout
-                    </button>
-                    <button 
-                      onClick={() => navigate('/my-plans')}
-                      className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs flex-1"
-                    >
-                      📋 View All
-                    </button>
-                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                 </div>
               ))}
             </div>
-          </div>
-        )}
-      </div>
-
-
-
-      {/* Recent Workouts */}
-      <div className="card">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Recent Workouts</h2>
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            {recentWorkouts.length > 5 && (
-              <button
-                onClick={() => setShowAllWorkouts(!showAllWorkouts)}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
-              >
-                {showAllWorkouts ? 'Show Less' : `Show More (${recentWorkouts.length})`}
-              </button>
-            )}
-            <button
-              onClick={() => navigate('/my-plans')}
-              className="btn bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm"
-            >
-              🏋️ Start Workout
-            </button>
-          </div>
+          )}
         </div>
-        {!recentWorkouts || recentWorkouts.length === 0 ? (
-          <div className="text-center py-6 sm:py-8">
-            <div className="text-3xl sm:text-4xl mb-4">🏋️</div>
-            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-              {isOnline ? `No completed workouts found for your account (${authUser?.name || 'User'}).` : 'No completed workouts found in your local storage.'}
-            </p>
-            <p className="text-xs text-slate-500 mb-4">
-              {isOnline ? `Real-time data from MongoDB for user: ${authUser?.id || 'Unknown'}` : 'Offline data from device storage'}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button 
-                onClick={() => navigate('/my-plans')}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                View My Plans
-              </button>
-              <button 
-                onClick={() => navigate('/library')}
-                className="btn-secondary"
-              >
-                Browse Exercises
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-3 sm:space-y-4">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-green-400 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                {isOnline ? `Real-time data for ${authUser?.name || 'you'}` : 'Your local workouts'}
-              </span>
-              <span className="text-xs text-slate-400">
-                {recentWorkouts.length} your workout{recentWorkouts.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-            {(showAllWorkouts ? recentWorkouts : recentWorkouts.slice(0, 5)).map((workout, index) => (
-              <div key={workout.id || index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors border-l-2 sm:border-l-4 border-green-500">
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium text-white text-sm sm:text-base truncate">
-                    {workout.exercise || workout.planName || workout.exerciseName || 'Workout Session'}
-                  </div>
-                  <div className="text-xs sm:text-sm text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
-                    <span>{workout.exercises?.length || 1} exercise{(workout.exercises?.length || 1) !== 1 ? 's' : ''}</span>
-                    <span>•</span>
-                    <span className="text-green-400 font-medium">✓ Completed</span>
-                    {workout.synced && <span className="text-blue-400">☁️ Synced</span>}
-
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                    <div className="text-xs sm:text-sm text-slate-400 flex-shrink-0">
-                      {workout.completedAt ? (
-                        new Date(workout.completedAt).toLocaleDateString() === new Date().toLocaleDateString() 
-                          ? 'Today' 
-                          : new Date(workout.completedAt).toLocaleDateString()
-                      ) : 'Today'}
-                    </div>
-                    <button
-                      onClick={() => {
-                        const workoutId = workout.planId || workout.id;
-                        if (workoutId) {
-                          console.log('🔄 Repeating workout:', workout.exercise || workout.planName, 'ID:', workoutId);
-                          navigate(`/workout/${workoutId}`);
-                        } else {
-                          console.warn('⚠️ Workout ID missing, redirecting to plans');
-                          navigate('/my-plans');
-                        }
-                      }}
-                      className="btn bg-orange-600 hover:bg-orange-700 text-white text-xs px-2 sm:px-3 py-1 w-full sm:w-auto"
-                      title={`Repeat workout: ${workout.exercise || workout.planName || 'Workout Session'}`}
-                    >
-                      🔄 Repeat
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
         </div>
       </div>
+        </div>
       </AuthGuard>
     </DashboardErrorBoundary>
   );

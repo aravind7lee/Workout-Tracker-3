@@ -299,18 +299,31 @@ export default function LibrarySimple() {
                 animate={imageLoaded ? "visible" : "hidden"}
                 variants={fadeIn}
               >
-                <h1 
+                <motion.h1 
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 hero-text-contrast leading-tight"
                   style={{ color: '#f59e0b' }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   Exercise Library
-                </h1>
+                </motion.h1>
                 
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl hero-text-contrast max-w-2xl mx-auto font-medium leading-relaxed px-2">
+                <motion.p 
+                  className="text-sm sm:text-base md:text-lg lg:text-xl hero-text-contrast max-w-2xl mx-auto font-medium leading-relaxed px-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                >
                   Browse, track, and customize your exercises with ease.
-                </p>
+                </motion.p>
                 
-                <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                <motion.div 
+                  className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.8, delay: 0.7 }}
+                >
                   <button 
                     onClick={() => document.getElementById('exercise-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                     className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-colors duration-200 text-base sm:text-lg"
@@ -323,7 +336,7 @@ export default function LibrarySimple() {
                   >
                     🔥 START TRAINING
                   </button>
-                </div>
+                </motion.div>
               </motion.div>
             </div>
             

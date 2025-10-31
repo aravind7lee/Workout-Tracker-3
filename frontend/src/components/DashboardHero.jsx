@@ -146,32 +146,35 @@ const DashboardHero = () => {
                         animate="visible"
                       >
              <motion.h1 
-                       className="font-heading font-black mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tight"
+                       className="font-heading font-black mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-8xl tracking-tight"
                        variants={itemVariants}
                        style={{
-                         color: '#f59e0b',
-                         textShadow: '0 8px 32px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2)',
-                         filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))'
+                         background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #ffd700 50%, #ff6b35 75%, #f7931e 100%)',
+                         WebkitBackgroundClip: 'text',
+                         WebkitTextFillColor: 'transparent',
+                         backgroundClip: 'text',
+                         textShadow: '0 8px 32px rgba(255,107,53,0.4), 0 4px 16px rgba(247,147,30,0.3)',
+                         filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))'
                        }}
                      >
-                       Dashboard
+                       DASHBOARD
                      </motion.h1>
             
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-              className="text-lg sm:text-xl md:text-2xl font-semibold max-w-3xl mx-auto font-body leading-relaxed"
+              className="text-xl sm:text-2xl md:text-3xl font-bold max-w-4xl mx-auto font-body leading-relaxed uppercase tracking-wider"
               style={{
                 color: '#f1f5f9',
-                textShadow: '0 4px 12px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4)',
-                letterSpacing: '0.025em'
+                textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 2px 6px rgba(0,0,0,0.6)',
+                letterSpacing: '0.1em'
               }}
             >
-              Track your progress, view stats, and manage your workouts effortlessly.
+              DOMINATE YOUR FITNESS JOURNEY 
             </motion.p>
 
-            {/* Status Badge */}
+            {/* Enhanced Status Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -179,28 +182,29 @@ const DashboardHero = () => {
               className="mt-8 inline-block"
             >
               <div 
-                className="px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 shadow-2xl"
+                className="px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 lg:px-10 lg:py-5 rounded-xl sm:rounded-2xl backdrop-blur-md border border-orange-500/30 shadow-2xl"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)'
+                  background: 'linear-gradient(135deg, rgba(255,107,53,0.2) 0%, rgba(247,147,30,0.1) 100%)',
+                  boxShadow: '0 8px 32px rgba(255,107,53,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
                 }}
               >
-                <div className="flex items-center gap-3 text-base font-semibold">
+                <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-sm sm:text-base md:text-lg font-bold">
                   <div 
-                    className="w-3 h-3 rounded-full animate-pulse shadow-lg"
+                    className="w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-pulse shadow-lg flex-shrink-0"
                     style={{ 
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      boxShadow: '0 0 12px rgba(16, 185, 129, 0.6)'
+                      background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)',
+                      boxShadow: '0 0 16px rgba(255,107,53, 0.8)'
                     }}
                   ></div>
                   <span 
-                    className="font-body tracking-wide"
+                    className="font-body tracking-wide sm:tracking-wider uppercase text-center"
                     style={{
                       color: '#f8fafc',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                      textShadow: '0 2px 4px rgba(0,0,0,0.7)'
                     }}
                   >
-                    Real-time tracking active
+                    <span className="hidden sm:inline">🔥 REAL-TIME BEAST TRACKING ACTIVE</span>
+                    <span className="sm:hidden">🔥 BEAST MODE ACTIVE</span>
                   </span>
                 </div>
               </div>

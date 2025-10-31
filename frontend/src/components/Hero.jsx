@@ -110,54 +110,108 @@ export default function Hero() {
             animate="visible"
           >
             <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-              {/* Main Title */}
-             <motion.h1
+              {/* Main Title with Advanced Animation */}
+              <motion.h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
-                variants={itemVariants}
+                initial={{ opacity: 0, y: 50, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  duration: 1.2, 
+                  delay: 0.3,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
               >
-                Welcome to{" "}
-                <span
+                <motion.span
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                >
+                  Welcome to{" "}
+                </motion.span>
+                <motion.span
                   className="font-heading font-black"
                   style={{ fontSize: "1.1em" }}
+                  initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
+                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  transition={{ 
+                    duration: 1.0, 
+                    delay: 0.8,
+                    ease: "backOut"
+                  }}
                 >
-                  <span
+                  <motion.span
                     style={{
-                      color: "#C62828", // Red for "GRIND"
-                      textShadow:
-                        "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                      color: "#C62828",
+                      textShadow: "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                    }}
+                    initial={{ opacity: 0, x: -20, rotateX: 45 }}
+                    animate={{ opacity: 1, x: 0, rotateX: 0 }}
+                    transition={{ 
+                      duration: 0.8, 
+                      delay: 1.0,
+                      ease: "easeOut"
+                    }}
+                    whileHover={{ 
+                      scale: 1.1, 
+                      textShadow: "5px 5px 10px rgba(198,40,40,0.8), 0 0 20px rgba(198,40,40,0.6)",
+                      transition: { duration: 0.3 }
                     }}
                   >
                     GRIND
-                  </span>
-                  <span
+                  </motion.span>
+                  <motion.span
                     style={{
-                      color: "#4DB6AC", // Aqua-green for "X"
-                      textShadow:
-                        "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                      color: "#4DB6AC",
+                      textShadow: "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                    }}
+                    initial={{ opacity: 0, x: 20, rotateX: -45 }}
+                    animate={{ opacity: 1, x: 0, rotateX: 0 }}
+                    transition={{ 
+                      duration: 0.8, 
+                      delay: 1.2,
+                      ease: "easeOut"
+                    }}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      textShadow: "5px 5px 10px rgba(77,182,172,0.8), 0 0 20px rgba(77,182,172,0.6)",
+                      rotate: [0, -5, 5, 0],
+                      transition: { duration: 0.5 }
                     }}
                   >
                     X
-                  </span>
-                </span>
+                  </motion.span>
+                </motion.span>
               </motion.h1>
 
-              {/* Subtitle */}
+              {/* Subtitle with Staggered Animation */}
               <motion.p
                 className="text-sm sm:text-base md:text-lg font-bold mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed px-2 font-body"
                 style={{
                   color: "#ffffff",
                   textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
                 }}
-                variants={itemVariants}
+                initial={{ opacity: 0, y: 30, blur: 10 }}
+                animate={{ opacity: 1, y: 0, blur: 0 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: 1.4,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
               >
                 Track workouts, monitor progress, and achieve your fitness goals
                 efficiently.
               </motion.p>
 
-              {/* CTA Buttons - Very Compact on Mobile */}
+              {/* CTA Buttons with Advanced Animation */}
               <motion.div
                 className="flex flex-row gap-2 sm:gap-3 justify-center items-center"
-                variants={itemVariants}
+                initial={{ opacity: 0, y: 40, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: 1.6,
+                  ease: "backOut"
+                }}
               >
                 <Link
                   to={isAuthenticated?.() ? "/dashboard" : "/register"}
