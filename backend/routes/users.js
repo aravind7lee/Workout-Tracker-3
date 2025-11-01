@@ -164,9 +164,9 @@ router.get('/stats', auth, async (req, res) => {
 
     // Use Promise.allSettled for better error handling
     const results = await Promise.allSettled([
-      Workout.find({ userId: req.user.id }).lean(),
+      Workout.find({ user: req.user.id }).lean(),
       Meal.find({ userId: req.user.id }).lean(),
-      Plan.find({ userId: req.user.id }).lean(),
+      Plan.find({ user: req.user.id }).lean(),
       User.findById(req.user.id).lean()
     ]);
 
@@ -358,7 +358,7 @@ router.post('/favorites/splits', auth, async (req, res) => {
 router.get('/activity', auth, async (req, res) => {
   try {
     const [workouts, meals] = await Promise.all([
-      Workout.find({ userId: req.user.id }).limit(15).sort({ createdAt: -1 }),
+      Workout.find({ user: req.user.id }).limit(15).sort({ createdAt: -1 }),
       Meal.find({ userId: req.user.id }).limit(10).sort({ createdAt: -1 })
     ]);
     
@@ -425,9 +425,9 @@ router.get('/settings', settingsLimiter, auth, async (req, res) => {
     
     try {
       const results = await Promise.allSettled([
-        Workout.countDocuments({ userId: req.user.id, completed: true }),
+        Workout.countDocuments({ user: req.user.id, completed: true }),
         Meal.countDocuments({ userId: req.user.id }),
-        Plan.countDocuments({ userId: req.user.id })
+        Plan.countDocuments({ user: req.user.id })
       ]);
       
       workouts = results[0].status === 'fulfilled' ? results[0].value : 0;
@@ -965,9 +965,9 @@ router.get('/sync-status', auth, async (req, res) => {
 // Helper functions for reusability
 async function getStatsForUser(userId) {
   const [workouts, meals, plans, user] = await Promise.all([
-    Workout.find({ userId }),
+    Workout.find({ user: userId }),
     Meal.find({ userId }),
-    Plan.find({ userId }),
+    Plan.find({ user: userId }),
     User.findById(userId)
   ]);
   
@@ -1016,7 +1016,7 @@ async function getStatsForUser(userId) {
 
 async function getActivityForUser(userId) {
   const [workouts, meals] = await Promise.all([
-    Workout.find({ userId }).limit(15).sort({ createdAt: -1 }),
+    Workout.find({ user: userId }).limit(15).sort({ createdAt: -1 }),
     Meal.find({ userId }).limit(10).sort({ createdAt: -1 })
   ]);
   

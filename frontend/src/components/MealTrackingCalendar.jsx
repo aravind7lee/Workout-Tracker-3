@@ -118,22 +118,18 @@ const MealTrackingCalendar = () => {
     };
   }, [currentDate]);
 
-  // Generate calendar days for monthly view
+  // Generate calendar days for monthly view (only current month)
   const generateCalendarDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    const lastDay = new Date(year, month + 1, 0).getDate();
     
     const days = [];
-    const currentDateObj = new Date(startDate);
     
-    for (let i = 0; i < 42; i++) {
+    for (let day = 1; day <= lastDay; day++) {
+      const currentDateObj = new Date(year, month, day);
       const dateKey = currentDateObj.toDateString();
       const mealsForDay = mealData[dateKey] || [];
-      const isCurrentMonth = currentDateObj.getMonth() === month;
       const isToday = dateKey === new Date().toDateString();
       
       days.push({
@@ -141,11 +137,9 @@ const MealTrackingCalendar = () => {
         dateKey,
         mealsCount: mealsForDay.length,
         meals: mealsForDay,
-        isCurrentMonth,
+        isCurrentMonth: true,
         isToday
       });
-      
-      currentDateObj.setDate(currentDateObj.getDate() + 1);
     }
     
     return days;
@@ -229,22 +223,20 @@ const MealTrackingCalendar = () => {
         </div>
 
         {/* Calendar Grid */}
-        <div className="meal-calendar-grid">
+        <div className="grid grid-cols-7 gap-2">
           {days.map((day, index) => (
             <motion.div
               key={index}
-              className={`meal-calendar-day ${
-                day.isCurrentMonth ? 'bg-slate-800/50' : 'bg-slate-900/30'
-              } ${day.isToday ? 'ring-1 ring-orange-500/50 today' : ''} ${
-                day.mealsCount > 0 ? 'has-meals' : 'no-meals'
-              }`}
+              className={`meal-calendar-day bg-slate-800/50 ${
+                day.isToday ? 'ring-1 ring-orange-500/50 today' : ''
+              } ${day.mealsCount > 0 ? 'has-meals' : 'no-meals'}`}
               onClick={() => setSelectedDate(day)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className={`meal-day-number ${
-                day.isCurrentMonth ? 'text-white' : 'text-slate-500'
-              } ${day.isToday ? 'text-orange-400' : ''}`}>
+              <div className={`meal-day-number text-white ${
+                day.isToday ? 'text-orange-400' : ''
+              }`}>
                 {day.date.getDate()}
               </div>
               

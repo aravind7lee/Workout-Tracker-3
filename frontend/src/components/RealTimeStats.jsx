@@ -23,6 +23,32 @@ export default function RealTimeStats() {
       setLoading(true);
       
       const token = localStorage.getItem('token');
+      
+      // Try analytics endpoint first for most accurate meal count
+      const analyticsResponse = await fetch('/api/analytics/hero-stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (analyticsResponse.ok) {
+        const analyticsData = await analyticsResponse.json();
+        if (analyticsData.success && analyticsData.data) {
+          setIsOnline(true);
+          
+          setStats({
+            totalWorkouts: Math.max(analyticsData.data.totalWorkouts || 0, contextStats.totalWorkouts || 0),
+            totalPlans: Math.max(contextStats.totalPlans || 0, 0), // Use context for plans
+            totalMeals: analyticsData.data.totalMeals || 0 // Use analytics for accurate meal count
+          });
+          
+          console.log('✅ RealTimeStats: Using analytics data for meal count:', analyticsData.data.totalMeals);
+          return;
+        }
+      }
+      
+      // Fallback to users stats endpoint
       const response = await fetch('/api/users/stats', {
         headers: {
           'Authorization': `Bearer ${token}`,

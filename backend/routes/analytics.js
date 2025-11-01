@@ -118,8 +118,26 @@ router.get('/hero-stats', async (req, res) => {
     const totalWorkouts = await Workout.countDocuments({ user: userId });
     const completedWorkouts = await Workout.countDocuments({ user: userId, completed: true });
     
-    // Count total meals
-    const totalMeals = await Meal.countDocuments({ userId });
+    // Count total meals (handle both userId and user fields for backward compatibility)
+    const totalMealsWithUserId = await Meal.countDocuments({ userId });
+    const totalMealsWithUser = await Meal.countDocuments({ user: userId });
+    const totalMeals = totalMealsWithUserId + totalMealsWithUser;
+    
+    // Auto-migrate meals with wrong field name
+    if (totalMealsWithUser > 0) {
+      try {
+        await Meal.updateMany(
+          { user: userId },
+          { 
+            $set: { userId: userId },
+            $unset: { user: 1 }
+          }
+        );
+        console.log(`✅ Auto-migrated ${totalMealsWithUser} meals for user ${userId}`);
+      } catch (migrationError) {
+        console.error('Auto-migration failed:', migrationError);
+      }
+    }
     
     // Calculate XP points (100 per completed workout, 50 per meal)
     const xpPoints = (completedWorkouts * 100) + (totalMeals * 50);
@@ -357,8 +375,26 @@ router.get('/', async (req, res) => {
     // Count total workouts
     const totalWorkouts = await Workout.countDocuments({ user: userId });
     
-    // Count total meals
-    const totalMeals = await Meal.countDocuments({ userId });
+    // Count total meals (handle both userId and user fields for backward compatibility)
+    const totalMealsWithUserId = await Meal.countDocuments({ userId });
+    const totalMealsWithUser = await Meal.countDocuments({ user: userId });
+    const totalMeals = totalMealsWithUserId + totalMealsWithUser;
+    
+    // Auto-migrate meals with wrong field name
+    if (totalMealsWithUser > 0) {
+      try {
+        await Meal.updateMany(
+          { user: userId },
+          { 
+            $set: { userId: userId },
+            $unset: { user: 1 }
+          }
+        );
+        console.log(`✅ Auto-migrated ${totalMealsWithUser} meals for user ${userId}`);
+      } catch (migrationError) {
+        console.error('Auto-migration failed:', migrationError);
+      }
+    }
     
     // Calculate XP points (100 per workout, 50 per meal)
     const xpPoints = (totalWorkouts * 100) + (totalMeals * 50);
