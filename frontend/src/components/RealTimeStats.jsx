@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
+import { clearAllOldMealData, initializeEmptyUserMeals } from '../utils/clearOldMealData';
 
 export default function RealTimeStats() {
   const [stats, setStats] = useState({
@@ -53,20 +54,39 @@ export default function RealTimeStats() {
 
   const loadLocalStats = () => {
     try {
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      // Get user-specific meals
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!currentUser) {
+        setStats({
+          totalWorkouts: 0,
+          totalPlans: 0,
+          totalMeals: 0
+        });
+        return;
+      }
+      
+      const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+      const meals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
       const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
       
+      console.log('📊 RealTimeStats: Loading meals from:', userMealKey, 'Found:', meals.length, 'meals');
+      
       // Filter plans by current user - same as Analytics
-      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-      const userPlans = currentUser ? allPlans.filter(plan => {
+      const userPlans = allPlans.filter(plan => {
         return plan.userId === currentUser.id || plan.userId === currentUser._id ||
                (!plan.userId && plan.synced === false);
-      }) : [];
+      });
       
       const totalWorkouts = contextStats.totalWorkouts || 0;
       const totalPlans = contextStats.totalPlans || userPlans.length;
       
       setStats({
+        totalWorkouts,
+        totalPlans,
+        totalMeals: meals.length
+      });
+      
+      console.log('✅ RealTimeStats updated:', {
         totalWorkouts,
         totalPlans,
         totalMeals: meals.length
@@ -92,6 +112,18 @@ export default function RealTimeStats() {
   }, [contextStats]);
 
   useEffect(() => {
+    // Only clear old data if no user-specific meals exist
+    if (user) {
+      const userMealKey = `recentMeals_${user.id || user._id}`;
+      const existingUserMeals = localStorage.getItem(userMealKey);
+      if (!existingUserMeals) {
+        clearAllOldMealData();
+        initializeEmptyUserMeals(user.id || user._id);
+      }
+    }
+    
+    // Load local stats first to show existing data immediately
+    loadLocalStats();
     loadRealTimeStats();
     
     const handleWorkoutComplete = () => {
@@ -110,6 +142,16 @@ export default function RealTimeStats() {
                (!plan.userId && plan.synced === false);
       });
       return userPlans.length;
+    };
+    
+    // INSTANT MEAL UPDATES - Same as workout plans
+    const getUserMealCount = () => {
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!currentUser) return 0;
+      
+      const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+      const meals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+      return meals.length;
     };
     
     const handlePlanCreated = () => {
@@ -135,7 +177,16 @@ export default function RealTimeStats() {
       }
     };
     
-    const handleMealAdded = () => loadRealTimeStats();
+    const handleMealAdded = () => {
+      console.log('🍽️ RealTimeStats: Meal added - instant update');
+      const userMealCount = getUserMealCount();
+      setStats(prev => ({ ...prev, totalMeals: userMealCount }));
+    };
+    const handleMealDeleted = () => {
+      console.log('🗑️ RealTimeStats: Meal deleted - instant update');
+      const userMealCount = getUserMealCount();
+      setStats(prev => ({ ...prev, totalMeals: userMealCount }));
+    };
     
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('planCreated', handlePlanCreated);
@@ -143,6 +194,7 @@ export default function RealTimeStats() {
     window.addEventListener('planDeleted', handlePlanDeleted);
     window.addEventListener('dashboardUpdate', handleDashboardUpdate);
     window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('mealDeleted', handleMealDeleted);
     
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
@@ -151,6 +203,7 @@ export default function RealTimeStats() {
       window.removeEventListener('planDeleted', handlePlanDeleted);
       window.removeEventListener('dashboardUpdate', handleDashboardUpdate);
       window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('mealDeleted', handleMealDeleted);
     };
   }, [user]);
 
@@ -165,15 +218,17 @@ export default function RealTimeStats() {
         return value > 0 ? `${value} completed!` : 'Start your first workout';
       case 'Workout Plans':
         return value > 0 ? `${value} plans ready` : 'Create your first plan';
+      case 'Total Meals':
+        return value > 0 ? `${value} meals logged` : 'Start tracking nutrition';
       default:
         return 'Ready to start!';
     }
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {loading ? (
-        Array.from({ length: 2 }).map((_, i) => (
+        Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="card">
             <div className="animate-pulse">
               <div className="h-8 bg-slate-700 rounded mb-2"></div>
@@ -197,6 +252,13 @@ export default function RealTimeStats() {
             color: 'text-green-400',
             icon: '📋',
             path: '/my-plans'
+          },
+          { 
+            label: 'Total Meals', 
+            value: formatNumber(stats.totalMeals), 
+            color: 'text-orange-400',
+            icon: '🍽️',
+            path: '/nutrition'
           }
         ].map((stat, index) => (
           <div 
@@ -223,13 +285,15 @@ export default function RealTimeStats() {
               </div>
               <div className={`text-xs ${
                 (stat.label === 'Total Workouts' && stats.totalWorkouts > 0) ||
-                (stat.label === 'Workout Plans' && stats.totalPlans > 0)
+                (stat.label === 'Workout Plans' && stats.totalPlans > 0) ||
+                (stat.label === 'Total Meals' && stats.totalMeals > 0)
                   ? 'text-green-400' 
                   : 'text-gray-400'
               }`}>
                 {getStatMessage(stat.label, 
                   stat.label === 'Total Workouts' ? stats.totalWorkouts :
-                  stat.label === 'Workout Plans' ? stats.totalPlans : 0
+                  stat.label === 'Workout Plans' ? stats.totalPlans :
+                  stat.label === 'Total Meals' ? stats.totalMeals : 0
                 )}
               </div>
             </div>

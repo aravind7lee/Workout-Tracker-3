@@ -3,9 +3,15 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App";
+import { performStartupCleanup, shouldPerformCleanup } from "./utils/appStartupCleanup";
 import "./index.css";
 import "./utils/themeInit"; // Initialize theme before anything else
 import "./utils/errorSuppressor"; // Complete error suppression
+
+// Perform one-time cleanup of fake meal data
+if (shouldPerformCleanup()) {
+  performStartupCleanup();
+}
 
 // Handle storage quota gracefully without interfering with React
 if (typeof window !== "undefined") {

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import nutritionApi from '../services/nutritionApi';
+import { migrateToUserSpecificMeals } from '../utils/userSpecificMeals';
+import { clearAllOldMealData, initializeEmptyUserMeals } from '../utils/clearOldMealData';
 
 export const useRealTimeNutrition = () => {
   const [meals, setMeals] = useState([]);
@@ -25,6 +27,17 @@ export const useRealTimeNutrition = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token && token !== 'null' && token !== 'undefined') {
+      // Only clear old data if no user-specific meals exist
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (currentUser) {
+        const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+        const existingUserMeals = localStorage.getItem(userMealKey);
+        if (!existingUserMeals) {
+          clearAllOldMealData();
+          initializeEmptyUserMeals(currentUser.id || currentUser._id);
+        }
+      }
+      
       loadNutritionData();
       loadTargets();
     } else {
@@ -43,6 +56,26 @@ export const useRealTimeNutrition = () => {
       setIsLoading(true);
       setError(null);
 
+      // Load from user-specific localStorage first
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (currentUser) {
+        const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+        const localMeals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+        setMeals(localMeals);
+        
+        // Calculate totals from local meals
+        const localTotals = localMeals.reduce((acc, meal) => ({
+          calories: acc.calories + (meal.calories || 0),
+          protein: acc.protein + (meal.protein || 0),
+          carbs: acc.carbs + (meal.carbs || 0),
+          fat: acc.fat + (meal.fat || 0),
+          mealsCount: acc.mealsCount + 1
+        }), { calories: 0, protein: 0, carbs: 0, fat: 0, mealsCount: 0 });
+        
+        setTotals(localTotals);
+      }
+
+      // Try to sync with backend
       const [mealsResult, totalsResult] = await Promise.all([
         nutritionApi.getMeals(),
         nutritionApi.getNutritionTotals()
@@ -50,6 +83,11 @@ export const useRealTimeNutrition = () => {
 
       if (mealsResult.success) {
         setMeals(mealsResult.data);
+        // Update user-specific localStorage
+        if (currentUser) {
+          const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+          localStorage.setItem(userMealKey, JSON.stringify(mealsResult.data));
+        }
       }
 
       if (totalsResult.success) {
@@ -161,6 +199,24 @@ export const useRealTimeNutrition = () => {
         mealsCount: prev.mealsCount + 1
       }));
 
+      // Save to user-specific localStorage immediately
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (currentUser) {
+        const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+        const existingMeals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+        const updatedMeals = [tempMeal, ...existingMeals];
+        localStorage.setItem(userMealKey, JSON.stringify(updatedMeals));
+        console.log('💾 Meal saved to localStorage:', userMealKey, updatedMeals.length);
+        
+        // Dispatch event immediately for Analytics
+        window.dispatchEvent(new CustomEvent('mealAdded', {
+          detail: { 
+            mealData: tempMeal, 
+            timestamp: new Date().toISOString() 
+          }
+        }));
+      }
+
       // Save to backend
       const result = await nutritionApi.addMeal(mealData);
       
@@ -170,6 +226,17 @@ export const useRealTimeNutrition = () => {
           const filtered = prev.filter(meal => meal.id !== tempMeal.id);
           return [{ ...result.data, synced: true }, ...filtered];
         });
+        
+        // Update localStorage with real meal data
+        if (currentUser) {
+          const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+          const existingMeals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+          const updatedMeals = existingMeals.map(meal => 
+            meal.id === tempMeal.id ? { ...result.data, synced: true } : meal
+          );
+          localStorage.setItem(userMealKey, JSON.stringify(updatedMeals));
+          console.log('✅ Meal synced to localStorage:', userMealKey, updatedMeals.length);
+        }
         
         console.log('✅ Meal added successfully:', result.data);
       }
@@ -187,6 +254,20 @@ export const useRealTimeNutrition = () => {
         fat: Math.round((prev.fat - (mealData.fat || 0)) * 10) / 10,
         mealsCount: prev.mealsCount - 1
       }));
+      
+      // Revert localStorage and dispatch event
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (currentUser) {
+        const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+        const existingMeals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+        const updatedMeals = existingMeals.filter(meal => meal.id !== tempMeal.id);
+        localStorage.setItem(userMealKey, JSON.stringify(updatedMeals));
+        
+        // Dispatch event to refresh Analytics
+        window.dispatchEvent(new CustomEvent('mealDeleted', {
+          detail: { mealId: tempMeal.id, timestamp: new Date().toISOString() }
+        }));
+      }
       
       setError('Failed to add meal: ' + err.message);
       throw err;
@@ -233,10 +314,26 @@ export const useRealTimeNutrition = () => {
         mealsCount: Math.max(0, prev.mealsCount - 1)
       }));
 
+      // Update user-specific localStorage
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (currentUser) {
+        const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+        const existingMeals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+        const updatedMeals = existingMeals.filter(meal => 
+          meal.id !== mealId && meal._id !== mealId
+        );
+        localStorage.setItem(userMealKey, JSON.stringify(updatedMeals));
+      }
+      
       // Delete from backend
       await nutritionApi.deleteMeal(mealId);
       
       console.log('✅ Meal deleted successfully');
+      
+      // Dispatch event to notify Analytics
+      window.dispatchEvent(new CustomEvent('mealDeleted', {
+        detail: { mealId, timestamp: new Date().toISOString() }
+      }));
     } catch (err) {
       console.error('❌ Failed to delete meal:', err);
       
@@ -266,6 +363,14 @@ export const useRealTimeNutrition = () => {
         setTargets({ baselineCalories: 2000, calories: 2000, goalType: 'maintain', protein: 150, carbs: 200, fat: 65 });
         setError(null);
         setIsLoading(false);
+        
+        // Clear user-specific meal data from localStorage
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+          if (key.startsWith('recentMeals_')) {
+            localStorage.removeItem(key);
+          }
+        });
       } else {
         // Reload data when logged in
         loadNutritionData();

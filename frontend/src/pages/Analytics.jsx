@@ -9,6 +9,8 @@ import { useRealTime } from '../context/RealTimeContext';
 
 import AuthGuard from '../components/AuthGuard';
 import RealTimeStats from '../components/RealTimeStats';
+import MealTrackingCalendar from '../components/MealTrackingCalendar';
+import { clearAllOldMealData, initializeEmptyUserMeals } from '../utils/clearOldMealData';
 import progressAnalyticsImg from '../assets/Progress-Analytics.jpg';
 import '../styles/analytics-mobile.css';
 
@@ -106,7 +108,9 @@ export default function Analytics() {
             totalPlans: 0,
             todayWorkouts: 0,
             weeklyWorkouts: 0,
-
+            totalMeals: 0,
+            todayMeals: 0,
+            weeklyMeals: 0,
           },
           durationTrend: null,
           workoutFrequency: null,
@@ -119,10 +123,27 @@ export default function Analytics() {
       // Get user-specific workouts from realTimeWorkoutSync
       const workouts = window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
       const allPlans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      
+      // Get user-specific meals
+      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+      const userMealKey = currentUser ? `recentMeals_${currentUser.id || currentUser._id}` : 'recentMeals';
+      const meals = JSON.parse(localStorage.getItem(userMealKey) || '[]');
+      
+      // Calculate meal statistics
+      const todayStr = new Date().toDateString();
+      const todayMeals = meals.filter(meal => {
+        const mealDate = new Date(meal.consumedAt || meal.createdAt || Date.now());
+        return mealDate.toDateString() === todayStr;
+      });
+      
+      const thisWeekMeals = meals.filter(meal => {
+        const mealDate = new Date(meal.consumedAt || meal.createdAt || Date.now());
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return mealDate >= weekAgo;
+      });
       
       // Filter plans by current user - same as Dashboard
-      const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
       const plans = currentUser ? allPlans.filter(plan => {
         return plan.userId === currentUser.id || plan.userId === currentUser._id ||
                (!plan.userId && plan.synced === false); // Backward compatibility for local plans
@@ -213,7 +234,9 @@ export default function Analytics() {
           totalPlans: stats.totalPlans || plans.length, // Use stats.totalPlans first
           todayWorkouts: stats.todayWorkouts || 0,
           weeklyWorkouts: stats.weeklyWorkouts || 0,
-
+          totalMeals: meals.length,
+          todayMeals: todayMeals.length,
+          weeklyMeals: thisWeekMeals.length,
           // Achievement system removed
         },
         durationTrend: chartData.durationData,
@@ -228,7 +251,9 @@ export default function Analytics() {
           totalPlans: 0,
           todayWorkouts: 0,
           weeklyWorkouts: 0,
-
+          totalMeals: 0,
+          todayMeals: 0,
+          weeklyMeals: 0,
         },
         durationTrend: null,
         workoutFrequency: null,
@@ -240,10 +265,28 @@ export default function Analytics() {
   };
 
   useEffect(() => {
+    // Only clear old data if no user-specific meals exist
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (currentUser) {
+      const userMealKey = `recentMeals_${currentUser.id || currentUser._id}`;
+      const existingUserMeals = localStorage.getItem(userMealKey);
+      if (!existingUserMeals) {
+        clearAllOldMealData();
+        initializeEmptyUserMeals(currentUser.id || currentUser._id);
+      }
+    }
+    
     loadAnalyticsData();
     
     const handleWorkoutComplete = () => loadAnalyticsData();
-    const handleMealAdded = () => loadAnalyticsData();
+    const handleMealAdded = () => {
+      console.log('🍽️ Analytics: Meal added - refreshing data');
+      loadAnalyticsData();
+    };
+    const handleMealDeleted = () => {
+      console.log('🗑️ Analytics: Meal deleted - refreshing data');
+      loadAnalyticsData();
+    };
     
     // INSTANT PLAN UPDATES - Same as Dashboard with user filtering
     const getUserPlanCount = () => {
@@ -340,6 +383,7 @@ export default function Analytics() {
     
     window.addEventListener('workoutCompleted', handleWorkoutComplete);
     window.addEventListener('mealAdded', handleMealAdded);
+    window.addEventListener('mealDeleted', handleMealDeleted);
     window.addEventListener('planCreated', handlePlanCreated);
     window.addEventListener('planUpdated', handlePlanUpdated);
     window.addEventListener('planDeleted', handlePlanDeleted);
@@ -350,6 +394,7 @@ export default function Analytics() {
     return () => {
       window.removeEventListener('workoutCompleted', handleWorkoutComplete);
       window.removeEventListener('mealAdded', handleMealAdded);
+      window.removeEventListener('mealDeleted', handleMealDeleted);
       window.removeEventListener('planCreated', handlePlanCreated);
       window.removeEventListener('planUpdated', handlePlanUpdated);
       window.removeEventListener('planDeleted', handlePlanDeleted);
@@ -583,11 +628,24 @@ export default function Analytics() {
                 <span className="text-slate-400">Your Workout Plans</span>
                 <span className="text-white font-bold">{analyticsData?.stats?.totalPlans || 0}</span>
               </div>
-
-
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Total Meals Logged</span>
+                <span className="text-white font-bold">{analyticsData?.stats?.totalMeals || 0}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Today's Meals</span>
+                <span className="text-green-400 font-bold">{analyticsData?.stats?.todayMeals || 0}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">This Week's Meals</span>
+                <span className="text-blue-400 font-bold">{analyticsData?.stats?.weeklyMeals || 0}</span>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Meal Tracking Calendar */}
+        <MealTrackingCalendar />
       </div>
     </AuthGuard>
   );
