@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import { onlineService } from '../services/onlineService';
 import { workoutSync } from '../services/workoutSync';
 import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
+import { detectInfiniteLoop } from '../utils/emergencyReset';
 import api from '../utils/api';
 
 const RealTimeContext = createContext();
@@ -295,19 +296,33 @@ export const RealTimeProvider = ({ children }) => {
 
   // Listen for real-time events
   useEffect(() => {
+    let isProcessingWorkout = false;
+    
     const handleWorkoutCompleted = (event) => {
-      console.log('🏋️ Workout completed - refreshing all stats');
-      
-      // If event has workout data, add it to real-time sync
-      if (event.detail && event.detail.workout) {
-        realTimeWorkoutSync.addCompletedWorkout(event.detail.workout);
-      } else {
-        // Force refresh if no workout data
-        realTimeWorkoutSync.refreshStats();
+      // Detect infinite loop
+      if (detectInfiniteLoop('handleWorkoutCompleted')) {
+        return;
       }
       
-      // Stats will be updated automatically via subscription
-      console.log('✅ Workout completion processed by RealTimeWorkoutSync');
+      // Prevent infinite loop
+      if (isProcessingWorkout) {
+        console.log('⚠️ Workout completion already in progress, skipping');
+        return;
+      }
+      
+      isProcessingWorkout = true;
+      console.log('🏋️ Workout completed - refreshing stats only');
+      
+      try {
+        // Only refresh stats, don't add workout again to prevent loop
+        realTimeWorkoutSync.refreshStats();
+        console.log('✅ Workout completion processed');
+      } finally {
+        // Reset flag after processing
+        setTimeout(() => {
+          isProcessingWorkout = false;
+        }, 1000);
+      }
     };
 
     const handleMealAdded = () => {

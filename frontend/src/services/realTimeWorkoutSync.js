@@ -4,6 +4,9 @@
 class RealTimeWorkoutSync {
   constructor() {
     this.listeners = new Set();
+    this.lastWorkoutAdd = 0;
+    this.lastDispatchTime = 0;
+    this.circuitBreaker = { count: 0, lastReset: Date.now() };
     this.stats = {
       totalWorkouts: 0,
       todayWorkouts: 0,
@@ -235,9 +238,17 @@ class RealTimeWorkoutSync {
     };
   }
 
-  // Add a completed workout and update stats - USER SPECIFIC
+  // Add a completed workout and update stats - USER SPECIFIC WITH RATE LIMITING
   addCompletedWorkout(workoutData) {
     try {
+      // Rate limiting - prevent rapid successive calls
+      const now = Date.now();
+      if (this.lastWorkoutAdd && now - this.lastWorkoutAdd < 3000) {
+        console.log('⚠️ Rate limited: Workout add too frequent, skipping');
+        return null;
+      }
+      this.lastWorkoutAdd = now;
+      
       // Get current user
       const currentUser = this.getCurrentUser();
       if (!currentUser) {
@@ -308,15 +319,36 @@ class RealTimeWorkoutSync {
     }
   }
 
-  // Dispatch workout completion events to all pages
+  // Dispatch workout completion events to all pages - WITH CIRCUIT BREAKER
   dispatchWorkoutCompleted(workout) {
+    // Circuit breaker - prevent infinite loops
+    const now = Date.now();
+    if (now - this.circuitBreaker.lastReset > 10000) {
+      this.circuitBreaker.count = 0;
+      this.circuitBreaker.lastReset = now;
+    }
+    
+    this.circuitBreaker.count++;
+    if (this.circuitBreaker.count > 5) {
+      console.error('⚠️ CIRCUIT BREAKER: Too many dispatch calls, stopping to prevent infinite loop');
+      return;
+    }
+    
+    // Prevent rapid-fire dispatching
+    if (this.lastDispatchTime && now - this.lastDispatchTime < 2000) {
+      console.log('⚠️ Dispatch throttled to prevent spam');
+      return;
+    }
+    
+    this.lastDispatchTime = now;
+    
     const events = [
-      'workoutCompleted',
       'realTimeStatsUpdate',
       'homeStatsUpdate',
       'dashboardStatsUpdate',
       'analyticsStatsUpdate',
       'workoutsPageUpdate'
+      // Removed 'workoutCompleted' to prevent infinite loop
     ];
 
     events.forEach(eventName => {
@@ -329,7 +361,7 @@ class RealTimeWorkoutSync {
       }));
     });
 
-    console.log('📡 RealTimeWorkoutSync: Events dispatched for workout completion');
+    console.log('📡 RealTimeWorkoutSync: Events dispatched (throttled)');
   }
 
   // Broadcast stats update to all listeners
