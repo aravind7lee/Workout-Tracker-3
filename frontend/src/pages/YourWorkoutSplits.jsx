@@ -21,6 +21,197 @@ const YourWorkoutSplits = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const navbarSearch = searchParams.get('search') || '';
+
+  // Muscle group mapping and categorization functions
+  const muscleGroupMapping = {
+    'Chest': { icon: '💪', color: 'bg-red-600', key: 'chest' },
+    'Shoulders': { icon: '🔥', color: 'bg-orange-600', key: 'shoulders' },
+    'Back': { icon: '🎯', color: 'bg-blue-600', key: 'back' },
+    'Arms': { icon: '💥', color: 'bg-purple-600', key: 'arms' },
+    'Legs': { icon: '🦵', color: 'bg-green-600', key: 'legs' },
+    'Core': { icon: '⚡', color: 'bg-yellow-600', key: 'abs' }
+  };
+
+  const getMuscleGroupFromCategory = (category) => {
+    if (!category) return 'Core';
+    const categoryLower = category.toLowerCase();
+    if (categoryLower === 'abdominals' || categoryLower === 'abs') return 'Core';
+    if (categoryLower.includes('chest')) return 'Chest';
+    if (categoryLower.includes('shoulder')) return 'Shoulders';
+    if (categoryLower.includes('back') || categoryLower.includes('lat')) return 'Back';
+    if (categoryLower.includes('arm') || categoryLower.includes('bicep') || categoryLower.includes('tricep')) return 'Arms';
+    if (categoryLower.includes('leg') || categoryLower.includes('quad') || categoryLower.includes('hamstring') || categoryLower.includes('glute') || categoryLower.includes('calf')) return 'Legs';
+    return category;
+  };
+
+  const groupExercisesByMuscleGroup = (exerciseString) => {
+    if (!exerciseString || exerciseString === 'Rest Day' || exerciseString === 'No exercises planned') {
+      return {};
+    }
+    
+    // Comprehensive exercise mapping based on exercise library
+    const exerciseToMuscleGroup = {
+      // Chest exercises
+      'Barbell Bench Press': 'Chest',
+      'Incline Dumbbell Press': 'Chest',
+      'Decline Bench Press': 'Chest',
+      'Cable Crossover': 'Chest',
+      'Pec-Deck Machine': 'Chest',
+      'Weighted Dips': 'Chest',
+      'Push-ups': 'Chest',
+      'Incline Cable Fly': 'Chest',
+      'Dumbbell Bench Press': 'Chest',
+      'Incline Barbell Press': 'Chest',
+      'Decline Dumbbell Press': 'Chest',
+      'Dumbbell Flyes': 'Chest',
+      'Incline Dumbbell Flyes': 'Chest',
+      'Decline Cable Fly': 'Chest',
+      'Chest Press Machine': 'Chest',
+      
+      // Shoulders exercises
+      'Overhead Press': 'Shoulders',
+      'Lateral Raises': 'Shoulders',
+      'Front Raises': 'Shoulders',
+      'Rear Delt Fly': 'Shoulders',
+      'Arnold Press': 'Shoulders',
+      'Upright Rows': 'Shoulders',
+      'Face Pulls': 'Shoulders',
+      'Pike Push-ups': 'Shoulders',
+      'Dumbbell Shoulder Press': 'Shoulders',
+      'Cable Lateral Raises': 'Shoulders',
+      'Reverse Pec Deck': 'Shoulders',
+      'Seated Dumbbell Press': 'Shoulders',
+      'Cable Front Raises': 'Shoulders',
+      'Bent-Over Lateral Raises': 'Shoulders',
+      'Machine Shoulder Press': 'Shoulders',
+      'Handstand Push-ups': 'Shoulders',
+      'Single-Arm Lateral Raise': 'Shoulders',
+      'Y-Raises': 'Shoulders',
+      'Shrugs': 'Shoulders',
+      'Cuban Press': 'Shoulders',
+      
+      // Back exercises
+      'Deadlift': 'Back',
+      'Pull-ups': 'Back',
+      'Barbell Rows': 'Back',
+      'Lat Pulldowns': 'Back',
+      'Cable Rows': 'Back',
+      'T-Bar Rows': 'Back',
+      'Single-Arm Dumbbell Row': 'Back',
+      'Hyperextensions': 'Back',
+      'Chin-ups': 'Back',
+      'Wide-Grip Pulldowns': 'Back',
+      'Chest-Supported Row': 'Back',
+      'Inverted Rows': 'Back',
+      'Sumo Deadlift': 'Back',
+      'Romanian Deadlift': 'Back',
+      'Good Mornings': 'Back',
+      'Reverse Fly': 'Back',
+      'Rack Pulls': 'Back',
+      'Meadows Row': 'Back',
+      'Cable Pullovers': 'Back',
+      'Pendlay Rows': 'Back',
+      
+      // Arms exercises
+      'Barbell Curls': 'Arms',
+      'Close-Grip Bench Press': 'Arms',
+      'Hammer Curls': 'Arms',
+      'Tricep Dips': 'Arms',
+      'Preacher Curls': 'Arms',
+      'Overhead Tricep Extension': 'Arms',
+      'Cable Curls': 'Arms',
+      'Tricep Pushdowns': 'Arms',
+      'Dumbbell Curls': 'Arms',
+      'Skull Crushers': 'Arms',
+      'Concentration Curls': 'Arms',
+      'Diamond Push-ups': 'Arms',
+      'Cable Hammer Curls': 'Arms',
+      'Rope Tricep Extensions': 'Arms',
+      '21s Bicep Curls': 'Arms',
+      'Reverse Curls': 'Arms',
+      'Tricep Kickbacks': 'Arms',
+      'Zottman Curls': 'Arms',
+      'Overhead Cable Extension': 'Arms',
+      'Spider Curls': 'Arms',
+      
+      // Legs exercises
+      'Squats': 'Legs',
+      'Romanian Deadlifts': 'Legs',
+      'Leg Press': 'Legs',
+      'Leg Curls': 'Legs',
+      'Leg Extensions': 'Legs',
+      'Calf Raises': 'Legs',
+      'Bulgarian Split Squats': 'Legs',
+      'Walking Lunges': 'Legs',
+      'Front Squats': 'Legs',
+      'Goblet Squats': 'Legs',
+      'Stiff Leg Deadlifts': 'Legs',
+      'Hack Squats': 'Legs',
+      'Step-ups': 'Legs',
+      'Reverse Lunges': 'Legs',
+      'Sumo Squats': 'Legs',
+      'Single-Leg Deadlifts': 'Legs',
+      'Wall Sits': 'Legs',
+      'Jump Squats': 'Legs',
+      'Seated Calf Raises': 'Legs',
+      'Pistol Squats': 'Legs',
+      
+      // Core exercises
+      'Plank': 'Core',
+      'Crunches': 'Core',
+      'Russian Twists': 'Core',
+      'Leg Raises': 'Core',
+      'Mountain Climbers': 'Core',
+      'Dead Bug': 'Core',
+      'Bicycle Crunches': 'Core',
+      'Hanging Knee Raises': 'Core',
+      'Side Plank': 'Core',
+      'Reverse Crunches': 'Core',
+      'V-Ups': 'Core',
+      'Flutter Kicks': 'Core',
+      'Hollow Body Hold': 'Core',
+      'Cable Crunches': 'Core',
+      'Woodchoppers': 'Core',
+      'Ab Wheel Rollouts': 'Core',
+      'Hanging Leg Raises': 'Core',
+      'Dragon Flags': 'Core',
+      'Sit-ups': 'Core',
+      'Plank to Push-up': 'Core'
+    };
+    
+    const exercises = exerciseString.split(', ');
+    const grouped = {};
+    
+    exercises.forEach(exerciseName => {
+      // Use exact mapping first, then fallback to pattern matching
+      let muscleGroup = exerciseToMuscleGroup[exerciseName];
+      
+      if (!muscleGroup) {
+        // Fallback pattern matching for custom exercises
+        const nameLower = exerciseName.toLowerCase();
+        if (nameLower.includes('tricep') || nameLower.includes('bicep') || nameLower.includes('curl') || nameLower.includes('dip')) {
+          muscleGroup = 'Arms';
+        } else if (nameLower.includes('lateral') || nameLower.includes('shoulder') || nameLower.includes('press') || nameLower.includes('raise')) {
+          muscleGroup = 'Shoulders';
+        } else if (nameLower.includes('bench') || nameLower.includes('chest') || nameLower.includes('pec')) {
+          muscleGroup = 'Chest';
+        } else if (nameLower.includes('pull') || nameLower.includes('row') || nameLower.includes('lat') || nameLower.includes('back')) {
+          muscleGroup = 'Back';
+        } else if (nameLower.includes('leg') || nameLower.includes('squat') || nameLower.includes('calf')) {
+          muscleGroup = 'Legs';
+        } else {
+          muscleGroup = 'Core';
+        }
+      }
+      
+      if (!grouped[muscleGroup]) {
+        grouped[muscleGroup] = [];
+      }
+      grouped[muscleGroup].push(exerciseName);
+    });
+    
+    return grouped;
+  };
   const [customSplits, setCustomSplits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(navbarSearch);
@@ -178,50 +369,69 @@ const YourWorkoutSplits = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-950 via-black to-gray-950 border-b border-purple-500/20 py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
-                Your WorkoutSplits
-              </h1>
-              
-              {/* Real-time Status Indicator */}
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-green-400 font-medium">REAL-TIME</span>
+      <div className="bg-gradient-to-r from-gray-950 via-black to-gray-950 border-b border-purple-500/20 py-4 sm:py-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {/* Title and Status Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
+                  Your WorkoutSplits
+                </h1>
                 
-                {/* Sync Status */}
-                <div className="flex items-center gap-1 text-xs">
-                  <span className={`${statusDisplay.color} font-medium`}>
-                    {statusDisplay.icon} {statusDisplay.text}
-                  </span>
+                {/* Real-time Status Indicator */}
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-green-400 font-medium">REAL-TIME</span>
+                  
+                  {/* Sync Status */}
+                  <div className="flex items-center gap-1 text-xs">
+                    <span className={`${statusDisplay.color} font-medium hidden sm:inline-flex items-center gap-1`}>
+                      {statusDisplay.icon} {statusDisplay.text}
+                    </span>
+                    <span className={`${statusDisplay.color} font-medium sm:hidden`}>
+                      {statusDisplay.icon}
+                    </span>
+                  </div>
                 </div>
+              </div>
+              
+              {/* Refresh Button - Mobile Only */}
+              <div className="sm:hidden">
+                <button
+                  onClick={loadCustomSplits}
+                  disabled={syncStatus === 'syncing'}
+                  className="text-xs px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors"
+                >
+                  {syncStatus === 'syncing' ? '🔄' : '🔄 Refresh'}
+                </button>
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            {/* Action Buttons Row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 sm:justify-end">
+              {/* Desktop Refresh Button */}
               <button
                 onClick={loadCustomSplits}
                 disabled={syncStatus === 'syncing'}
-                className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors"
+                className="hidden sm:block text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors"
               >
                 {syncStatus === 'syncing' ? '🔄 Loading...' : '🔄 Refresh'}
               </button>
               
               <Link
                 to="/custom-split-builder"
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2 transition-all duration-300"
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center gap-2 transition-all duration-300 text-sm sm:text-base"
               >
                 <Dumbbell className="w-4 h-4" />
-                Your Own Workout Split
+                <span className="truncate">Your Own Workout Split</span>
               </Link>
               <Link
                 to="/custom-split-builder"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2 transition-all duration-300"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center gap-2 transition-all duration-300 text-sm sm:text-base"
               >
                 <Plus className="w-4 h-4" />
-                Create New Split
+                <span className="truncate">Create New Split</span>
               </Link>
             </div>
           </div>
@@ -470,58 +680,140 @@ const YourWorkoutSplits = () => {
                 <h3 className="text-lg font-semibold text-white mb-3">📅 Weekly Schedule</h3>
                 <div className="space-y-3">
                   {selectedSplit.weeklySchedule ? (
-                    Object.entries(selectedSplit.weeklySchedule).map(([day, dayContent]) => (
-                      <div key={day} className="bg-slate-700/20 rounded-lg p-4 border border-slate-600/30">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-semibold text-white text-lg">{day}</span>
-                        </div>
-                        <div className="ml-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-purple-400">💪</span>
-                            <span className="text-slate-300 font-medium">Workout</span>
+                    Object.entries(selectedSplit.weeklySchedule).map(([day, dayContent]) => {
+                      const isRestDay = dayContent === 'Rest Day' || dayContent === 'No exercises planned';
+                      const groupedExercises = isRestDay ? {} : groupExercisesByMuscleGroup(dayContent);
+                      
+                      return (
+                        <div key={day} className="bg-slate-700/20 rounded-lg border border-slate-600/30 overflow-hidden">
+                          <div className="flex items-center justify-between p-3 border-b border-slate-600/30">
+                            <span className="font-semibold text-white text-lg">{day}</span>
+                            <div className={`text-xs px-2 py-1 rounded-full ${
+                              isRestDay 
+                                ? 'bg-gray-600 text-gray-300' 
+                                : 'bg-purple-500/20 text-purple-300'
+                            }`}>
+                              {isRestDay ? '😴 Rest' : '💪 Workout'}
+                            </div>
                           </div>
-                          <div className="ml-6">
-                            {dayContent === 'Rest Day' ? (
-                              <span className="text-slate-400">😴 Rest Day</span>
-                            ) : dayContent === 'No exercises planned' ? (
-                              <span className="text-slate-400">No exercises planned</span>
-                            ) : (
-                              <div className="space-y-1">
-                                {dayContent.split(', ').map((exercise, idx) => (
-                                  <div key={idx} className="text-white">{exercise}</div>
-                                ))}
+                          
+                          {isRestDay ? (
+                            <div className="p-3">
+                              <div className="text-slate-400 text-sm flex items-center gap-2">
+                                <span className="text-lg">😴</span>
+                                <span>{dayContent}</span>
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          ) : Object.keys(groupedExercises).length > 0 ? (
+                            <div className="p-3 space-y-3">
+                              {Object.entries(groupedExercises).map(([muscleGroup, exercises]) => {
+                                const config = muscleGroupMapping[muscleGroup];
+                                if (!config || exercises.length === 0) return null;
+                                
+                                return (
+                                  <div key={muscleGroup} className="bg-slate-800/40 rounded-lg border border-slate-700/50 overflow-hidden">
+                                    <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 py-2`}>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-lg">{config.icon}</span>
+                                        <div>
+                                          <h4 className="text-white font-semibold text-sm">{muscleGroup}</h4>
+                                          <p className="text-slate-400 text-xs">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="p-3">
+                                      <div className="space-y-1">
+                                        {exercises.map((exercise, idx) => (
+                                          <div key={idx} className="text-white text-sm flex items-center gap-2">
+                                            <span className={`text-white font-bold text-xs ${config.color} bg-opacity-80 w-5 h-5 rounded-full flex items-center justify-center`}>
+                                              {idx + 1}
+                                            </span>
+                                            <span>{exercise}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              }).filter(Boolean)}
+                            </div>
+                          ) : (
+                            <div className="p-3">
+                              <div className="text-white text-sm">{dayContent}</div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     // Fallback for old format splits
                     ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
                       const dayExercises = selectedSplit.exercises?.filter(ex => ex.day === day) || [];
+                      const exerciseNames = dayExercises.map(ex => ex.name).join(', ');
+                      const groupedExercises = dayExercises.length > 0 ? groupExercisesByMuscleGroup(exerciseNames) : {};
+                      
                       return (
-                        <div key={day} className="bg-slate-700/20 rounded-lg p-4 border border-slate-600/30">
-                          <div className="flex items-center gap-2 mb-2">
+                        <div key={day} className="bg-slate-700/20 rounded-lg border border-slate-600/30 overflow-hidden">
+                          <div className="flex items-center justify-between p-3 border-b border-slate-600/30">
                             <span className="font-semibold text-white text-lg">{day}</span>
-                          </div>
-                          <div className="ml-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-purple-400">💪</span>
-                              <span className="text-slate-300 font-medium">Workout</span>
-                            </div>
-                            <div className="ml-6">
-                              {dayExercises.length === 0 ? (
-                                <span className="text-slate-400">No exercises planned</span>
-                              ) : (
-                                <div className="space-y-1">
-                                  {dayExercises.map((exercise, idx) => (
-                                    <div key={idx} className="text-white">{exercise.name}</div>
-                                  ))}
-                                </div>
-                              )}
+                            <div className={`text-xs px-2 py-1 rounded-full ${
+                              dayExercises.length === 0 
+                                ? 'bg-gray-600 text-gray-300' 
+                                : 'bg-purple-500/20 text-purple-300'
+                            }`}>
+                              {dayExercises.length === 0 ? '😴 Rest' : '💪 Workout'}
                             </div>
                           </div>
+                          
+                          {dayExercises.length === 0 ? (
+                            <div className="p-3">
+                              <div className="text-slate-400 text-sm flex items-center gap-2">
+                                <span className="text-lg">😴</span>
+                                <span>No exercises planned</span>
+                              </div>
+                            </div>
+                          ) : Object.keys(groupedExercises).length > 0 ? (
+                            <div className="p-3 space-y-3">
+                              {Object.entries(groupedExercises).map(([muscleGroup, exercises]) => {
+                                const config = muscleGroupMapping[muscleGroup];
+                                if (!config || exercises.length === 0) return null;
+                                
+                                return (
+                                  <div key={muscleGroup} className="bg-slate-800/40 rounded-lg border border-slate-700/50 overflow-hidden">
+                                    <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 py-2`}>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-lg">{config.icon}</span>
+                                        <div>
+                                          <h4 className="text-white font-semibold text-sm">{muscleGroup}</h4>
+                                          <p className="text-slate-400 text-xs">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="p-3">
+                                      <div className="space-y-1">
+                                        {exercises.map((exercise, idx) => (
+                                          <div key={idx} className="text-white text-sm flex items-center gap-2">
+                                            <span className={`text-white font-bold text-xs ${config.color} bg-opacity-80 w-5 h-5 rounded-full flex items-center justify-center`}>
+                                              {idx + 1}
+                                            </span>
+                                            <span>{exercise}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              }).filter(Boolean)}
+                            </div>
+                          ) : (
+                            <div className="p-3">
+                              <div className="space-y-1">
+                                {dayExercises.map((exercise, idx) => (
+                                  <div key={idx} className="text-white text-sm">{exercise.name}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })

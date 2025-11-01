@@ -829,75 +829,137 @@ export default function PlansBuilder() {
       {/* Main Content */}
       <div id="plan-builder" className="container mx-auto px-4 py-8 bg-slate-900 min-h-screen">
         
-        {/* Status Bar */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className={`${statusDisplay.color} text-sm font-medium`}>
-                {statusDisplay.icon} {statusDisplay.text}
+        {/* Mobile-Responsive Status Bar */}
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Status Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <span className={`${statusDisplay.color} text-sm font-medium flex items-center gap-1`}>
+                <span className="text-base">{statusDisplay.icon}</span>
+                <span>{statusDisplay.text}</span>
               </span>
               {isOnline && (
-                <span className="text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded-full">
+                <span className="text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded-full border border-green-700/50 w-fit">
                   🌐 Live
                 </span>
               )}
             </div>
-            <div className="flex gap-2">
+            
+            {/* Controls Section - Mobile Stack */}
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => setAutoSave(!autoSave)}
-                className={`text-xs px-3 py-1 rounded-full ${
+                className={`text-xs px-3 py-2 rounded-full transition-all duration-200 ${
                   autoSave 
-                    ? 'bg-blue-900/30 text-blue-300 border border-blue-700' 
-                    : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+                    ? 'bg-blue-900/30 text-blue-300 border border-blue-700 hover:bg-blue-800/40' 
+                    : 'bg-slate-700/50 text-slate-400 border border-slate-600 hover:bg-slate-600/50'
                 }`}
               >
-                {autoSave ? '🔄 Auto-Save ON' : '💾 Auto-Save OFF'}
+                <span className="flex items-center justify-center gap-1">
+                  <span>{autoSave ? '🔄' : '💾'}</span>
+                  <span className="hidden xs:inline">Auto-Save</span>
+                  <span className="font-medium">{autoSave ? 'ON' : 'OFF'}</span>
+                </span>
               </button>
               <button
                 onClick={loadDraft}
-                className="text-xs px-3 py-1 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700"
+                className="text-xs px-3 py-2 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700 hover:bg-purple-800/40 transition-all duration-200"
               >
-                📝 Load Draft
+                <span className="flex items-center justify-center gap-1">
+                  <span>📝</span>
+                  <span>Load Draft</span>
+                </span>
               </button>
             </div>
           </div>
         </div>
 
 
-        {/* Form Controls */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-          <h2 className="text-2xl font-semibold mb-4">Workout Plan Builder 🏋️</h2>
+        {/* Mobile-Responsive Form Controls */}
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold text-white flex items-center gap-2">
+              <span className="text-2xl">🏋️</span>
+              <span>Workout Plan Builder</span>
+            </h2>
+            
+            {/* Mobile Status Indicator */}
+            <div className="flex items-center gap-2 sm:hidden">
+              {plan.length > 0 && (
+                <span className="text-xs bg-green-900/30 text-green-300 px-2 py-1 rounded-full border border-green-700/50">
+                  {plan.length} exercises
+                </span>
+              )}
+              {isOnline && (
+                <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded-full border border-blue-700/50">
+                  ☁️ Synced
+                </span>
+              )}
+            </div>
+          </div>
           
           <div className="space-y-4">
+            {/* Plan Name Input - Full Width on Mobile */}
             <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2 sm:hidden">
+                Plan Name
+              </label>
               <input
                 type="text"
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
                 placeholder="Enter plan name..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400"
+                className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
               />
             </div>
-            <div className="flex gap-4">
-              <select
-                value={planCategory}
-                onChange={(e) => setPlanCategory(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white"
-              >
-                <option value="General">🏋️ General</option>
-                <option value="Strength">💪 Strength</option>
-                <option value="Cardio">❤️ Cardio</option>
-                <option value="Flexibility">🧘 Flexibility</option>
-                <option value="HIIT">🔥 HIIT</option>
-              </select>
+            
+            {/* Category and Save Button - Mobile Stack */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-slate-300 mb-2 sm:hidden">
+                  Category
+                </label>
+                <select
+                  value={planCategory}
+                  onChange={(e) => setPlanCategory(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                >
+                  <option value="General">🏋️ General</option>
+                  <option value="Strength">💪 Strength</option>
+                  <option value="Cardio">❤️ Cardio</option>
+                  <option value="Flexibility">🧘 Flexibility</option>
+                  <option value="HIIT">🔥 HIIT</option>
+                </select>
+              </div>
+              
               <button
                 onClick={savePlan}
                 disabled={saving || !planName.trim() || plan.length === 0}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 rounded-lg font-medium"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
               >
-                {saving ? '🔄 Saving...' : '💾 Save Plan'}
+                <span className="text-lg">{saving ? '🔄' : '💾'}</span>
+                <span>{saving ? 'Saving...' : 'Save Plan'}</span>
               </button>
             </div>
+            
+            {/* Mobile Plan Progress Indicator */}
+            {plan.length > 0 && (
+              <div className="sm:hidden bg-slate-700/50 border border-slate-600 rounded-lg p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-300">Plan Progress</span>
+                  <span className="text-blue-300 font-medium">{plan.length} exercises</span>
+                </div>
+                <div className="mt-2 bg-slate-600 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((plan.length / 8) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <div className="mt-1 text-xs text-slate-400 text-center">
+                  {Math.min(Math.round((plan.length / 8) * 100), 100)}% Complete
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

@@ -239,225 +239,317 @@ export default function MyPlans() {
       {/* My Plans Hero Header - Full Viewport */}
       <WorkoutPlanBuilderHeader />
       
-      <div id="plans-content" className="px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl lg:text-3xl font-semibold heading-text text-gray-900 dark:text-white">My Workout Plans</h2>
-            
-            {/* Real-time Status Indicator */}
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${
-                realTimeStats.isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-              }`}></div>
-              <span className="text-xs muted-text">
-                {realTimeStats.isOnline ? 'REAL-TIME' : 'OFFLINE MODE'}
-              </span>
-              
-              {/* Sync Status */}
-              {syncStatus !== 'idle' && (
-                <div className="flex items-center gap-1 text-xs">
-                  {syncStatus === 'syncing' && (
-                    <>
-                      <span className="text-blue-500 dark:text-blue-400">Syncing...</span>
-                    </>
-                  )}
-                  {syncStatus === 'synced' && (
-                    <>
-                      <span className="text-green-600 dark:text-green-400">✓</span>
-                      <span className="text-green-600 dark:text-green-400">Synced</span>
-                    </>
-                  )}
-                  {syncStatus === 'error' && (
-                    <>
-                      <span className="text-red-600 dark:text-red-400">⚠</span>
-                      <span className="text-red-600 dark:text-red-400">Sync Failed</span>
-                    </>
-                  )}
+      <div id="plans-content" className="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Modern Gym Header Section */}
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Title & Status Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-2xl font-bold text-white">💪</span>
                 </div>
-              )}
+                <div>
+                  <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                    My Workout Plans
+                  </h2>
+                  <p className="text-slate-400 text-sm font-medium">Professional Gym Tracking</p>
+                </div>
+              </div>
+              
+              {/* Enhanced Real-time Status */}
+              <div className="flex items-center gap-3">
+                <div className={`flex items-center gap-2 px-3 py-2 rounded-full border ${
+                  realTimeStats.isOnline 
+                    ? 'bg-green-900/30 border-green-500/50 text-green-300' 
+                    : 'bg-red-900/30 border-red-500/50 text-red-300'
+                }`}>
+                  <div className={`w-2 h-2 rounded-full ${
+                    realTimeStats.isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'
+                  }`}></div>
+                  <span className="text-xs font-semibold">
+                    {realTimeStats.isOnline ? 'REAL-TIME' : 'OFFLINE'}
+                  </span>
+                </div>
+                
+                {/* Sync Status Badge */}
+                {syncStatus !== 'idle' && (
+                  <div className={`flex items-center gap-2 px-3 py-2 rounded-full border text-xs font-medium ${
+                    syncStatus === 'syncing' ? 'bg-blue-900/30 border-blue-500/50 text-blue-300' :
+                    syncStatus === 'synced' ? 'bg-green-900/30 border-green-500/50 text-green-300' :
+                    'bg-red-900/30 border-red-500/50 text-red-300'
+                  }`}>
+                    {syncStatus === 'syncing' && (
+                      <>
+                        <div className="w-3 h-3 border border-blue-300 border-t-transparent rounded-full animate-spin"></div>
+                        <span>Syncing...</span>
+                      </>
+                    )}
+                    {syncStatus === 'synced' && (
+                      <>
+                        <span className="text-green-400">✓</span>
+                        <span>Synced</span>
+                      </>
+                    )}
+                    {syncStatus === 'error' && (
+                      <>
+                        <span className="text-red-400">⚠</span>
+                        <span>Sync Failed</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {/* Manual Sync Button */}
-            {user && (
-              <button
-                onClick={syncPlansWithBackend}
-                disabled={syncStatus === 'syncing'}
-                className="btn-secondary text-sm px-3 py-1 disabled:opacity-50"
-                title="Force sync with MongoDB"
-              >
-                {syncStatus === 'syncing' ? '🔄 Syncing...' : '🔄 Force Sync'}
-              </button>
-            )}
             
-            <Link
-              to="/plans"
-              className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
-            >
-              <span>+</span> Create New Plan
-            </Link>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Stats Display */}
+              <div className="flex items-center gap-4 px-4 py-2 bg-slate-800/50 border border-slate-600/50 rounded-xl">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">{realTimeStats.totalPlans}</div>
+                  <div className="text-xs text-slate-400">Total Plans</div>
+                </div>
+                <div className="w-px h-8 bg-slate-600"></div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-400">{realTimeStats.syncedPlans || 0}</div>
+                  <div className="text-xs text-slate-400">Synced</div>
+                </div>
+              </div>
+              
+              {/* Control Buttons */}
+              <div className="flex gap-2">
+                {user && (
+                  <button
+                    onClick={syncPlansWithBackend}
+                    disabled={syncStatus === 'syncing'}
+                    className="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600 text-slate-300 hover:text-white rounded-xl font-medium text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg"
+                    title="Force sync with MongoDB"
+                  >
+                    <span className={syncStatus === 'syncing' ? 'animate-spin' : ''}>
+                      {syncStatus === 'syncing' ? '🔄' : '🔄'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {syncStatus === 'syncing' ? 'Syncing...' : 'Force Sync'}
+                    </span>
+                  </button>
+                )}
+                
+                <Link
+                  to="/plans"
+                  className="px-6 py-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
+                >
+                  <span className="text-lg">+</span>
+                  <span>Create New Plan</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       
-        {/* Search Bar */}
+        {/* Enhanced Search Bar */}
         {(savedPlans.length > 0 || searchQuery) && (
           <div className="relative">
-            <input 
-              value={searchQuery} 
-              onChange={e => setSearchQuery(e.target.value)} 
-              className="w-full p-3 pl-10 rounded-lg bg-slate-800/60 dark:bg-slate-800/60 light-theme:bg-white light-theme:border-gray-300 border border-slate-700 dark:border-slate-700 light-theme:text-gray-900 text-white placeholder-slate-400 dark:placeholder-slate-400 light-theme:placeholder-gray-500" 
-              placeholder="Search your plans..." 
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 muted-text">
-              🔍
+            <div className="relative group">
+              <input 
+                value={searchQuery} 
+                onChange={e => setSearchQuery(e.target.value)} 
+                className="w-full p-4 pl-12 pr-12 rounded-2xl bg-slate-800/60 border border-slate-600/50 text-white placeholder-slate-400 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 shadow-lg backdrop-blur-sm" 
+                placeholder="Search your plans..." 
+              />
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-orange-400 transition-colors">
+                <span className="text-lg">🔍</span>
+              </div>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-slate-700/50"
+                >
+                  <span className="text-lg">✕</span>
+                </button>
+              )}
             </div>
             {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 muted-text hover:text-gray-900 dark:hover:text-white"
-              >
-                ✕
-              </button>
+              <div className="mt-2 text-sm text-slate-400 flex items-center gap-2">
+                <span>📊</span>
+                <span>Showing {filteredPlans.length} of {savedPlans.length} plans</span>
+              </div>
             )}
           </div>
         )}
 
         {searchQuery && filteredPlans.length === 0 && savedPlans.length > 0 ? (
-          <div className="empty-state card text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold heading-text mb-2">No Plans Found</h3>
-            <p className="muted-text mb-6">
-              No plans match "{searchQuery}". Try a different search term.
+          <div className="bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 border border-slate-700/50 rounded-2xl p-12 text-center shadow-2xl backdrop-blur-sm">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span className="text-4xl">🔍</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-3">No Plans Found</h3>
+            <p className="text-slate-400 mb-8 max-w-md mx-auto">
+              No plans match "{searchQuery}". Try a different search term or create a new plan.
             </p>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Clear Search
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => setSearchQuery('')}
+                className="px-6 py-3 bg-slate-700/50 hover:bg-slate-600/60 border border-slate-600/50 text-slate-300 hover:text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <span>✕</span>
+                <span>Clear Search</span>
+              </button>
+              <Link
+                to="/plans"
+                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <span>+</span>
+                <span>Create New Plan</span>
+              </Link>
+            </div>
           </div>
         ) : savedPlans.length === 0 ? (
-          <div className="empty-state card text-center py-12">
-            <div className="text-6xl mb-4">📋</div>
-            <h3 className="text-xl font-semibold heading-text mb-2">
-              {user ? 'No Plans Yet' : 'Login Required'}
+          <div className="bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 border border-slate-700/50 rounded-2xl p-12 text-center shadow-2xl backdrop-blur-sm">
+            <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span className="text-5xl">{user ? '💪' : '🔒'}</span>
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-4">
+              {user ? 'Ready to Start Training?' : 'Login Required'}
             </h3>
-            <p className="muted-text mb-6">
+            <p className="text-slate-400 mb-8 max-w-lg mx-auto text-lg">
               {user 
-                ? 'You haven\'t created any workout plans yet. Start building your first plan!' 
-                : 'Please login to view and create your personal workout plans.'
+                ? 'Create your first professional workout plan and start your fitness journey with our advanced gym tracking system.' 
+                : 'Please login to access your personal workout plans and professional gym tracking features.'
               }
             </p>
             {user ? (
               <Link
                 to="/plans"
-                className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-2xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
               >
-                <span>+</span> Create Your First Plan
+                <span className="text-2xl">+</span>
+                <span>Create Your First Plan</span>
               </Link>
             ) : (
               <Link
                 to="/login"
-                className="btn bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center gap-2"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
               >
-                🔑 Login to View Plans
+                <span className="text-2xl">🔑</span>
+                <span>Login to View Plans</span>
               </Link>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {searchQuery && (
-              <div className="col-span-full mb-4">
-                <p className="search-results-text muted-text text-sm">
-                  Showing {filteredPlans.length} of {savedPlans.length} plans for "{searchQuery}"
-                </p>
-              </div>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredPlans.map((plan) => (
-              <div key={plan.id} className={`plan-card card hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light-theme:hover:bg-gray-50 transition-all duration-500 relative ${
-                highlightPlan === plan.id ? 'ring-2 ring-blue-500 bg-blue-900/20 dark:bg-blue-900/20 light-theme:bg-blue-50 shadow-lg shadow-blue-500/20 scale-105' : ''
+              <div key={plan.id} className={`group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 border border-slate-700/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/10 hover:border-orange-500/30 hover:scale-[1.02] backdrop-blur-sm ${
+                highlightPlan === plan.id ? 'ring-2 ring-orange-500 shadow-2xl shadow-orange-500/20 scale-105 border-orange-500/50' : ''
               }`}>
-                {/* Sync Status Badge */}
-                <div className="absolute top-2 right-2 flex items-center gap-1">
+                {/* Enhanced Sync Status Badge */}
+                <div className="absolute top-4 right-4 z-10">
                   {plan.synced ? (
-                    <div className="sync-badge-synced bg-green-500/20 dark:bg-green-500/20 light-theme:bg-green-100 text-green-400 dark:text-green-400 light-theme:text-green-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-green-400 dark:bg-green-400 light-theme:bg-green-600 rounded-full"></span>
-                      Synced
+                    <div className="bg-green-900/40 border border-green-500/50 text-green-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium shadow-lg backdrop-blur-sm">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span>Synced</span>
                     </div>
                   ) : (
-                    <div className="sync-badge-local bg-yellow-500/20 dark:bg-yellow-500/20 light-theme:bg-yellow-100 text-yellow-400 dark:text-yellow-400 light-theme:text-yellow-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-yellow-400 dark:bg-yellow-400 light-theme:bg-yellow-600 rounded-full"></span>
-                      Local
+                    <div className="bg-yellow-900/40 border border-yellow-500/50 text-yellow-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium shadow-lg backdrop-blur-sm">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                      <span>Local</span>
                     </div>
                   )}
                 </div>
                 
-                <div className="flex items-start justify-between mb-4 mt-8">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold heading-text mb-1">{plan.name}</h3>
-                    <p className="text-sm muted-text">
-                      {plan.exercises.length} {plan.exercises.length === 1 ? 'exercise' : 'exercises'}
-                    </p>
+                {/* Plan Header */}
+                <div className="mb-6 pt-2">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 pr-16">
+                      <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">
+                        {plan.name}
+                      </h3>
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-slate-300 font-medium">
+                          {plan.exercises.length} {plan.exercises.length === 1 ? 'exercise' : 'exercises'}
+                        </span>
+                        <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
+                        <span className="text-orange-400 font-medium">{plan.category || 'General'}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 mb-4">
                     <button
                       onClick={() => duplicatePlan(plan)}
-                      className="action-button-duplicate text-blue-400 dark:text-blue-400 light-theme:text-blue-600 hover:text-blue-300 dark:hover:text-blue-300 light-theme:hover:text-blue-700 p-1 rounded hover:bg-blue-900/20 dark:hover:bg-blue-900/20 light-theme:hover:bg-blue-100 transition-colors"
+                      className="p-2 bg-slate-700/50 hover:bg-blue-600/20 border border-slate-600/50 hover:border-blue-500/50 text-slate-400 hover:text-blue-300 rounded-lg transition-all duration-200 group/btn"
                       title="Duplicate plan"
                     >
-                      📋
+                      <span className="text-lg group-hover/btn:scale-110 transition-transform">📋</span>
                     </button>
                     <button
                       onClick={() => deletePlan(plan.id)}
-                      className="action-button-delete text-red-400 dark:text-red-400 light-theme:text-red-600 hover:text-red-300 dark:hover:text-red-300 light-theme:hover:text-red-700 p-1 rounded hover:bg-red-900/20 dark:hover:bg-red-900/20 light-theme:hover:bg-red-100 transition-colors"
+                      className="p-2 bg-slate-700/50 hover:bg-red-600/20 border border-slate-600/50 hover:border-red-500/50 text-slate-400 hover:text-red-300 rounded-lg transition-all duration-200 group/btn"
                       title="Delete plan"
                     >
-                      🗑️
+                      <span className="text-lg group-hover/btn:scale-110 transition-transform">🗑️</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-2 mb-4">
+                {/* Exercise List */}
+                <div className="space-y-3 mb-6">
                   {plan.exercises.slice(0, 3).map((exercise, index) => (
-                    <div key={index} className="exercise-list-item flex items-center gap-2 text-sm">
-                      <span className="exercise-number text-blue-600 dark:text-blue-400 font-medium">{index + 1}.</span>
-                      <span className="exercise-name heading-text">{exercise.name}</span>
-                      <span className="exercise-sets muted-text">• {exercise.sets}</span>
+                    <div key={index} className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl hover:bg-slate-700/40 transition-colors">
+                      <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-white font-medium truncate">{exercise.name}</div>
+                        <div className="text-slate-400 text-sm font-medium">{exercise.sets}</div>
+                      </div>
                     </div>
                   ))}
                   {plan.exercises.length > 3 && (
                     <button
                       onClick={() => setSelectedPlan(plan)}
-                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer transition-colors"
+                      className="w-full p-3 bg-slate-700/30 hover:bg-slate-600/40 border border-slate-600/50 hover:border-orange-500/50 text-slate-300 hover:text-orange-300 rounded-xl transition-all duration-200 text-sm font-medium"
                     >
-                      +{plan.exercises.length - 3} more exercises
+                      <span className="flex items-center justify-center gap-2">
+                        <span>+{plan.exercises.length - 3} more exercises</span>
+                        <span className="text-orange-400">→</span>
+                      </span>
                     </button>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between text-xs muted-text mb-4">
+                {/* Plan Meta Info */}
+                <div className="flex items-center justify-between text-xs text-slate-400 mb-6 p-3 bg-slate-800/30 border border-slate-700/30 rounded-xl">
                   <div className="flex flex-col gap-1">
-                    <span>Created: {new Date(plan.createdAt).toLocaleDateString()}</span>
+                    <span className="flex items-center gap-1">
+                      <span>📅</span>
+                      <span>Created: {new Date(plan.createdAt).toLocaleDateString()}</span>
+                    </span>
                     {lastSync && (
-                      <span className="text-gray-500 dark:text-slate-600">Last sync: {lastSync.toLocaleTimeString()}</span>
+                      <span className="flex items-center gap-1 text-slate-500">
+                        <span>🔄</span>
+                        <span>Last sync: {lastSync.toLocaleTimeString()}</span>
+                      </span>
                     )}
                   </div>
-                  <span className="bg-gray-200 dark:bg-slate-700/50 text-gray-800 dark:text-gray-200 px-2 py-1 rounded">{plan.category || 'General'}</span>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Action Buttons */}
+                <div className="flex gap-3">
                   <Link
                     to={`/workout/${plan.id}`}
-                    className="btn-secondary flex-1 text-sm text-center"
+                    className="flex-1 px-4 py-3 bg-slate-700/50 hover:bg-slate-600/60 border border-slate-600/50 hover:border-slate-500/50 text-slate-300 hover:text-white rounded-xl font-medium text-sm text-center transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
                   >
-                    Start Workout
+                    <span className="text-lg">🏋️</span>
+                    <span>Start Workout</span>
                   </Link>
                   <Link
                     to={`/edit-plan/${plan.id}`}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-sm text-center"
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl font-semibold text-sm text-center transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
                   >
-                    Edit Plan
+                    <span className="text-lg">✏️</span>
+                    <span>Edit Plan</span>
                   </Link>
                 </div>
               </div>
@@ -466,18 +558,100 @@ export default function MyPlans() {
         )}
 
         {savedPlans.length > 0 && (
-          <div className="features-box bg-blue-900/20 dark:bg-blue-900/20 light-theme:bg-blue-50 border border-blue-500/30 dark:border-blue-500/30 light-theme:border-blue-200 rounded-lg p-4">
-            <h4 className="text-blue-700 dark:text-blue-300 font-medium mb-2">🚀 REAL-TIME MongoDB Features:</h4>
-            <ul className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
-              <li>• {realTimeStats.isOnline ? '🔥 INSTANT MongoDB sync - changes appear immediately' : '📱 Offline mode - data saved locally'}</li>
-              <li>• ⚡ INSTANT dashboard updates when plans are created/deleted</li>
-              <li>• 💾 Professional-grade data persistence with MongoDB</li>
-              <li>• 📊 Real-time progress tracking and analytics</li>
-              <li>• 🏋️ Professional gym-level experience</li>
-              <li>• {user ? `👤 Account: ${realTimeStats.totalPlans} plans synced` : '🔒 Login to sync across devices'}</li>
-            </ul>
-            <div className="mt-3 text-xs text-blue-600 dark:text-blue-400">
-              📈 Stats: {realTimeStats.totalPlans} total • {realTimeStats.syncedPlans} synced • {realTimeStats.unsyncedPlans} pending
+          <div className="bg-gradient-to-r from-slate-900/60 via-slate-800/60 to-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-2xl backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-xl">🚀</span>
+              </div>
+              <h4 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                REAL-TIME MongoDB Features
+              </h4>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">{realTimeStats.isOnline ? '🔥' : '📱'}</span>
+                  <div>
+                    <div className="text-white font-medium">
+                      {realTimeStats.isOnline ? 'INSTANT MongoDB Sync' : 'Offline Mode Active'}
+                    </div>
+                    <div className="text-slate-400 text-sm">
+                      {realTimeStats.isOnline ? 'Changes appear immediately' : 'Data saved locally'}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">⚡</span>
+                  <div>
+                    <div className="text-white font-medium">INSTANT Dashboard Updates</div>
+                    <div className="text-slate-400 text-sm">Real-time plan creation/deletion</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">💾</span>
+                  <div>
+                    <div className="text-white font-medium">Professional Data Persistence</div>
+                    <div className="text-slate-400 text-sm">MongoDB cloud storage</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">📊</span>
+                  <div>
+                    <div className="text-white font-medium">Real-time Progress Tracking</div>
+                    <div className="text-slate-400 text-sm">Advanced analytics & insights</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">🏋️</span>
+                  <div>
+                    <div className="text-white font-medium">Professional Gym Experience</div>
+                    <div className="text-slate-400 text-sm">Industry-grade tracking</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-slate-800/40 border border-slate-700/30 rounded-xl">
+                  <span className="text-2xl">{user ? '👤' : '🔒'}</span>
+                  <div>
+                    <div className="text-white font-medium">
+                      {user ? `Account: ${realTimeStats.totalPlans} Plans` : 'Login Required'}
+                    </div>
+                    <div className="text-slate-400 text-sm">
+                      {user ? 'Cross-device synchronization' : 'Sign in to sync across devices'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Enhanced Stats Bar */}
+            <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📈</span>
+                  <span className="text-blue-300 font-semibold">Live Statistics</span>
+                </div>
+                <div className="flex items-center gap-6 text-sm">
+                  <div className="text-center">
+                    <div className="text-white font-bold text-lg">{realTimeStats.totalPlans}</div>
+                    <div className="text-slate-400">Total Plans</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-green-400 font-bold text-lg">{realTimeStats.syncedPlans || 0}</div>
+                    <div className="text-slate-400">Synced</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-yellow-400 font-bold text-lg">{realTimeStats.unsyncedPlans || 0}</div>
+                    <div className="text-slate-400">Pending</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

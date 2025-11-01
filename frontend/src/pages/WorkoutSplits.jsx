@@ -37,6 +37,197 @@ const WorkoutSplits = () => {
   const { isAuthenticated, user, token } = useAuth();
   const navigate = useNavigate();
 
+  // Muscle group mapping and categorization functions
+  const muscleGroupMapping = {
+    'Chest': { icon: '💪', color: 'bg-red-600', key: 'chest' },
+    'Shoulders': { icon: '🔥', color: 'bg-orange-600', key: 'shoulders' },
+    'Back': { icon: '🎯', color: 'bg-blue-600', key: 'back' },
+    'Arms': { icon: '💥', color: 'bg-purple-600', key: 'arms' },
+    'Legs': { icon: '🦵', color: 'bg-green-600', key: 'legs' },
+    'Core': { icon: '⚡', color: 'bg-yellow-600', key: 'abs' }
+  };
+
+  const getMuscleGroupFromCategory = (category) => {
+    if (!category) return 'Core';
+    const categoryLower = category.toLowerCase();
+    if (categoryLower === 'abdominals' || categoryLower === 'abs') return 'Core';
+    if (categoryLower.includes('chest')) return 'Chest';
+    if (categoryLower.includes('shoulder')) return 'Shoulders';
+    if (categoryLower.includes('back') || categoryLower.includes('lat')) return 'Back';
+    if (categoryLower.includes('arm') || categoryLower.includes('bicep') || categoryLower.includes('tricep')) return 'Arms';
+    if (categoryLower.includes('leg') || categoryLower.includes('quad') || categoryLower.includes('hamstring') || categoryLower.includes('glute') || categoryLower.includes('calf')) return 'Legs';
+    return category;
+  };
+
+  const groupExercisesByMuscleGroup = (exerciseString) => {
+    if (!exerciseString || exerciseString === 'Rest Day' || exerciseString === 'No exercises planned') {
+      return {};
+    }
+    
+    // Comprehensive exercise mapping based on exercise library
+    const exerciseToMuscleGroup = {
+      // Chest exercises
+      'Barbell Bench Press': 'Chest',
+      'Incline Dumbbell Press': 'Chest',
+      'Decline Bench Press': 'Chest',
+      'Cable Crossover': 'Chest',
+      'Pec-Deck Machine': 'Chest',
+      'Weighted Dips': 'Chest',
+      'Push-ups': 'Chest',
+      'Incline Cable Fly': 'Chest',
+      'Dumbbell Bench Press': 'Chest',
+      'Incline Barbell Press': 'Chest',
+      'Decline Dumbbell Press': 'Chest',
+      'Dumbbell Flyes': 'Chest',
+      'Incline Dumbbell Flyes': 'Chest',
+      'Decline Cable Fly': 'Chest',
+      'Chest Press Machine': 'Chest',
+      
+      // Shoulders exercises
+      'Overhead Press': 'Shoulders',
+      'Lateral Raises': 'Shoulders',
+      'Front Raises': 'Shoulders',
+      'Rear Delt Fly': 'Shoulders',
+      'Arnold Press': 'Shoulders',
+      'Upright Rows': 'Shoulders',
+      'Face Pulls': 'Shoulders',
+      'Pike Push-ups': 'Shoulders',
+      'Dumbbell Shoulder Press': 'Shoulders',
+      'Cable Lateral Raises': 'Shoulders',
+      'Reverse Pec Deck': 'Shoulders',
+      'Seated Dumbbell Press': 'Shoulders',
+      'Cable Front Raises': 'Shoulders',
+      'Bent-Over Lateral Raises': 'Shoulders',
+      'Machine Shoulder Press': 'Shoulders',
+      'Handstand Push-ups': 'Shoulders',
+      'Single-Arm Lateral Raise': 'Shoulders',
+      'Y-Raises': 'Shoulders',
+      'Shrugs': 'Shoulders',
+      'Cuban Press': 'Shoulders',
+      
+      // Back exercises
+      'Deadlift': 'Back',
+      'Pull-ups': 'Back',
+      'Barbell Rows': 'Back',
+      'Lat Pulldowns': 'Back',
+      'Cable Rows': 'Back',
+      'T-Bar Rows': 'Back',
+      'Single-Arm Dumbbell Row': 'Back',
+      'Hyperextensions': 'Back',
+      'Chin-ups': 'Back',
+      'Wide-Grip Pulldowns': 'Back',
+      'Chest-Supported Row': 'Back',
+      'Inverted Rows': 'Back',
+      'Sumo Deadlift': 'Back',
+      'Romanian Deadlift': 'Back',
+      'Good Mornings': 'Back',
+      'Reverse Fly': 'Back',
+      'Rack Pulls': 'Back',
+      'Meadows Row': 'Back',
+      'Cable Pullovers': 'Back',
+      'Pendlay Rows': 'Back',
+      
+      // Arms exercises
+      'Barbell Curls': 'Arms',
+      'Close-Grip Bench Press': 'Arms',
+      'Hammer Curls': 'Arms',
+      'Tricep Dips': 'Arms',
+      'Preacher Curls': 'Arms',
+      'Overhead Tricep Extension': 'Arms',
+      'Cable Curls': 'Arms',
+      'Tricep Pushdowns': 'Arms',
+      'Dumbbell Curls': 'Arms',
+      'Skull Crushers': 'Arms',
+      'Concentration Curls': 'Arms',
+      'Diamond Push-ups': 'Arms',
+      'Cable Hammer Curls': 'Arms',
+      'Rope Tricep Extensions': 'Arms',
+      '21s Bicep Curls': 'Arms',
+      'Reverse Curls': 'Arms',
+      'Tricep Kickbacks': 'Arms',
+      'Zottman Curls': 'Arms',
+      'Overhead Cable Extension': 'Arms',
+      'Spider Curls': 'Arms',
+      
+      // Legs exercises
+      'Squats': 'Legs',
+      'Romanian Deadlifts': 'Legs',
+      'Leg Press': 'Legs',
+      'Leg Curls': 'Legs',
+      'Leg Extensions': 'Legs',
+      'Calf Raises': 'Legs',
+      'Bulgarian Split Squats': 'Legs',
+      'Walking Lunges': 'Legs',
+      'Front Squats': 'Legs',
+      'Goblet Squats': 'Legs',
+      'Stiff Leg Deadlifts': 'Legs',
+      'Hack Squats': 'Legs',
+      'Step-ups': 'Legs',
+      'Reverse Lunges': 'Legs',
+      'Sumo Squats': 'Legs',
+      'Single-Leg Deadlifts': 'Legs',
+      'Wall Sits': 'Legs',
+      'Jump Squats': 'Legs',
+      'Seated Calf Raises': 'Legs',
+      'Pistol Squats': 'Legs',
+      
+      // Core exercises
+      'Plank': 'Core',
+      'Crunches': 'Core',
+      'Russian Twists': 'Core',
+      'Leg Raises': 'Core',
+      'Mountain Climbers': 'Core',
+      'Dead Bug': 'Core',
+      'Bicycle Crunches': 'Core',
+      'Hanging Knee Raises': 'Core',
+      'Side Plank': 'Core',
+      'Reverse Crunches': 'Core',
+      'V-Ups': 'Core',
+      'Flutter Kicks': 'Core',
+      'Hollow Body Hold': 'Core',
+      'Cable Crunches': 'Core',
+      'Woodchoppers': 'Core',
+      'Ab Wheel Rollouts': 'Core',
+      'Hanging Leg Raises': 'Core',
+      'Dragon Flags': 'Core',
+      'Sit-ups': 'Core',
+      'Plank to Push-up': 'Core'
+    };
+    
+    const exercises = exerciseString.split(', ');
+    const grouped = {};
+    
+    exercises.forEach(exerciseName => {
+      // Use exact mapping first, then fallback to pattern matching
+      let muscleGroup = exerciseToMuscleGroup[exerciseName];
+      
+      if (!muscleGroup) {
+        // Fallback pattern matching for custom exercises
+        const nameLower = exerciseName.toLowerCase();
+        if (nameLower.includes('tricep') || nameLower.includes('bicep') || nameLower.includes('curl') || nameLower.includes('dip')) {
+          muscleGroup = 'Arms';
+        } else if (nameLower.includes('lateral') || nameLower.includes('shoulder') || nameLower.includes('press') || nameLower.includes('raise')) {
+          muscleGroup = 'Shoulders';
+        } else if (nameLower.includes('bench') || nameLower.includes('chest') || nameLower.includes('pec')) {
+          muscleGroup = 'Chest';
+        } else if (nameLower.includes('pull') || nameLower.includes('row') || nameLower.includes('lat') || nameLower.includes('back')) {
+          muscleGroup = 'Back';
+        } else if (nameLower.includes('leg') || nameLower.includes('squat') || nameLower.includes('calf')) {
+          muscleGroup = 'Legs';
+        } else {
+          muscleGroup = 'Core';
+        }
+      }
+      
+      if (!grouped[muscleGroup]) {
+        grouped[muscleGroup] = [];
+      }
+      grouped[muscleGroup].push(exerciseName);
+    });
+    
+    return grouped;
+  };
+
   // Workout Split Categories
   const categories = [
     { id: 'all', name: 'All Splits', icon: Dumbbell, color: '#00d4ff' },
@@ -185,7 +376,7 @@ const WorkoutSplits = () => {
   const fallbackSplits = [
     {
       id: 12,
-      name: 'Custom Split A (6-Day)',
+      name: '6-Day Split',
       category: ['bulking', 'recomp', 'advanced'],
       frequency: '6 days/week',
       difficulty: 'Intermediate-Advanced',
@@ -210,7 +401,7 @@ const WorkoutSplits = () => {
     },
     {
       id: 13,
-      name: 'Custom Split B (5-Day)',
+      name: '5-Day Split',
       category: ['bulking', 'cutting', 'recomp', 'beginner'],
       frequency: '5 days/week',
       difficulty: 'Intermediate',
@@ -521,7 +712,8 @@ const WorkoutSplits = () => {
   };
   
   const customSplits = loadCustomSplits();
-  const workoutSplits = [...fallbackSplits, ...customSplits];
+  // Show custom splits FIRST, then fallback splits
+  const workoutSplits = [...customSplits, ...fallbackSplits];
 
   // Filter splits based on category and search
   const filteredSplits = workoutSplits.filter(split => {
@@ -575,21 +767,21 @@ const WorkoutSplits = () => {
 
           {/* Enhanced Title Overlay */}
           <div className="relative z-10 h-full flex items-center justify-center" style={{ paddingTop: '8vh' }}>
-            <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <div className="text-center px-3 sm:px-6 lg:px-8 max-w-6xl">
               <motion.div
-                className="mb-4"
+                className="mb-3 sm:mb-4"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md rounded-full border border-orange-500/30 mb-6">
-                  <Dumbbell className="w-5 h-5 text-orange-400 mr-2" />
-                  <span className="text-orange-300 font-semibold text-sm tracking-wide">PROFESSIONAL GYM TRACKER</span>
+                <div className="inline-flex items-center px-3 sm:px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md rounded-full border border-orange-500/30 mb-4 sm:mb-6">
+                  <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 mr-2" />
+                  <span className="text-orange-300 font-semibold text-xs sm:text-sm tracking-wide">PROFESSIONAL GYM TRACKER</span>
                 </div>
               </motion.div>
               
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6"
+                className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6"
                 style={{ 
                   background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #f59e0b 100%)',
                   WebkitBackgroundClip: 'text',
@@ -604,7 +796,7 @@ const WorkoutSplits = () => {
               </motion.h1>
               
               <motion.p
-                className="text-base sm:text-lg lg:text-xl text-gray-200 font-medium mb-8 max-w-3xl mx-auto leading-relaxed"
+                className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-200 font-medium mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-2"
                 style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -615,28 +807,28 @@ const WorkoutSplits = () => {
               </motion.p>
               
               <motion.div
-                className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6"
+                className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-4 lg:gap-6 mb-6 sm:mb-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
-                <div className="group flex items-center space-x-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-orange-500/40 hover:border-orange-400/60 transition-all duration-300">
-                  <Users className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
-                  <span className="font-semibold text-white text-sm tracking-wide">13 DIFFERENT SPLITS</span>
+                <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-orange-500/40 hover:border-orange-400/60 transition-all duration-300">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                  <span className="font-semibold text-white text-xs sm:text-sm tracking-wide">13 DIFFERENT SPLITS</span>
                 </div>
-                <div className="group flex items-center space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-green-500/40 hover:border-green-400/60 transition-all duration-300">
-                  <Target className="w-5 h-5 text-green-400 group-hover:text-green-300 transition-colors" />
-                  <span className="font-semibold text-white text-sm tracking-wide">ALL FITNESS GOALS</span>
+                <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-green-500/40 hover:border-green-400/60 transition-all duration-300">
+                  <Target className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 group-hover:text-green-300 transition-colors" />
+                  <span className="font-semibold text-white text-xs sm:text-sm tracking-wide">ALL FITNESS GOALS</span>
                 </div>
-                <div className="group flex items-center space-x-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-purple-500/40 hover:border-purple-400/60 transition-all duration-300">
-                  <Clock className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                  <span className="font-semibold text-white text-sm tracking-wide">FLEXIBLE SCHEDULES</span>
+                <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-purple-500/40 hover:border-purple-400/60 transition-all duration-300">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                  <span className="font-semibold text-white text-xs sm:text-sm tracking-wide">FLEXIBLE SCHEDULES</span>
                 </div>
               </motion.div>
               
               {/* Action Buttons */}
               <motion.div
-                className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8"
+                className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-6 sm:mt-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1.0 }}
@@ -645,13 +837,13 @@ const WorkoutSplits = () => {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/custom-split-builder')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-purple-500/25"
+                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-purple-500/25 w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative flex items-center space-x-3">
-                    <Dumbbell className="w-6 h-6 animate-pulse" />
-                    <span className="text-lg tracking-wide">CREATE YOUR OWN WORKOUT SPLIT</span>
-                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  <div className="relative flex items-center justify-center space-x-2 sm:space-x-3">
+                    <Dumbbell className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+                    <span className="text-sm sm:text-lg tracking-wide">CREATE YOUR OWN WORKOUT SPLIT</span>
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </motion.button>
                 
@@ -659,13 +851,13 @@ const WorkoutSplits = () => {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/your-workout-splits')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-orange-600 via-red-600 to-pink-500 hover:from-orange-700 hover:via-red-700 hover:to-pink-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-orange-500/25"
+                  className="group relative overflow-hidden bg-gradient-to-r from-orange-600 via-red-600 to-pink-500 hover:from-orange-700 hover:via-red-700 hover:to-pink-600 text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-orange-500/25 w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative flex items-center space-x-3">
-                    <Target className="w-6 h-6 animate-pulse" />
-                    <span className="text-lg tracking-wide">YOUR WORKOUT SPLITS</span>
-                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  <div className="relative flex items-center justify-center space-x-2 sm:space-x-3">
+                    <Target className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+                    <span className="text-sm sm:text-lg tracking-wide">YOUR WORKOUT SPLITS</span>
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </motion.button>
               </motion.div>
@@ -932,38 +1124,116 @@ const WorkoutSplits = () => {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-3">📅 Weekly Schedule</h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {Object.entries(selectedSplit.weeklySchedule).map(([day, workout]) => (
-                        <div key={day} className={`rounded-lg p-3 border ${
-                          workout.includes('Rest') 
-                            ? 'bg-gray-700/20 border-gray-600/30' 
-                            : 'bg-blue-500/10 border-blue-500/20'
-                        }`}>
-                          <div className="flex items-center justify-between">
-                            <div className="font-medium text-blue-400">{day}</div>
-                            <div className={`text-xs px-2 py-1 rounded-full ${
-                              workout.includes('Rest') 
-                                ? 'bg-gray-600 text-gray-300' 
-                                : 'bg-blue-500/20 text-blue-300'
-                            }`}>
-                              {workout.includes('Rest') ? '😴 Rest' : '💪 Workout'}
+                    <div className="grid grid-cols-1 gap-3">
+                      {Object.entries(selectedSplit.weeklySchedule).map(([day, workout]) => {
+                        const isRestDay = workout.includes('Rest') || workout === 'Rest Day';
+                        const groupedExercises = isRestDay ? {} : groupExercisesByMuscleGroup(workout);
+                        
+                        return (
+                          <div key={day} className={`rounded-lg border overflow-hidden ${
+                            isRestDay 
+                              ? 'bg-gray-700/20 border-gray-600/30' 
+                              : 'bg-blue-500/10 border-blue-500/20'
+                          }`}>
+                            <div className="flex items-center justify-between p-3 border-b border-gray-600/30">
+                              <div className="font-medium text-blue-400 text-lg">{day}</div>
+                              <div className={`text-xs px-2 py-1 rounded-full ${
+                                isRestDay 
+                                  ? 'bg-gray-600 text-gray-300' 
+                                  : 'bg-blue-500/20 text-blue-300'
+                              }`}>
+                                {isRestDay ? '😴 Rest' : '💪 Workout'}
+                              </div>
                             </div>
+                            
+                            {isRestDay ? (
+                              <div className="p-3">
+                                <div className="text-gray-400 text-sm flex items-center gap-2">
+                                  <span className="text-lg">😴</span>
+                                  <span>Rest Day</span>
+                                </div>
+                              </div>
+                            ) : Object.keys(groupedExercises).length > 0 ? (
+                              <div className="p-3 space-y-3">
+                                {Object.entries(groupedExercises).map(([muscleGroup, exercises]) => {
+                                  const config = muscleGroupMapping[muscleGroup];
+                                  if (!config || exercises.length === 0) return null;
+                                  
+                                  return (
+                                    <div key={muscleGroup} className="bg-slate-800/40 rounded-lg border border-slate-700/50 overflow-hidden">
+                                      <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 py-2`}>
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-lg">{config.icon}</span>
+                                          <div>
+                                            <h4 className="text-white font-semibold text-sm">{muscleGroup}</h4>
+                                            <p className="text-slate-400 text-xs">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="p-3">
+                                        <div className="space-y-1">
+                                          {exercises.map((exercise, idx) => (
+                                            <div key={idx} className="text-white text-sm flex items-center gap-2">
+                                              <span className={`text-white font-bold text-xs ${config.color} bg-opacity-80 w-5 h-5 rounded-full flex items-center justify-center`}>
+                                                {idx + 1}
+                                              </span>
+                                              <span>{exercise}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                }).filter(Boolean)}
+                              </div>
+                            ) : (
+                              <div className="p-3">
+                                <div className="text-gray-300 text-sm">{workout}</div>
+                              </div>
+                            )}
                           </div>
-                          <div className="text-gray-300 text-sm mt-1">{workout}</div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-3">🎯 Muscle Group Focus</h3>
-                    <div className="space-y-2">
-                      {Object.entries(selectedSplit.muscles).map(([day, muscles]) => (
-                        <div key={day} className="bg-gray-700/30 rounded-lg p-3">
-                          <div className="font-medium text-green-400 mb-1">{day}</div>
-                          <div className="text-gray-300 text-sm">{muscles}</div>
-                        </div>
-                      ))}
+                    <div className="space-y-3">
+                      {Object.entries(selectedSplit.muscles).map(([day, muscles]) => {
+                        const groupedMuscles = groupExercisesByMuscleGroup(muscles);
+                        
+                        return (
+                          <div key={day} className="bg-gray-700/30 rounded-lg border border-gray-600/30 overflow-hidden">
+                            <div className="bg-gray-800/50 px-3 py-2 border-b border-gray-600/30">
+                              <div className="font-medium text-green-400">{day}</div>
+                            </div>
+                            
+                            {Object.keys(groupedMuscles).length > 0 ? (
+                              <div className="p-3 space-y-2">
+                                {Object.entries(groupedMuscles).map(([muscleGroup, exercises]) => {
+                                  const config = muscleGroupMapping[muscleGroup];
+                                  if (!config) return null;
+                                  
+                                  return (
+                                    <div key={muscleGroup} className="flex items-center gap-2">
+                                      <span className={`${config.color} bg-opacity-80 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center`}>
+                                        {config.icon}
+                                      </span>
+                                      <span className="text-gray-300 text-sm font-medium">{muscleGroup}</span>
+                                      <span className="text-gray-400 text-xs">({exercises.length})</span>
+                                    </div>
+                                  );
+                                }).filter(Boolean)}
+                              </div>
+                            ) : (
+                              <div className="p-3">
+                                <div className="text-gray-300 text-sm">{muscles}</div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
