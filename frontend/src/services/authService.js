@@ -150,27 +150,21 @@ const tryOfflineLogin = (credentials) => {
 
 
 export const checkBackendStatus = async () => {
+  console.log('🔍 Checking backend status...');
+  
   try {
-    const result = await safeApiCall(
-      () => smartRequest.get('/health'),
-      { status: 'offline' }
-    );
+    // Use direct API call instead of smart request manager for health check
+    const response = await api.get('/health', { timeout: 5000 });
     
-    if (result.success) {
-      return {
-        online: true,
-        message: 'Backend connected',
-        data: result.data
-      };
-    } else {
-      return {
-        online: false,
-        message: 'Using offline mode',
-        error: result.error
-      };
-    }
+    console.log('✅ Backend is online:', response.data);
+    return {
+      online: true,
+      message: 'Backend connected',
+      data: response.data
+    };
     
   } catch (error) {
+    console.error('❌ Backend status check error:', error.message);
     return {
       online: false,
       message: 'Backend not accessible - using offline mode',

@@ -16,7 +16,9 @@ const Login = () => {
 
   useEffect(() => {
     const checkBackend = async () => {
+      console.log('🔄 Starting backend status check...');
       const status = await checkBackendStatus();
+      console.log('📊 Backend status response:', status);
       setBackendStatus(status.online ? 'online' : 'offline');
     };
     checkBackend();
@@ -91,9 +93,12 @@ const Login = () => {
           <div className={`mt-4 px-4 py-2 rounded border border-amber-800/30 text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
               ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
+              : backendStatus === 'checking'
+              ? 'bg-blue-950/40 text-blue-300 border-blue-800/50'
               : 'bg-amber-950/40 text-amber-300 border-amber-800/50'
           }`}>
-            {backendStatus === 'online' ? '● SYSTEM ONLINE' : '● OFFLINE MODE'}
+            {backendStatus === 'online' ? '● SYSTEM ONLINE' : 
+             backendStatus === 'checking' ? '● CONNECTING...' : '● OFFLINE MODE'}
           </div>
         </div>
         
