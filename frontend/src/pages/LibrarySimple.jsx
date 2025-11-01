@@ -195,7 +195,11 @@ export default function LibrarySimple() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900" style={{ scrollBehavior: 'smooth' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
+      {/* Premium Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
       {/* Premium Exercise Library Hero Section - Full Viewport */}
       <motion.div 
         className="relative w-full h-screen min-h-screen overflow-hidden hero-image-container"
@@ -431,180 +435,346 @@ export default function LibrarySimple() {
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <div className="relative bg-slate-900 pt-12 pb-12">
-        <div className="container mx-auto px-4 max-w-7xl space-y-6 sm:space-y-8">
+      {/* Premium Main Content Area */}
+      <div className="relative z-10 pt-12 pb-12">
+        <div className="container mx-auto px-4 max-w-7xl space-y-8 sm:space-y-12">
+          {/* Floating Gym Elements */}
+          <div className="absolute top-20 left-10 w-20 h-20 bg-orange-500/10 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-purple-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
 
       
-      {/* Search and Filters */}
-      <div id="search-filters" className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
-        <div className="relative max-w-2xl mx-auto">
-          <input 
-            value={searchQuery} 
-            onChange={e => setSearchQuery(e.target.value)} 
-            className="w-full p-4 pl-14 pr-6 rounded-xl bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-lg" 
-            placeholder="Search exercises by name, type, or muscle group..." 
-          />
-          <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg">
-            🔍
+      {/* Enhanced Search and Filters Section */}
+      <motion.div 
+        id="search-filters" 
+        className="mb-8 space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Search Bar with Premium Design */}
+        <div className="relative max-w-3xl mx-auto">
+          <div className="relative group">
+            <input 
+              value={searchQuery} 
+              onChange={e => setSearchQuery(e.target.value)} 
+              className="w-full p-5 pl-16 pr-12 rounded-2xl bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-2 border-slate-600/50 text-white placeholder-slate-300 text-lg font-medium focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 shadow-2xl backdrop-blur-sm group-hover:shadow-orange-500/10" 
+              placeholder="Search exercises by name, type, or muscle group..." 
+            />
+            <div className="absolute left-6 top-1/2 transform -translate-y-1/2 text-orange-400 text-xl">
+              🔍
+            </div>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-sm font-bold">⚡</span>
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
-          <select 
-            value={filters.category} 
-            onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
-          >
-            <option value="">All Categories</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+        {/* Premium Filter Controls */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div className="relative group">
+            <select 
+              value={filters.category} 
+              onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
+              className="w-full p-4 pl-12 rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-base font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-blue-500/10"
+            >
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg pointer-events-none">
+              🏷️
+            </div>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none">
+              ▼
+            </div>
+          </div>
           
-          <select 
-            value={filters.difficulty} 
-            onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
-          >
-            <option value="">All Difficulties</option>
-            {difficulties.map(diff => (
-              <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
-            ))}
-          </select>
+          <div className="relative group">
+            <select 
+              value={filters.difficulty} 
+              onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
+              className="w-full p-4 pl-12 rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-base font-medium focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-purple-500/10"
+            >
+              <option value="">All Difficulties</option>
+              {difficulties.map(diff => (
+                <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
+              ))}
+            </select>
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400 text-lg pointer-events-none">
+              ⚡
+            </div>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none">
+              ▼
+            </div>
+          </div>
           
-          <select 
-            value={filters.muscle} 
-            onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
-            className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base sm:col-span-2 lg:col-span-1"
-          >
-            <option value="">All Muscles</option>
-            {muscles.map(muscle => (
-              <option key={muscle} value={muscle}>{muscle}</option>
-            ))}
-          </select>
+          <div className="relative group sm:col-span-2 lg:col-span-1">
+            <select 
+              value={filters.muscle} 
+              onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
+              className="w-full p-4 pl-12 rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-base font-medium focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-green-500/10"
+            >
+              <option value="">All Muscles</option>
+              {muscles.map(muscle => (
+                <option key={muscle} value={muscle}>{muscle}</option>
+              ))}
+            </select>
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-400 text-lg pointer-events-none">
+              💪
+            </div>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none">
+              ▼
+            </div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Real-Time Quick Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="card text-center py-4 relative">
-          <div className="text-2xl font-bold text-blue-400">{allExercises.length}</div>
-          <div className="text-sm text-slate-400">Total Exercises</div>
-          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-        </div>
-        <div className="card text-center py-4 relative">
-          <div className="text-2xl font-bold text-green-400">{categories.length}</div>
-          <div className="text-sm text-slate-400">Muscle Groups</div>
-          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-        </div>
-        <div className="card text-center py-4 relative">
-          <div className="text-2xl font-bold text-purple-400">{filteredExercises.length}</div>
-          <div className="text-sm text-slate-400">Filtered Results</div>
-          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-        </div>
-        <div className="card text-center py-4 relative">
-          <div className="text-2xl font-bold text-orange-400">{difficulties.length}</div>
-          <div className="text-sm text-slate-400">Difficulty Levels</div>
-          <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-        </div>
-      </div>
+      {/* Premium Real-Time Stats Dashboard */}
+      <motion.div 
+        className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <motion.div 
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 backdrop-blur-sm p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/20"
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-blue-400 mb-1">{allExercises.length}</div>
+            <div className="text-sm font-semibold text-slate-300">Total Exercises</div>
+            <div className="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="mt-2 text-xs text-blue-300 font-medium">💪 READY TO TRAIN</div>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-500/30 backdrop-blur-sm p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/20"
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-green-400 mb-1">{categories.length}</div>
+            <div className="text-sm font-semibold text-slate-300">Muscle Groups</div>
+            <div className="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="mt-2 text-xs text-green-300 font-medium">🎯 TARGET ZONES</div>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-500/30 backdrop-blur-sm p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-purple-400 mb-1">{filteredExercises.length}</div>
+            <div className="text-sm font-semibold text-slate-300">Filtered Results</div>
+            <div className="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="mt-2 text-xs text-purple-300 font-medium">🔥 ACTIVE FILTER</div>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-600/20 to-orange-800/20 border border-orange-500/30 backdrop-blur-sm p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/20"
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-orange-400 mb-1">{difficulties.length}</div>
+            <div className="text-sm font-semibold text-slate-300">Difficulty Levels</div>
+            <div className="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="mt-2 text-xs text-orange-300 font-medium">⚡ CHALLENGE MODES</div>
+          </div>
+        </motion.div>
+      </motion.div>
       
-      {/* Results Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-slate-400 text-sm sm:text-base flex items-center gap-2">
-          <span>Showing {filteredExercises.length} of {allExercises.length} exercises</span>
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs text-green-400">LIVE</span>
+      {/* Premium Results Header */}
+      <motion.div 
+        className="flex items-center justify-between mb-6 p-4 rounded-2xl bg-gradient-to-r from-slate-800/60 to-slate-700/60 border border-slate-600/50 backdrop-blur-sm"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+            <span className="text-white font-bold text-lg">📊</span>
+          </div>
+          <div>
+            <div className="text-white font-semibold text-base sm:text-lg">
+              Showing {filteredExercises.length} of {allExercises.length} exercises
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+              <span className="text-green-400 font-medium">LIVE RESULTS</span>
+              <span className="text-slate-400">•</span>
+              <span className="text-slate-300">Real-time filtering</span>
+            </div>
+          </div>
         </div>
-        <button
+        
+        <motion.button
           onClick={() => {
             setSearchQuery('');
             setFilters({ category: '', difficulty: '', muscle: '' });
           }}
-          className="btn-secondary text-sm"
+          className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-red-500/20 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          Clear Filters
-        </button>
-      </div>
+          🗑️ Clear Filters
+        </motion.button>
+      </motion.div>
 
       {/* Exercise Grid */}
       <div id="exercise-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredExercises.length === 0 ? (
-          <div className="col-span-full text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <div className="text-xl font-semibold text-white mb-2">No exercises found</div>
-            <div className="text-slate-400 mb-6">Try adjusting your search or filters</div>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setFilters({ category: '', difficulty: '', muscle: '' });
-              }}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Clear All Filters
-            </button>
-          </div>
+          <motion.div 
+            className="col-span-full text-center py-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="max-w-md mx-auto">
+              <motion.div 
+                className="text-8xl mb-6"
+                animate={{ 
+                  rotate: [0, -10, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 3
+                }}
+              >
+                🔍
+              </motion.div>
+              
+              <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-8 border border-slate-600/50 backdrop-blur-sm">
+                <h3 className="text-2xl font-bold text-white mb-3">No exercises found</h3>
+                <p className="text-slate-300 mb-6 leading-relaxed">
+                  We couldn't find any exercises matching your criteria. 
+                  Try adjusting your search terms or filters to discover more workouts.
+                </p>
+                
+                <div className="space-y-3">
+                  <motion.button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setFilters({ category: '', difficulty: '', muscle: '' });
+                    }}
+                    className="w-full p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    🗑️ Clear All Filters
+                  </motion.button>
+                  
+                  <div className="text-sm text-slate-400">
+                    Or try searching for: <span className="text-blue-300 font-medium">"push ups"</span>, <span className="text-green-300 font-medium">"chest"</span>, <span className="text-purple-300 font-medium">"beginner"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         ) : (
           filteredExercises.map(exercise => (
-            <div key={exercise.id} className="card hover:scale-[1.02] transition-transform duration-150 plan-card">
-              <div className="flex items-start gap-3 mb-4">
-                <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                  <span className="text-2xl">{exercise.icon}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-white text-base mb-1">{exercise.name}</div>
-                  <div className="text-sm text-slate-400">{exercise.category}</div>
-                </div>
-              </div>
+            <motion.div 
+              key={exercise.id} 
+              className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 backdrop-blur-sm hover:border-orange-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-orange-500/10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: Math.min(filteredExercises.indexOf(exercise) * 0.05, 1) }}
+              whileHover={{ 
+                y: -8, 
+                scale: 1.02,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
+            >
+              {/* Premium Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Sets/Reps:</span>
-                  <span className="text-sm font-medium text-white">{exercise.sets}</span>
+              <div className="relative z-10 p-6">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className={`w-14 h-14 ${exercise.color} rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <span className="text-3xl">{exercise.icon}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-white text-lg mb-2 group-hover:text-orange-300 transition-colors duration-300">{exercise.name}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-slate-300">{exercise.category}</span>
+                      <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
+                      <span className="text-xs text-slate-400 uppercase tracking-wide">Exercise</span>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Type:</span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    exercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
-                    exercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
-                    'bg-green-900/30 text-green-300'
-                  }`}>
-                    {exercise.type}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Difficulty:</span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                    exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                    'bg-red-900/30 text-red-300'
-                  }`}>
-                    {exercise.difficulty}
-                  </span>
-                </div>
-              </div>
               
-              {/* Form Tips Section */}
-              <div className="mb-4">
-                <button
-                  onClick={() => setExpandedFormTips(prev => ({
-                    ...prev,
-                    [exercise.id]: !prev[exercise.id]
-                  }))}
-                  className="w-full flex items-center justify-between p-2 bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-colors duration-200"
-                >
-                  <span className="text-sm font-medium text-blue-300 flex items-center gap-2">
-                    📋 Form Tips
-                  </span>
-                  <span className={`text-blue-300 transition-transform duration-200 ${
-                    expandedFormTips[exercise.id] ? 'rotate-180' : ''
-                  }`}>
-                    ▼
-                  </span>
-                </button>
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <div className="flex items-center gap-2">
+                      <span className="text-orange-400 text-sm">🎯</span>
+                      <span className="text-sm font-medium text-slate-300">Sets/Reps:</span>
+                    </div>
+                    <span className="text-sm font-bold text-white bg-orange-500/20 px-3 py-1 rounded-lg">{exercise.sets}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 text-sm">⚡</span>
+                      <span className="text-sm font-medium text-slate-300">Type:</span>
+                    </div>
+                    <span className={`text-xs px-3 py-2 rounded-lg font-semibold uppercase tracking-wide ${
+                      exercise.type === 'compound' ? 'bg-blue-600/30 text-blue-300 border border-blue-500/30' :
+                      exercise.type === 'isolation' ? 'bg-purple-600/30 text-purple-300 border border-purple-500/30' :
+                      'bg-green-600/30 text-green-300 border border-green-500/30'
+                    }`}>
+                      {exercise.type}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-400 text-sm">🔥</span>
+                      <span className="text-sm font-medium text-slate-300">Difficulty:</span>
+                    </div>
+                    <span className={`text-xs px-3 py-2 rounded-lg font-semibold uppercase tracking-wide ${
+                      exercise.difficulty === 'beginner' ? 'bg-green-600/30 text-green-300 border border-green-500/30' :
+                      exercise.difficulty === 'intermediate' ? 'bg-yellow-600/30 text-yellow-300 border border-yellow-500/30' :
+                      'bg-red-600/30 text-red-300 border border-red-500/30'
+                    }`}>
+                      {exercise.difficulty}
+                    </span>
+                  </div>
+                </div>
+              
+                {/* Premium Form Tips Section */}
+                <div className="mb-6">
+                  <motion.button
+                    onClick={() => setExpandedFormTips(prev => ({
+                      ...prev,
+                      [exercise.id]: !prev[exercise.id]
+                    }))}
+                    className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 rounded-xl border border-blue-500/30 transition-all duration-300 group/tips"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="text-sm font-semibold text-blue-300 flex items-center gap-3">
+                      <span className="text-lg">📋</span>
+                      <span>Form Tips & Technique</span>
+                    </span>
+                    <motion.span 
+                      className="text-blue-300 text-lg"
+                      animate={{ rotate: expandedFormTips[exercise.id] ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      ▼
+                    </motion.span>
+                  </motion.button>
                 
                 {expandedFormTips[exercise.id] && (
                   <div className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3 animate-in slide-in-from-top-2 duration-200">
@@ -652,136 +822,203 @@ export default function LibrarySimple() {
                 )}
               </div>
               
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedExercise(exercise)}
-                  className="btn-secondary w-full text-sm"
-                >
-                  View Details
-                </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleQuickPlan(exercise)}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-sm"
+                <div className="space-y-3">
+                  <motion.button
+                    onClick={() => setSelectedExercise(exercise)}
+                    className="w-full p-3 bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold rounded-xl border border-slate-500/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    + New Plan
-                  </button>
-                  <button
-                    onClick={() => handleAddToExisting(exercise)}
-                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm"
-                  >
-                    + Add to Plan
-                  </button>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => trackExerciseView(exercise)}
-                    className="btn bg-purple-600 hover:bg-purple-700 text-white flex-1 text-sm"
-                  >
-                    🎯 Start Workout
-                  </button>
-                  <button
-                    onClick={() => {
-                      // Enhanced workout completion with real-time sync
-                      const workout = {
-                        id: Date.now(),
-                        exercise: exercise.name,
-                        name: exercise.name,
-                        category: exercise.category,
-                        difficulty: exercise.difficulty,
-                        completedAt: new Date().toISOString(),
-                        duration: Math.floor(Math.random() * 120) + 60, // 1-3 minutes
-                        caloriesBurned: Math.floor(Math.random() * 100) + 50, // 50-150 calories
-                        sets: exercise.sets ? parseInt(exercise.sets.split(' ')[0]) || 3 : 3,
-                        reps: exercise.sets ? parseInt(exercise.sets.split('/')[1]) || 12 : 12,
-                        userId: user?.id,
-                        savedOffline: !isOnline,
-                        notes: `Completed from Exercise Library`
-                      };
-                      
-                      // Save to localStorage with proper structure
-                      const existing = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
-                      const updatedWorkouts = [workout, ...existing];
-                      localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
-                      
-                      // Show success message
-                      setShowSuccessNotification(`✅ ${exercise.name} completed! +${workout.caloriesBurned} calories`);
-                      
-                      // Trigger comprehensive real-time events
-                      window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: workout }));
-                      
-                      // Update real-time stats
-                      const todayWorkouts = updatedWorkouts.filter(w => 
-                        new Date(w.completedAt).toDateString() === new Date().toDateString()
-                      ).length;
-                      
-                      const weeklyWorkouts = updatedWorkouts.filter(w => {
-                        const workoutDate = new Date(w.completedAt);
-                        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                        return workoutDate >= weekAgo;
-                      }).length;
-                      
-                      window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
-                        detail: { 
-                          todayWorkouts,
-                          totalWorkouts: updatedWorkouts.length,
-                          weeklyWorkouts,
-                          totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
-                        }
-                      }));
-                      
-                      // Trigger streak update if applicable
-                      window.dispatchEvent(new CustomEvent('streakUpdated', { 
-                        detail: { 
-                          type: 'WORKOUT_COMPLETED',
-                          currentStreak: todayWorkouts,
-                          exercise: exercise.name
-                        }
-                      }));
-                      
-                      console.log('🎯 Workout completed from Library:', workout);
-                    }}
-                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm"
-                  >
-                    ✅ Complete
-                  </button>
+                    👁️ View Details
+                  </motion.button>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <motion.button
+                      onClick={() => handleQuickPlan(exercise)}
+                      className="p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      ➕ New Plan
+                    </motion.button>
+                    <motion.button
+                      onClick={() => handleAddToExisting(exercise)}
+                      className="p-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      📝 Add to Plan
+                    </motion.button>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <motion.button
+                      onClick={() => trackExerciseView(exercise)}
+                      className="p-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      🎯 Start Workout
+                    </motion.button>
+                    <motion.button
+                      onClick={() => {
+                        // Enhanced workout completion with real-time sync
+                        const workout = {
+                          id: Date.now(),
+                          exercise: exercise.name,
+                          name: exercise.name,
+                          category: exercise.category,
+                          difficulty: exercise.difficulty,
+                          completedAt: new Date().toISOString(),
+                          duration: Math.floor(Math.random() * 120) + 60, // 1-3 minutes
+                          caloriesBurned: Math.floor(Math.random() * 100) + 50, // 50-150 calories
+                          sets: exercise.sets ? parseInt(exercise.sets.split(' ')[0]) || 3 : 3,
+                          reps: exercise.sets ? parseInt(exercise.sets.split('/')[1]) || 12 : 12,
+                          userId: user?.id,
+                          savedOffline: !isOnline,
+                          notes: `Completed from Exercise Library`
+                        };
+                        
+                        // Save to localStorage with proper structure
+                        const existing = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+                        const updatedWorkouts = [workout, ...existing];
+                        localStorage.setItem('completedWorkouts', JSON.stringify(updatedWorkouts));
+                        
+                        // Show success message
+                        setShowSuccessNotification(`✅ ${exercise.name} completed! +${workout.caloriesBurned} calories`);
+                        
+                        // Trigger comprehensive real-time events
+                        window.dispatchEvent(new CustomEvent('workoutCompleted', { detail: workout }));
+                        
+                        // Update real-time stats
+                        const todayWorkouts = updatedWorkouts.filter(w => 
+                          new Date(w.completedAt).toDateString() === new Date().toDateString()
+                        ).length;
+                        
+                        const weeklyWorkouts = updatedWorkouts.filter(w => {
+                          const workoutDate = new Date(w.completedAt);
+                          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                          return workoutDate >= weekAgo;
+                        }).length;
+                        
+                        window.dispatchEvent(new CustomEvent('realTimeStatsUpdate', { 
+                          detail: { 
+                            todayWorkouts,
+                            totalWorkouts: updatedWorkouts.length,
+                            weeklyWorkouts,
+                            totalCalories: updatedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)
+                          }
+                        }));
+                        
+                        // Trigger streak update if applicable
+                        window.dispatchEvent(new CustomEvent('streakUpdated', { 
+                          detail: { 
+                            type: 'WORKOUT_COMPLETED',
+                            currentStreak: todayWorkouts,
+                            exercise: exercise.name
+                          }
+                        }));
+                        
+                        console.log('🎯 Workout completed from Library:', workout);
+                      }}
+                      className="p-3 bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-500/30 shadow-lg hover:shadow-emerald-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      ✅ Complete
+                    </motion.button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))
         )}
       </div>
       
-      {/* Exercise Detail Modal */}
+      {/* Premium Exercise Detail Modal */}
       {selectedExercise && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
-              <button
-                onClick={() => setSelectedExercise(null)}
-                className="text-slate-400 hover:text-white text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center`}>
-                  <span className="text-2xl">{selectedExercise.icon}</span>
+        <motion.div 
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50" 
+          onClick={() => setSelectedExercise(null)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div 
+            className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 backdrop-blur-md rounded-3xl border-2 border-slate-600/50 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" 
+            onClick={e => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-600/50">
+              <div className="flex items-center gap-4">
+                <div className={`w-16 h-16 ${selectedExercise.color} rounded-2xl flex items-center justify-center shadow-lg`}>
+                  <span className="text-3xl">{selectedExercise.icon}</span>
                 </div>
                 <div>
-                  <div className="font-medium text-white">{selectedExercise.category}</div>
-                  <div className="text-sm text-slate-400">{selectedExercise.sets}</div>
+                  <h3 className="text-2xl font-bold text-white mb-1">{selectedExercise.name}</h3>
+                  <p className="text-slate-300 font-medium">{selectedExercise.category} Exercise</p>
                 </div>
               </div>
+              <motion.button
+                onClick={() => setSelectedExercise(null)}
+                className="w-10 h-10 bg-slate-700/50 hover:bg-red-600/50 text-slate-400 hover:text-white rounded-xl transition-all duration-300 flex items-center justify-center text-xl font-bold"
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                ×
+              </motion.button>
+            </div>
+            
+            <div className="p-6">
+            
+              <div className="space-y-6">
+                {/* Exercise Stats */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/30">
+                    <div className="text-orange-400 text-sm font-semibold mb-1 flex items-center gap-2">
+                      <span>🎯</span> Sets/Reps
+                    </div>
+                    <div className="text-white font-bold text-lg">{selectedExercise.sets}</div>
+                  </div>
+                  
+                  <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/30">
+                    <div className="text-blue-400 text-sm font-semibold mb-1 flex items-center gap-2">
+                      <span>⚡</span> Type
+                    </div>
+                    <div className={`text-sm font-bold uppercase tracking-wide ${
+                      selectedExercise.type === 'compound' ? 'text-blue-300' :
+                      selectedExercise.type === 'isolation' ? 'text-purple-300' :
+                      'text-green-300'
+                    }`}>
+                      {selectedExercise.type}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/30">
+                    <div className="text-purple-400 text-sm font-semibold mb-1 flex items-center gap-2">
+                      <span>🔥</span> Difficulty
+                    </div>
+                    <div className={`text-sm font-bold uppercase tracking-wide ${
+                      selectedExercise.difficulty === 'beginner' ? 'text-green-300' :
+                      selectedExercise.difficulty === 'intermediate' ? 'text-yellow-300' :
+                      'text-red-300'
+                    }`}>
+                      {selectedExercise.difficulty}
+                    </div>
+                  </div>
+                </div>
               
-              {/* Detailed Form Tips in Modal */}
-              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-600/50">
-                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                  📋 Complete Form Guide
-                </h4>
+                {/* Premium Detailed Form Tips */}
+                <div className="bg-gradient-to-br from-slate-800/60 to-slate-700/60 rounded-2xl p-6 border border-slate-600/50">
+                  <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-3">
+                    <span className="text-2xl">📋</span>
+                    <span>Complete Form Guide</span>
+                  </h4>
                 {(() => {
                   const tips = getFormTips(selectedExercise.name);
                   return (
@@ -831,70 +1068,61 @@ export default function LibrarySimple() {
                 })()}
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Type</div>
-                  <div className={`text-xs px-2 py-1 rounded inline-block ${
-                    selectedExercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
-                    selectedExercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
-                    'bg-green-900/30 text-green-300'
-                  }`}>
-                    {selectedExercise.type}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Difficulty</div>
-                  <div className={`text-xs px-2 py-1 rounded inline-block ${
-                    selectedExercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                    selectedExercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                    'bg-red-900/30 text-red-300'
-                  }`}>
-                    {selectedExercise.difficulty}
-                  </div>
-                </div>
-              </div>
+
               
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <button
+                {/* Premium Action Buttons */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <motion.button
+                      onClick={() => {
+                        setSelectedExercise(null);
+                        handleQuickPlan(selectedExercise);
+                      }}
+                      className="p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      ➕ New Plan
+                    </motion.button>
+                    <motion.button
+                      onClick={() => {
+                        const exerciseToAdd = selectedExercise;
+                        setSelectedExercise(null);
+                        handleAddToExisting(exerciseToAdd);
+                      }}
+                      className="p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      📝 Add to Plan
+                    </motion.button>
+                  </div>
+                  
+                  <motion.button
                     onClick={() => {
+                      trackExerciseView(selectedExercise);
                       setSelectedExercise(null);
-                      handleQuickPlan(selectedExercise);
                     }}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                    className="w-full p-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20 text-lg"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    New Plan
-                  </button>
-                  <button
-                    onClick={() => {
-                      const exerciseToAdd = selectedExercise;
-                      setSelectedExercise(null);
-                      handleAddToExisting(exerciseToAdd);
-                    }}
-                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1"
+                    🎯 Start Workout Session
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setSelectedExercise(null)}
+                    className="w-full p-3 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    Add to Plan
-                  </button>
+                    Close
+                  </motion.button>
                 </div>
-                <button
-                  onClick={() => {
-                    trackExerciseView(selectedExercise);
-                    setSelectedExercise(null);
-                  }}
-                  className="btn bg-purple-600 hover:bg-purple-700 text-white w-full"
-                >
-                  🎯 Start Workout Session
-                </button>
-                <button
-                  onClick={() => setSelectedExercise(null)}
-                  className="btn-secondary w-full"
-                >
-                  Close
-                </button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
       
       {/* Quick Plan Modal */}
@@ -927,7 +1155,8 @@ export default function LibrarySimple() {
         </div>
       </div>
       
-
+      {/* Premium Footer Glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-orange-900/20 to-transparent pointer-events-none"></div>
     </div>
   );
 }

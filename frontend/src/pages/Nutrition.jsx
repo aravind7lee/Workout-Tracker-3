@@ -223,88 +223,138 @@ export default function Nutrition() {
 
   return (
     <NutritionErrorBoundary>
-      <div className="space-y-6">
-      {/* Hero Header */}
-      <NutritionHero />
-      
-      {/* Nutrition Gallery */}
-      <NutritionGallery />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        {/* Premium Background Effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
         
-        {/* Status Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4">
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted flex items-center gap-2">
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              Real-time Nutritionix API
-            </span>
-            <span>•</span>
-            <span>Goal: <span className="capitalize font-medium">{targets.goalType || 'maintain'}</span></span>
-            <span>•</span>
-            <span>{meals.length} meals today</span>
+        {/* Floating Nutrition Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-green-500/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-blue-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        
+        <div className="relative z-10 space-y-8">
+          {/* Hero Header */}
+          <NutritionHero />
+          
+          {/* Nutrition Gallery */}
+          <NutritionGallery />
+            
+          {/* Premium Status Bar */}
+          <motion.div 
+            className="mx-4 p-6 rounded-2xl bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-2 border-slate-600/50 backdrop-blur-sm shadow-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">🍎</span>
+                </div>
+                <div>
+                  <div className="text-white font-bold text-lg mb-1">Nutrition Tracker Active</div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="inline-flex items-center gap-2 text-green-400 font-medium">
+                      <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
+                      Real-time Nutritionix API
+                    </span>
+                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-300">Goal: <span className="capitalize font-semibold text-orange-400">{targets.goalType || 'maintain'}</span></span>
+                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-300 font-medium">{meals.length} meals today</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <div className="px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl">
+                  <span className="text-green-300 font-semibold text-sm">🔥 TRACKING LIVE</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Enhanced Add Food Input */}
+          <div className="mx-4">
+            <MealInput 
+              onLookup={handleLookup}
+              isLookingUp={isLookingUp}
+              error={error}
+            />
           </div>
+
+          {/* Premium Food Categories */}
+          <div className="mx-4">
+            <FoodCategories 
+              onFoodSelect={handleLookup}
+              isLoading={isLookingUp}
+            />
+          </div>
+
+          {/* Enhanced Real-Time Progress Section */}
+          <div className="mx-4">
+            <RealTimeNutritionProgress 
+              totals={totals}
+              targets={targets}
+              meals={meals}
+              customCalorieTarget={customCalorieTarget}
+              setCustomCalorieTarget={setCustomCalorieTarget}
+            />
+          </div>
+
+          {/* Smart Nutrition Insights */}
+          <div className="mx-4">
+            <NutritionInsights 
+              totals={totals}
+              targets={targets}
+              meals={meals}
+              customCalorieTarget={customCalorieTarget}
+            />
+          </div>
+
+          {/* Social Dashboard */}
+          <div className="mx-4">
+            <NutritionSocialDashboard 
+              totals={totals}
+              targets={targets}
+              meals={meals}
+              customCalorieTarget={customCalorieTarget}
+            />
+          </div>
+
+          {/* Advanced Analytics */}
+          <div className="mx-4">
+            <NutritionAnalytics 
+              totals={totals}
+              targets={targets}
+              meals={meals}
+              customCalorieTarget={customCalorieTarget}
+            />
+          </div>
+
+          {/* Enhanced Real-Time Meals List */}
+          <div className="mx-4 pb-8">
+            <RealTimeMealsList 
+              meals={meals}
+              isLoading={isLoading}
+              onDeleteMeal={handleDeleteMeal}
+            />
+          </div>
+
+          {/* Nutrition Preview Modal */}
+          <NutritionPreviewModal
+            isOpen={showPreviewModal}
+            onClose={() => setShowPreviewModal(false)}
+            nutritionItems={nutritionItems}
+            onConfirm={handleConfirmMeal}
+            isAdding={isAddingMeal}
+          />
         </div>
-
-        {/* Add Food Input */}
-        <MealInput 
-          onLookup={handleLookup}
-          isLookingUp={isLookingUp}
-          error={error}
-        />
-
-      {/* Pre-populated Food Categories */}
-      <FoodCategories 
-        onFoodSelect={handleLookup}
-        isLoading={isLookingUp}
-      />
-
-      {/* Enhanced Real-Time Progress Section */}
-      <RealTimeNutritionProgress 
-        totals={totals}
-        targets={targets}
-        meals={meals}
-        customCalorieTarget={customCalorieTarget}
-        setCustomCalorieTarget={setCustomCalorieTarget}
-      />
-
-      {/* Smart Nutrition Insights */}
-      <NutritionInsights 
-        totals={totals}
-        targets={targets}
-        meals={meals}
-        customCalorieTarget={customCalorieTarget}
-      />
-
-      {/* Social Dashboard */}
-      <NutritionSocialDashboard 
-        totals={totals}
-        targets={targets}
-        meals={meals}
-        customCalorieTarget={customCalorieTarget}
-      />
-
-      {/* Advanced Analytics */}
-      <NutritionAnalytics 
-        totals={totals}
-        targets={targets}
-        meals={meals}
-        customCalorieTarget={customCalorieTarget}
-      />
-
-      {/* Enhanced Real-Time Meals List */}
-      <RealTimeMealsList 
-        meals={meals}
-        isLoading={isLoading}
-        onDeleteMeal={handleDeleteMeal}
-      />
-
-        {/* Nutrition Preview Modal */}
-        <NutritionPreviewModal
-          isOpen={showPreviewModal}
-          onClose={() => setShowPreviewModal(false)}
-          nutritionItems={nutritionItems}
-          onConfirm={handleConfirmMeal}
-          isAdding={isAddingMeal}
-        />
+        
+        {/* Premium Footer Glow */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-green-900/20 to-transparent pointer-events-none"></div>
       </div>
     </NutritionErrorBoundary>
   );

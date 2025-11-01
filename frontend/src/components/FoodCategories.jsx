@@ -197,135 +197,176 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
   };
 
   return (
-    <div className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow">
-      <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
-        <span>🍽️</span> Quick Add Foods
-      </h3>
+    <motion.div 
+      className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      whileHover={{ scale: 1.01 }}
+    >
+      {/* Premium Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-green-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
       
-      {/* Category Tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {categoriesLoading ? (
-          <div className="flex gap-2">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse bg-gray-200 dark:bg-dark-bg-tertiary/50 h-10 w-24 rounded-lg" />
-            ))}
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+            <span className="text-3xl">🍽️</span>
           </div>
-        ) : (
-          Object.entries(currentCategories).map(([key, category]) => (
-          <button
-            key={key}
-            onClick={() => setActiveCategory(key)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeCategory === key
-                ? 'bg-blue-600 dark:bg-dark-accent text-white shadow-lg dark:shadow-dark-glow'
-                : 'bg-gray-100 dark:bg-dark-bg-secondary/60 text-light-text-secondary dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-bg-secondary/80 hover:text-light-text-primary dark:hover:text-dark-text-primary border border-gray-200 dark:border-dark-border backdrop-blur-xs'
-            }`}
-          >
-            <span className="mr-1">{category.icon}</span>
-            {category.title.split(' ')[0]}
-          </button>
-          ))
-        )}
-      </div>
-
-      {/* Food Items Grid */}
-      <AnimatePresence mode="wait">
-        {categoriesLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-200 dark:bg-dark-bg-tertiary/50 h-20 rounded-lg" />
-            ))}
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-1">Quick Add Foods</h3>
+            <p className="text-slate-300 font-medium">Pre-loaded nutrition database</p>
           </div>
-        ) : (
-          <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"
-          >
-            {currentCategories[activeCategory]?.foods?.map((food, index) => (
+        </div>
+      
+        {/* Premium Category Tabs */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          {categoriesLoading ? (
+            <div className="flex gap-3">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="animate-pulse bg-slate-700/50 h-12 w-28 rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            Object.entries(currentCategories).map(([key, category]) => (
             <motion.button
-              key={`${activeCategory}-${index}`}
-              onClick={() => handleFoodClick(food)}
-              onMouseEnter={() => setHoveredFood(food)}
-              onMouseLeave={() => setHoveredFood(null)}
-              disabled={isLoading}
-              className={`p-3 rounded-lg text-left transition-all duration-200 border relative group ${
-                isLoading
-                  ? 'bg-gray-100 dark:bg-dark-bg-secondary/50 text-gray-400 dark:text-dark-text-muted/50 cursor-not-allowed border-gray-200 dark:border-dark-border/50'
-                  : 'bg-light-bg-primary dark:bg-dark-bg-secondary/70 hover:bg-gray-50 dark:hover:bg-dark-bg-secondary/90 text-light-text-primary dark:text-dark-text-primary border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-dark-accent/50 hover:shadow-lg dark:hover:shadow-dark-glow/50 shadow-sm backdrop-blur-xs'
+              key={key}
+              onClick={() => setActiveCategory(key)}
+              className={`px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
+                activeCategory === key
+                  ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg hover:shadow-orange-500/20 scale-105'
+                  : 'bg-slate-700/60 hover:bg-slate-600/80 text-slate-300 hover:text-white border border-slate-500/30 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105'
               }`}
-              whileHover={!isLoading ? { scale: 1.02 } : {}}
-              whileTap={!isLoading ? { scale: 0.98 } : {}}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary">{food.name}</div>
-              <div className="text-xs text-light-text-muted dark:text-dark-text-muted mt-1">{food.serving}</div>
-              {/* Smart nutrition display based on supplement type */}
-              {activeCategory === 'supplements' ? (
-                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
-                  {food.type === 'protein' ? (
-                    `${food.calories} cal • ${food.protein}g protein`
-                  ) : food.description ? (
-                    food.calories > 0 ? `${food.calories} cal • ${food.description}` : food.description
-                  ) : (
-                    food.calories > 0 ? `${food.calories} cal` : 'Supplement'
+              <span className="text-lg">{category.icon}</span>
+              <span>{category.title.split(' ')[0]}</span>
+            </motion.button>
+            ))
+          )}
+        </div>
+
+        {/* Premium Food Items Grid */}
+        <AnimatePresence mode="wait">
+          {categoriesLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[...Array(12)].map((_, i) => (
+                <div key={i} className="animate-pulse bg-slate-700/50 h-24 rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+            >
+              {currentCategories[activeCategory]?.foods?.map((food, index) => (
+              <motion.button
+                key={`${activeCategory}-${index}`}
+                onClick={() => handleFoodClick(food)}
+                onMouseEnter={() => setHoveredFood(food)}
+                onMouseLeave={() => setHoveredFood(null)}
+                disabled={isLoading}
+                className={`p-4 rounded-2xl text-left transition-all duration-300 border-2 relative group overflow-hidden ${
+                  isLoading
+                    ? 'bg-slate-700/30 text-slate-500 cursor-not-allowed border-slate-600/30'
+                    : 'bg-gradient-to-br from-slate-700/80 to-slate-600/80 hover:from-orange-600/20 hover:to-red-600/20 text-white border-slate-500/50 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 shadow-lg hover:shadow-orange-500/20'
+                }`}
+                whileHover={!isLoading ? { scale: 1.05, y: -2 } : {}}
+                whileTap={!isLoading ? { scale: 0.95 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                {/* Premium Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <div className="relative z-10">
+                  <div className="font-bold text-sm text-white mb-1 group-hover:text-orange-200 transition-colors duration-300">{food.name}</div>
+                  <div className="text-xs text-slate-300 mb-2 font-medium">{food.serving}</div>
+                  {/* Enhanced nutrition display */}
+                  {activeCategory === 'supplements' ? (
+                    <div className="text-xs font-semibold">
+                      {food.type === 'protein' ? (
+                        <span className="text-blue-300">{food.calories} cal • {food.protein}g protein</span>
+                      ) : food.description ? (
+                        <span className="text-purple-300">
+                          {food.calories > 0 ? `${food.calories} cal • ` : ''}{food.description}
+                        </span>
+                      ) : (
+                        <span className="text-green-300">
+                          {food.calories > 0 ? `${food.calories} cal` : 'Supplement'}
+                        </span>
+                      )}
+                    </div>
+                  ) : food.calories ? (
+                    <div className="text-xs font-semibold">
+                      <span className="text-orange-300">{food.calories} cal</span>
+                      <span className="text-slate-400"> • </span>
+                      <span className="text-blue-300">{food.protein}g protein</span>
+                    </div>
+                  ) : null}
+              
+                  {/* Premium Nutrition Tooltip */}
+                  {hoveredFood === food && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="absolute z-20 bottom-full left-0 mb-3 p-4 bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-2 border-orange-500/30 rounded-2xl shadow-2xl backdrop-blur-md text-xs whitespace-nowrap"
+                    >
+                      <div className="text-white font-bold mb-2 flex items-center gap-2">
+                        <span className="text-orange-400">📊</span>
+                        {food.name}
+                      </div>
+                      <div className="space-y-1">
+                        {activeCategory === 'supplements' ? (
+                          <>
+                            {food.description && (
+                              <div className="text-purple-300 font-medium mb-2 text-xs">{food.description}</div>
+                            )}
+                            {food.calories > 0 && <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-slate-300">cal</span></div>}
+                            {food.protein > 0 && <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-slate-300">protein</span></div>}
+                            {food.carbs > 0 && <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-slate-300">carbs</span></div>}
+                            {food.fat > 0 && <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-slate-300">fat</span></div>}
+                          </>
+                        ) : (
+                          <>
+                            <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-slate-300">cal</span></div>
+                            <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-slate-300">protein</span></div>
+                            <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-slate-300">carbs</span></div>
+                            <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-slate-300">fat</span></div>
+                            {food.fiber > 0 && <div><span className="text-purple-300 font-semibold">{food.fiber}g</span> <span className="text-slate-300">fiber</span></div>}
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
                   )}
                 </div>
-              ) : food.calories ? (
-                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
-                  {food.calories} cal • {food.protein}g protein
-                </div>
-              ) : null}
-              
-              {/* Nutrition Tooltip */}
-              {hoveredFood === food && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute z-10 bottom-full left-0 mb-2 p-2 bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-200 dark:border-dark-border rounded-lg shadow-xl dark:shadow-dark-card backdrop-blur-premium text-xs whitespace-nowrap"
-                >
-                  <div className="text-light-text-primary dark:text-dark-text-primary font-medium mb-1">{food.name}</div>
-                  <div className="text-light-text-secondary dark:text-dark-text-secondary">
-                    {activeCategory === 'supplements' ? (
-                      <>
-                        {food.description && (
-                          <div className="text-purple-600 dark:text-purple-400 mb-1">{food.description}</div>
-                        )}
-                        {food.calories > 0 && <><span className="text-orange-600 dark:text-orange-400">{food.calories}</span> cal</>}
-                        {food.protein > 0 && <>{food.calories > 0 ? ' • ' : ''}<span className="text-blue-600 dark:text-blue-400">{food.protein}g</span> protein</>}
-                        {food.carbs > 0 && <> • <span className="text-green-600 dark:text-green-400">{food.carbs}g</span> carbs</>}
-                        {food.fat > 0 && <> • <span className="text-yellow-600 dark:text-yellow-400">{food.fat}g</span> fat</>}
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-orange-600 dark:text-orange-400">{food.calories}</span> cal • 
-                        <span className="text-blue-600 dark:text-blue-400">{food.protein}g</span> protein • 
-                        <span className="text-green-600 dark:text-green-400">{food.carbs}g</span> carbs • 
-                        <span className="text-yellow-600 dark:text-yellow-400">{food.fat}g</span> fat
-                        {food.fiber > 0 && (
-                          <> • <span className="text-purple-600 dark:text-purple-400">{food.fiber}g</span> fiber</>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </motion.button>
+              </motion.button>
             )) || []}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="mt-4 text-xs text-light-text-muted/80 dark:text-dark-text-muted/80 text-center">
-        {categoriesLoading ? (
-          <div className="animate-pulse bg-gray-200 dark:bg-dark-bg-tertiary/50 h-4 w-64 mx-auto rounded" />
-        ) : (
-          <>🔥 Real-time nutrition data • Hover for details • Click to add to your meal tracker</>
-        )}
+        <div className="mt-6 text-center">
+          {categoriesLoading ? (
+            <div className="animate-pulse bg-slate-700/50 h-4 w-80 mx-auto rounded-lg" />
+          ) : (
+            <div className="flex items-center justify-center gap-2 text-sm text-slate-300 font-medium">
+              <span className="text-orange-400">🔥</span>
+              <span>Real-time nutrition data</span>
+              <span className="text-slate-500">•</span>
+              <span>Hover for details</span>
+              <span className="text-slate-500">•</span>
+              <span>Click to add to your meal tracker</span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
