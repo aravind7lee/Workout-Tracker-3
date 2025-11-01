@@ -22,6 +22,7 @@ import {
 import workoutSplitsService from '../services/workoutSplitsService';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { getUserSplits } from '../utils/userSpecificSplits';
 import splitImg from '../assets/split.jpg';
 
 const WorkoutSplits = () => {
@@ -700,11 +701,19 @@ const WorkoutSplits = () => {
     }
   ];
 
-  // Load custom splits and combine with fallback data
+  // Load custom splits and combine with fallback data - USER SPECIFIC
   const loadCustomSplits = () => {
     try {
-      const customSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
-      return customSplits;
+      if (!isAuthenticated()) {
+        // If not authenticated, return empty array (no splits visible)
+        console.log('🔒 User not authenticated - no custom splits visible');
+        return [];
+      }
+      
+      // Use utility function to get user-specific splits
+      const userSplits = getUserSplits(user);
+      console.log(`✅ Loaded ${userSplits.length} user-specific splits for user ${user?.id || user?._id}`);
+      return userSplits;
     } catch (error) {
       console.error('Error loading custom splits:', error);
       return [];

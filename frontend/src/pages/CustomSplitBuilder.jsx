@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { useAuth } from '../context/AuthContext';
+import { saveUserSplit } from '../utils/userSpecificSplits';
 import { 
   Dumbbell, 
   Plus, 
@@ -410,23 +411,15 @@ const CustomSplitBuilder = () => {
         createdAt: new Date().toISOString()
       };
       
-      // Save to localStorage
-      const existingCustomSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
-      
-      if (editMode) {
-        const updatedSplits = existingCustomSplits.map(split => 
-          split.id === editingSplitId ? { ...split, ...customSplit } : split
-        );
-        localStorage.setItem('custom_workout_splits', JSON.stringify(updatedSplits));
-      } else {
-        existingCustomSplits.push(customSplit);
-        localStorage.setItem('custom_workout_splits', JSON.stringify(existingCustomSplits));
+      // Save using utility function
+      if (!isAuthenticated()) {
+        alert('Please login to save custom splits.');
+        return;
       }
       
-      // Also save to the main workout splits storage for integration
-      const allSplits = JSON.parse(localStorage.getItem('workout_splits') || '[]');
-      allSplits.push(customSplit);
-      localStorage.setItem('workout_splits', JSON.stringify(allSplits));
+      // Use utility function to save split
+      saveUserSplit(user, customSplit);
+      console.log(`✅ Custom split saved using user-specific utility`);
       
       setSyncStatus('synced');
       

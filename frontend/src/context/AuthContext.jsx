@@ -3,6 +3,8 @@ import { setAuthToken } from '../utils/api';
 import { profileStorage } from '../utils/profileStorage';
 import { initializeUserData } from '../utils/cleanUserWorkouts';
 import { initializeUserPlanData } from '../utils/cleanUserPlans';
+import { initializeUserSplits, cleanupUserSplitsOnLogout } from '../utils/userSpecificSplits';
+import { migrateGlobalSplitsToUserSpecific, isMigrationCompleted } from '../utils/migrateSplitsToUserSpecific';
 
 const AuthContext = createContext();
 
@@ -38,6 +40,9 @@ export const AuthProvider = ({ children }) => {
       setAuthToken(null);
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      
+      // Clean up user-specific splits cache
+      cleanupUserSplitsOnLogout();
       
       // Dispatch logout event to clean up components
       window.dispatchEvent(new CustomEvent('userLoggedOut'));
@@ -93,6 +98,21 @@ export const AuthProvider = ({ children }) => {
             } else {
               console.warn('⚠️ User plan data initialization failed on startup:', planInitResult.message);
             }
+            
+            // Run one-time migration if needed on app startup
+            if (!isMigrationCompleted()) {
+              console.log('🔄 Running one-time splits migration on startup...');
+              const migrationResult = migrateGlobalSplitsToUserSpecific();
+              if (migrationResult.success) {
+                console.log(`✅ Migration completed on startup: ${migrationResult.migratedCount} splits migrated`);
+              } else {
+                console.warn('⚠️ Migration failed on startup:', migrationResult.error);
+              }
+            }
+            
+            // Initialize user-specific workout splits on app startup
+            initializeUserSplits(parsedUser);
+            console.log('✅ User-specific workout splits initialized on startup');
           } catch (parseError) {
             console.warn('Failed to parse saved user data, logging out');
             logout();
@@ -170,6 +190,21 @@ export const AuthProvider = ({ children }) => {
       } else {
         console.warn('⚠️ User plan data initialization failed:', planInitResult.message);
       }
+      
+      // Run one-time migration if needed
+      if (!isMigrationCompleted()) {
+        console.log('🔄 Running one-time splits migration...');
+        const migrationResult = migrateGlobalSplitsToUserSpecific();
+        if (migrationResult.success) {
+          console.log(`✅ Migration completed: ${migrationResult.migratedCount} splits migrated`);
+        } else {
+          console.warn('⚠️ Migration failed:', migrationResult.error);
+        }
+      }
+      
+      // Initialize user-specific workout splits
+      initializeUserSplits(userWithPhoto);
+      console.log('✅ User-specific workout splits initialized');
     } catch (error) {
       console.error('Login error:', error);
     }

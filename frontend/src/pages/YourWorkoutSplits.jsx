@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { getUserSplits, deleteUserSplit, saveUserSplit } from '../utils/userSpecificSplits';
 import { 
   Dumbbell, 
   Plus, 
@@ -261,23 +262,26 @@ const YourWorkoutSplits = () => {
     setSyncStatus('syncing');
     
     try {
-      // Load custom splits from localStorage
-      const savedSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
-      
-      // Filter by user if authenticated
-      let userSplits = savedSplits;
-      if (user) {
-        userSplits = savedSplits.filter(split => 
-          split.userId === user.id || split.userId === user._id || split.createdBy === user.name
-        );
+      if (!isAuthenticated()) {
+        // If not authenticated, show empty splits
+        setCustomSplits([]);
+        setRealTimeStats({ totalSplits: 0 });
+        setLastSync(new Date());
+        setSyncStatus('synced');
+        console.log('🔒 User not authenticated - showing empty splits list');
+        setTimeout(() => setSyncStatus('live'), 2000);
+        return;
       }
+      
+      // Use utility function to get user-specific splits
+      const userSplits = getUserSplits(user);
       
       setCustomSplits(userSplits);
       setRealTimeStats({ totalSplits: userSplits.length });
       setLastSync(new Date());
       setSyncStatus('synced');
       
-      console.log(`✅ Loaded ${userSplits.length} custom splits for user`);
+      console.log(`✅ Loaded ${userSplits.length} user-specific custom splits for user ${currentUserId}`);
       
       // Auto-hide sync status
       setTimeout(() => setSyncStatus('live'), 2000);
@@ -295,16 +299,19 @@ const YourWorkoutSplits = () => {
       try {
         console.log('🗑️ Deleting custom split:', splitId);
         
-        // Remove from localStorage
-        const savedSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
-        const updatedSplits = savedSplits.filter(split => split.id !== splitId);
-        localStorage.setItem('custom_workout_splits', JSON.stringify(updatedSplits));
+        if (!isAuthenticated()) {
+          alert('Please login to delete splits.');
+          return;
+        }
+        
+        // Use utility function to delete split
+        deleteUserSplit(user, splitId);
         
         // Update state
         setCustomSplits(prev => prev.filter(split => split.id !== splitId));
         setRealTimeStats(prev => ({ ...prev, totalSplits: prev.totalSplits - 1 }));
         
-        console.log('✅ Custom split deleted successfully');
+        console.log('✅ Custom split deleted successfully from user-specific storage');
       } catch (error) {
         console.error('❌ Error deleting custom split:', error);
         alert('Failed to delete split. Please try again.');
@@ -316,6 +323,11 @@ const YourWorkoutSplits = () => {
     try {
       console.log('📋 Duplicating custom split:', split.name);
       
+      if (!isAuthenticated()) {
+        alert('Please login to duplicate splits.');
+        return;
+      }
+      
       const duplicatedSplit = {
         ...split,
         id: Date.now(),
@@ -323,16 +335,14 @@ const YourWorkoutSplits = () => {
         createdAt: new Date().toISOString()
       };
       
-      // Save to localStorage
-      const savedSplits = JSON.parse(localStorage.getItem('custom_workout_splits') || '[]');
-      savedSplits.push(duplicatedSplit);
-      localStorage.setItem('custom_workout_splits', JSON.stringify(savedSplits));
+      // Use utility function to save split
+      saveUserSplit(user, duplicatedSplit);
       
       // Update state
       setCustomSplits(prev => [duplicatedSplit, ...prev]);
       setRealTimeStats(prev => ({ ...prev, totalSplits: prev.totalSplits + 1 }));
       
-      console.log('✅ Custom split duplicated successfully');
+      console.log('✅ Custom split duplicated successfully in user-specific storage');
     } catch (error) {
       console.error('❌ Error duplicating custom split:', error);
       alert('Failed to duplicate split. Please try again.');
