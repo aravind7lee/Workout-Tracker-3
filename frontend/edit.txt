@@ -1,1 +1,30 @@
 
+Still its showing the previosuly Created splitsBut there is an issue and problems iam facing right now
+
+What it means i have created a SPlits in my Previous account So i have created an Own Split
+
+So after i logged out and created a New Account in my GymTracker website after the Sign in its showing that Previously created Own Workout split created by the Users
+
+Which means in my previous account i have created a one Split but after that I have logged out that account but now after i have created a new account after opening the new account Still its showing that previously created user Workout splits in the http://localhost:3000/splits in the Workout Splits page section and for the View Split in the http://localhost:3000/your-workout-splits in the Your WorkoutSplits section also
+
+So please fix this issue and make it work has the User-Specific Creating workout SPlit
+
+So it dont have to show the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only
+
+CUSTOM SPLIT
+⚡ YOUR CREATION
+Split 1
+
+CUSTOM SPLIT
+⚡ YOUR CREATION
+Split 1
+
+So Give me the prompt for this to implement it in my GymTracker website so that the Amazon Q Will understand very clearly about this so give the prompt to understand about this implementation very clearly and make it implement 100% Correct best level implementation so that Amazon Q to understand exactly
+
+So Give me the Prompt to implement this USER-SPECIFIC WORKOUT SPLITS in my GymTracker website correctly without any issues and problems so make it work 100% perfectly fine and best level implementation so that it will be very helpful for me so implement so it dont have to share the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only.. For Example if i have created a Split in my Previous account after that i have logged out and created a New Account in my GymTracker website after the Sign in its showing that Previously created Own Workout split created by the Users so please fix this issue and make it work has the User-Specific Creating workout SPlit Please give me the prompt to implement this correctly without any issues and problems so make it work 100% perfectly fine and best level implementation so that it will be very helpful for me so implement so it dont have to share the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only.. For Example if i have created a Split in my Previous account after that i have logged out and created a New Account in my GymTracker website after the Sign in its showing that Previously created Own Workout split created by the Users so please fix this issue and make it work has the User-Specific Creating workout SPlit Please give me the prompt to implement this correctly without any issues and problems so make it work 100% perfectly fine and best level implementation so that it will be very helpful for me so implement so it dont have to share the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only.. For Example if i have created a Split in my Previous account after that i have logged out and created a New Account in my GymTracker website after the Sign in its showing that Previously created Own Workout split created by the Users so please fix this issue and make it work has the User-Specific Creating workout SPlit Please give me the prompt to implement this correctly without any issues and problems so make it work 100% perfectly fine and best level implementation so that it will be very helpful for me so implement so it dont have to share the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only
+
+But still iam facing the issue and problems
+
+So please fix this issue and make it work has the User-Specific Creating workout SPlit
+
+So it dont have to show the previously created users Splits on the Every accounts so it has be personalizes Private secure User-Specific only USER_SPECIFIC which means it has to show the results with the USER_SPECIFIC Only

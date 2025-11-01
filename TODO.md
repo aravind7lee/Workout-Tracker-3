@@ -1,3 +1,0 @@
-- [x] Update hero-semantic-tokens.css: Increase background overlay opacity in light mode from 0.35 to 0.5
-- [x] Update hero-semantic-tokens.css: Remove text-shadow for .hero-text-primary and .hero-text-secondary in light mode
-- [x] Update DashboardHero.jsx: Make bottom fade theme-aware (from-slate-900 in dark, from-white in light)
