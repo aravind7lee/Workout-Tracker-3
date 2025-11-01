@@ -449,203 +449,325 @@ export default function Analytics() {
 
   return (
     <AuthGuard>
-      <div className="space-y-6">
-        <AnalyticsHero />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        {/* Premium Background Effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent"></div>
         
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-slate-400 text-sm flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full animate-pulse ${
-                isOnline ? 'bg-green-400' : 'bg-yellow-400'
-              }`}></span>
-              Real-time Analytics
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                isOnline 
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                  : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-              }`}>
-                {isOnline ? '🔥 LIVE USER DATA' : '📱 YOUR LOCAL DATA'}
-              </span>
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">
-              Last updated: {new Date().toLocaleTimeString()}
-            </span>
-            <button
-              onClick={refresh}
-              className="px-4 py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all flex items-center gap-2 shadow-lg"
-              disabled={isLoading}
+        {/* Floating Analytics Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-purple-500/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-orange-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        
+        <div className="relative z-10 space-y-8">
+          <AnalyticsHero />
+        
+          {/* Premium Status Bar */}
+          <motion.div 
+            className="mx-4 p-6 rounded-3xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 backdrop-blur-md shadow-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-2xl">📊</span>
+                </div>
+                <div>
+                  <div className="text-white font-bold text-xl mb-1">Real-time Analytics</div>
+                  <div className="flex items-center gap-3">
+                    <span className={`w-3 h-3 rounded-full animate-pulse shadow-lg ${
+                      isOnline ? 'bg-green-400 shadow-green-400/50' : 'bg-yellow-400 shadow-yellow-400/50'
+                    }`}></span>
+                    <span className={`text-sm px-3 py-1 rounded-xl font-semibold ${
+                      isOnline 
+                        ? 'bg-green-600/20 text-green-300 border border-green-500/30' 
+                        : 'bg-yellow-600/20 text-yellow-300 border border-yellow-500/30'
+                    }`}>
+                      {isOnline ? '🔥 LIVE USER DATA' : '📱 YOUR LOCAL DATA'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <div className="text-xs text-slate-400 mb-1">Last updated:</div>
+                  <div className="text-sm text-slate-300 font-medium">{new Date().toLocaleTimeString()}</div>
+                </div>
+                <motion.button
+                  onClick={refresh}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all flex items-center gap-3 shadow-lg hover:shadow-blue-500/20 font-semibold"
+                  disabled={isLoading}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className={`text-lg ${isLoading ? 'animate-spin' : ''}`}>{isLoading ? '⟳' : '🔄'}</span>
+                  <span>{isLoading ? 'Syncing...' : 'Sync Now'}</span>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        
+          <div id="real-time-stats" className="mx-4">
+            <motion.div 
+              className="mb-6 p-6 bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl border-2 border-slate-600/50 backdrop-blur-sm shadow-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <span className={isLoading ? 'animate-spin' : ''}>{isLoading ? '⟳' : '🔄'}</span>
-              {isLoading ? 'Syncing...' : 'Sync Now'}
-            </button>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">📊</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">Your Real-Time Analytics</h3>
+                  <p className="text-sm text-slate-300 font-medium">
+                    {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+            <RealTimeStats />
+          </div>
+
+          <div id="analytics-charts" className="mx-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div 
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              {/* Premium Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-yellow-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-xl">⏱️</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Weekly Duration</h3>
+                </div>
+                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                  {durationData ? (
+                    <Line data={durationData} options={{
+                      ...chartOptions,
+                      plugins: {
+                        ...chartOptions.plugins,
+                        tooltip: {
+                          callbacks: {
+                            label: function(context) {
+                              const minutes = context.parsed.y;
+                              const hours = Math.floor(minutes / 60);
+                              const mins = minutes % 60;
+                              return hours > 0 
+                                ? `Duration: ${hours}h ${mins}m`
+                                : `Duration: ${mins} minutes`;
+                            }
+                          }
+                        }
+                      },
+                      scales: {
+                        ...chartOptions.scales,
+                        y: {
+                          ...chartOptions.scales.y,
+                          ticks: {
+                            ...chartOptions.scales.y.ticks,
+                            callback: function(value) {
+                              return value >= 60 ? `${Math.floor(value/60)}h ${value%60}m` : `${value}m`;
+                            }
+                          }
+                        }
+                      }
+                    }} />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                      <span className="text-6xl mb-4">⏱️</span>
+                      <span className="text-lg font-semibold mb-2">No workout duration data</span>
+                      <span className="text-sm text-center">Complete workouts to see your time trends</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-green-500/10 transition-all duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              {/* Premium Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-xl">💪</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Weekly Workouts</h3>
+                </div>
+                
+                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                  {frequencyData ? (
+                    <Bar data={frequencyData} options={chartOptions} />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                      <span className="text-6xl mb-4">💪</span>
+                      <span className="text-lg font-semibold mb-2">No workout data</span>
+                      <span className="text-sm text-center">Start working out to see your progress</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="mx-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div 
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              {/* Premium Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-pink-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-xl">💪</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Muscle Groups</h3>
+                </div>
+                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                  {muscleData ? (
+                    <Doughnut data={muscleData} options={{
+                      ...doughnutOptions,
+                      plugins: {
+                        ...doughnutOptions.plugins,
+                        tooltip: {
+                          titleColor: '#ffffff',
+                          bodyColor: '#ffffff',
+                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                          callbacks: {
+                            label: function(context) {
+                              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                              const percentage = ((context.parsed / total) * 100).toFixed(1);
+                              return `${context.label}: ${context.parsed} workouts (${percentage}%)`;
+                            }
+                          }
+                        },
+                        legend: {
+                          ...doughnutOptions.plugins.legend,
+                          labels: {
+                            color: '#e2e8f0',
+                            font: { size: 12 },
+                            padding: 15,
+                            generateLabels: function(chart) {
+                              const data = chart.data;
+                              const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                              return data.labels.map((label, i) => {
+                                const value = data.datasets[0].data[i];
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return {
+                                  text: `${label} (${percentage}%)`,
+                                  fillStyle: data.datasets[0].backgroundColor[i],
+                                  strokeStyle: data.datasets[0].backgroundColor[i],
+                                  fontColor: '#ffffff',
+                                  lineWidth: 0,
+                                  hidden: false,
+                                  index: i
+                                };
+                              });
+                            }
+                          }
+                        }
+                      }
+                    }} />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                      <span className="text-6xl mb-4">💪</span>
+                      <span className="text-lg font-semibold mb-2">No muscle group data</span>
+                      <span className="text-sm text-center">Complete workouts to see muscle distribution</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              {/* Premium Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-xl">⚡</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Quick Stats</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                      <span className="text-orange-400">💪</span>
+                      Your Total Workouts
+                    </span>
+                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalWorkouts || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                      <span className="text-blue-400">📋</span>
+                      Your Workout Plans
+                    </span>
+                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalPlans || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                      <span className="text-green-400">🍽️</span>
+                      Total Meals Logged
+                    </span>
+                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalMeals || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                      <span className="text-emerald-400">🌟</span>
+                      Today's Meals
+                    </span>
+                    <span className="text-green-400 font-bold text-xl">{analyticsData?.stats?.todayMeals || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                      <span className="text-purple-400">📅</span>
+                      This Week's Meals
+                    </span>
+                    <span className="text-blue-400 font-bold text-xl">{analyticsData?.stats?.weeklyMeals || 0}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Premium Meal Tracking Calendar */}
+          <div className="mx-4 pb-8">
+            <MealTrackingCalendar />
           </div>
         </div>
         
-        <div id="real-time-stats">
-          <div className="mb-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-blue-400">📊</span>
-              <h3 className="text-lg font-semibold text-white">Your Real-Time Analytics</h3>
-            </div>
-            <p className="text-sm text-slate-400">
-              {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}
-            </p>
-          </div>
-          <RealTimeStats />
-        </div>
-
-        <div id="analytics-charts" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <span className="text-amber-400">⏱️</span>
-              Weekly Duration
-            </h3>
-            <div className="h-64">
-              {durationData ? (
-                <Line data={durationData} options={{
-                  ...chartOptions,
-                  plugins: {
-                    ...chartOptions.plugins,
-                    tooltip: {
-                      callbacks: {
-                        label: function(context) {
-                          const minutes = context.parsed.y;
-                          const hours = Math.floor(minutes / 60);
-                          const mins = minutes % 60;
-                          return hours > 0 
-                            ? `Duration: ${hours}h ${mins}m`
-                            : `Duration: ${mins} minutes`;
-                        }
-                      }
-                    }
-                  },
-                  scales: {
-                    ...chartOptions.scales,
-                    y: {
-                      ...chartOptions.scales.y,
-                      ticks: {
-                        ...chartOptions.scales.y.ticks,
-                        callback: function(value) {
-                          return value >= 60 ? `${Math.floor(value/60)}h ${value%60}m` : `${value}m`;
-                        }
-                      }
-                    }
-                  }
-                }} />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                  <span className="text-4xl mb-2">⏱️</span>
-                  <span>No workout duration data</span>
-                  <span className="text-xs mt-1">Complete workouts to see your time trends</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4">Weekly Workouts</h3>
-            <div className="h-64">
-              {frequencyData ? (
-                <Bar data={frequencyData} options={chartOptions} />
-              ) : (
-                <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center justify-center gap-2">
-              <span className="text-purple-400">💪</span>
-              Muscle Groups
-            </h3>
-            <div className="h-64">
-              {muscleData ? (
-                <Doughnut data={muscleData} options={{
-                  ...doughnutOptions,
-                  plugins: {
-                    ...doughnutOptions.plugins,
-                    tooltip: {
-                      titleColor: '#ffffff',
-                      bodyColor: '#ffffff',
-                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      callbacks: {
-                        label: function(context) {
-                          const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                          const percentage = ((context.parsed / total) * 100).toFixed(1);
-                          return `${context.label}: ${context.parsed} workouts (${percentage}%)`;
-                        }
-                      }
-                    },
-                    legend: {
-                      ...doughnutOptions.plugins.legend,
-                      labels: {
-                        color: '#e2e8f0',
-                        font: { size: 12 },
-                        padding: 15,
-                        generateLabels: function(chart) {
-                          const data = chart.data;
-                          const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
-                          return data.labels.map((label, i) => {
-                            const value = data.datasets[0].data[i];
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return {
-                              text: `${label} (${percentage}%)`,
-                              fillStyle: data.datasets[0].backgroundColor[i],
-                              strokeStyle: data.datasets[0].backgroundColor[i],
-                              fontColor: '#ffffff',
-                              lineWidth: 0,
-                              hidden: false,
-                              index: i
-                            };
-                          });
-                        }
-                      }
-                    }
-                  }
-                }} />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                  <span className="text-4xl mb-2">💪</span>
-                  <span>No muscle group data</span>
-                  <span className="text-xs mt-1">Complete workouts to see muscle distribution</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="card">
-            <h3 className="text-xl font-semibold text-white mb-4">Quick Stats</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Your Total Workouts</span>
-                <span className="text-white font-bold">{analyticsData?.stats?.totalWorkouts || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Your Workout Plans</span>
-                <span className="text-white font-bold">{analyticsData?.stats?.totalPlans || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Total Meals Logged</span>
-                <span className="text-white font-bold">{analyticsData?.stats?.totalMeals || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Today's Meals</span>
-                <span className="text-green-400 font-bold">{analyticsData?.stats?.todayMeals || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">This Week's Meals</span>
-                <span className="text-blue-400 font-bold">{analyticsData?.stats?.weeklyMeals || 0}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Meal Tracking Calendar */}
-        <MealTrackingCalendar />
+        {/* Premium Footer Glow */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none"></div>
       </div>
     </AuthGuard>
   );
