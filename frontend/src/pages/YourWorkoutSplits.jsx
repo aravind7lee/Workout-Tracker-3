@@ -636,23 +636,7 @@ const YourWorkoutSplits = () => {
           </div>
         )}
 
-        {/* Stats Footer */}
-        {customSplits.length > 0 && (
-          <div className="mt-8 bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-lg p-4">
-            <h4 className="text-purple-300 font-medium mb-2">🚀 REAL-TIME Custom Split Features:</h4>
-            <ul className="text-purple-200 text-sm space-y-1">
-              <li>• 🔥 INSTANT split creation and updates</li>
-              <li>• ⚡ INSTANT dashboard updates when splits are created/deleted</li>
-              <li>• 💾 Professional-grade data persistence</li>
-              <li>• 📊 Real-time progress tracking</li>
-              <li>• 🏋️ Professional gym-level experience</li>
-              <li>• {user ? `👤 Account: ${realTimeStats.totalSplits} custom splits` : '🔒 Login to sync across devices'}</li>
-            </ul>
-            <div className="mt-3 text-xs text-purple-400">
-              📈 Stats: {realTimeStats.totalSplits} total custom splits
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Split Details Modal */}
