@@ -544,99 +544,267 @@ export default function Analytics() {
 
           <div id="analytics-charts" className="mx-2 sm:mx-4 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-orange-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 relative overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              whileHover={{ scale: 1.01 }}
+              whileHover={{ scale: 1.02, rotateY: 2 }}
             >
-              {/* Premium Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-yellow-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Advanced Gym Branding Effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-amber-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-500 rounded-t-3xl"></div>
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-base sm:text-xl">⏱️</span>
+                {/* Professional Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-2xl border border-orange-400/30">
+                        <span className="text-white text-2xl animate-pulse">⏱️</span>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
+                        Weekly Duration
+                      </h3>
+                      <p className="text-sm text-slate-400 font-medium">Real-time workout tracking</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                    <span className="hidden sm:inline">Weekly Duration</span>
-                    <span className="sm:hidden">Duration</span>
-                  </h3>
+                  
+                  {/* Live Status Badge */}
+                  <div className="flex items-center gap-2 bg-orange-500/20 border border-orange-400/40 rounded-full px-3 py-1.5">
+                    <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-orange-300 tracking-wider">LIVE</span>
+                  </div>
                 </div>
-                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
-                  {durationData ? (
-                    <Line data={durationData} options={{
-                      ...chartOptions,
-                      plugins: {
-                        ...chartOptions.plugins,
-                        tooltip: {
-                          callbacks: {
-                            label: function(context) {
-                              const minutes = context.parsed.y;
-                              const hours = Math.floor(minutes / 60);
-                              const mins = minutes % 60;
-                              return hours > 0 
-                                ? `Duration: ${hours}h ${mins}m`
-                                : `Duration: ${mins} minutes`;
-                            }
-                          }
-                        }
-                      },
-                      scales: {
-                        ...chartOptions.scales,
-                        y: {
-                          ...chartOptions.scales.y,
-                          ticks: {
-                            ...chartOptions.scales.y.ticks,
-                            callback: function(value) {
-                              return value >= 60 ? `${Math.floor(value/60)}h ${value%60}m` : `${value}m`;
-                            }
-                          }
-                        }
-                      }
-                    }} />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                      <span className="text-6xl mb-4">⏱️</span>
-                      <span className="text-lg font-semibold mb-2">No workout duration data</span>
-                      <span className="text-sm text-center">Complete workouts to see your time trends</span>
+                
+                {/* Professional Chart Container */}
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-black/40 rounded-2xl p-4 border border-orange-500/20 shadow-inner">
+                  {/* Chart Header Stats */}
+                  {durationData && (
+                    <div className="flex justify-between items-center mb-4 pb-3 border-b border-orange-500/20">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-400">
+                          {durationData.datasets[0].data.reduce((a, b) => a + b, 0)}m
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Total This Week</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-amber-400">
+                          {Math.max(...durationData.datasets[0].data)}m
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Peak Session</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-yellow-400">
+                          {Math.round(durationData.datasets[0].data.reduce((a, b) => a + b, 0) / 7)}m
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Daily Average</div>
+                      </div>
                     </div>
                   )}
+                  
+                  <div className="h-56 md:h-64">
+                    {durationData ? (
+                      <Line data={{
+                        ...durationData,
+                        datasets: [{
+                          ...durationData.datasets[0],
+                          borderColor: '#f59e0b',
+                          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                          pointBackgroundColor: '#f59e0b',
+                          pointBorderColor: '#ffffff',
+                          pointBorderWidth: 2,
+                          pointRadius: 6,
+                          pointHoverRadius: 8,
+                          borderWidth: 3,
+                          tension: 0.4,
+                          fill: true
+                        }]
+                      }} options={{
+                        ...chartOptions,
+                        plugins: {
+                          ...chartOptions.plugins,
+                          tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#f59e0b',
+                            bodyColor: '#ffffff',
+                            borderColor: '#f59e0b',
+                            borderWidth: 1,
+                            callbacks: {
+                              label: function(context) {
+                                const minutes = context.parsed.y;
+                                const hours = Math.floor(minutes / 60);
+                                const mins = minutes % 60;
+                                return hours > 0 
+                                  ? `🔥 Duration: ${hours}h ${mins}m`
+                                  : `🔥 Duration: ${mins} minutes`;
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            ticks: { color: '#f59e0b', font: { size: 12, weight: 'bold' } },
+                            grid: { color: 'rgba(245, 158, 11, 0.1)' }
+                          },
+                          y: {
+                            ticks: { 
+                              color: '#f59e0b', 
+                              font: { size: 12, weight: 'bold' },
+                              callback: function(value) {
+                                return value >= 60 ? `${Math.floor(value/60)}h ${value%60}m` : `${value}m`;
+                              }
+                            },
+                            grid: { color: 'rgba(245, 158, 11, 0.1)' }
+                          }
+                        }
+                      }} />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                        <div className="relative mb-6">
+                          <span className="text-6xl opacity-50">⏱️</span>
+                          <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-xl animate-pulse"></div>
+                        </div>
+                        <span className="text-xl font-bold text-orange-400 mb-2">Ready to Track</span>
+                        <span className="text-sm text-center text-slate-400">Complete workouts to see your duration analytics</span>
+                        <div className="mt-4 px-4 py-2 bg-orange-500/20 border border-orange-400/40 rounded-full">
+                          <span className="text-xs font-bold text-orange-300">🚀 START YOUR FIRST WORKOUT</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
 
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-green-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-green-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-green-500/20 transition-all duration-500 relative overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              whileHover={{ scale: 1.01 }}
+              whileHover={{ scale: 1.02, rotateY: -2 }}
             >
-              {/* Premium Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Advanced Gym Branding Effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-emerald-400 to-teal-500 rounded-t-3xl"></div>
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-base sm:text-xl">💪</span>
+                {/* Professional Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl border border-green-400/30">
+                        <span className="text-white text-2xl animate-bounce">💪</span>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">
+                        Weekly Workouts
+                      </h3>
+                      <p className="text-sm text-slate-400 font-medium">Performance analytics</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                    <span className="hidden sm:inline">Weekly Workouts</span>
-                    <span className="sm:hidden">Workouts</span>
-                  </h3>
+                  
+                  {/* Live Status Badge */}
+                  <div className="flex items-center gap-2 bg-green-500/20 border border-green-400/40 rounded-full px-3 py-1.5">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-green-300 tracking-wider">ACTIVE</span>
+                  </div>
                 </div>
                 
-                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
-                  {frequencyData ? (
-                    <Bar data={frequencyData} options={chartOptions} />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                      <span className="text-6xl mb-4">💪</span>
-                      <span className="text-lg font-semibold mb-2">No workout data</span>
-                      <span className="text-sm text-center">Start working out to see your progress</span>
+                {/* Professional Chart Container */}
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-black/40 rounded-2xl p-4 border border-green-500/20 shadow-inner">
+                  {/* Chart Header Stats */}
+                  {frequencyData && (
+                    <div className="flex justify-between items-center mb-4 pb-3 border-b border-green-500/20">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-400">
+                          {frequencyData.datasets[0].data.reduce((a, b) => a + b, 0)}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Total Workouts</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-emerald-400">
+                          {Math.max(...frequencyData.datasets[0].data)}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Best Day</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-teal-400">
+                          {(frequencyData.datasets[0].data.reduce((a, b) => a + b, 0) / 7).toFixed(1)}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Daily Avg</div>
+                      </div>
                     </div>
                   )}
+                  
+                  <div className="h-56 md:h-64">
+                    {frequencyData ? (
+                      <Bar data={{
+                        ...frequencyData,
+                        datasets: [{
+                          ...frequencyData.datasets[0],
+                          backgroundColor: frequencyData.datasets[0].data.map((value, index) => {
+                            const colors = ['#10b981', '#059669', '#047857', '#065f46', '#064e3b', '#022c22', '#021c1a'];
+                            return colors[index] || '#10b981';
+                          }),
+                          borderColor: '#10b981',
+                          borderWidth: 2,
+                          borderRadius: 8,
+                          borderSkipped: false,
+                        }]
+                      }} options={{
+                        ...chartOptions,
+                        plugins: {
+                          ...chartOptions.plugins,
+                          tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#10b981',
+                            bodyColor: '#ffffff',
+                            borderColor: '#10b981',
+                            borderWidth: 1,
+                            callbacks: {
+                              label: function(context) {
+                                const value = context.parsed.y;
+                                return `💪 Workouts: ${value} session${value !== 1 ? 's' : ''}`;
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            ticks: { color: '#10b981', font: { size: 12, weight: 'bold' } },
+                            grid: { color: 'rgba(16, 185, 129, 0.1)' }
+                          },
+                          y: {
+                            ticks: { 
+                              color: '#10b981', 
+                              font: { size: 12, weight: 'bold' },
+                              stepSize: 1
+                            },
+                            grid: { color: 'rgba(16, 185, 129, 0.1)' }
+                          }
+                        }
+                      }} />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                        <div className="relative mb-6">
+                          <span className="text-6xl opacity-50">💪</span>
+                          <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse"></div>
+                        </div>
+                        <span className="text-xl font-bold text-green-400 mb-2">Ready to Crush It</span>
+                        <span className="text-sm text-center text-slate-400">Start working out to track your progress</span>
+                        <div className="mt-4 px-4 py-2 bg-green-500/20 border border-green-400/40 rounded-full">
+                          <span className="text-xs font-bold text-green-300">💥 BEGIN YOUR JOURNEY</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -644,149 +812,330 @@ export default function Analytics() {
 
           <div className="mx-2 sm:mx-4 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 relative overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              whileHover={{ scale: 1.01 }}
+              whileHover={{ scale: 1.02, rotateX: 2 }}
             >
-              {/* Premium Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-pink-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Advanced Gym Branding Effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-400 to-violet-500 rounded-t-3xl"></div>
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-base sm:text-xl">💪</span>
+                {/* Professional Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl border border-purple-400/30">
+                        <span className="text-white text-2xl animate-pulse">💪</span>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
+                        Muscle Groups
+                      </h3>
+                      <p className="text-sm text-slate-400 font-medium">Training distribution</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                    <span className="hidden sm:inline">Muscle Groups</span>
-                    <span className="sm:hidden">Muscles</span>
-                  </h3>
+                  
+                  {/* Live Status Badge */}
+                  <div className="flex items-center gap-2 bg-purple-500/20 border border-purple-400/40 rounded-full px-3 py-1.5">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-purple-300 tracking-wider">TRACKED</span>
+                  </div>
                 </div>
-                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
-                  {muscleData ? (
-                    <Doughnut data={muscleData} options={{
-                      ...doughnutOptions,
-                      plugins: {
-                        ...doughnutOptions.plugins,
-                        tooltip: {
-                          titleColor: '#ffffff',
-                          bodyColor: '#ffffff',
-                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                          callbacks: {
-                            label: function(context) {
-                              const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                              const percentage = ((context.parsed / total) * 100).toFixed(1);
-                              return `${context.label}: ${context.parsed} workouts (${percentage}%)`;
+                
+                {/* Professional Chart Container */}
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-black/40 rounded-2xl p-4 border border-purple-500/20 shadow-inner">
+                  {/* Chart Header Stats */}
+                  {muscleData && (
+                    <div className="grid grid-cols-3 gap-4 mb-4 pb-3 border-b border-purple-500/20">
+                      <div className="text-center">
+                        <div className="text-xl font-bold text-purple-400">
+                          {muscleData.datasets[0].data.reduce((a, b) => a + b, 0)}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Total Sessions</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xl font-bold text-pink-400">
+                          {muscleData.labels.length}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Muscle Groups</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xl font-bold text-violet-400">
+                          {muscleData.labels[muscleData.datasets[0].data.indexOf(Math.max(...muscleData.datasets[0].data))]}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">Most Trained</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="h-56 md:h-64">
+                    {muscleData ? (
+                      <Doughnut data={{
+                        ...muscleData,
+                        datasets: [{
+                          ...muscleData.datasets[0],
+                          backgroundColor: [
+                            '#ef4444', '#3b82f6', '#f59e0b', '#10b981', 
+                            '#8b5cf6', '#f97316', '#06b6d4', '#6b7280'
+                          ],
+                          borderColor: '#1e293b',
+                          borderWidth: 3,
+                          hoverBorderWidth: 4,
+                          hoverBorderColor: '#ffffff'
+                        }]
+                      }} options={{
+                        ...doughnutOptions,
+                        plugins: {
+                          ...doughnutOptions.plugins,
+                          tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#a855f7',
+                            bodyColor: '#ffffff',
+                            borderColor: '#a855f7',
+                            borderWidth: 1,
+                            callbacks: {
+                              label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return `💪 ${context.label}: ${context.parsed} workouts (${percentage}%)`;
+                              }
                             }
-                          }
-                        },
-                        legend: {
-                          ...doughnutOptions.plugins.legend,
-                          labels: {
-                            color: '#e2e8f0',
-                            font: { size: 12 },
-                            padding: 15,
-                            generateLabels: function(chart) {
-                              const data = chart.data;
-                              const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
-                              return data.labels.map((label, i) => {
-                                const value = data.datasets[0].data[i];
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return {
-                                  text: `${label} (${percentage}%)`,
-                                  fillStyle: data.datasets[0].backgroundColor[i],
-                                  strokeStyle: data.datasets[0].backgroundColor[i],
-                                  fontColor: '#ffffff',
-                                  lineWidth: 0,
-                                  hidden: false,
-                                  index: i
-                                };
-                              });
+                          },
+                          legend: {
+                            position: 'bottom',
+                            labels: {
+                              color: '#e2e8f0',
+                              font: { size: 11, weight: 'bold' },
+                              padding: 12,
+                              usePointStyle: true,
+                              pointStyle: 'circle',
+                              generateLabels: function(chart) {
+                                const data = chart.data;
+                                const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                return data.labels.map((label, i) => {
+                                  const value = data.datasets[0].data[i];
+                                  const percentage = ((value / total) * 100).toFixed(1);
+                                  return {
+                                    text: `${label} ${percentage}%`,
+                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                    strokeStyle: '#ffffff',
+                                    lineWidth: 2,
+                                    hidden: false,
+                                    index: i
+                                  };
+                                });
+                              }
                             }
                           }
                         }
-                      }
-                    }} />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                      <span className="text-6xl mb-4">💪</span>
-                      <span className="text-lg font-semibold mb-2">No muscle group data</span>
-                      <span className="text-sm text-center">Complete workouts to see muscle distribution</span>
-                    </div>
-                  )}
+                      }} />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                        <div className="relative mb-6">
+                          <span className="text-6xl opacity-50">💪</span>
+                          <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+                        </div>
+                        <span className="text-xl font-bold text-purple-400 mb-2">Build Your Profile</span>
+                        <span className="text-sm text-center text-slate-400">Complete workouts to see muscle distribution</span>
+                        <div className="mt-4 px-4 py-2 bg-purple-500/20 border border-purple-400/40 rounded-full">
+                          <span className="text-xs font-bold text-purple-300">🎯 TARGET ALL MUSCLES</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
 
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-blue-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 relative overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              whileHover={{ scale: 1.01 }}
+              whileHover={{ scale: 1.02, rotateZ: 1 }}
             >
-              {/* Premium Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Advanced Gym Branding Effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-cyan-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-indigo-500 rounded-t-3xl"></div>
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-base sm:text-xl">⚡</span>
+                {/* Professional Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl border border-blue-400/30">
+                        <span className="text-white text-2xl animate-pulse">⚡</span>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-cyan-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                        Quick Stats
+                      </h3>
+                      <p className="text-sm text-slate-400 font-medium">Real-time overview</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Quick Stats</h3>
+                  
+                  {/* Live Status Badge */}
+                  <div className="flex items-center gap-2 bg-blue-500/20 border border-blue-400/40 rounded-full px-3 py-1.5">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-blue-300 tracking-wider">STATS</span>
+                  </div>
                 </div>
                 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-orange-400">💪</span>
-                      <span className="hidden sm:inline">Your Total Workouts</span>
-                      <span className="sm:hidden">Total Workouts</span>
-                    </span>
-                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalWorkouts || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-blue-400">📋</span>
-                      <span className="hidden sm:inline">Your Workout Plans</span>
-                      <span className="sm:hidden">Workout Plans</span>
-                    </span>
-                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalPlans || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-green-400">🍽️</span>
-                      <span className="hidden sm:inline">Total Meals Logged</span>
-                      <span className="sm:hidden">Total Meals</span>
-                    </span>
-                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalMeals || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-emerald-400">🌟</span>
-                      <span className="hidden sm:inline">Today's Meals</span>
-                      <span className="sm:hidden">Today's Meals</span>
-                    </span>
-                    <span className="text-green-400 font-bold text-lg sm:text-xl">{analyticsData?.stats?.todayMeals || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-purple-400">📅</span>
-                      <span className="hidden sm:inline">This Week's Meals</span>
-                      <span className="sm:hidden">Week's Meals</span>
-                    </span>
-                    <span className="text-blue-400 font-bold text-lg sm:text-xl">{analyticsData?.stats?.weeklyMeals || 0}</span>
-                  </div>
+                {/* Professional Stats Grid */}
+                <div className="space-y-3">
+                  <motion.div 
+                    className="flex justify-between items-center p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-xl border border-orange-400/30 hover:border-orange-300/50 transition-all duration-300 group/stat"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white text-lg">💪</span>
+                      </div>
+                      <div>
+                        <span className="text-white font-semibold text-base">Your Total Workouts</span>
+                        <div className="text-xs text-orange-300 font-medium">Lifetime sessions</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-orange-400 font-bold text-2xl">{analyticsData?.stats?.totalWorkouts || 0}</span>
+                      <div className="text-xs text-slate-400">sessions</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl border border-blue-400/30 hover:border-blue-300/50 transition-all duration-300 group/stat"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white text-lg">📋</span>
+                      </div>
+                      <div>
+                        <span className="text-white font-semibold text-base">Your Workout Plans</span>
+                        <div className="text-xs text-blue-300 font-medium">Custom routines</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-blue-400 font-bold text-2xl">{analyticsData?.stats?.totalPlans || 0}</span>
+                      <div className="text-xs text-slate-400">plans</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex justify-between items-center p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl border border-green-400/30 hover:border-green-300/50 transition-all duration-300 group/stat"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white text-lg">🍽️</span>
+                      </div>
+                      <div>
+                        <span className="text-white font-semibold text-base">Total Meals Logged</span>
+                        <div className="text-xs text-green-300 font-medium">Nutrition tracking</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-green-400 font-bold text-2xl">{analyticsData?.stats?.totalMeals || 0}</span>
+                      <div className="text-xs text-slate-400">meals</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex justify-between items-center p-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-400/30 hover:border-emerald-300/50 transition-all duration-300 group/stat"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white text-lg">🌟</span>
+                      </div>
+                      <div>
+                        <span className="text-white font-semibold text-base">Today's Meals</span>
+                        <div className="text-xs text-emerald-300 font-medium">Daily progress</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-emerald-400 font-bold text-2xl">{analyticsData?.stats?.todayMeals || 0}</span>
+                      <div className="text-xs text-slate-400">today</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl border border-purple-400/30 hover:border-purple-300/50 transition-all duration-300 group/stat"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white text-lg">📅</span>
+                      </div>
+                      <div>
+                        <span className="text-white font-semibold text-base">This Week's Meals</span>
+                        <div className="text-xs text-purple-300 font-medium">Weekly consistency</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-purple-400 font-bold text-2xl">{analyticsData?.stats?.weeklyMeals || 0}</span>
+                      <div className="text-xs text-slate-400">this week</div>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
           </div>
 
           {/* Premium Meal Tracking Calendar */}
-          <div className="mx-2 sm:mx-4 pb-6 sm:pb-8">
-            <MealTrackingCalendar />
-          </div>
+          <motion.div 
+            className="mx-2 sm:mx-4 pb-6 sm:pb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 relative overflow-hidden group">
+              {/* Advanced Gym Branding Effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-green-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500 rounded-t-3xl"></div>
+              <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+              
+              <div className="relative z-10">
+                {/* Professional Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl border border-emerald-400/30">
+                        <span className="text-white text-2xl animate-bounce">🍽️</span>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-300 bg-clip-text text-transparent">
+                        MEAL TRACKING CALENDAR
+                      </h3>
+                      <p className="text-sm text-slate-400 font-medium">Track your daily nutrition consistency with real-time meal logging data</p>
+                    </div>
+                  </div>
+                  
+                  {/* Live Status Badge */}
+                  <div className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/40 rounded-full px-3 py-1.5">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-emerald-300 tracking-wider">NUTRITION</span>
+                  </div>
+                </div>
+                
+                {/* Calendar Container */}
+                <div className="bg-gradient-to-br from-slate-900/60 to-black/40 rounded-2xl p-4 border border-emerald-500/20 shadow-inner">
+                  <MealTrackingCalendar />
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
         
         {/* Premium Footer Glow */}
