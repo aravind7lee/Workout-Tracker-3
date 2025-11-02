@@ -798,29 +798,56 @@ export default function PlansBuilder() {
             </motion.div>
           </div>
 
-          {/* Enhanced Call to Action */}
+          {/* Mobile-Optimized Call to Action */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             viewport={{ once: true }}
-            className="text-center mt-20"
+            className="text-center mt-12 sm:mt-16 lg:mt-20 px-4"
           >
-            <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 backdrop-blur-sm border border-slate-700 rounded-3xl p-10 max-w-3xl mx-auto">
-              <h3 className="text-3xl font-bold text-white mb-6">
-                Ready to Build Your Perfect Workout?
+            <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 max-w-4xl mx-auto shadow-2xl">
+              {/* Mobile-First Heading */}
+              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+                <span className="block sm:inline">Ready to Build Your</span>
+                <span className="block sm:inline text-orange-400"> Perfect Workout?</span>
               </h3>
-              <p className="text-slate-300 text-lg mb-8 leading-relaxed">
-                Join thousands of fitness enthusiasts using our professional-grade plan builder with real-time sync and advanced analytics
+              
+              {/* Mobile-Optimized Description */}
+              <p className="text-slate-300 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
+                <span className="block sm:inline">Join thousands of fitness enthusiasts using our</span>
+                <span className="block sm:inline"> professional-grade plan builder with</span>
+                <span className="block sm:inline font-semibold text-blue-300"> real-time sync</span>
+                <span className="block sm:inline"> and</span>
+                <span className="block sm:inline font-semibold text-green-300"> advanced analytics</span>
               </p>
+              
+              {/* Mobile-Responsive Button */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-10 py-5 rounded-2xl font-semibold text-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-6 sm:px-8 lg:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg lg:text-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center gap-3 shadow-xl"
               >
-                🚀 Start Building Now
+                <span className="text-xl sm:text-2xl">🚀</span>
+                <span>Start Building Now</span>
               </motion.button>
+              
+              {/* Mobile-Friendly Features List */}
+              <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
+                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                  <span className="text-green-400">✅</span>
+                  <span>Real-time Sync</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                  <span className="text-blue-400">📊</span>
+                  <span>Advanced Analytics</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                  <span className="text-purple-400">🏋️</span>
+                  <span>Professional Grade</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
