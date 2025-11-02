@@ -910,9 +910,9 @@ export default function Analytics() {
                           legend: {
                             position: 'bottom',
                             labels: {
-                              color: '#e2e8f0',
-                              font: { size: 11, weight: 'bold' },
-                              padding: 12,
+                              color: '#ffffff',
+                              font: { size: 12, weight: 'bold' },
+                              padding: 15,
                               usePointStyle: true,
                               pointStyle: 'circle',
                               generateLabels: function(chart) {
@@ -925,7 +925,8 @@ export default function Analytics() {
                                     text: `${label} ${percentage}%`,
                                     fillStyle: data.datasets[0].backgroundColor[i],
                                     strokeStyle: '#ffffff',
-                                    lineWidth: 2,
+                                    lineWidth: 3,
+                                    fontColor: '#ffffff',
                                     hidden: false,
                                     index: i
                                   };
