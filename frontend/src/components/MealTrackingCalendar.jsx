@@ -193,61 +193,80 @@ const MealTrackingCalendar = () => {
     const days = generateCalendarDays();
     
     return (
-      <div className="space-y-4">
-        {/* Calendar Header */}
-        <div className="meal-calendar-nav">
+      <div className="space-y-3 sm:space-y-4">
+        {/* Mobile-Optimized Calendar Header */}
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => navigateMonth(-1)}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
             ←
           </button>
-          <h3 className="meal-nav-title text-white">
-            {currentDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}
+          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white text-center flex-1">
+            <span className="hidden sm:inline">
+              {currentDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}
+            </span>
+            <span className="sm:hidden">
+              {currentDate.toLocaleDateString('en', { month: 'short', year: 'numeric' })}
+            </span>
           </h3>
           <button
             onClick={() => navigateMonth(1)}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
             →
           </button>
         </div>
 
-        {/* Days of week header */}
-        <div className="meal-calendar-grid mb-2">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="meal-calendar-day-header">
-              {day}
+        {/* Mobile-Optimized Days Header */}
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+            <div key={index} className="text-center text-xs font-bold text-slate-400 py-1">
+              <span className="sm:hidden">{day}</span>
+              <span className="hidden sm:inline">{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][index]}</span>
             </div>
           ))}
         </div>
 
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-2">
+        {/* Mobile-Optimized Calendar Grid */}
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {days.map((day, index) => (
             <motion.div
               key={index}
-              className={`meal-calendar-day bg-slate-800/50 ${
-                day.isToday ? 'ring-1 ring-orange-500/50 today' : ''
-              } ${day.mealsCount > 0 ? 'has-meals' : 'no-meals'}`}
+              className={`
+                relative aspect-square min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem]
+                flex flex-col items-center justify-center
+                rounded-lg cursor-pointer transition-all duration-200
+                border border-transparent
+                ${
+                  day.isToday 
+                    ? 'bg-orange-500/20 border-orange-500/50 ring-1 ring-orange-500/30' 
+                    : day.mealsCount > 0 
+                      ? 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20' 
+                      : 'bg-slate-800/30 hover:bg-slate-700/50'
+                }
+              `}
               onClick={() => setSelectedDate(day)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className={`meal-day-number text-white ${
-                day.isToday ? 'text-orange-400' : ''
+              <div className={`text-xs sm:text-sm font-bold mb-1 ${
+                day.isToday ? 'text-orange-400' : 'text-white'
               }`}>
                 {day.date.getDate()}
               </div>
               
               {day.mealsCount > 0 && (
-                <div className={`meal-count-badge ${getMealCountColor(day.mealsCount)}`}>
+                <div className={`
+                  text-xs font-bold px-1.5 py-0.5 rounded-full
+                  ${getMealCountColor(day.mealsCount)}
+                `}>
                   {day.mealsCount}
                 </div>
               )}
               
               {day.isToday && (
-                <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></div>
               )}
             </motion.div>
           ))}
@@ -260,55 +279,65 @@ const MealTrackingCalendar = () => {
     const weekData = generateWeeklyData();
     
     return (
-      <div className="space-y-4">
-        {/* Week Navigation */}
-        <div className="meal-calendar-nav">
+      <div className="space-y-3 sm:space-y-4">
+        {/* Mobile-Optimized Week Navigation */}
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => navigateWeek(-1)}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
-            <span className="hidden sm:inline">← Previous Week</span>
-            <span className="sm:hidden">← Prev</span>
+            <span className="hidden sm:inline">← Prev Week</span>
+            <span className="sm:hidden">←</span>
           </button>
-          <h3 className="meal-nav-title text-white">
+          <h3 className="text-sm sm:text-base font-bold text-white text-center flex-1">
             <span className="hidden sm:inline">Week of {weekData[0]?.date.toLocaleDateString()}</span>
             <span className="sm:hidden">{weekData[0]?.date.toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span>
           </h3>
           <button
             onClick={() => navigateWeek(1)}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
             <span className="hidden sm:inline">Next Week →</span>
-            <span className="sm:hidden">Next →</span>
+            <span className="sm:hidden">→</span>
           </button>
         </div>
 
-        {/* Weekly Grid */}
-        <div className="meal-weekly-grid">
+        {/* Mobile-Optimized Weekly Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-7 gap-2 sm:gap-3">
           {weekData.map((day, index) => (
             <motion.div
               key={index}
-              className={`meal-weekly-day ${
-                day.isToday ? 'bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30' : 'bg-slate-800/50'
-              } hover:bg-slate-700/50 hover:scale-105`}
+              className={`
+                p-3 sm:p-4 rounded-lg cursor-pointer transition-all duration-200
+                ${
+                  day.isToday 
+                    ? 'bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30' 
+                    : 'bg-slate-800/50 hover:bg-slate-700/50'
+                }
+              `}
               onClick={() => setSelectedDate(day)}
               whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="text-center">
-                <div className={`text-sm font-semibold mb-2 ${day.isToday ? 'text-orange-400' : 'text-slate-400'}`}>
-                  {day.dayName}
+              <div className="flex sm:flex-col items-center sm:text-center gap-3 sm:gap-2">
+                <div className="flex-shrink-0">
+                  <div className={`text-sm font-bold ${day.isToday ? 'text-orange-400' : 'text-slate-400'}`}>
+                    {day.dayName}
+                  </div>
+                  <div className={`text-lg font-bold ${day.isToday ? 'text-white' : 'text-slate-300'}`}>
+                    {day.date.getDate()}
+                  </div>
                 </div>
-                <div className={`text-lg font-bold mb-2 ${day.isToday ? 'text-white' : 'text-slate-300'}`}>
-                  {day.date.getDate()}
-                </div>
-                <div className={`
-                  text-2xl font-black mb-2
-                  ${day.mealsCount > 0 ? 'text-green-400' : 'text-slate-500'}
-                `}>
-                  {day.mealsCount}
-                </div>
-                <div className="text-xs text-slate-400">
-                  meal{day.mealsCount !== 1 ? 's' : ''}
+                <div className="flex-1 sm:flex-none text-center">
+                  <div className={`
+                    text-xl sm:text-2xl font-black mb-1
+                    ${day.mealsCount > 0 ? 'text-green-400' : 'text-slate-500'}
+                  `}>
+                    {day.mealsCount}
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    meal{day.mealsCount !== 1 ? 's' : ''}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -323,25 +352,24 @@ const MealTrackingCalendar = () => {
     const todayMeals = mealData[dateKey] || [];
     
     return (
-      <div className="space-y-4">
-        {/* Daily Navigation */}
-        <div className="meal-calendar-nav">
+      <div className="space-y-3 sm:space-y-4">
+        {/* Mobile-Optimized Daily Navigation */}
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => {
               const newDate = new Date(currentDate);
               newDate.setDate(currentDate.getDate() - 1);
               setCurrentDate(newDate);
             }}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
-            <span className="hidden sm:inline">← Previous Day</span>
-            <span className="sm:hidden">← Prev</span>
+            <span className="hidden sm:inline">← Prev Day</span>
+            <span className="sm:hidden">←</span>
           </button>
-          <h3 className="meal-nav-title text-white">
+          <h3 className="text-sm sm:text-base font-bold text-white text-center flex-1">
             <span className="hidden sm:inline">
               {currentDate.toLocaleDateString('en', { 
                 weekday: 'long', 
-                year: 'numeric', 
                 month: 'long', 
                 day: 'numeric' 
               })}
@@ -359,46 +387,52 @@ const MealTrackingCalendar = () => {
               newDate.setDate(currentDate.getDate() + 1);
               setCurrentDate(newDate);
             }}
-            className="meal-nav-button hover:bg-slate-600/50 transition-colors"
+            className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-bold transition-colors"
           >
             <span className="hidden sm:inline">Next Day →</span>
-            <span className="sm:hidden">Next →</span>
+            <span className="sm:hidden">→</span>
           </button>
         </div>
 
-        {/* Daily Stats */}
-        <div className="meal-daily-view mb-6">
-          <div className="meal-daily-count text-green-400">
+        {/* Mobile-Optimized Daily Stats */}
+        <div className="text-center py-4 sm:py-6 bg-slate-800/30 rounded-lg">
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-green-400 mb-2">
             {todayMeals.length}
           </div>
-          <div className="text-sm sm:text-lg text-slate-300">
-            Meals Logged Today
+          <div className="text-sm sm:text-base text-slate-300">
+            Meals Logged
           </div>
         </div>
 
-        {/* Meal List */}
+        {/* Mobile-Optimized Meal List */}
         {todayMeals.length > 0 ? (
-          <div className="meal-list">
+          <div className="space-y-2 sm:space-y-3">
             {todayMeals.map((meal, index) => (
-              <div key={index} className="meal-item">
-                <div className="meal-item-header">
-                  <div className="flex-1">
-                    <h4 className="meal-item-name text-white">{meal.name || meal.parsedName}</h4>
-                    <div className="meal-item-details">
+              <div key={index} className="bg-slate-800/30 rounded-lg p-3 sm:p-4 border border-slate-700/50">
+                <div className="flex justify-between items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-bold text-sm sm:text-base truncate">
+                      {meal.name || meal.parsedName}
+                    </h4>
+                    <div className="text-xs sm:text-sm text-slate-400 mt-1">
                       {Math.round(meal.calories || 0)} cal • {meal.mealType || 'snack'}
                     </div>
                   </div>
-                  <div className="meal-item-time">
-                    {new Date(meal.consumedAt || meal.createdAt).toLocaleTimeString()}
+                  <div className="text-xs text-slate-500 text-right flex-shrink-0">
+                    {new Date(meal.consumedAt || meal.createdAt).toLocaleTimeString('en', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <div className="text-3xl sm:text-4xl mb-4">🍽️</div>
+          <div className="text-center py-6 sm:py-8">
+            <div className="text-4xl sm:text-5xl mb-3">🍽️</div>
             <div className="text-slate-400 text-sm sm:text-base">No meals logged for this day</div>
+            <div className="text-xs text-slate-500 mt-2">Start tracking your nutrition!</div>
           </div>
         )}
       </div>
@@ -406,54 +440,53 @@ const MealTrackingCalendar = () => {
   };
 
   return (
-    <div className="meal-calendar-container space-y-4">
-      {/* Header with Stats */}
-      <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 rounded-xl sm:rounded-2xl border border-orange-500/20 p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+    <div className="meal-calendar-container space-y-3 sm:space-y-4">
+      {/* Mobile-Optimized Header with Stats */}
+      <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 rounded-lg sm:rounded-xl border border-orange-500/20 p-3 sm:p-4 lg:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
           <div className="text-center sm:text-left">
-            <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wider mb-2">
-              🍽️ MEAL TRACKING CALENDAR
+            <h2 className="text-base sm:text-lg lg:text-xl font-black text-white uppercase tracking-wider mb-1">
+              🍽️ MEAL CALENDAR
             </h2>
-            <p className="text-slate-400 text-xs sm:text-sm">
-              Track your daily nutrition consistency with real-time meal logging data
+            <p className="text-slate-400 text-xs hidden sm:block">
+              Track your daily nutrition consistency
             </p>
           </div>
-          <div className="flex items-center justify-center gap-2 text-xs text-green-400 bg-green-500/20 px-3 py-2 rounded-full">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span className="hidden sm:inline">REAL-TIME DATA</span>
-            <span className="sm:hidden">LIVE</span>
+          <div className="flex items-center justify-center gap-1 text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span className="font-bold">LIVE</span>
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="meal-stats-grid mb-4 sm:mb-6">
-          <div className="text-center p-3 bg-slate-800/30 rounded-lg">
-            <div className="text-xl sm:text-2xl font-black text-orange-400 mb-1">{totalMealsToday}</div>
+        {/* Mobile-Optimized Quick Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div className="text-center p-2 sm:p-3 bg-slate-800/30 rounded-lg">
+            <div className="text-lg sm:text-xl lg:text-2xl font-black text-orange-400 mb-1">{totalMealsToday}</div>
             <div className="text-xs text-slate-400 uppercase tracking-wide">Today</div>
           </div>
-          <div className="text-center p-3 bg-slate-800/30 rounded-lg">
-            <div className="text-xl sm:text-2xl font-black text-green-400 mb-1">{weeklyTotal}</div>
-            <div className="text-xs text-slate-400 uppercase tracking-wide">This Week</div>
+          <div className="text-center p-2 sm:p-3 bg-slate-800/30 rounded-lg">
+            <div className="text-lg sm:text-xl lg:text-2xl font-black text-green-400 mb-1">{weeklyTotal}</div>
+            <div className="text-xs text-slate-400 uppercase tracking-wide">Week</div>
           </div>
-          <div className="text-center p-3 bg-slate-800/30 rounded-lg">
-            <div className="text-xl sm:text-2xl font-black text-blue-400 mb-1">{monthlyTotal}</div>
-            <div className="text-xs text-slate-400 uppercase tracking-wide">This Month</div>
+          <div className="text-center p-2 sm:p-3 bg-slate-800/30 rounded-lg">
+            <div className="text-lg sm:text-xl lg:text-2xl font-black text-blue-400 mb-1">{monthlyTotal}</div>
+            <div className="text-xs text-slate-400 uppercase tracking-wide">Month</div>
           </div>
-          <div className="text-center p-3 bg-slate-800/30 rounded-lg">
-            <div className="text-xl sm:text-2xl font-black text-purple-400 mb-1">{averageMealsPerDay}</div>
-            <div className="text-xs text-slate-400 uppercase tracking-wide">Daily Avg</div>
+          <div className="text-center p-2 sm:p-3 bg-slate-800/30 rounded-lg">
+            <div className="text-lg sm:text-xl lg:text-2xl font-black text-purple-400 mb-1">{averageMealsPerDay}</div>
+            <div className="text-xs text-slate-400 uppercase tracking-wide">Avg</div>
           </div>
         </div>
 
-        {/* View Mode Selector */}
-        <div className="meal-view-selector">
+        {/* Mobile-Optimized View Mode Selector */}
+        <div className="flex justify-center gap-1 sm:gap-2">
           {['daily', 'weekly', 'monthly'].map(mode => (
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`meal-view-button ${
+              className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wide transition-all ${
                 viewMode === mode 
-                  ? 'bg-orange-500 text-white' 
+                  ? 'bg-orange-500 text-white shadow-lg' 
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
               }`}
             >
@@ -463,8 +496,8 @@ const MealTrackingCalendar = () => {
         </div>
       </div>
 
-      {/* Calendar Views */}
-      <div className="bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-700/50 p-4 sm:p-6">
+      {/* Mobile-Optimized Calendar Views */}
+      <div className="bg-slate-800/50 rounded-lg sm:rounded-xl border border-slate-700/50 p-3 sm:p-4 lg:p-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={viewMode}
@@ -480,25 +513,26 @@ const MealTrackingCalendar = () => {
         </AnimatePresence>
       </div>
 
-      {/* Selected Date Modal */}
+      {/* Mobile-Optimized Selected Date Modal */}
       <AnimatePresence>
         {selectedDate && (
           <motion.div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedDate(null)}
           >
             <motion.div
-              className="bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-sm sm:max-w-md w-full max-h-[85vh] overflow-y-auto meal-modal-content"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-slate-800 rounded-lg sm:rounded-xl border border-slate-700/50 p-4 sm:p-6 max-w-sm sm:max-w-md w-full max-h-[90vh] overflow-y-auto"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="meal-modal-header">
-                <h3 className="meal-modal-title text-white">
+              {/* Mobile Modal Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base sm:text-lg font-bold text-white">
                   <span className="hidden sm:inline">
                     {selectedDate.date.toLocaleDateString('en', { 
                       weekday: 'long', 
@@ -515,45 +549,51 @@ const MealTrackingCalendar = () => {
                 </h3>
                 <button
                   onClick={() => setSelectedDate(null)}
-                  className="meal-modal-close"
+                  className="w-8 h-8 flex items-center justify-center bg-slate-700/50 hover:bg-slate-600/50 rounded-lg text-slate-400 hover:text-white transition-colors"
                 >
                   ✕
                 </button>
               </div>
 
-              <div className="meal-modal-stats">
-                <div className="meal-modal-count text-green-400">
+              {/* Mobile Modal Stats */}
+              <div className="text-center py-4 bg-slate-900/50 rounded-lg mb-4">
+                <div className="text-2xl sm:text-3xl font-black text-green-400 mb-1">
                   {selectedDate.mealsCount}
                 </div>
-                <div className="meal-modal-label text-slate-300">
+                <div className="text-sm text-slate-300">
                   Meal{selectedDate.mealsCount !== 1 ? 's' : ''} Logged
                 </div>
               </div>
 
+              {/* Mobile Meal List */}
               {selectedDate.meals.length > 0 ? (
-                <div className="meal-list">
+                <div className="space-y-2 sm:space-y-3">
                   {selectedDate.meals.map((meal, index) => (
-                    <div key={index} className="meal-item">
-                      <div className="meal-item-header">
-                        <div className="flex-1">
-                          <div className="meal-item-name text-white">
+                    <div key={index} className="bg-slate-900/30 rounded-lg p-3 border border-slate-700/30">
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-white font-bold text-sm sm:text-base truncate">
                             {meal.name || meal.parsedName}
                           </div>
-                          <div className="meal-item-details">
+                          <div className="text-xs sm:text-sm text-slate-400 mt-1">
                             {Math.round(meal.calories || 0)} cal • {meal.mealType || 'snack'}
                           </div>
                         </div>
-                        <div className="meal-item-time">
-                          {new Date(meal.consumedAt || meal.createdAt).toLocaleTimeString()}
+                        <div className="text-xs text-slate-500 text-right flex-shrink-0">
+                          {new Date(meal.consumedAt || meal.createdAt).toLocaleTimeString('en', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="meal-modal-empty">
-                  <div className="meal-modal-empty-icon">🍽️</div>
-                  <div className="meal-modal-empty-text">No meals logged</div>
+                <div className="text-center py-6">
+                  <div className="text-3xl sm:text-4xl mb-3">🍽️</div>
+                  <div className="text-slate-400 text-sm sm:text-base">No meals logged</div>
+                  <div className="text-xs text-slate-500 mt-1">Start tracking your nutrition!</div>
                 </div>
               )}
             </motion.div>

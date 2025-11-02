@@ -10,3 +10,107 @@
     object-position: center center !important;
   }
 }
+
+/* Professional Mobile Analytics Enhancements */
+@media (max-width: 640px) {
+  /* Compact mobile grid spacing */
+  #analytics-charts .grid {
+    gap: 0.75rem !important;
+  }
+  
+  /* Mobile-optimized card padding */
+  #analytics-charts .motion-div {
+    padding: 0.75rem !important;
+  }
+  
+  /* Ensure proper text scaling on mobile */
+  #analytics-charts h3 {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  /* Mobile chart height optimization */
+  #analytics-charts .h-32 {
+    height: 7rem !important;
+  }
+  
+  /* Mobile stats grid optimization */
+  #analytics-charts .space-y-2 > * + * {
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Mobile icon sizing */
+  #analytics-charts .w-8 {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+  }
+  
+  /* Mobile badge optimization */
+  #analytics-charts .rounded-full {
+    padding: 0.25rem 0.5rem !important;
+  }
+  
+  /* Mobile border radius consistency */
+  #analytics-charts .rounded-2xl {
+    border-radius: 1rem !important;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  #analytics-charts .grid-cols-2 {
+    gap: 1rem !important;
+  }
+  
+  #analytics-charts .h-40 {
+    height: 9rem !important;
+  }
+}
+
+/* Professional mobile touch targets */
+@media (max-width: 640px) {
+  #analytics-charts button,
+  #analytics-charts .cursor-pointer {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* Mobile text readability */
+@media (max-width: 640px) {
+  #analytics-charts .text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+  
+  #analytics-charts .text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+}
+
+/* Mobile animation performance */
+@media (max-width: 640px) {
+  #analytics-charts .animate-pulse {
+    animation-duration: 2s !important;
+  }
+  
+  #analytics-charts .transition-all {
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* Mobile chart responsiveness */
+@media (max-width: 640px) {
+  #analytics-charts canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* Mobile gradient optimization */
+@media (max-width: 640px) {
+  #analytics-charts .bg-gradient-to-br {
+    background-attachment: scroll !important;
+  }
+}

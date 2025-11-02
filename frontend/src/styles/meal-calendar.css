@@ -9,7 +9,7 @@
 
 /* Mobile First - Base styles */
 .meal-calendar-container {
-  padding: 0.75rem;
+  padding: 0;
   margin: 0 auto;
   max-width: 100%;
   overflow-x: hidden;
@@ -19,14 +19,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .meal-view-selector {
   display: flex;
   justify-content: center;
   gap: 0.25rem;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
@@ -34,11 +32,13 @@
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: all 0.2s;
   min-width: 4rem;
+  border: none;
+  cursor: pointer;
 }
 
 .meal-calendar-nav {
@@ -216,12 +216,53 @@
   color: rgb(148, 163, 184);
 }
 
-/* Tablet styles */
-@media (min-width: 640px) {
+/* Mobile optimizations */
+@media (max-width: 640px) {
   .meal-calendar-container {
-    padding: 1rem;
+    padding: 0;
   }
   
+  .meal-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .meal-view-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    min-width: 3.5rem;
+  }
+  
+  .meal-calendar-day {
+    min-height: 2.5rem;
+    padding: 0.25rem;
+  }
+  
+  .meal-day-number {
+    font-size: 0.75rem;
+  }
+  
+  .meal-count-badge {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+  }
+  
+  .meal-weekly-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .meal-nav-title {
+    font-size: 0.875rem;
+  }
+  
+  .meal-daily-count {
+    font-size: 2rem;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) {
   .meal-stats-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 0.75rem;
@@ -232,17 +273,13 @@
     font-size: 0.875rem;
   }
   
-  .meal-calendar-grid {
-    gap: 0.25rem;
-  }
-  
   .meal-calendar-day {
-    min-height: 3.5rem;
+    min-height: 3rem;
     padding: 0.5rem;
   }
   
   .meal-day-number {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
   
   .meal-count-badge {
@@ -266,17 +303,13 @@
 
 /* Desktop styles */
 @media (min-width: 1024px) {
-  .meal-calendar-container {
-    padding: 1.5rem;
-  }
-  
   .meal-calendar-day {
-    min-height: 4.5rem;
+    min-height: 3.5rem;
     padding: 0.75rem;
   }
   
   .meal-day-number {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
   
   .meal-count-badge {
@@ -285,7 +318,7 @@
   }
   
   .meal-nav-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
   
   .meal-daily-count {
