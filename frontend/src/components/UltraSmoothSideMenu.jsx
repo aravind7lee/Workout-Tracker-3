@@ -1,7 +1,6 @@
-// Optimized Side Menu for GymTracker
+// Ultra-Optimized Side Menu for Mobile Performance
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, Menu, X, Settings, LogOut, UserCircle, Zap,
   Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp,
@@ -11,17 +10,10 @@ import { useAuth } from "../context/AuthContext";
 import { useConnectionStatus } from "../services/connectionService";
 import logo from "../assets/logo.png";
 
-// Optimized animation configs for mobile performance
-const fastTransition = {
-  type: "tween",
-  duration: 0.2,
-  ease: "easeOut"
-};
-
-const smoothTransition = {
-  type: "tween",
+// Ultra-fast transitions for mobile performance
+const mobileTransition = {
   duration: 0.15,
-  ease: "easeInOut"
+  ease: "ease-out"
 };
 
 const menuItems = [
@@ -50,16 +42,22 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
     setMounted(true);
   }, []);
 
-  // Simplified scroll lock for better performance
+  // Ultra-optimized scroll lock with performance boost
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
 
     return () => {
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -111,29 +109,35 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
   if (!mounted) return null;
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {isOpen && (
         <>
-          {/* Optimized backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={fastTransition}
+          {/* Buttery smooth backdrop */}
+          <div
             className="fixed inset-0 z-40 bg-black/50"
+            style={{
+              opacity: isOpen ? 1 : 0,
+              transition: 'opacity 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              willChange: 'opacity',
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+            }}
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Optimized sidebar */}
-          <motion.div
+          {/* Buttery smooth sidebar */}
+          <div
             ref={sidebarRef}
-            initial={{ x: "100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "100%" }}
-            transition={fastTransition}
             className="fixed top-0 right-0 h-screen w-80 max-w-[90vw] sm:max-w-[85vw] z-50 overflow-y-auto overflow-x-hidden bg-slate-900/95 border-l border-slate-700"
             style={{
+              transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+              transition: 'transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
               boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.5)',
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+              perspective: '1000px',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
             }}
           >
 
@@ -166,7 +170,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-full bg-slate-800/50 hover:bg-slate-700/50 transition-colors duration-150"
+                  className="p-2 rounded-full bg-slate-800/50 hover:bg-slate-700/50"
+                  style={{
+                    transition: 'background-color 0.06s ease-out',
+                    willChange: 'background-color',
+                    backfaceVisibility: 'hidden',
+                  }}
                 >
                   <X size={20} className="text-slate-400" />
                 </button>
@@ -184,11 +193,17 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                       <button
                         key={item.to}
                         onClick={() => handleMenuItemClick(item.to)}
-                        className={`w-full flex items-center space-x-4 px-4 py-3 sm:py-4 rounded-xl transition-all duration-150 min-h-[52px] ${
+                        className={`w-full flex items-center space-x-4 px-4 py-3 sm:py-4 rounded-xl min-h-[52px] ${
                           isActive 
                             ? 'bg-blue-500/20 text-white border border-blue-500/30' 
                             : 'text-slate-300 hover:text-white hover:bg-slate-700/30'
                         }`}
+                        style={{
+                          transition: 'all 0.06s ease-out',
+                          willChange: 'background-color, color',
+                          backfaceVisibility: 'hidden',
+                          transform: 'translateZ(0)',
+                        }}
                       >
                         {/* Icon */}
                         <div className="flex-shrink-0" style={{ color: isActive ? item.color : '#94a3b8' }}>
@@ -248,7 +263,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                       <div className="space-y-2">
                         <button
                           onClick={() => handleMenuItemClick('/profile')}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors duration-150 min-h-[44px]"
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 min-h-[44px]"
+                          style={{
+                            transition: 'all 0.06s ease-out',
+                            willChange: 'background-color, color',
+                            backfaceVisibility: 'hidden',
+                          }}
                         >
                           <UserCircle size={18} />
                           <span className="text-sm sm:text-base font-body">My Account</span>
@@ -256,7 +276,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                         <button
                           onClick={() => handleMenuItemClick('/settings')}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors duration-150 min-h-[44px]"
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 min-h-[44px]"
+                          style={{
+                            transition: 'all 0.06s ease-out',
+                            willChange: 'background-color, color',
+                            backfaceVisibility: 'hidden',
+                          }}
                         >
                           <Settings size={18} />
                           <span className="text-sm sm:text-base font-body">Settings</span>
@@ -266,7 +291,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         <div className="pt-2 border-t border-slate-600/30 mt-3">
                           <button
                             onClick={handleLogout}
-                            className="w-full flex items-center space-x-3 px-3 py-4 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-colors duration-150 min-h-[48px] border border-red-500/20"
+                            className="w-full flex items-center space-x-3 px-3 py-4 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 min-h-[48px] border border-red-500/20"
+                            style={{
+                              transition: 'all 0.06s ease-out',
+                              willChange: 'background-color, color',
+                              backfaceVisibility: 'hidden',
+                            }}
                           >
                             <LogOut size={20} />
                             <span className="text-base font-body font-semibold">Logout</span>
@@ -280,7 +310,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     <div className="space-y-3">
                       <button
                         onClick={() => handleMenuItemClick('/login')}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gray-700 text-white hover:bg-gray-600 transition-colors duration-150 min-h-[48px]"
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gray-700 text-white hover:bg-gray-600 min-h-[48px]"
+                        style={{
+                          transition: 'background-color 0.06s ease-out',
+                          willChange: 'background-color',
+                          backfaceVisibility: 'hidden',
+                        }}
                       >
                         <User size={18} />
                         <span className="font-medium font-body">Login</span>
@@ -288,7 +323,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                       <button
                         onClick={() => handleMenuItemClick('/register')}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-150 min-h-[48px]"
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 min-h-[48px]"
+                        style={{
+                          transition: 'background-color 0.06s ease-out',
+                          willChange: 'background-color',
+                          backfaceVisibility: 'hidden',
+                        }}
                       >
                         <Zap size={18} />
                         <span className="font-medium font-body">Sign Up</span>
@@ -301,9 +341,9 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                 <div className="h-6"></div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </>
       )}
-    </AnimatePresence>
+    </>
   );
 }
