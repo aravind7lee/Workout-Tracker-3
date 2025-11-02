@@ -520,10 +520,10 @@ export default function Home() {
 
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-xl px-3 py-2">
-                    <span className="text-blue-400 animate-pulse">👥</span>
+                    <span className="text-blue-400 animate-pulse">💪</span>
                     <div className="flex flex-col">
-                      <span className="font-black text-white text-sm tabular-nums">{liveUsers.toLocaleString()}</span>
-                      <span className="text-xs text-blue-300 font-medium">ONLINE</span>
+                      <span className="font-black text-white text-sm tabular-nums">120+</span>
+                      <span className="text-xs text-blue-300 font-medium">WORKOUTS</span>
                     </div>
                   </div>
                 </div>

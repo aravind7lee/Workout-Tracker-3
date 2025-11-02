@@ -53,10 +53,15 @@ export default function LibrarySimple() {
   // LQIP (Low Quality Image Placeholder)
   const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
   
-  // Simplified animation for better performance
+  // Optimized animations for smooth performance
   const fadeIn = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.3 } }
+    visible: { opacity: 1, transition: { duration: 0.2, ease: "easeOut" } }
+  };
+  
+  const slideUp = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } }
   };
   
   // Update search when navbar search parameter changes
@@ -701,26 +706,25 @@ export default function LibrarySimple() {
           filteredExercises.map(exercise => (
             <motion.div 
               key={exercise.id} 
-              className="relative group overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 backdrop-blur-sm hover:border-orange-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-orange-500/10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: Math.min(filteredExercises.indexOf(exercise) * 0.05, 1) }}
+              className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border border-slate-600/50 hover:border-orange-500/50 transition-colors duration-200 shadow-lg"
+              variants={slideUp}
+              initial="hidden"
+              animate="visible"
               whileHover={{ 
-                y: -8, 
-                scale: 1.02,
-                transition: { duration: 0.3, ease: "easeOut" }
+                y: -4,
+                transition: { duration: 0.15, ease: "easeOut" }
               }}
             >
-              {/* Premium Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Subtle Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               
               <div className="relative z-10 p-4 sm:p-6">
                 <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 ${exercise.color} rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 ${exercise.color} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-150`}>
                     <span className="text-xl sm:text-2xl md:text-3xl">{exercise.icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white text-base sm:text-lg mb-1 sm:mb-2 group-hover:text-orange-300 transition-colors duration-300 leading-tight">{exercise.name}</div>
+                    <div className="font-bold text-white text-base sm:text-lg mb-1 group-hover:text-orange-300 transition-colors duration-150 leading-tight">{exercise.name}</div>
                     <div className="flex items-center gap-1 sm:gap-2">
                       <span className="text-xs sm:text-sm font-medium text-slate-300">{exercise.category}</span>
                       <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
@@ -769,31 +773,35 @@ export default function LibrarySimple() {
               
                 {/* Premium Form Tips Section */}
                 <div className="mb-4 sm:mb-6">
-                  <motion.button
+                  <button
                     onClick={() => setExpandedFormTips(prev => ({
                       ...prev,
                       [exercise.id]: !prev[exercise.id]
                     }))}
-                    className="w-full flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 rounded-lg sm:rounded-xl border border-blue-500/30 transition-all duration-300 group/tips"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 rounded-lg border border-blue-500/30 transition-colors duration-150"
                   >
-                    <span className="text-xs sm:text-sm font-semibold text-blue-300 flex items-center gap-2 sm:gap-3">
-                      <span className="text-base sm:text-lg">📋</span>
+                    <span className="text-xs sm:text-sm font-semibold text-blue-300 flex items-center gap-2">
+                      <span className="text-base">📋</span>
                       <span className="hidden sm:inline">Form Tips & Technique</span>
                       <span className="sm:hidden">Form Tips</span>
                     </span>
-                    <motion.span 
-                      className="text-blue-300 text-base sm:text-lg"
-                      animate={{ rotate: expandedFormTips[exercise.id] ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
+                    <span 
+                      className={`text-blue-300 text-base transition-transform duration-150 ${
+                        expandedFormTips[exercise.id] ? 'rotate-180' : 'rotate-0'
+                      }`}
                     >
                       ▼
-                    </motion.span>
-                  </motion.button>
+                    </span>
+                  </button>
                 
                 {expandedFormTips[exercise.id] && (
-                  <div className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                  <motion.div 
+                    className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                  >
                     {(() => {
                       const tips = getFormTips(exercise.name);
                       return (
@@ -834,53 +842,45 @@ export default function LibrarySimple() {
                         </>
                       );
                     })()}
-                  </div>
+                  </motion.div>
                 )}
               </div>
               
                 <div className="space-y-2 sm:space-y-3">
-                  <motion.button
+                  <button
                     onClick={() => setSelectedExercise(exercise)}
-                    className="w-full p-2 sm:p-3 bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold rounded-lg sm:rounded-xl border border-slate-500/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30 text-sm sm:text-base"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="w-full p-2 sm:p-3 bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold rounded-lg border border-slate-500/30 transition-colors duration-150 text-sm sm:text-base"
                   >
                     <span className="hidden sm:inline">👁️ View Details</span>
                     <span className="sm:hidden">👁️ Details</span>
-                  </motion.button>
+                  </button>
                   
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                    <motion.button
+                    <button
                       onClick={() => handleQuickPlan(exercise)}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20 text-xs sm:text-sm"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-2 sm:p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">➕ New Plan</span>
                       <span className="sm:hidden">➕ Plan</span>
-                    </motion.button>
-                    <motion.button
+                    </button>
+                    <button
                       onClick={() => handleAddToExisting(exercise)}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20 text-xs sm:text-sm"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-2 sm:p-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">📝 Add to Plan</span>
                       <span className="sm:hidden">📝 Add</span>
-                    </motion.button>
+                    </button>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                    <motion.button
+                    <button
                       onClick={() => trackExerciseView(exercise)}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20 text-xs sm:text-sm"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-2 sm:p-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">🎯 Start Workout</span>
                       <span className="sm:hidden">🎯 Start</span>
-                    </motion.button>
-                    <motion.button
+                    </button>
+                    <button
                       onClick={() => {
                         // Enhanced workout completion with real-time sync
                         const workout = {
@@ -941,13 +941,11 @@ export default function LibrarySimple() {
                         
                         console.log('🎯 Workout completed from Library:', workout);
                       }}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-500/30 shadow-lg hover:shadow-emerald-500/20 text-xs sm:text-sm"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-2 sm:p-3 bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">✅ Complete</span>
                       <span className="sm:hidden">✅ Done</span>
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </div>

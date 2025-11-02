@@ -93,7 +93,7 @@ export default function NutritionPreviewModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-md nutrition-modal-bg rounded-xl nutrition-modal-border shadow-2xl"
+            className="relative w-full max-w-md mx-4 nutrition-modal-bg rounded-xl nutrition-modal-border shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 nutrition-modal-header">

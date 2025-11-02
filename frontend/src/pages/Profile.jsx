@@ -349,16 +349,16 @@ const Profile = () => {
         </div>
 
         {/* Main Content Container */}
-        <div className="relative z-30 max-w-7xl mx-auto px-4 py-8">
-          {/* Hero Header - Perfect Alignment */}
+        <div className="relative z-30 max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
+          {/* Header - Mobile Optimized */}
           <motion.div 
-            className="text-center mb-8 sm:mb-12"
+            className="text-center mb-6 sm:mb-8 lg:mb-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <motion.h1 
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-red-500 via-orange-500 to-cyan-400 bg-clip-text text-transparent leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 lg:mb-6 bg-gradient-to-r from-red-500 via-orange-500 to-cyan-400 bg-clip-text text-transparent leading-tight px-2"
               style={{ fontFamily: 'var(--font-heading)' }}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -367,50 +367,49 @@ const Profile = () => {
               💪 MY PROFILE
             </motion.h1>
             <motion.div 
-              className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 px-4"
+              className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6 px-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <div className={`px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-full border-2 backdrop-blur-sm text-center ${
+              <div className={`px-3 sm:px-4 py-2 rounded-full border-2 backdrop-blur-sm text-center w-full sm:w-auto ${
                 isOnline 
                   ? 'bg-green-500/20 text-green-300 border-green-400 shadow-lg shadow-green-500/25' 
                   : 'bg-yellow-500/20 text-yellow-300 border-yellow-400 shadow-lg shadow-yellow-500/25'
               }`}>
-                <span className="font-bold text-sm sm:text-base md:text-lg whitespace-nowrap">
+                <span className="font-bold text-sm sm:text-base">
                   {isOnline ? '🔥 LIVE SYNC' : '⚡ OFFLINE'}
                 </span>
               </div>
-              <button
-                onClick={fetchProfileData}
-                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all duration-300 text-sm sm:text-base whitespace-nowrap"
-              >
-                🔄 REFRESH
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold rounded-full shadow-lg shadow-red-500/25 transition-all duration-300 text-sm sm:text-base whitespace-nowrap"
-              >
-                🚪 LOGOUT
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button
+                  onClick={fetchProfileData}
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all duration-300 text-sm"
+                >
+                  🔄 REFRESH
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold rounded-full shadow-lg shadow-red-500/25 transition-all duration-300 text-sm"
+                >
+                  🚪 LOGOUT
+                </button>
+              </div>
             </motion.div>
-            <motion.p 
-              className="text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4 leading-relaxed"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              🏋️ Professional Gym Tracker • 💾 MongoDB Database • 🔄 Cross-Device Sync
-              {lastSync && (
-                <span className="block text-xs sm:text-sm text-slate-400 mt-2">
-                  Last sync: {lastSync.toLocaleTimeString()}
-                </span>
-              )}
-            </motion.p>
+            {lastSync && (
+              <motion.p 
+                className="text-slate-400 text-xs max-w-2xl mx-auto px-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                Last sync: {lastSync.toLocaleTimeString()}
+              </motion.p>
+            )}
           </motion.div>
 
-          {/* Profile Cards Grid - Perfect Responsive Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+          {/* Profile Cards Grid - Mobile Responsive */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 lg:mb-12">
             {/* Profile Image Section - Enhanced Gym Style */}
             <motion.div 
               className="lg:col-span-1"
@@ -423,15 +422,15 @@ const Profile = () => {
                 <div className="absolute inset-0 opacity-10">
                   <img src={ArnoldBg} alt="" className="w-full h-full object-cover" />
                 </div>
-                <div className="relative z-10 p-4 sm:p-6 lg:p-8">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse"></div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                <div className="relative z-10 p-3 sm:p-4 lg:p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <h2 className="text-base sm:text-lg lg:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                         🖼️ PROFILE PICTURE
                       </h2>
                     </div>
-                    <div className="px-2 sm:px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
+                    <div className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
                       CLOUDINARY
                     </div>
                   </div>
@@ -476,14 +475,14 @@ const Profile = () => {
                     }}
                     className="hidden"
                   />
-                  <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-xl sm:rounded-2xl border border-slate-600/30">
-                    <div className="flex items-center gap-2 text-green-400 text-xs sm:text-sm mb-2">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      Cross-device sync enabled
+                  <div className="mt-3 sm:mt-4 p-3 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <div className="flex items-center gap-2 text-green-400 text-xs mb-2">
+                      <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                      <span>Cross-device sync enabled</span>
                     </div>
-                    <div className="flex items-center gap-2 text-cyan-400 text-xs sm:text-sm">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-cyan-400 rounded-full"></div>
-                      Stored securely in cloud
+                    <div className="flex items-center gap-2 text-cyan-400 text-xs">
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <span>Stored securely in cloud</span>
                     </div>
                   </div>
                 </div>
@@ -502,17 +501,17 @@ const Profile = () => {
                 <div className="absolute inset-0 opacity-10">
                   <img src={ChrisBg} alt="" className="w-full h-full object-cover" />
                 </div>
-                <div className="relative z-10 p-4 sm:p-6 lg:p-8">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                        <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                <div className="relative z-10 p-3 sm:p-4 lg:p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                        <h2 className="text-base sm:text-lg lg:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                           📝 PROFILE INFO
                         </h2>
                       </div>
                       {user?.synced === false && (
-                        <div className="px-2 sm:px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full border border-yellow-500/30">
+                        <div className="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full border border-yellow-500/30">
                           PENDING SYNC
                         </div>
                       )}
@@ -520,7 +519,7 @@ const Profile = () => {
                     {!editing && (
                       <button
                         onClick={() => setEditing(true)}
-                        className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm sm:text-base whitespace-nowrap"
+                        className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm"
                       >
                         ✏️ EDIT
                       </button>
@@ -581,50 +580,48 @@ const Profile = () => {
                       </div>
                     </form>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div className="space-y-3 sm:space-y-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-bold text-slate-400 mb-1 sm:mb-2 uppercase tracking-wider">
-                            Full Name
-                          </label>
-                          <div className="text-white text-lg sm:text-xl font-semibold break-words">{user?.name || 'Not set'}</div>
-                        </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                          Full Name
+                        </label>
+                        <div className="text-white text-base sm:text-lg font-semibold break-words">{user?.name || 'Not set'}</div>
+                      </div>
 
-                        <div>
-                          <label className="block text-xs sm:text-sm font-bold text-slate-400 mb-1 sm:mb-2 uppercase tracking-wider">
-                            Email Address
-                          </label>
-                          <div className="text-white text-lg sm:text-xl font-semibold break-words">{user?.email || 'Not set'}</div>
-                        </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                          Email Address
+                        </label>
+                        <div className="text-white text-sm sm:text-base font-semibold break-all">{user?.email || 'Not set'}</div>
+                      </div>
 
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs sm:text-sm font-bold text-slate-400 mb-1 sm:mb-2 uppercase tracking-wider">
+                          <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
                             Member Since
                           </label>
-                          <div className="text-white text-sm sm:text-base font-semibold">
+                          <div className="text-white text-sm font-semibold">
                             {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                            Account Status
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span className="text-green-400 font-bold text-xs sm:text-sm">Active • Real-time Sync</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="space-y-3 sm:space-y-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-bold text-slate-400 mb-1 sm:mb-2 uppercase tracking-wider">
-                            Account Status
-                          </label>
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse"></div>
-                            <span className="text-green-400 font-bold text-sm sm:text-base">Active • Real-time Sync</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs sm:text-sm font-bold text-slate-400 mb-1 sm:mb-2 uppercase tracking-wider">
-                            Data Storage
-                          </label>
-                          <div className="text-white font-semibold text-xs sm:text-sm leading-relaxed">
-                            📊 MongoDB • ☁️ Cloudinary • 🔄 Cross-device
-                          </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                          Data Storage
+                        </label>
+                        <div className="text-white font-semibold text-xs leading-relaxed">
+                          📊 MongoDB • ☁️ Cloudinary • 🔄 Cross-device
                         </div>
                       </div>
                     </div>
