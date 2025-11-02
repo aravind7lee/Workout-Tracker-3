@@ -378,91 +378,92 @@ const YourWorkoutSplits = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-gray-950 via-black to-gray-950 border-b border-purple-500/20 py-4 sm:py-8">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          <div className="flex flex-col gap-3 sm:gap-4">
-            {/* Title and Status Row */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
+      {/* Header - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-gray-950 via-black to-gray-950 border-b border-purple-500/20 py-3 sm:py-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <div className="space-y-3 sm:space-y-4">
+            {/* Title Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
                   Your WorkoutSplits
                 </h1>
                 
-                {/* Real-time Status Indicator */}
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-400 font-medium">REAL-TIME</span>
+                {/* Status Indicators */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-medium text-green-400">REAL-TIME</span>
+                  </div>
                   
-                  {/* Sync Status */}
-                  <div className="flex items-center gap-1 text-xs">
-                    <span className={`${statusDisplay.color} font-medium hidden sm:inline-flex items-center gap-1`}>
-                      {statusDisplay.icon} {statusDisplay.text}
-                    </span>
-                    <span className={`${statusDisplay.color} font-medium sm:hidden`}>
-                      {statusDisplay.icon}
+                  <div className="flex items-center gap-1">
+                    <span className={`${statusDisplay.color} font-medium text-xs flex items-center gap-1`}>
+                      <span>{statusDisplay.icon}</span>
+                      <span className="hidden sm:inline">{statusDisplay.text}</span>
                     </span>
                   </div>
                 </div>
               </div>
               
-              {/* Refresh Button - Mobile Only */}
-              <div className="sm:hidden">
-                <button
-                  onClick={loadCustomSplits}
-                  disabled={syncStatus === 'syncing'}
-                  className="text-xs px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors"
-                >
-                  {syncStatus === 'syncing' ? '🔄' : '🔄 Refresh'}
-                </button>
-              </div>
+              {/* Mobile Refresh Button */}
+              <button
+                onClick={loadCustomSplits}
+                disabled={syncStatus === 'syncing'}
+                className="sm:hidden text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors flex items-center gap-1"
+              >
+                <span>{syncStatus === 'syncing' ? '🔄' : '🔄'}</span>
+                <span>Refresh</span>
+              </button>
             </div>
             
-            {/* Action Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 sm:justify-end">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               {/* Desktop Refresh Button */}
               <button
                 onClick={loadCustomSplits}
                 disabled={syncStatus === 'syncing'}
-                className="hidden sm:block text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors"
+                className="hidden sm:flex text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors items-center gap-2"
               >
-                {syncStatus === 'syncing' ? '🔄 Loading...' : '🔄 Refresh'}
+                <span>{syncStatus === 'syncing' ? '🔄' : '🔄'}</span>
+                <span>{syncStatus === 'syncing' ? 'Loading...' : 'Refresh'}</span>
               </button>
               
-              <Link
-                to="/custom-split-builder"
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center gap-2 transition-all duration-300 text-sm sm:text-base"
-              >
-                <Dumbbell className="w-4 h-4" />
-                <span className="truncate">Your Own Workout Split</span>
-              </Link>
-              <Link
-                to="/custom-split-builder"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center gap-2 transition-all duration-300 text-sm sm:text-base"
-              >
-                <Plus className="w-4 h-4" />
-                <span className="truncate">Create New Split</span>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:ml-auto">
+                <Link
+                  to="/custom-split-builder"
+                  className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-4 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 text-sm"
+                >
+                  <Dumbbell className="w-4 h-4" />
+                  <span>Your Own Workout Split</span>
+                </Link>
+                <Link
+                  to="/custom-split-builder"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 text-sm"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create New Split</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Search Bar */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Search Bar - Mobile Optimized */}
         {(customSplits.length > 0 || searchQuery) && (
-          <div className="relative mb-6">
+          <div className="relative mb-4 sm:mb-6">
             <input 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
-              className="w-full p-3 pl-10 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50" 
+              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 pr-10 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm sm:text-base" 
               placeholder="Search your custom splits..." 
             />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors bg-slate-700/50 hover:bg-slate-600/50 rounded-full p-1"
               >
                 ✕
               </button>
@@ -486,12 +487,12 @@ const YourWorkoutSplits = () => {
             </button>
           </div>
         ) : customSplits.length === 0 ? (
-          <div className="text-center py-12 bg-slate-800/30 rounded-xl border border-slate-700">
-            <div className="text-6xl mb-4">🎯</div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+          <div className="text-center py-8 sm:py-12 bg-slate-800/30 rounded-xl border border-slate-700 mx-1">
+            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🎯</div>
+            <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
               {isAuthenticated() ? 'No Custom Splits Yet' : 'Login Required'}
             </h3>
-            <p className="text-slate-400 mb-6">
+            <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base px-4">
               {isAuthenticated() 
                 ? 'You haven\'t created any custom workout splits yet. Start building your first split!' 
                 : 'Please login to view and create your personal workout splits.'
@@ -500,22 +501,23 @@ const YourWorkoutSplits = () => {
             {isAuthenticated() ? (
               <Link
                 to="/custom-split-builder"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center gap-2 transition-all duration-300"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium inline-flex items-center gap-2 transition-all duration-300 text-sm sm:text-base"
               >
                 <Plus className="w-4 h-4" />
-                Create Your First Split
+                <span>Create Your First Split</span>
               </Link>
             ) : (
               <Link
                 to="/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center gap-2 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium inline-flex items-center gap-2 transition-colors text-sm sm:text-base"
               >
-                🔑 Login to View Splits
+                <span>🔑</span>
+                <span>Login to View Splits</span>
               </Link>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {searchQuery && (
               <div className="col-span-full mb-4">
                 <p className="text-slate-400 text-sm">

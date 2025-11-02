@@ -198,7 +198,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
 
   return (
     <motion.div 
-      className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+      className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
@@ -208,22 +208,22 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
       <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-green-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
       
       <div className="relative z-10">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-3xl">🍽️</span>
+        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+            <span className="text-xl sm:text-2xl md:text-3xl">🍽️</span>
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-white mb-1">Quick Add Foods</h3>
-            <p className="text-slate-300 font-medium">Pre-loaded nutrition database</p>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">Quick Add Foods</h3>
+            <p className="text-slate-300 font-medium text-sm sm:text-base">Pre-loaded nutrition database</p>
           </div>
         </div>
       
         {/* Premium Category Tabs */}
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
           {categoriesLoading ? (
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="animate-pulse bg-slate-700/50 h-12 w-28 rounded-xl" />
+                <div key={i} className="animate-pulse bg-slate-700/50 h-10 sm:h-12 w-20 sm:w-28 rounded-lg sm:rounded-xl" />
               ))}
             </div>
           ) : (
@@ -231,7 +231,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
             <motion.button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className={`px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3 sm:px-4 md:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1 sm:gap-2 ${
                 activeCategory === key
                   ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg hover:shadow-orange-500/20 scale-105'
                   : 'bg-slate-700/60 hover:bg-slate-600/80 text-slate-300 hover:text-white border border-slate-500/30 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105'
@@ -239,8 +239,9 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="text-lg">{category.icon}</span>
-              <span>{category.title.split(' ')[0]}</span>
+              <span className="text-sm sm:text-base md:text-lg">{category.icon}</span>
+              <span className="hidden sm:inline">{category.title.split(' ')[0]}</span>
+              <span className="sm:hidden">{category.title.split(' ')[0].slice(0, 4)}</span>
             </motion.button>
             ))
           )}
@@ -249,9 +250,9 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
         {/* Premium Food Items Grid */}
         <AnimatePresence mode="wait">
           {categoriesLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {[...Array(12)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-slate-700/50 h-24 rounded-xl" />
+                <div key={i} className="animate-pulse bg-slate-700/50 h-20 sm:h-24 rounded-lg sm:rounded-xl" />
               ))}
             </div>
           ) : (
@@ -261,7 +262,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
             >
               {currentCategories[activeCategory]?.foods?.map((food, index) => (
               <motion.button
@@ -270,7 +271,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 onMouseEnter={() => setHoveredFood(food)}
                 onMouseLeave={() => setHoveredFood(null)}
                 disabled={isLoading}
-                className={`p-4 rounded-2xl text-left transition-all duration-300 border-2 relative group overflow-hidden ${
+                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left transition-all duration-300 border-2 relative group overflow-hidden ${
                   isLoading
                     ? 'bg-slate-700/30 text-slate-500 cursor-not-allowed border-slate-600/30'
                     : 'bg-gradient-to-br from-slate-700/80 to-slate-600/80 hover:from-orange-600/20 hover:to-red-600/20 text-white border-slate-500/50 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 shadow-lg hover:shadow-orange-500/20'
@@ -285,28 +286,41 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div className="relative z-10">
-                  <div className="font-bold text-sm text-white mb-1 group-hover:text-orange-200 transition-colors duration-300">{food.name}</div>
-                  <div className="text-xs text-slate-300 mb-2 font-medium">{food.serving}</div>
+                  <div className="font-bold text-xs sm:text-sm text-white mb-1 group-hover:text-orange-200 transition-colors duration-300 leading-tight">{food.name}</div>
+                  <div className="text-xs text-slate-300 mb-1 sm:mb-2 font-medium">{food.serving}</div>
                   {/* Enhanced nutrition display */}
                   {activeCategory === 'supplements' ? (
                     <div className="text-xs font-semibold">
                       {food.type === 'protein' ? (
-                        <span className="text-blue-300">{food.calories} cal • {food.protein}g protein</span>
+                        <span className="text-blue-300">
+                          <span className="hidden sm:inline">{food.calories} cal • {food.protein}g protein</span>
+                          <span className="sm:hidden">{food.calories}cal</span>
+                        </span>
                       ) : food.description ? (
                         <span className="text-purple-300">
-                          {food.calories > 0 ? `${food.calories} cal • ` : ''}{food.description}
+                          <span className="hidden sm:inline">
+                            {food.calories > 0 ? `${food.calories} cal • ` : ''}{food.description}
+                          </span>
+                          <span className="sm:hidden">
+                            {food.calories > 0 ? `${food.calories}cal` : 'Supp'}
+                          </span>
                         </span>
                       ) : (
                         <span className="text-green-300">
-                          {food.calories > 0 ? `${food.calories} cal` : 'Supplement'}
+                          <span className="hidden sm:inline">
+                            {food.calories > 0 ? `${food.calories} cal` : 'Supplement'}
+                          </span>
+                          <span className="sm:hidden">
+                            {food.calories > 0 ? `${food.calories}cal` : 'Supp'}
+                          </span>
                         </span>
                       )}
                     </div>
                   ) : food.calories ? (
                     <div className="text-xs font-semibold">
                       <span className="text-orange-300">{food.calories} cal</span>
-                      <span className="text-slate-400"> • </span>
-                      <span className="text-blue-300">{food.protein}g protein</span>
+                      <span className="text-slate-400 hidden sm:inline"> • </span>
+                      <span className="text-blue-300 hidden sm:inline">{food.protein}g protein</span>
                     </div>
                   ) : null}
               
@@ -351,17 +365,22 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
         )}
       </AnimatePresence>
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center">
           {categoriesLoading ? (
-            <div className="animate-pulse bg-slate-700/50 h-4 w-80 mx-auto rounded-lg" />
+            <div className="animate-pulse bg-slate-700/50 h-3 sm:h-4 w-60 sm:w-80 mx-auto rounded-lg" />
           ) : (
-            <div className="flex items-center justify-center gap-2 text-sm text-slate-300 font-medium">
-              <span className="text-orange-400">🔥</span>
-              <span>Real-time nutrition data</span>
-              <span className="text-slate-500">•</span>
-              <span>Hover for details</span>
-              <span className="text-slate-500">•</span>
-              <span>Click to add to your meal tracker</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-300 font-medium">
+              <div className="flex items-center gap-2">
+                <span className="text-orange-400">🔥</span>
+                <span>Real-time nutrition data</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 hidden sm:inline">•</span>
+                <span className="hidden sm:inline">Hover for details</span>
+                <span className="text-slate-500 hidden sm:inline">•</span>
+                <span className="hidden sm:inline">Click to add to your meal tracker</span>
+                <span className="sm:hidden">Tap to add foods</span>
+              </div>
             </div>
           )}
         </div>

@@ -465,67 +465,76 @@ export default function Analytics() {
         
           {/* Premium Status Bar */}
           <motion.div 
-            className="mx-4 p-6 rounded-3xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 backdrop-blur-md shadow-2xl"
+            className="mx-2 sm:mx-4 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 backdrop-blur-md shadow-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-2xl">📊</span>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg sm:text-xl md:text-2xl">📊</span>
                 </div>
                 <div>
-                  <div className="text-white font-bold text-xl mb-1">Real-time Analytics</div>
-                  <div className="flex items-center gap-3">
-                    <span className={`w-3 h-3 rounded-full animate-pulse shadow-lg ${
+                  <div className="text-white font-bold text-base sm:text-lg md:text-xl mb-1">Real-time Analytics</div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                    <span className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full animate-pulse shadow-lg ${
                       isOnline ? 'bg-green-400 shadow-green-400/50' : 'bg-yellow-400 shadow-yellow-400/50'
                     }`}></span>
-                    <span className={`text-sm px-3 py-1 rounded-xl font-semibold ${
+                    <span className={`text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl font-semibold ${
                       isOnline 
                         ? 'bg-green-600/20 text-green-300 border border-green-500/30' 
                         : 'bg-yellow-600/20 text-yellow-300 border border-yellow-500/30'
                     }`}>
-                      {isOnline ? '🔥 LIVE USER DATA' : '📱 YOUR LOCAL DATA'}
+                      {isOnline ? '🔥 LIVE USER DATA' : '📱 LOCAL DATA'}
                     </span>
                   </div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                <div className="text-right">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                <div className="text-left sm:text-right">
                   <div className="text-xs text-slate-400 mb-1">Last updated:</div>
-                  <div className="text-sm text-slate-300 font-medium">{new Date().toLocaleTimeString()}</div>
+                  <div className="text-xs sm:text-sm text-slate-300 font-medium">{new Date().toLocaleTimeString()}</div>
                 </div>
                 <motion.button
                   onClick={refresh}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all flex items-center gap-3 shadow-lg hover:shadow-blue-500/20 font-semibold"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl transition-all flex items-center gap-2 sm:gap-3 shadow-lg hover:shadow-blue-500/20 font-semibold text-sm sm:text-base"
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className={`text-lg ${isLoading ? 'animate-spin' : ''}`}>{isLoading ? '⟳' : '🔄'}</span>
-                  <span>{isLoading ? 'Syncing...' : 'Sync Now'}</span>
+                  <span className={`text-base sm:text-lg ${isLoading ? 'animate-spin' : ''}`}>{isLoading ? '⟳' : '🔄'}</span>
+                  <span className="hidden sm:inline">{isLoading ? 'Syncing...' : 'Sync Now'}</span>
+                  <span className="sm:hidden">{isLoading ? 'Sync...' : 'Sync'}</span>
                 </motion.button>
               </div>
             </div>
           </motion.div>
         
-          <div id="real-time-stats" className="mx-4">
+          <div id="real-time-stats" className="mx-2 sm:mx-4">
             <motion.div 
-              className="mb-6 p-6 bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl border-2 border-slate-600/50 backdrop-blur-sm shadow-xl"
+              className="mb-4 sm:mb-6 p-4 sm:p-6 bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-xl sm:rounded-2xl border-2 border-slate-600/50 backdrop-blur-sm shadow-xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white text-xl">📊</span>
+              <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-base sm:text-xl">📊</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-1">Your Real-Time Analytics</h3>
-                  <p className="text-sm text-slate-300 font-medium">
-                    {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1">
+                    <span className="hidden sm:inline">Your Real-Time Analytics</span>
+                    <span className="sm:hidden">Your Analytics</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 font-medium">
+                    <span className="hidden sm:inline">
+                      {isAuthenticated() ? 'Showing your personal workout statistics and progress data.' : 'Login to view your personal analytics.'}
+                    </span>
+                    <span className="sm:hidden">
+                      {isAuthenticated() ? 'Your personal stats & progress.' : 'Login for analytics.'}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -533,9 +542,9 @@ export default function Analytics() {
             <RealTimeStats />
           </div>
 
-          <div id="analytics-charts" className="mx-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div id="analytics-charts" className="mx-2 sm:mx-4 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -545,13 +554,16 @@ export default function Analytics() {
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-yellow-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">⏱️</span>
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-base sm:text-xl">⏱️</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Weekly Duration</h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                    <span className="hidden sm:inline">Weekly Duration</span>
+                    <span className="sm:hidden">Duration</span>
+                  </h3>
                 </div>
-                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
                   {durationData ? (
                     <Line data={durationData} options={{
                       ...chartOptions,
@@ -595,7 +607,7 @@ export default function Analytics() {
             </motion.div>
 
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-green-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-green-500/10 transition-all duration-300 relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -605,14 +617,17 @@ export default function Analytics() {
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">💪</span>
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-base sm:text-xl">💪</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Weekly Workouts</h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                    <span className="hidden sm:inline">Weekly Workouts</span>
+                    <span className="sm:hidden">Workouts</span>
+                  </h3>
                 </div>
                 
-                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
                   {frequencyData ? (
                     <Bar data={frequencyData} options={chartOptions} />
                   ) : (
@@ -627,9 +642,9 @@ export default function Analytics() {
             </motion.div>
           </div>
 
-          <div className="mx-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="mx-2 sm:mx-4 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -639,13 +654,16 @@ export default function Analytics() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-pink-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">💪</span>
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-base sm:text-xl">💪</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Muscle Groups</h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                    <span className="hidden sm:inline">Muscle Groups</span>
+                    <span className="sm:hidden">Muscles</span>
+                  </h3>
                 </div>
-                <div className="h-64 bg-slate-900/30 rounded-2xl p-4 border border-slate-600/30">
+                <div className="h-48 sm:h-56 md:h-64 bg-slate-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-600/30">
                   {muscleData ? (
                     <Doughnut data={muscleData} options={{
                       ...doughnutOptions,
@@ -702,7 +720,7 @@ export default function Analytics() {
             </motion.div>
 
             <motion.div 
-              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
@@ -712,48 +730,53 @@ export default function Analytics() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">⚡</span>
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white text-base sm:text-xl">⚡</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Quick Stats</h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Quick Stats</h3>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
                       <span className="text-orange-400">💪</span>
-                      Your Total Workouts
+                      <span className="hidden sm:inline">Your Total Workouts</span>
+                      <span className="sm:hidden">Total Workouts</span>
                     </span>
-                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalWorkouts || 0}</span>
+                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalWorkouts || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
                       <span className="text-blue-400">📋</span>
-                      Your Workout Plans
+                      <span className="hidden sm:inline">Your Workout Plans</span>
+                      <span className="sm:hidden">Workout Plans</span>
                     </span>
-                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalPlans || 0}</span>
+                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalPlans || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
                       <span className="text-green-400">🍽️</span>
-                      Total Meals Logged
+                      <span className="hidden sm:inline">Total Meals Logged</span>
+                      <span className="sm:hidden">Total Meals</span>
                     </span>
-                    <span className="text-white font-bold text-xl">{analyticsData?.stats?.totalMeals || 0}</span>
+                    <span className="text-white font-bold text-lg sm:text-xl">{analyticsData?.stats?.totalMeals || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
                       <span className="text-emerald-400">🌟</span>
-                      Today's Meals
+                      <span className="hidden sm:inline">Today's Meals</span>
+                      <span className="sm:hidden">Today's Meals</span>
                     </span>
-                    <span className="text-green-400 font-bold text-xl">{analyticsData?.stats?.todayMeals || 0}</span>
+                    <span className="text-green-400 font-bold text-lg sm:text-xl">{analyticsData?.stats?.todayMeals || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-slate-700/30 rounded-xl border border-slate-600/30">
-                    <span className="text-slate-300 font-medium flex items-center gap-2">
+                  <div className="flex justify-between items-center p-3 sm:p-4 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                    <span className="text-slate-300 font-medium flex items-center gap-2 text-sm sm:text-base">
                       <span className="text-purple-400">📅</span>
-                      This Week's Meals
+                      <span className="hidden sm:inline">This Week's Meals</span>
+                      <span className="sm:hidden">Week's Meals</span>
                     </span>
-                    <span className="text-blue-400 font-bold text-xl">{analyticsData?.stats?.weeklyMeals || 0}</span>
+                    <span className="text-blue-400 font-bold text-lg sm:text-xl">{analyticsData?.stats?.weeklyMeals || 0}</span>
                   </div>
                 </div>
               </div>
@@ -761,7 +784,7 @@ export default function Analytics() {
           </div>
 
           {/* Premium Meal Tracking Calendar */}
-          <div className="mx-4 pb-8">
+          <div className="mx-2 sm:mx-4 pb-6 sm:pb-8">
             <MealTrackingCalendar />
           </div>
         </div>

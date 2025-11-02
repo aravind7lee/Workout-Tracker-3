@@ -243,41 +243,42 @@ export default function Nutrition() {
             
           {/* Premium Status Bar */}
           <motion.div 
-            className="mx-4 p-6 rounded-2xl bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-2 border-slate-600/50 backdrop-blur-sm shadow-2xl"
+            className="mx-2 sm:mx-4 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-2 border-slate-600/50 backdrop-blur-sm shadow-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">🍎</span>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-base sm:text-lg">🍎</span>
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg mb-1">Nutrition Tracker Active</div>
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="text-white font-bold text-base sm:text-lg mb-1">Nutrition Tracker Active</div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm">
                     <span className="inline-flex items-center gap-2 text-green-400 font-medium">
-                      <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
-                      Real-time Nutritionix API
+                      <span className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
+                      <span className="hidden sm:inline">Real-time Nutritionix API</span>
+                      <span className="sm:hidden">Live API</span>
                     </span>
-                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-400 hidden sm:inline">•</span>
                     <span className="text-slate-300">Goal: <span className="capitalize font-semibold text-orange-400">{targets.goalType || 'maintain'}</span></span>
-                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-400 hidden sm:inline">•</span>
                     <span className="text-slate-300 font-medium">{meals.length} meals today</span>
                   </div>
                 </div>
               </div>
               
               <div className="flex items-center gap-2">
-                <div className="px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-xl">
-                  <span className="text-green-300 font-semibold text-sm">🔥 TRACKING LIVE</span>
+                <div className="px-3 py-1 sm:px-4 sm:py-2 bg-green-600/20 border border-green-500/30 rounded-lg sm:rounded-xl">
+                  <span className="text-green-300 font-semibold text-xs sm:text-sm">🔥 TRACKING LIVE</span>
                 </div>
               </div>
             </div>
           </motion.div>
 
           {/* Enhanced Add Food Input */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <MealInput 
               onLookup={handleLookup}
               isLookingUp={isLookingUp}
@@ -286,7 +287,7 @@ export default function Nutrition() {
           </div>
 
           {/* Premium Food Categories */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <FoodCategories 
               onFoodSelect={handleLookup}
               isLoading={isLookingUp}
@@ -294,7 +295,7 @@ export default function Nutrition() {
           </div>
 
           {/* Enhanced Real-Time Progress Section */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <RealTimeNutritionProgress 
               totals={totals}
               targets={targets}
@@ -305,7 +306,7 @@ export default function Nutrition() {
           </div>
 
           {/* Smart Nutrition Insights */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <NutritionInsights 
               totals={totals}
               targets={targets}
@@ -315,7 +316,7 @@ export default function Nutrition() {
           </div>
 
           {/* Social Dashboard */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <NutritionSocialDashboard 
               totals={totals}
               targets={targets}
@@ -325,7 +326,7 @@ export default function Nutrition() {
           </div>
 
           {/* Advanced Analytics */}
-          <div className="mx-4">
+          <div className="mx-2 sm:mx-4">
             <NutritionAnalytics 
               totals={totals}
               targets={targets}
@@ -335,7 +336,7 @@ export default function Nutrition() {
           </div>
 
           {/* Enhanced Real-Time Meals List */}
-          <div className="mx-4 pb-8">
+          <div className="mx-2 sm:mx-4 pb-6 sm:pb-8">
             <RealTimeMealsList 
               meals={meals}
               isLoading={isLoading}

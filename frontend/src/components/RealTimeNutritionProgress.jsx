@@ -119,20 +119,22 @@ const RealTimeNutritionProgress = ({
   const guidance = getGoalGuidance();
 
   return (
-    <div className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow">
+    <div className="bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-            <span className="text-white text-lg">📊</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+            <span className="text-white text-base sm:text-lg">📊</span>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
-              Real-Time Nutrition Progress
+            <h3 className="text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <span className="hidden sm:inline">Real-Time Nutrition Progress</span>
+              <span className="sm:hidden">Nutrition Progress</span>
             </h3>
-            <div className="flex items-center gap-2 text-sm text-light-text-muted dark:text-dark-text-muted">
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-light-text-muted dark:text-dark-text-muted">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <span>Live tracking • {meals.length} meals today</span>
+              <span className="hidden sm:inline">Live tracking • {meals.length} meals today</span>
+              <span className="sm:hidden">Live • {meals.length} meals</span>
             </div>
           </div>
         </div>
@@ -140,7 +142,7 @@ const RealTimeNutritionProgress = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="px-3 py-1.5 text-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-500/20 transition-all"
+            className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md sm:rounded-lg hover:bg-blue-500/20 transition-all"
           >
             {showAdvanced ? 'Simple' : 'Advanced'}
           </button>
@@ -148,11 +150,11 @@ const RealTimeNutritionProgress = ({
       </div>
 
       {/* Goal Guidance */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-dark-bg-tertiary/30 dark:to-blue-900/20 rounded-xl border border-gray-200 dark:border-dark-border">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{guidance.icon}</span>
-            <div className={`font-medium ${guidance.color}`}>
+      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-dark-bg-tertiary/30 dark:to-blue-900/20 rounded-lg sm:rounded-xl border border-gray-200 dark:border-dark-border">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl">{guidance.icon}</span>
+            <div className={`font-medium text-sm sm:text-base ${guidance.color}`}>
               {guidance.text}
             </div>
           </div>
@@ -161,7 +163,7 @@ const RealTimeNutritionProgress = ({
             <select
               value={customCalorieTarget || targets.calories || 2000}
               onChange={(e) => setCustomCalorieTarget(parseInt(e.target.value))}
-              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-blue-500 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-dark-accent/20 transition-all"
+              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary focus:border-blue-500 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-dark-accent/20 transition-all"
             >
               <option value={1600}>1600 cal</option>
               <option value={1800}>1800 cal</option>
@@ -177,12 +179,12 @@ const RealTimeNutritionProgress = ({
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-1 mb-6 p-1 bg-gray-100 dark:bg-dark-bg-tertiary/50 rounded-lg">
+      <div className="flex gap-1 mb-4 sm:mb-6 p-1 bg-gray-100 dark:bg-dark-bg-tertiary/50 rounded-lg">
         {['overview', 'macros', 'insights'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`flex-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-md transition-all ${
               activeTab === tab
                 ? 'bg-white dark:bg-dark-bg-primary text-blue-600 dark:text-blue-400 shadow-sm'
                 : 'text-light-text-muted dark:text-dark-text-muted hover:text-light-text-primary dark:hover:text-dark-text-primary'
@@ -203,19 +205,19 @@ const RealTimeNutritionProgress = ({
             className="space-y-6"
           >
             {/* Main Progress Bars */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {/* Calories */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Calories</span>
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <span className="text-xs sm:text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Calories</span>
+                  <span className="text-xs sm:text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
                     {Math.round(totals.calories || 0)} / {currentCalorieTarget}
                   </span>
                 </div>
                 <div className="relative">
-                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-3">
+                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2 sm:h-3">
                     <motion.div 
-                      className={`h-3 rounded-full bg-gradient-to-r ${getProgressColor(progress.calories)}`}
+                      className={`h-2 sm:h-3 rounded-full bg-gradient-to-r ${getProgressColor(progress.calories)}`}
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(progress.calories, 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -233,17 +235,17 @@ const RealTimeNutritionProgress = ({
               </div>
 
               {/* Protein */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400">Protein</span>
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <span className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400">Protein</span>
+                  <span className="text-xs sm:text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
                     {Math.round((totals.protein || 0) * 10) / 10}g / {targets.protein || 150}g
                   </span>
                 </div>
                 <div className="relative">
-                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-3">
+                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2 sm:h-3">
                     <motion.div 
-                      className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
+                      className="h-2 sm:h-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(progress.protein, 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
@@ -256,22 +258,23 @@ const RealTimeNutritionProgress = ({
                   </div>
                 </div>
                 <div className="text-xs text-center text-blue-600 dark:text-blue-400">
-                  {Math.round(metrics.proteinPerKg * 10) / 10}g/kg body weight
+                  <span className="hidden sm:inline">{Math.round(metrics.proteinPerKg * 10) / 10}g/kg body weight</span>
+                  <span className="sm:hidden">{Math.round(metrics.proteinPerKg * 10) / 10}g/kg</span>
                 </div>
               </div>
 
               {/* Carbs */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-green-600 dark:text-green-400">Carbs</span>
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <span className="text-xs sm:text-sm font-medium text-green-600 dark:text-green-400">Carbs</span>
+                  <span className="text-xs sm:text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
                     {Math.round((totals.carbs || 0) * 10) / 10}g / {targets.carbs || 250}g
                   </span>
                 </div>
                 <div className="relative">
-                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-3">
+                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2 sm:h-3">
                     <motion.div 
-                      className="h-3 rounded-full bg-gradient-to-r from-green-500 to-green-600"
+                      className="h-2 sm:h-3 rounded-full bg-gradient-to-r from-green-500 to-green-600"
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(progress.carbs, 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -289,17 +292,17 @@ const RealTimeNutritionProgress = ({
               </div>
 
               {/* Fat */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">Fat</span>
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <span className="text-xs sm:text-sm font-medium text-yellow-600 dark:text-yellow-400">Fat</span>
+                  <span className="text-xs sm:text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
                     {Math.round((totals.fat || 0) * 10) / 10}g / {targets.fat || 67}g
                   </span>
                 </div>
                 <div className="relative">
-                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-3">
+                  <div className="w-full bg-gray-200 dark:bg-dark-bg-tertiary rounded-full h-2 sm:h-3">
                     <motion.div 
-                      className="h-3 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500"
+                      className="h-2 sm:h-3 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500"
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(progress.fat, 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
@@ -318,27 +321,30 @@ const RealTimeNutritionProgress = ({
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-                <div className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              <div className="text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
+                <div className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
                   {metrics.mealFrequency}
                 </div>
                 <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Meals Today</div>
               </div>
-              <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-                <div className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+              <div className="text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
+                <div className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
                   {Math.round(metrics.avgCaloriesPerMeal)}
                 </div>
-                <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Avg Cal/Meal</div>
+                <div className="text-xs text-light-text-muted dark:text-dark-text-muted">
+                  <span className="hidden sm:inline">Avg Cal/Meal</span>
+                  <span className="sm:hidden">Avg/Meal</span>
+                </div>
               </div>
-              <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-                <div className="text-lg font-bold text-green-600 dark:text-green-400">
+              <div className="text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
+                <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
                   {Math.round(metrics.macroDistribution.protein)}%
                 </div>
                 <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Protein %</div>
               </div>
-              <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-                <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+              <div className="text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
+                <div className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400">
                   {targets.goalType?.toUpperCase() || 'MAINTAIN'}
                 </div>
                 <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Goal Type</div>
