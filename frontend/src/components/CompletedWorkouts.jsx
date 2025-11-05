@@ -201,13 +201,13 @@ export default function CompletedWorkouts() {
   return (
     <div className="space-y-6">
       {/* Filters and Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between">
+        <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
           {['all', 'today', 'week', 'month'].map((filterOption) => (
             <button
               key={filterOption}
               onClick={() => setFilter(filterOption)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-sm font-medium transition-all duration-200 flex-1 sm:flex-none ${
                 filter === filterOption
                   ? 'bg-blue-600 text-white'
                   : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
@@ -221,7 +221,7 @@ export default function CompletedWorkouts() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="px-4 py-2 bg-slate-800/50 border border-slate-600/30 rounded-lg text-white text-sm"
+          className="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-slate-800/50 border border-slate-600/30 rounded-lg text-white text-[10px] sm:text-sm w-full sm:w-auto"
         >
           <option value="recent">Most Recent</option>
           <option value="duration">Longest Duration</option>
@@ -231,28 +231,28 @@ export default function CompletedWorkouts() {
 
       {/* Workout List */}
       {sortedWorkouts.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">💪</div>
-          <h3 className="text-xl font-bold text-white mb-2">
+        <div className="text-center py-8 sm:py-12">
+          <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">💪</div>
+          <h3 className="text-base sm:text-xl font-bold text-white mb-2">
             {filter === 'all' ? 'No workouts yet' : `No workouts ${filter === 'today' ? 'today' : `this ${filter}`}`}
           </h3>
-          <p className="text-slate-400 mb-6">
+          <p className="text-xs sm:text-sm text-slate-400 mb-4 sm:mb-6 px-4">
             {filter === 'all' 
               ? 'Complete your first workout to see it here!' 
-              : `Try a different time filter or complete a workout ${filter === 'today' ? 'today' : `this ${filter}`}!`
+              : `Try a different filter or complete a workout!`
             }
           </p>
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center px-4">
             <button
               onClick={() => window.location.href = '/library'}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium"
             >
               🏋️ Browse Exercises
             </button>
             {filter !== 'all' && (
               <button
                 onClick={() => setFilter('all')}
-                className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+                className="px-4 py-2 sm:px-6 sm:py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors text-xs sm:text-sm font-medium"
               >
                 📊 View All Workouts
               </button>
@@ -260,72 +260,72 @@ export default function CompletedWorkouts() {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {sortedWorkouts.map((workout, index) => (
             <div
               key={workout.id || index}
-              className="group bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-6 hover:border-blue-400/40 transition-all duration-300 hover:scale-[1.02]"
+              className="group bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-3 sm:p-6 hover:border-blue-400/40 transition-all duration-300 hover:scale-[1.02]"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-xl font-bold text-white mb-1 truncate">
                     {workout.exercise || workout.name || 'Workout'}
                   </h3>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-slate-400 text-[10px] sm:text-sm truncate">
                     {formatDate(workout.completedAt)} • {workout.category || 'General'}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${
+                <div className="flex items-center gap-1 sm:gap-2 ml-2">
+                  <div className={`w-1.5 h-1.5 sm:w-3 sm:h-3 rounded-full ${
                     workout.savedOffline 
                       ? 'bg-yellow-400' 
                       : isOnline 
                         ? 'bg-green-400 animate-pulse' 
                         : 'bg-blue-400'
                   }`}></div>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-[9px] sm:text-xs text-slate-400">
                     {workout.savedOffline ? 'Offline' : isOnline ? 'Live' : 'Local'}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-                <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-blue-400">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-4">
+                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-blue-400">
                     {formatDuration(workout.duration)}
                   </div>
-                  <div className="text-xs text-slate-400">Duration</div>
+                  <div className="text-[9px] sm:text-xs text-slate-400">Duration</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-green-400">
+                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-green-400">
                     {workout.caloriesBurned || 0}
                   </div>
-                  <div className="text-xs text-slate-400">Calories</div>
+                  <div className="text-[9px] sm:text-xs text-slate-400">Calories</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-purple-400">
+                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-purple-400">
                     {workout.sets || 0}
                   </div>
-                  <div className="text-xs text-slate-400">Sets</div>
+                  <div className="text-[9px] sm:text-xs text-slate-400">Sets</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-orange-400">
+                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-orange-400">
                     {workout.reps || 0}
                   </div>
-                  <div className="text-xs text-slate-400">Reps</div>
+                  <div className="text-[9px] sm:text-xs text-slate-400">Reps</div>
                 </div>
               </div>
 
               {workout.notes && (
-                <div className="bg-slate-900/30 rounded-lg p-3 mb-4">
-                  <p className="text-slate-300 text-sm italic">"{workout.notes}"</p>
+                <div className="bg-slate-900/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
+                  <p className="text-slate-300 text-[10px] sm:text-sm italic line-clamp-2">"{workout.notes}"</p>
                 </div>
               )}
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                   {workout.difficulty && (
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    <span className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-xs font-medium ${
                       workout.difficulty === 'Beginner' ? 'bg-green-900/50 text-green-300' :
                       workout.difficulty === 'Intermediate' ? 'bg-yellow-900/50 text-yellow-300' :
                       'bg-red-900/50 text-red-300'
@@ -333,19 +333,19 @@ export default function CompletedWorkouts() {
                       {workout.difficulty}
                     </span>
                   )}
-                  <span className="text-xs text-slate-500">
+                  <span className="text-[9px] sm:text-xs text-slate-500 hidden sm:inline">
                     ID: {workout.id?.toString().slice(-6) || 'N/A'}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
+                <div className="flex items-center gap-1.5 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                  <button className="text-blue-400 hover:text-blue-300 text-[10px] sm:text-sm hidden sm:inline">
                     View Details →
                   </button>
                   <button 
                     onClick={() => setDeleteConfirm(workout.id)}
-                    className="text-red-400 hover:text-red-300 text-sm px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
+                    className="text-red-400 hover:text-red-300 text-[10px] sm:text-sm px-1.5 py-0.5 sm:px-2 sm:py-1 rounded hover:bg-red-900/20 transition-colors"
                   >
-                    🗑️ Delete
+                    🗑️ <span className="hidden sm:inline">Delete</span>
                   </button>
                 </div>
               </div>
@@ -382,30 +382,30 @@ export default function CompletedWorkouts() {
 
       {/* Summary Stats */}
       {sortedWorkouts.length > 0 && (
-        <div className="bg-gradient-to-r from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-xl p-6 mt-8">
-          <h3 className="text-lg font-bold text-white mb-4">Summary</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-gradient-to-r from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-xl p-3 sm:p-6 mt-6 sm:mt-8">
+          <h3 className="text-sm sm:text-lg font-bold text-white mb-3 sm:mb-4">Summary</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400">{sortedWorkouts.length}</div>
-              <div className="text-xs text-slate-400">Total Workouts</div>
+              <div className="text-lg sm:text-2xl font-bold text-blue-400">{sortedWorkouts.length}</div>
+              <div className="text-[9px] sm:text-xs text-slate-400">Total Workouts</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-400">
+              <div className="text-lg sm:text-2xl font-bold text-green-400">
                 {Math.round(sortedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0) / 60)}m
               </div>
-              <div className="text-xs text-slate-400">Total Time</div>
+              <div className="text-[9px] sm:text-xs text-slate-400">Total Time</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400">
+              <div className="text-lg sm:text-2xl font-bold text-purple-400">
                 {sortedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)}
               </div>
-              <div className="text-xs text-slate-400">Total Calories</div>
+              <div className="text-[9px] sm:text-xs text-slate-400">Total Calories</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-400">
+              <div className="text-lg sm:text-2xl font-bold text-orange-400">
                 {Math.round(sortedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0) / sortedWorkouts.length / 60) || 0}m
               </div>
-              <div className="text-xs text-slate-400">Avg Duration</div>
+              <div className="text-[9px] sm:text-xs text-slate-400">Avg Duration</div>
             </div>
           </div>
         </div>

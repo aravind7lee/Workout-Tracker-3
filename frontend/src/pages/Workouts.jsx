@@ -204,7 +204,7 @@ export default function Workouts() {
               >
                 
                 <motion.p 
-                  className="text-sm sm:text-base md:text-lg text-white/90 max-w-2xl mx-auto mb-4 drop-shadow-lg"
+                  className="text-[10px] sm:text-sm md:text-base text-white/90 max-w-2xl mx-auto mb-3 drop-shadow-lg"
                   initial={{ opacity: 0, y: 20 }}
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
@@ -214,14 +214,14 @@ export default function Workouts() {
                 
                 {/* Compact Action Buttons */}
                 <motion.div
-                  className="flex flex-col sm:flex-row gap-2 justify-center items-center mb-4"
+                  className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 justify-center items-center mb-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
                   <motion.button
                     onClick={() => navigate('/library')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg transition-all duration-200"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold text-[10px] sm:text-sm shadow-lg transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -229,7 +229,7 @@ export default function Workouts() {
                   </motion.button>
                   <motion.button
                     onClick={() => navigate('/your-workout-splits')}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg transition-all duration-200"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold text-[10px] sm:text-sm shadow-lg transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -237,7 +237,7 @@ export default function Workouts() {
                   </motion.button>
                   <motion.button
                     onClick={() => window.location.reload()}
-                    className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-sm shadow-lg transition-all duration-200"
+                    className="bg-slate-600 hover:bg-slate-700 text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-[10px] sm:text-sm shadow-lg transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -247,46 +247,46 @@ export default function Workouts() {
                 
                 {/* Compact Status Indicators */}
                 <motion.div 
-                  className="flex items-center justify-center gap-3 mb-4"
+                  className="flex items-center justify-center gap-2 mb-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.7 }}
                 >
-                  <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
-                    <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
-                    <span className="text-xs font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
+                  <div className="flex items-center gap-1 bg-black/30 px-2 py-0.5 sm:py-1 rounded-full backdrop-blur-sm">
+                    <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                    <span className="text-[9px] sm:text-xs font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
                   </div>
-                  <div className="text-xs text-white/80 font-mono bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
+                  <div className="text-[9px] sm:text-xs text-white/80 font-mono bg-black/30 px-2 py-0.5 sm:py-1 rounded-full backdrop-blur-sm">
                     {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </div>
                 </motion.div>
 
                 {/* Compact Stats Grid - USER SPECIFIC */}
                 <motion.div 
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto"
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 20 }}
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
-                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Your Today</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-1.5 sm:p-2 relative">
+                    <div className="text-base sm:text-lg font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
+                    <div className="text-[9px] sm:text-xs text-white/80">Your Today</div>
+                    <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-green-400">{stats?.totalWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Your Total</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-1.5 sm:p-2 relative">
+                    <div className="text-base sm:text-lg font-black text-green-400">{stats?.totalWorkouts || 0}</div>
+                    <div className="text-[9px] sm:text-xs text-white/80">Your Total</div>
+                    <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
-                    <div className="text-xs text-white/80">Your Week</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-1.5 sm:p-2 relative">
+                    <div className="text-base sm:text-lg font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
+                    <div className="text-[9px] sm:text-xs text-white/80">Your Week</div>
+                    <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-orange-400">{stats?.totalCalories || 0}</div>
-                    <div className="text-xs text-white/80">Your Calories</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="bg-black/30 backdrop-blur-sm rounded-lg p-1.5 sm:p-2 relative">
+                    <div className="text-base sm:text-lg font-black text-orange-400">{stats?.totalCalories || 0}</div>
+                    <div className="text-[9px] sm:text-xs text-white/80">Your Calories</div>
+                    <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -296,7 +296,7 @@ export default function Workouts() {
       </motion.div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <CompletedWorkouts />
       </div>
 
