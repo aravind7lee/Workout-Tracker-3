@@ -804,22 +804,20 @@ export default function PlansBuilder() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             viewport={{ once: true }}
-            className="text-center mt-12 sm:mt-16 lg:mt-20 px-4"
+            className="text-center mt-8 sm:mt-12 lg:mt-16 px-3 sm:px-4"
           >
-            <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 max-w-4xl mx-auto shadow-2xl">
+            <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto shadow-2xl">
               {/* Mobile-First Heading */}
-              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                <span className="block sm:inline">Ready to Build Your</span>
-                <span className="block sm:inline text-orange-400"> Perfect Workout?</span>
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+                <span className="block">Ready to Build Your</span>
+                <span className="block text-orange-400">Perfect Workout?</span>
               </h3>
               
               {/* Mobile-Optimized Description */}
-              <p className="text-slate-300 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
-                <span className="block sm:inline">Join thousands of fitness enthusiasts using our</span>
-                <span className="block sm:inline"> professional-grade plan builder with</span>
-                <span className="block sm:inline font-semibold text-blue-300"> real-time sync</span>
-                <span className="block sm:inline"> and</span>
-                <span className="block sm:inline font-semibold text-green-300"> advanced analytics</span>
+              <p className="text-slate-300 text-xs sm:text-sm lg:text-base mb-4 sm:mb-6 leading-relaxed max-w-2xl mx-auto">
+                Join thousands using our professional plan builder with
+                <span className="font-semibold text-blue-300"> real-time sync</span> and
+                <span className="font-semibold text-green-300"> advanced analytics</span>
               </p>
               
               {/* Mobile-Responsive Button */}
@@ -827,25 +825,25 @@ export default function PlansBuilder() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-6 sm:px-8 lg:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg lg:text-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center gap-3 shadow-xl"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-5 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center gap-2 shadow-xl"
               >
-                <span className="text-xl sm:text-2xl">🚀</span>
+                <span className="text-lg sm:text-xl">🚀</span>
                 <span>Start Building Now</span>
               </motion.button>
               
               {/* Mobile-Friendly Features List */}
-              <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
-                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                  <span className="text-green-400">✅</span>
-                  <span>Real-time Sync</span>
+              <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-3 text-[10px] sm:text-xs">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
+                  <span className="text-green-400 text-sm sm:text-base">✅</span>
+                  <span className="text-center sm:text-left">Real-time Sync</span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                  <span className="text-blue-400">📊</span>
-                  <span>Advanced Analytics</span>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
+                  <span className="text-blue-400 text-sm sm:text-base">📊</span>
+                  <span className="text-center sm:text-left">Advanced Analytics</span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                  <span className="text-purple-400">🏋️</span>
-                  <span>Professional Grade</span>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
+                  <span className="text-purple-400 text-sm sm:text-base">🏋️</span>
+                  <span className="text-center sm:text-left">Professional Grade</span>
                 </div>
               </div>
             </div>
@@ -1110,44 +1108,48 @@ export default function PlansBuilder() {
           onDrop={(e) => handleDrop(e, 'library')}
           data-drop-zone="library"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-4">
-            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white flex items-center gap-2">
-              <span className="animate-pulse">📚</span> 
-              <span>Exercise Library</span>
-              <span className="text-xs sm:text-sm text-slate-400">({exercises.length})</span>
-            </h3>
-            <div className="flex items-center gap-2">
-              <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${currentMuscleGroup.color} shadow-lg`}>
+          <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <span className="text-lg sm:text-xl">📚</span>
+              <div className="min-w-0">
+                <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white truncate">
+                  Exercise Library
+                </h3>
+                <span className="text-[10px] sm:text-xs text-slate-400">({exercises.length})</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <span className={`px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium text-white ${currentMuscleGroup.color}`}>
                 {currentMuscleGroup.name}
               </span>
               {isOnline && (
-                <span className="px-2 py-1 rounded-full text-xs bg-green-900/30 text-green-300 border border-green-700">
-                  ☁️ Live
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-green-900/30 text-green-300 border border-green-700">
+                  ☁️
                 </span>
               )}
             </div>
           </div>
           
-          {/* Muscle Group Tabs */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2 mb-4">
+          {/* Muscle Group Tabs - Mobile Optimized */}
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2 mb-3 sm:mb-4">
             {Object.entries(exerciseLibrary).map(([key, group]) => (
               <button
                 key={key}
                 onClick={() => setSelectedMuscleGroup(key)}
-                className={`p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                className={`p-1.5 sm:p-2 md:p-3 rounded-md sm:rounded-lg text-xs font-medium transition-all ${
                   selectedMuscleGroup === key
-                    ? `${group.color} text-white shadow-lg`
+                    ? `${group.color} text-white shadow-md`
                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
                 }`}
               >
-                <div className="text-base sm:text-lg lg:text-xl mb-1">{group.icon}</div>
-                <div className="truncate text-xs sm:text-sm">{group.name}</div>
+                <div className="text-lg sm:text-xl mb-0.5 sm:mb-1">{group.icon}</div>
+                <div className="truncate text-[10px] sm:text-xs leading-tight">{group.name}</div>
               </button>
             ))}
           </div>
           
-          {/* Exercise List */}
-          <div className="space-y-2 sm:space-y-3 max-h-60 sm:max-h-80 lg:max-h-96 overflow-y-auto exercise-scroll">
+          {/* Exercise List - Mobile Optimized */}
+          <div className="space-y-1.5 sm:space-y-2 max-h-64 sm:max-h-80 lg:max-h-96 overflow-y-auto exercise-scroll">
             {exercises.map((exercise, index) => {
               const isInPlan = plan.some(p => p.originalId === exercise.id);
               return (
@@ -1156,58 +1158,52 @@ export default function PlansBuilder() {
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, { ...exercise, category: currentMuscleGroup.name }, 'library')}
                   onDragEnd={handleDragEnd}
-                  className={`p-3 sm:p-4 rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-200 select-none transform hover:scale-[1.02] ${
+                  className={`p-2 sm:p-3 rounded-md sm:rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-200 select-none ${
                     isInPlan 
-                      ? 'bg-green-900/30 border-green-700 shadow-green-900/20 shadow-lg' 
-                      : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60 hover:border-slate-600 hover:shadow-md'
+                      ? 'bg-green-900/30 border-green-700' 
+                      : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60'
                   }`}
                   data-exercise-id={exercise.id}
-                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <div className="font-medium text-white text-sm sm:text-base">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <div className="font-medium text-white text-xs sm:text-sm truncate">
                           {exercise.name}
                         </div>
                         {isInPlan && (
-                          <span className="text-green-400 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700">
-                            ✓ Added
+                          <span className="text-green-400 text-[10px] bg-green-900/30 px-1.5 py-0.5 rounded-full border border-green-700 flex-shrink-0">
+                            ✓
                           </span>
                         )}
                       </div>
-                      <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2 mt-1">
-                        <span className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-slate-400">
+                        <span className="flex items-center gap-0.5">
                           <span>🏋️</span>
-                          <span>{exercise.sets}</span>
+                          <span className="truncate">{exercise.sets}</span>
                         </span>
-                        <span className={`px-2 py-1 rounded text-xs border ${
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] border flex-shrink-0 ${
                           exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300 border-green-700' :
                           exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300 border-yellow-700' :
                           'bg-red-900/30 text-red-300 border-red-700'
                         }`}>
-                          {exercise.difficulty}
-                        </span>
-                        <span className="text-slate-500 flex items-center gap-1">
-                          <span>🏅</span>
-                          <span>{exercise.type}</span>
+                          {exercise.difficulty.slice(0,3)}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       <button
                         onClick={() => addToPlan({ ...exercise, category: currentMuscleGroup.name })}
                         disabled={isInPlan}
-                        className={`text-lg font-bold w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 ${
+                        className={`text-base font-bold w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-md transition-all ${
                           isInPlan 
-                            ? 'text-green-400 bg-green-900/30 border border-green-700 cursor-not-allowed' 
-                            : 'text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 border border-transparent hover:border-blue-700'
+                            ? 'text-green-400 bg-green-900/30 border border-green-700' 
+                            : 'text-blue-400 hover:bg-blue-900/20 border border-transparent'
                         }`}
-                        title={isInPlan ? 'Already in plan' : 'Add to plan'}
                       >
                         {isInPlan ? '✓' : '+'}
                       </button>
-                      <div className="text-slate-500 text-lg sm:text-xl ml-1 cursor-grab">
+                      <div className="text-slate-500 text-sm cursor-grab hidden sm:block">
                         ⋮⋮
                       </div>
                     </div>
@@ -1232,38 +1228,37 @@ export default function PlansBuilder() {
           data-drop-zone="plan"
         >
           {/* Mobile-Optimized Header */}
-          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between mb-5">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white flex items-center gap-3">
-                <span className="text-2xl sm:text-3xl animate-pulse">🎯</span> 
-                <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-                  Your Workout Plan
-                </span>
-              </h3>
+          <div className="flex flex-col gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xl sm:text-2xl">🎯</span>
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-white truncate">
+                  <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                    Your Workout Plan
+                  </span>
+                </h3>
+              </div>
               {plan.length > 0 && (
-                <span className="text-sm text-green-400 font-medium flex items-center gap-1 sm:ml-2">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  <span>Ready to save!</span>
+                <span className="text-[10px] sm:text-xs text-green-400 font-medium flex items-center gap-1 flex-shrink-0">
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="hidden sm:inline">Ready!</span>
                 </span>
               )}
             </div>
             
             {/* Mobile-Friendly Status Badges */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium text-slate-300 bg-slate-700/60 px-3 py-2 rounded-full border border-slate-600 shadow-sm">
-                <span className="text-blue-400 mr-1">📊</span>
-                {plan.length} {plan.length === 1 ? 'exercise' : 'exercises'}
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/60 px-2 py-1 rounded-full border border-slate-600">
+                <span className="text-blue-400">📊</span>{plan.length}
               </span>
               {plan.length > 0 && (
-                <span className="text-sm bg-gradient-to-r from-blue-900/40 to-purple-900/40 text-blue-300 px-3 py-2 rounded-full border border-blue-700/50 shadow-sm">
-                  <span className="mr-1">🔥</span>
-                  Active Plan
+                <span className="text-[10px] sm:text-xs bg-gradient-to-r from-blue-900/40 to-purple-900/40 text-blue-300 px-2 py-1 rounded-full border border-blue-700/50">
+                  <span>🔥</span><span className="hidden sm:inline">Active</span>
                 </span>
               )}
               {isOnline && (
-                <span className="text-xs bg-green-900/30 text-green-300 px-2 py-1 rounded-full border border-green-700/50">
-                  <span className="mr-1">☁️</span>
-                  Live Sync
+                <span className="text-[10px] bg-green-900/30 text-green-300 px-2 py-1 rounded-full border border-green-700/50">
+                  ☁️<span className="hidden sm:inline">Live</span>
                 </span>
               )}
             </div>
@@ -1395,52 +1390,52 @@ export default function PlansBuilder() {
               
               {/* Mobile-Optimized Plan Summary */}
               {plan.length > 0 && (
-                <div className="mt-4 sm:mt-5 p-4 sm:p-5 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-indigo-900/30 border border-blue-700/50 rounded-xl shadow-lg">
+                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-indigo-900/30 border border-blue-700/50 rounded-lg sm:rounded-xl shadow-lg">
                   <div className="text-blue-300">
                     {/* Summary Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">📊</span>
-                        <h4 className="font-bold text-base sm:text-lg text-white">
-                          Professional Plan Summary
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg sm:text-xl">📊</span>
+                        <h4 className="font-bold text-sm sm:text-base text-white">
+                          Plan Summary
                         </h4>
                       </div>
-                      <div className="flex items-center gap-2 bg-green-900/30 px-3 py-1 rounded-full border border-green-700/50">
-                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        <span className="text-xs font-medium text-green-300">Real-time Active</span>
+                      <div className="flex items-center gap-1 bg-green-900/30 px-2 py-0.5 rounded-full border border-green-700/50">
+                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                        <span className="text-[10px] font-medium text-green-300">Live</span>
                       </div>
                     </div>
                     
                     {/* Stats Grid - Mobile Responsive */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4">
-                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
-                        <div className="text-lg mb-1">🏋️</div>
-                        <div className="text-sm font-semibold text-white">{plan.length}</div>
-                        <div className="text-xs text-slate-400">exercises</div>
+                    <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-3">
+                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                        <div className="text-base sm:text-lg mb-0.5">🏋️</div>
+                        <div className="text-xs sm:text-sm font-semibold text-white">{plan.length}</div>
+                        <div className="text-[9px] sm:text-[10px] text-slate-400">ex</div>
                       </div>
-                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
-                        <div className="text-lg mb-1">🔥</div>
-                        <div className="text-sm font-semibold text-white truncate">{planCategory}</div>
-                        <div className="text-xs text-slate-400">category</div>
+                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                        <div className="text-base sm:text-lg mb-0.5">🔥</div>
+                        <div className="text-xs sm:text-sm font-semibold text-white truncate">{planCategory.slice(0,3)}</div>
+                        <div className="text-[9px] sm:text-[10px] text-slate-400">cat</div>
                       </div>
-                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
-                        <div className="text-lg mb-1">⏱️</div>
-                        <div className="text-sm font-semibold text-white">~{plan.length * 3}min</div>
-                        <div className="text-xs text-slate-400">duration</div>
+                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                        <div className="text-base sm:text-lg mb-0.5">⏱️</div>
+                        <div className="text-xs sm:text-sm font-semibold text-white">{plan.length * 3}m</div>
+                        <div className="text-[9px] sm:text-[10px] text-slate-400">time</div>
                       </div>
-                      <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-center">
-                        <div className="text-lg mb-1">💪</div>
-                        <div className="text-sm font-semibold text-white">Pro</div>
-                        <div className="text-xs text-slate-400">level</div>
+                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                        <div className="text-base sm:text-lg mb-0.5">💪</div>
+                        <div className="text-xs sm:text-sm font-semibold text-white">Pro</div>
+                        <div className="text-[9px] sm:text-[10px] text-slate-400">lvl</div>
                       </div>
                     </div>
                     
                     {/* Mobile-Friendly Info */}
-                    <div className="bg-slate-800/30 p-3 rounded-lg border border-slate-700/30">
-                      <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-300">
-                        <span className="text-base flex-shrink-0">💡</span>
+                    <div className="bg-slate-800/30 p-2 sm:p-3 rounded-md border border-slate-700/30">
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-300">
+                        <span className="text-sm flex-shrink-0">💡</span>
                         <div className="leading-relaxed">
-                          <span className="font-medium">Cloud Sync Ready:</span> This plan will automatically sync to MongoDB and be available across all your devices with real-time updates.
+                          <span className="font-medium">Cloud Sync:</span> Auto-syncs to MongoDB across all devices
                         </div>
                       </div>
                     </div>
@@ -1450,25 +1445,22 @@ export default function PlansBuilder() {
               
               {/* Mobile-Optimized Real-time Sync Indicator */}
               {plan.length > 0 && (
-                <div className="mt-4 p-4 bg-slate-800/50 border border-slate-600/50 rounded-xl">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center gap-3 text-slate-300">
-                      <span className="text-xl">☁️</span>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                        <span className="text-sm font-medium">Real-time MongoDB Integration</span>
-                        <span className="text-xs text-slate-500 sm:hidden">Professional cloud sync</span>
-                      </div>
+                <div className="mt-3 p-2.5 sm:p-3 bg-slate-800/50 border border-slate-600/50 rounded-lg">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-slate-300 min-w-0">
+                      <span className="text-base sm:text-lg flex-shrink-0">☁️</span>
+                      <span className="text-xs sm:text-sm font-medium truncate">MongoDB Sync</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-slate-700/50 px-3 py-2 rounded-lg border border-slate-600/50">
+                    <div className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-md border border-slate-600/50 flex-shrink-0">
                       {isOnline ? (
                         <>
-                          <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
-                          <span className="text-green-300 text-sm font-medium">Connected & Syncing</span>
+                          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                          <span className="text-green-300 text-[10px] sm:text-xs font-medium">Connected</span>
                         </>
                       ) : (
                         <>
-                          <span className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></span>
-                          <span className="text-orange-300 text-sm font-medium">Offline Mode Active</span>
+                          <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
+                          <span className="text-orange-300 text-[10px] sm:text-xs font-medium">Offline</span>
                         </>
                       )}
                     </div>

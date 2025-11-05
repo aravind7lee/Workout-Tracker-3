@@ -574,33 +574,33 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center justify-between">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-blue-400 text-xs font-bold">EQUIPMENT GRADE</div>
-                          <div className="text-white text-lg font-black">PROFESSIONAL</div>
+                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-blue-400 text-[9px] sm:text-xs font-bold">EQUIPMENT</div>
+                          <div className="text-white text-xs sm:text-sm font-black">PRO</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-cyan-400 text-xs font-bold">SUCCESS RATE</div>
-                          <div className="text-white text-lg font-black">98.7%</div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-cyan-400 text-[9px] sm:text-xs font-bold">SUCCESS</div>
+                          <div className="text-white text-xs sm:text-sm font-black">98.7%</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
-                        <span className="text-xs font-black text-blue-400 tracking-[0.2em] uppercase">Elite Training Division</span>
+                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-6 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
+                        <span className="text-[10px] sm:text-xs font-black text-blue-400 tracking-wider uppercase">Elite Training</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-blue-400 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 backdrop-blur-sm">
-                        <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                        PROFESSIONAL GRADE
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-blue-400 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 backdrop-blur-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                        PRO GRADE
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-cyan-100">
                         ELITE TRAINING
                       </span>
@@ -610,8 +610,8 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
-                      Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance. Every rep counts towards your transformation into a champion.
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
+                      Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance.
                     </p>
                   </div>
                 </div>
@@ -628,19 +628,19 @@ export default function Home() {
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-1 h-8 bg-gradient-to-b from-red-400 to-orange-400 rounded-full" />
-                        <span className="text-xs font-black text-red-400 tracking-[0.2em] uppercase">Power & Strength Division</span>
+                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center order-2 lg:order-1 relative">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-6 bg-gradient-to-b from-red-400 to-orange-400 rounded-full" />
+                        <span className="text-[10px] sm:text-xs font-black text-red-400 tracking-wider uppercase">Power & Strength</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-red-400 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 backdrop-blur-sm">
-                        <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                        MAXIMUM INTENSITY
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-red-400 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 backdrop-blur-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                        MAX INTENSITY
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-orange-100">
                         UNLEASH YOUR
                       </span>
@@ -650,8 +650,8 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
-                      Push beyond your limits with <span className="text-red-400 font-bold">intense strength training</span>. Build raw power, explosive strength, and unstoppable determination that defines champions.
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
+                      Push beyond limits with <span className="text-red-400 font-bold">intense strength training</span>. Build raw power and determination.
                     </p>
                   </div>
                   
@@ -664,15 +664,15 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-l from-red-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center justify-between">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-red-400 text-xs font-bold">POWER LEVEL</div>
-                          <div className="text-white text-lg font-black">MAXIMUM</div>
+                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-red-400 text-[9px] sm:text-xs font-bold">POWER</div>
+                          <div className="text-white text-xs sm:text-sm font-black">MAX</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-orange-400 text-xs font-bold">INTENSITY</div>
-                          <div className="text-white text-lg font-black">BEAST</div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-orange-400 text-[9px] sm:text-xs font-bold">INTENSITY</div>
+                          <div className="text-white text-xs sm:text-sm font-black">BEAST</div>
                         </div>
                       </div>
                     </div>
@@ -700,33 +700,33 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-green-900/40 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center justify-between">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-green-400 text-xs font-bold">MUSCLE GAIN</div>
-                          <div className="text-white text-lg font-black">OPTIMAL</div>
+                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-green-400 text-[9px] sm:text-xs font-bold">MUSCLE</div>
+                          <div className="text-white text-xs sm:text-sm font-black">OPTIMAL</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/10">
-                          <div className="text-teal-400 text-xs font-bold">ENDURANCE</div>
-                          <div className="text-white text-lg font-black">ELITE</div>
+                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
+                          <div className="text-teal-400 text-[9px] sm:text-xs font-bold">ENDURANCE</div>
+                          <div className="text-white text-xs sm:text-sm font-black">ELITE</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-1 h-8 bg-gradient-to-b from-green-400 to-teal-400 rounded-full" />
-                        <span className="text-xs font-black text-green-400 tracking-[0.2em] uppercase">Muscle Building Excellence</span>
+                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-6 bg-gradient-to-b from-green-400 to-teal-400 rounded-full" />
+                        <span className="text-[10px] sm:text-xs font-black text-green-400 tracking-wider uppercase">Muscle Building</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-green-400 bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-400/30 backdrop-blur-sm">
-                        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                        HYPERTROPHY MASTERY
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-400 bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-400/30 backdrop-blur-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        HYPERTROPHY
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-100 to-teal-100">
                         BUILD MASSIVE
                       </span>
@@ -736,8 +736,8 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
-                      Sculpt <span className="text-emerald-400 font-bold">massive muscle gains</span> with scientifically-proven hypertrophy training. Transform your physique with precision muscle-building protocols.
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
+                      Sculpt <span className="text-emerald-400 font-bold">massive muscle gains</span> with proven hypertrophy training.
                     </p>
                   </div>
                 </div>
@@ -754,19 +754,19 @@ export default function Home() {
               
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 relative">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-1 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full" />
-                        <span className="text-xs font-black text-purple-400 tracking-[0.2em] uppercase">Functional Movement</span>
+                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center order-2 lg:order-1 relative">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-6 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full" />
+                        <span className="text-[10px] sm:text-xs font-black text-purple-400 tracking-wider uppercase">Functional</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-purple-400 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm">
-                        <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-purple-400 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
                         SMART TRAINING
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-pink-100">
                         REAL-WORLD
                       </span>
@@ -776,8 +776,8 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
-                      Master <span className="text-purple-400 font-bold">functional movements</span> that translate to real-world performance. Train your body to move with purpose, power, and precision.
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
+                      Master <span className="text-purple-400 font-bold">functional movements</span> for real-world performance.
                     </p>
                   </div>
                   
@@ -814,19 +814,19 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   </div>
                   
-                  <div className="p-8 sm:p-10 lg:p-12 flex flex-col justify-center relative">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
-                        <span className="text-xs font-black text-yellow-400 tracking-[0.2em] uppercase">Elite Champions Network</span>
+                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-6 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
+                        <span className="text-[10px] sm:text-xs font-black text-yellow-400 tracking-wider uppercase">Elite Champions</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-yellow-400 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 backdrop-blur-sm">
-                        <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                        EXCLUSIVE ACCESS
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-yellow-400 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 backdrop-blur-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                        EXCLUSIVE
                       </span>
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-100 to-orange-100">
                         JOIN THE
                       </span>
@@ -836,8 +836,8 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
-                      Connect with <span className="text-yellow-400 font-bold">elite athletes worldwide</span>. Share victories, push limits together, and become part of the ultimate fitness community that breeds champions.
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
+                      Connect with <span className="text-yellow-400 font-bold">elite athletes worldwide</span>. Share victories and push limits together.
                     </p>
                   </div>
                 </div>
