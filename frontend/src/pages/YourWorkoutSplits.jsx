@@ -613,7 +613,7 @@ const YourWorkoutSplits = () => {
                         className="w-full bg-purple-600/20 text-purple-300 border border-purple-500/30 py-2 px-3 rounded text-xs font-medium flex items-center justify-center gap-1"
                       >
                         <span>🏋️</span>
-                        <span>Start Workout</span>
+                        <span>View Splits</span>
                       </button>
                       <button
                         onClick={() => editSplit(split)}

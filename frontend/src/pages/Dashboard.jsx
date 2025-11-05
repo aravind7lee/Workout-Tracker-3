@@ -15,6 +15,7 @@ import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
 import api from '../utils/api';
 import Dashboard1 from '../assets/Dashboard1.jpg';
 import Dashboard2 from '../assets/Dashboard2.jpg';
+import Dashboardnew from '../assets/Dashboardnew.jpg';
 import DashboardImageCard from '../components/DashboardImageCard';
 
 const Dashboard = () => {
@@ -226,6 +227,31 @@ const Dashboard = () => {
         <div>
         {/* Dashboard Hero Section - Full Viewport */}
         <DashboardHero />
+
+        {/* Premium Gym Branded Section - Dashboardnew.jpg - Full Responsive Image */}
+        <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-8 sm:py-12 md:py-16 lg:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <img
+                src={Dashboardnew}
+                alt="Professional Gym Training - Real-time fitness tracking"
+                className="w-full h-auto object-cover"
+                style={{
+                  maxHeight: '80vh',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+                loading="eager"
+              />
+            </motion.div>
+          </div>
+        </div>
       
       {/* Dashboard Content */}
       <div className="space-y-3 sm:space-y-4 md:space-y-6 px-2 sm:px-3 md:px-4 lg:px-6 py-3 sm:py-4 md:py-6 lg:py-8">
