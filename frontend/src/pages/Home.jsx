@@ -43,44 +43,7 @@ export default function Home() {
     }
   }, [auth]);
 
-  // Optimized color classes (static)
-  const colorClasses = useMemo(() => ({
-    blue: {
-      bg: 'bg-blue-600',
-      bgSoft: 'bg-blue-500/10',
-      text: 'text-blue-400',
-      ring: 'ring-blue-500',
-      border: 'border-blue-600'
-    },
-    purple: {
-      bg: 'bg-purple-600',
-      bgSoft: 'bg-purple-500/10',
-      text: 'text-purple-400',
-      ring: 'ring-purple-500',
-      border: 'border-purple-600'
-    },
-    green: {
-      bg: 'bg-green-600',
-      bgSoft: 'bg-green-500/10',
-      text: 'text-green-400',
-      ring: 'ring-green-500',
-      border: 'border-green-600'
-    },
-    orange: {
-      bg: 'bg-orange-500',
-      bgSoft: 'bg-orange-400/10',
-      text: 'text-orange-400',
-      ring: 'ring-orange-400',
-      border: 'border-orange-500'
-    },
-    yellow: {
-      bg: 'bg-yellow-500',
-      bgSoft: 'bg-yellow-400/10',
-      text: 'text-yellow-400',
-      ring: 'ring-yellow-400',
-      border: 'border-yellow-500'
-    }
-  }), []);
+
 
   // Optimized features list
   const features = useMemo(() => ([
@@ -355,7 +318,6 @@ export default function Home() {
 
   // Optimized components
   const StatCard = React.memo(({ stat }) => {
-    const c = colorClasses[stat.color] || colorClasses.blue;
     const numericValue = typeof stat.value === 'number' ? stat.value : parseInt(stat.value) || 0;
     const count = useCountUp(numericValue, 300);
     
@@ -364,37 +326,37 @@ export default function Home() {
     return (
       <button
         onClick={() => handleNav(stat.path)}
-        className="relative group transform transition-all duration-300 text-left w-full hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+        className="relative group transform transition-all duration-300 text-left w-full hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-lime-500"
       >
-        <div className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl group-hover:border-white/20 transition-all duration-300">
-          <div className="flex items-start justify-between mb-3">
-            <div className={`flex items-center justify-center rounded-xl p-3 bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg`}>
-              <div className="text-xl sm:text-2xl">{stat.icon}</div>
+        <div className="relative bg-zinc-900 border-l-4 sm:border-l-8 border-lime-500 p-4 sm:p-8 shadow-2xl group-hover:bg-zinc-800 transition-all duration-300">
+          <div className="flex items-start justify-between mb-4 sm:mb-6">
+            <div className="flex items-center justify-center bg-black border-2 border-lime-500 p-2 sm:p-4">
+              <div className="text-xl sm:text-3xl">{stat.icon}</div>
             </div>
             
-            <div className="flex flex-col items-end gap-1">
-              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${c.text} bg-gradient-to-r ${c.bgSoft} border ${c.border}`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${isLocked ? 'bg-gray-400' : (isOnline && stats?.isRealTime ? 'bg-green-400' : 'bg-gray-400')}`} />
-                {isLocked ? '🔒' : (isOnline && stats?.isRealTime ? 'LIVE' : 'OFF')}
+            <div className="flex flex-col items-end gap-1 sm:gap-2">
+              <span className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 bg-black border-2 text-[10px] sm:text-xs font-black uppercase tracking-wider ${isLocked ? 'border-zinc-700 text-zinc-500' : (isOnline && stats?.isRealTime ? 'border-lime-500 text-lime-500' : 'border-zinc-700 text-zinc-500')}`}>
+                <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${isLocked ? 'bg-zinc-500' : (isOnline && stats?.isRealTime ? 'bg-lime-500' : 'bg-zinc-500')}`} />
+                {isLocked ? 'LOCKED' : (isOnline && stats?.isRealTime ? 'LIVE' : 'OFFLINE')}
               </span>
             </div>
           </div>
           
-          <div className="space-y-1">
-            <div className="text-xl sm:text-2xl font-black text-white">
+          <div className="space-y-2 sm:space-y-3">
+            <div className="text-3xl sm:text-5xl font-black text-white">
               {isLocked ? '🔒' : (typeof stat.value === 'number' ? count : stat.value)}
             </div>
             
-            <div className="text-xs sm:text-sm font-semibold text-slate-300">
+            <div className="text-xs sm:text-sm font-black text-lime-500 uppercase tracking-widest">
               {stat.label}
             </div>
             
-            <div className="text-xs text-slate-400 line-clamp-1">
+            <div className="text-xs sm:text-sm text-zinc-400 font-medium">
               {isLocked ? 'Login to view your stats' : stat.subtitle}
             </div>
             
             {process.env.NODE_ENV === 'development' && !isLocked && (
-              <div className="text-xs text-slate-500 mt-1">
+              <div className="text-[10px] sm:text-xs text-zinc-600 mt-1 sm:mt-2">
                 Source: {stats?.dataSource || 'Unknown'}
               </div>
             )}
@@ -406,7 +368,6 @@ export default function Home() {
 
   const FeatureCard = ({ feature, index }) => {
     const isActive = index === activeFeature;
-    const c = colorClasses[feature.color] || colorClasses.blue;
     return (
       <div
         onMouseEnter={() => setActiveFeature(index)}
@@ -414,117 +375,98 @@ export default function Home() {
         tabIndex={0}
         role="button"
         aria-pressed={isActive}
-        className={`relative group cursor-pointer transform transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-white/20 ${isActive ? 'scale-105' : 'hover:scale-102'}`}
+        className={`relative group cursor-pointer transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-lime-500 ${isActive ? 'translate-x-1' : 'hover:translate-x-0.5'}`}
       >
-        <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500 ${isActive ? 'opacity-40' : ''}`} />
-        
-        <div className={`relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-500 ${isActive ? 'border-white/30 shadow-3xl' : 'border-white/10 hover:border-white/20'}`}>
+        <div className={`relative bg-zinc-900 border-l-4 p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-300 ${isActive ? 'border-lime-500 bg-zinc-800' : 'border-zinc-700 hover:border-zinc-600'}`}>
           <div className="mb-4 sm:mb-6">
-            <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110 ${isActive ? 'scale-110' : ''}`}>
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-lime-500">
               <span className="text-2xl sm:text-3xl">{feature.icon}</span>
             </div>
           </div>
           
-          <div className="space-y-3 sm:space-y-4">
-            <h3 className={`font-black text-base sm:text-lg transition-all duration-300 ${isActive ? `text-transparent bg-clip-text bg-gradient-to-r ${c.text.replace('text-', 'from-')} to-white` : `${c.text} group-hover:text-white`}`}>
+          <div className="space-y-2 sm:space-y-4">
+            <h3 className={`font-black text-base sm:text-xl uppercase tracking-tight transition-all duration-300 ${isActive ? 'text-lime-500' : 'text-white group-hover:text-lime-500'}`}>
               {feature.title}
             </h3>
             
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed min-h-[48px] sm:min-h-[60px] group-hover:text-slate-300 transition-colors duration-300">
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-medium group-hover:text-zinc-300 transition-colors duration-300">
               {feature.desc}
             </p>
           </div>
           
           {isActive && (
             <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-white to-blue-200 rounded-full animate-ping" />
-              <div className="absolute inset-0 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full" />
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-lime-500" />
             </div>
           )}
-          
-          <div className={`absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br ${c.bg}/10 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 ${isActive ? 'opacity-30' : ''}`} />
-          <div className={`absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-tr ${c.bg}/5 rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
         </div>
       </div>
     );
   };
 
   const GlobalStat = ({ stat }) => {
-    const c = colorClasses[stat.color] || colorClasses.blue;
     return (
-      <div className="relative group transform transition-all duration-500 hover:scale-105">
-        <div className={`absolute inset-0 bg-gradient-to-br ${c.bg}/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
-        
-        <div className="relative bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-white/20 group-hover:shadow-3xl transition-all duration-500">
+      <div className="relative group transform transition-all duration-300 hover:translate-y-[-2px]">
+        <div className="relative bg-zinc-900 border-2 border-zinc-800 p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-lime-500 transition-all duration-300">
           <div className="mb-4 sm:mb-6">
-            <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${c.bgSoft} border ${c.border} shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-lime-500">
               <span className="text-2xl sm:text-3xl">{stat.icon}</span>
             </div>
           </div>
           
-          <div className={`text-2xl sm:text-3xl lg:text-4xl font-black mb-2 transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:${c.text.replace('text-', 'from-')} group-hover:to-white ${c.text}`}>
+          <div className="text-2xl sm:text-4xl lg:text-5xl font-black mb-2 sm:mb-3 text-white transition-all duration-300 group-hover:text-lime-500">
             {stat.value}
           </div>
           
-          <div className="text-white font-bold text-xs sm:text-sm mb-1 sm:mb-2 group-hover:text-slate-100 transition-colors duration-300">
+          <div className="text-white font-black text-xs sm:text-sm uppercase tracking-widest mb-1 sm:mb-2">
             {stat.label}
           </div>
           
-          <div className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300 font-medium">
+          <div className="text-zinc-500 text-[10px] sm:text-xs font-medium uppercase tracking-wider">
             {stat.sublabel}
           </div>
-          
-          <div className={`absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${c.bg}/10 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {isLoading && (
         <LoadingScreen onLoadingComplete={handleLoadingComplete} />
       )}
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-64 -right-64 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-bl from-purple-500/8 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 left-1/3 w-[300px] h-[300px] bg-gradient-to-r from-green-500/6 to-transparent rounded-full blur-2xl" />
-      </div>
 
       <div className="relative">
         <Hero />
       </div>
 
-      <div className={`container mx-auto px-3 sm:px-4 py-3 sm:py-4 relative z-10 transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-8`}>
+      <div className={`container mx-auto px-3 sm:px-6 py-4 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-8 sm:space-y-12`}>
         {/* Status Bar */}
-        <section data-animate data-id="status-bar" className="mb-8">
+        <section data-animate data-id="status-bar" className="mb-6">
           <div className={`transition-all duration-500 transform ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="relative bg-gradient-to-r from-slate-900/95 to-slate-800/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
+            <div className="relative bg-zinc-900 border-2 border-zinc-800 p-3 sm:p-6 shadow-2xl">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                <div className="flex items-center justify-between sm:gap-6">
                   <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-500'} shadow-lg`} />
-                    <span className="text-xs font-black text-white tracking-wider">
-                      {isOnline ? '🟢 LIVE SYNC' : '🔴 OFFLINE'}
+                    <div className={`w-2 h-2 ${isOnline ? 'bg-lime-500' : 'bg-red-600'}`} />
+                    <span className="text-xs font-black text-white tracking-widest uppercase">
+                      {isOnline ? 'LIVE' : 'OFFLINE'}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-blue-400">⏰</span>
-                    <div className="text-xs text-white font-mono bg-slate-800/50 px-2 py-1 rounded-lg">
+                    <span className="text-lime-500 text-sm">⏱</span>
+                    <div className="text-xs text-white font-mono bg-black px-2 py-1 border border-zinc-800">
                       {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-xl px-3 py-2">
-                    <span className="text-blue-400 animate-pulse">💪</span>
-                    <div className="flex flex-col">
-                      <span className="font-black text-white text-sm tabular-nums">120+</span>
-                      <span className="text-xs text-blue-300 font-medium">WORKOUTS</span>
-                    </div>
+                <div className="flex items-center gap-2 bg-black border-2 border-lime-500 px-3 py-2 sm:px-6 sm:py-3">
+                  <span className="text-lime-500 text-lg">💪</span>
+                  <div className="flex flex-col">
+                    <span className="font-black text-white text-sm sm:text-lg tabular-nums">120+</span>
+                    <span className="text-[10px] sm:text-xs text-lime-500 font-black tracking-wider">WORKOUTS</span>
                   </div>
                 </div>
               </div>
@@ -533,23 +475,24 @@ export default function Home() {
         </section>
 
         {/* Quick Stats */}
-        <section data-animate data-id="quick-stats" className="mb-12">
+        <section data-animate data-id="quick-stats" className="mb-8 sm:mb-16">
           <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black mb-3">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
-                  {isAuthenticated() && auth?.user ? 'YOUR STATUS' : 'GET STARTED'}
-                </span>
+            <div className="text-center mb-6 sm:mb-10">
+              <div className="inline-block mb-3">
+                <div className="h-1 w-12 sm:w-20 bg-lime-500 mb-3" />
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4 text-white uppercase tracking-tight px-4">
+                {isAuthenticated() && auth?.user ? 'YOUR STATS' : 'GET STARTED'}
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-lg text-zinc-400 max-w-2xl mx-auto font-medium px-4">
                 {isAuthenticated() && auth?.user 
-                  ? 'Real-time performance metrics for champions' 
-                  : 'Login to track your personal fitness journey'
+                  ? 'Track your performance in real-time' 
+                  : 'Login to start tracking your fitness journey'
                 }
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 max-w-md mx-auto">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 max-w-lg mx-auto">
               {quickStats.map((stat, i) => (
                 <StatCard key={`stat-${i}`} stat={stat} />
               ))}
@@ -558,60 +501,57 @@ export default function Home() {
         </section>
 
         {/* Elite Training Experience - Home1.jpg */}
-        <section data-animate data-id="training-experience" id="training-experience" className="mb-20">
-          <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+        <section data-animate data-id="training-experience" id="training-experience" className="mb-8 sm:mb-20">
+          <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
-              
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-lime-500 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home1} 
                       alt="Elite Training Experience" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-blue-400 text-[9px] sm:text-xs font-bold">EQUIPMENT</div>
-                          <div className="text-white text-xs sm:text-sm font-black">PRO</div>
+                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4">
+                        <div className="bg-black border border-lime-500 px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-lime-500 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Equipment</div>
+                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">PRO</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-cyan-400 text-[9px] sm:text-xs font-bold">SUCCESS</div>
-                          <div className="text-white text-xs sm:text-sm font-black">98.7%</div>
+                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Success</div>
+                          <div className="text-lime-500 text-xs sm:text-2xl font-black leading-tight">98.7%</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-0.5 h-6 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full" />
-                        <span className="text-[10px] sm:text-xs font-black text-blue-400 tracking-wider uppercase">Elite Training</span>
+                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="relative mb-4 sm:mb-8">
+                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-lime-500" />
+                        <span className="text-xs sm:text-sm font-black text-lime-500 tracking-widest uppercase">Elite Training</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-blue-400 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 backdrop-blur-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-lime-500 bg-zinc-900 border-2 border-lime-500 uppercase tracking-wider">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-lime-500" />
                         PRO GRADE
                       </span>
                     </div>
                     
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-cyan-100">
+                    <h3 className="relative text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                      <span className="text-white">
                         ELITE TRAINING
                       </span>
                       <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300">
+                      <span className="text-lime-500">
                         EXPERIENCE
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
-                      Experience world-class training with <span className="text-blue-400 font-bold">state-of-the-art equipment</span> designed for elite performance.
+                    <p className="relative text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                      Experience world-class training with <span className="text-lime-500 font-black">state-of-the-art equipment</span> designed for elite performance.
                     </p>
                   </div>
                 </div>
@@ -621,58 +561,55 @@ export default function Home() {
         </section>
 
         {/* Strength & Power - Home2.jpg */}
-        <section data-animate data-id="strength-power" id="strength-power" className="mb-20">
-          <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+        <section data-animate data-id="strength-power" id="strength-power" className="mb-8 sm:mb-20">
+          <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
-              
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-red-600 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center order-2 lg:order-1 relative">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-0.5 h-6 bg-gradient-to-b from-red-400 to-orange-400 rounded-full" />
-                        <span className="text-[10px] sm:text-xs font-black text-red-400 tracking-wider uppercase">Power & Strength</span>
+                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
+                    <div className="mb-4 sm:mb-8">
+                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-red-600" />
+                        <span className="text-xs sm:text-sm font-black text-red-600 tracking-widest uppercase">Power & Strength</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-red-400 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 backdrop-blur-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-red-600 bg-zinc-900 border-2 border-red-600 uppercase tracking-wider">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-600" />
                         MAX INTENSITY
                       </span>
                     </div>
                     
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-orange-100">
+                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                      <span className="text-white">
                         UNLEASH YOUR
                       </span>
                       <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-red-300">
+                      <span className="text-red-600">
                         INNER BEAST
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
-                      Push beyond limits with <span className="text-red-400 font-bold">intense strength training</span>. Build raw power and determination.
+                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                      Push beyond limits with <span className="text-red-600 font-black">intense strength training</span>. Build raw power and determination.
                     </p>
                   </div>
                   
-                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
+                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
                     <img 
                       src={Home2} 
                       alt="Strength and Power Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-l from-red-900/40 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-red-400 text-[9px] sm:text-xs font-bold">POWER</div>
-                          <div className="text-white text-xs sm:text-sm font-black">MAX</div>
+                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4">
+                        <div className="bg-black border border-red-600 px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-red-600 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Power</div>
+                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">MAX</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-orange-400 text-[9px] sm:text-xs font-bold">INTENSITY</div>
-                          <div className="text-white text-xs sm:text-sm font-black">BEAST</div>
+                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Intensity</div>
+                          <div className="text-red-600 text-xs sm:text-2xl font-black leading-tight">BEAST</div>
                         </div>
                       </div>
                     </div>
@@ -684,60 +621,57 @@ export default function Home() {
         </section>
 
         {/* Cardio Excellence - Home3.jpg */}
-        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-20">
-          <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-8 sm:mb-20">
+          <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-teal-500 to-green-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
-              
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-emerald-500 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home3} 
                       alt="Muscle Building Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-900/40 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-green-400 text-[9px] sm:text-xs font-bold">MUSCLE</div>
-                          <div className="text-white text-xs sm:text-sm font-black">OPTIMAL</div>
+                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4">
+                        <div className="bg-black border border-emerald-500 px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-emerald-500 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Muscle</div>
+                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">OPTIMAL</div>
                         </div>
-                        <div className="bg-black/70 backdrop-blur-xl rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10">
-                          <div className="text-teal-400 text-[9px] sm:text-xs font-bold">ENDURANCE</div>
-                          <div className="text-white text-xs sm:text-sm font-black">ELITE</div>
+                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Endurance</div>
+                          <div className="text-emerald-500 text-xs sm:text-2xl font-black leading-tight">ELITE</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-0.5 h-6 bg-gradient-to-b from-green-400 to-teal-400 rounded-full" />
-                        <span className="text-[10px] sm:text-xs font-black text-green-400 tracking-wider uppercase">Muscle Building</span>
+                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="mb-4 sm:mb-8">
+                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-emerald-500" />
+                        <span className="text-xs sm:text-sm font-black text-emerald-500 tracking-widest uppercase">Muscle Building</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-400 bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-400/30 backdrop-blur-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-emerald-500 bg-zinc-900 border-2 border-emerald-500 uppercase tracking-wider">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500" />
                         HYPERTROPHY
                       </span>
                     </div>
                     
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-100 to-teal-100">
+                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                      <span className="text-white">
                         BUILD MASSIVE
                       </span>
                       <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-300">
+                      <span className="text-emerald-500">
                         MUSCLE GAINS
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
-                      Sculpt <span className="text-emerald-400 font-bold">massive muscle gains</span> with proven hypertrophy training.
+                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                      Sculpt <span className="text-emerald-500 font-black">massive muscle gains</span> with proven hypertrophy training.
                     </p>
                   </div>
                 </div>
@@ -747,48 +681,45 @@ export default function Home() {
         </section>
 
         {/* Functional Training - Home4.jpg */}
-        <section data-animate data-id="functional-training" id="functional-training" className="mb-20">
-          <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+        <section data-animate data-id="functional-training" id="functional-training" className="mb-8 sm:mb-20">
+          <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
-              
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-purple-600 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center order-2 lg:order-1 relative">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-0.5 h-6 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full" />
-                        <span className="text-[10px] sm:text-xs font-black text-purple-400 tracking-wider uppercase">Functional</span>
+                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
+                    <div className="mb-4 sm:mb-8">
+                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-purple-600" />
+                        <span className="text-xs sm:text-sm font-black text-purple-600 tracking-widest uppercase">Functional</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-purple-400 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-purple-600 bg-zinc-900 border-2 border-purple-600 uppercase tracking-wider">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-600" />
                         SMART TRAINING
                       </span>
                     </div>
                     
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-pink-100">
+                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                      <span className="text-white">
                         REAL-WORLD
                       </span>
                       <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-300">
+                      <span className="text-purple-600">
                         STRENGTH
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
-                      Master <span className="text-purple-400 font-bold">functional movements</span> for real-world performance.
+                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                      Master <span className="text-purple-600 font-black">functional movements</span> for real-world performance.
                     </p>
                   </div>
                   
-                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden order-1 lg:order-2">
+                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
                     <img 
                       src={Home4} 
                       alt="Functional Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-l from-purple-900/40 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-black/40" />
                   </div>
                 </div>
               </div>
@@ -797,47 +728,44 @@ export default function Home() {
         </section>
 
         {/* Elite Community - Home5.jpg */}
-        <section data-animate data-id="elite-community" id="elite-community" className="mb-20">
-          <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
+        <section data-animate data-id="elite-community" id="elite-community" className="mb-8 sm:mb-20">
+          <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600 rounded-3xl blur-lg opacity-25 group-hover:opacity-40 transition-all duration-500 animate-pulse" />
-              
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 backdrop-blur-2xl border border-white/20 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-amber-500 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-80 sm:h-96 lg:h-[500px] overflow-hidden">
+                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home5} 
                       alt="Elite Community" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-110 contrast-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/40 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-black/40" />
                   </div>
                   
-                  <div className="p-4 sm:p-6 lg:p-10 flex flex-col justify-center relative">
-                    <div className="mb-4 sm:mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-0.5 h-6 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
-                        <span className="text-[10px] sm:text-xs font-black text-yellow-400 tracking-wider uppercase">Elite Champions</span>
+                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="mb-4 sm:mb-8">
+                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-amber-500" />
+                        <span className="text-xs sm:text-sm font-black text-amber-500 tracking-widest uppercase">Elite Champions</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-yellow-400 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 backdrop-blur-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-amber-500 bg-zinc-900 border-2 border-amber-500 uppercase tracking-wider">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-amber-500" />
                         EXCLUSIVE
                       </span>
                     </div>
                     
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-black mb-4 sm:mb-6 leading-tight">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-100 to-orange-100">
+                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                      <span className="text-white">
                         JOIN THE
                       </span>
                       <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-300">
+                      <span className="text-amber-500">
                         CHAMPIONS
                       </span>
                     </h3>
                     
-                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-medium">
-                      Connect with <span className="text-yellow-400 font-bold">elite athletes worldwide</span>. Share victories and push limits together.
+                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                      Connect with <span className="text-amber-500 font-black">elite athletes worldwide</span>. Share victories and push limits together.
                     </p>
                   </div>
                 </div>
@@ -847,35 +775,36 @@ export default function Home() {
         </section>
 
         {/* Enhanced CTA Section */}
-        <section data-animate data-id="cta" id="cta" className="text-center relative">
-          <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
-            <div className="mb-12">
-              <div className="inline-flex items-center gap-3 mb-6">
-                <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
-                <span className="text-xs font-bold tracking-[0.3em] text-green-400 uppercase">Join The Elite</span>
-                <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+        <section data-animate data-id="cta" id="cta" className="text-center relative py-10 sm:py-20">
+          <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+            <div className="mb-8 sm:mb-16 px-4">
+              <div className="inline-flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
+                <div className="w-12 sm:w-24 h-1 bg-lime-500" />
+                <span className="text-xs sm:text-sm font-black tracking-[0.2em] sm:tracking-[0.3em] text-lime-500 uppercase">Join The Elite</span>
+                <div className="w-12 sm:w-24 h-1 bg-lime-500" />
               </div>
               
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-200 to-cyan-200">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-8 uppercase leading-[0.9]">
+                <span className="text-white">
                   READY TO
                 </span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-blue-200 to-purple-200 ml-3">
+                <br />
+                <span className="text-lime-500">
                   DOMINATE?
                 </span>
               </h2>
               
-              <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4">
-                Join the elite community of athletes who track their progress with <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 font-semibold">precision</span> and achieve <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-semibold">extraordinary results</span>.
+              <p className="text-sm sm:text-xl lg:text-2xl text-zinc-400 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+                Join elite athletes who track progress with <span className="text-lime-500 font-black">precision</span> and achieve <span className="text-white font-black">extraordinary results</span>.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
               {isAuthenticated() ? (
                 <>
                   <button 
                     onClick={() => navigate('/dashboard')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400/50 hover:shadow-3xl"
+                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wider"
                   >
                     🚀 GO TO DASHBOARD
                   </button>
@@ -884,14 +813,14 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => navigate('/register')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400/50 hover:shadow-3xl"
+                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wider"
                   >
                     🎆 START YOUR JOURNEY
                   </button>
                   
                   <button 
                     onClick={() => navigate('/login')} 
-                    className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-2xl sm:rounded-3xl text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-white/20 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/20 hover:border-white/40 hover:shadow-3xl"
+                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-zinc-900 border-2 sm:border-4 border-white text-white shadow-2xl transform transition-all duration-300 hover:bg-white hover:text-black hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-white uppercase tracking-wider"
                   >
                     🔑 LOGIN
                   </button>
@@ -902,7 +831,7 @@ export default function Home() {
                         forceStatsRefresh();
                         setRefreshTrigger(prev => prev + 1);
                       }}
-                      className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm bg-red-600 hover:bg-red-700 text-white"
+                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white font-black uppercase"
                     >
                       🔧 Debug: Refresh Stats
                     </button>

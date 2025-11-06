@@ -471,7 +471,8 @@ export default function MyPlans() {
                 {/* Compact Action Buttons */}
                 <div className="space-y-1.5">
                   <Link
-                    to={`/workout/${plan.id}`}
+                    to="/start-workout"
+                    state={{ workoutPlan: plan }}
                     className="w-full px-3 py-2 bg-slate-700/50 text-slate-300 rounded text-xs lg:text-sm font-medium text-center flex items-center justify-center gap-1"
                   >
                     <span>🏋️</span>

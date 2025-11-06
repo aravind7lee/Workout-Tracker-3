@@ -41,10 +41,35 @@ export default function StartWorkout() {
   const [editingSetIndex, setEditingSetIndex] = useState(null);
   const [editSetData, setEditSetData] = useState({ reps: '', weight: '' });
 
+  const [workoutPlan, setWorkoutPlan] = useState(null);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [planExercisesCompleted, setPlanExercisesCompleted] = useState([]);
+
   useEffect(() => {
     // Get exercise and configuration from navigation state
     const selectedExercise = location.state?.selectedExercise;
     const workoutConfig = location.state?.workoutConfig;
+    const plan = location.state?.workoutPlan;
+    
+    // Handle workout plan from My Plans page
+    if (plan) {
+      setWorkoutPlan(plan);
+      // Set first exercise from the plan
+      if (plan.exercises && plan.exercises.length > 0) {
+        const firstExercise = plan.exercises[0];
+        setExercise({
+          id: firstExercise.id || Date.now(),
+          name: firstExercise.name,
+          category: firstExercise.category || plan.category || 'General',
+          icon: '🏋️',
+          color: 'bg-orange-500',
+          sets: firstExercise.sets || '3 sets',
+          difficulty: plan.difficulty || 'intermediate'
+        });
+        setShowSetSelector(true);
+      }
+      return;
+    }
     
     if (selectedExercise) {
       setExercise(selectedExercise);
@@ -196,15 +221,125 @@ export default function StartWorkout() {
   };
 
   const finishWorkout = async () => {
-    if (workoutData.sets.length === 0) {
-      alert('Please add at least one set before finishing the workout.');
-      return;
-    }
-
     // Calculate total active workout time (excluding rest periods)
     const totalActiveTime = totalWorkoutTime + currentSetTimer;
     
-    const completedWorkout = {
+    // Check if this is part of a workout plan
+    const isPartOfPlan = workoutPlan !== null;
+    const hasMoreExercises = isPartOfPlan && currentExerciseIndex < workoutPlan.exercises.length - 1;
+    
+    // If moving to next exercise in plan, allow even with 0 sets (already saved)
+    if (workoutData.sets.length === 0 && !hasMoreExercises) {
+      alert('Please add at least one set before finishing the workout.');
+      return;
+    }
+    
+    // If moving to next exercise and sets are already saved, skip saving again
+    if (workoutData.sets.length === 0 && hasMoreExercises) {
+      const nextIndex = currentExerciseIndex + 1;
+      const nextExercise = workoutPlan.exercises[nextIndex];
+      
+      setCurrentExerciseIndex(nextIndex);
+      setExercise({
+        id: nextExercise.id || Date.now(),
+        name: nextExercise.name,
+        category: nextExercise.category || workoutPlan.category || 'General',
+        icon: '🏋️',
+        color: 'bg-orange-500',
+        sets: nextExercise.sets || '3 sets',
+        difficulty: workoutPlan.difficulty || 'intermediate'
+      });
+      
+      setWorkoutData({
+        sets: [],
+        notes: '',
+        startTime: new Date(),
+        duration: 0,
+        targetSets: 3,
+        targetReps: 12
+      });
+      setCurrentSet({ reps: '', weight: '', rest: 60 });
+      setCurrentSetTimer(0);
+      setTotalWorkoutTime(0);
+      setWorkoutStarted(false);
+      setCurrentSetStarted(false);
+      setShowWorkoutComplete(false);
+      setShowSetSelector(true);
+      
+      return;
+    }
+    
+    // Save current exercise completion
+    const exerciseCompletion = {
+      exerciseName: exercise.name,
+      sets: workoutData.sets.length,
+      reps: workoutData.sets.reduce((total, set) => total + set.reps, 0),
+      totalWeight: workoutData.sets.reduce((total, set) => total + (set.weight * set.reps), 0),
+      duration: totalActiveTime,
+      setsData: workoutData.sets
+    };
+    
+    setPlanExercisesCompleted(prev => [...prev, exerciseCompletion]);
+    
+    // If there are more exercises in the plan, move to next exercise
+    if (hasMoreExercises) {
+      const nextIndex = currentExerciseIndex + 1;
+      const nextExercise = workoutPlan.exercises[nextIndex];
+      
+      setCurrentExerciseIndex(nextIndex);
+      setExercise({
+        id: nextExercise.id || Date.now(),
+        name: nextExercise.name,
+        category: nextExercise.category || workoutPlan.category || 'General',
+        icon: '🏋️',
+        color: 'bg-orange-500',
+        sets: nextExercise.sets || '3 sets',
+        difficulty: workoutPlan.difficulty || 'intermediate'
+      });
+      
+      // Reset workout state for next exercise
+      setWorkoutData({
+        sets: [],
+        notes: '',
+        startTime: new Date(),
+        duration: 0,
+        targetSets: 3,
+        targetReps: 12
+      });
+      setCurrentSet({ reps: '', weight: '', rest: 60 });
+      setCurrentSetTimer(0);
+      setWorkoutStarted(false);
+      setCurrentSetStarted(false);
+      setShowSetSelector(true);
+      
+      return; // Don't finish the entire workout yet
+    }
+    
+    // Complete the entire workout (single exercise or last exercise in plan)
+    const completedWorkout = isPartOfPlan ? {
+      id: Date.now(),
+      exercise: `${workoutPlan.name} Plan`,
+      name: `${workoutPlan.name} Workout`,
+      category: workoutPlan.category || 'Plan Workout',
+      muscle: workoutPlan.category || 'Multiple',
+      difficulty: workoutPlan.difficulty || 'Intermediate',
+      completedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      duration: planExercisesCompleted.reduce((sum, ex) => sum + ex.duration, 0) + totalActiveTime,
+      totalTime: timer,
+      activeTime: planExercisesCompleted.reduce((sum, ex) => sum + ex.duration, 0) + totalActiveTime,
+      caloriesBurned: Math.floor((planExercisesCompleted.reduce((sum, ex) => sum + ex.duration, 0) + totalActiveTime) / 60 * 5) + (planExercisesCompleted.length + 1) * 20,
+      sets: planExercisesCompleted.reduce((sum, ex) => sum + ex.sets, 0) + workoutData.sets.length,
+      reps: planExercisesCompleted.reduce((sum, ex) => sum + ex.reps, 0) + workoutData.sets.reduce((total, set) => total + set.reps, 0),
+      totalWeight: planExercisesCompleted.reduce((sum, ex) => sum + ex.totalWeight, 0) + workoutData.sets.reduce((total, set) => total + (set.weight * set.reps), 0),
+      userId: user?.id,
+      user: user?.id,
+      savedOffline: !isOnline,
+      notes: workoutData.notes || `Completed ${workoutPlan.name} plan with ${planExercisesCompleted.length + 1} exercises`,
+      planId: workoutPlan.id,
+      planName: workoutPlan.name,
+      exercises: [...planExercisesCompleted, exerciseCompletion]
+    } : {
       id: Date.now(),
       exercise: exercise.name,
       name: exercise.name,
@@ -213,9 +348,9 @@ export default function StartWorkout() {
       difficulty: exercise.difficulty,
       completedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
-      duration: totalActiveTime, // Use active time instead of total time
-      totalTime: timer, // Keep total time including rest
-      activeTime: totalActiveTime, // Explicit active time tracking
+      duration: totalActiveTime,
+      totalTime: timer,
+      activeTime: totalActiveTime,
       caloriesBurned: Math.floor(totalActiveTime / 60 * 5) + workoutData.sets.length * 10,
       sets: workoutData.sets.length,
       reps: workoutData.sets.reduce((total, set) => total + set.reps, 0),
@@ -358,6 +493,22 @@ export default function StartWorkout() {
           </div>
           
           <div className="relative p-6">
+            {/* Workout Plan Progress */}
+            {workoutPlan && (
+              <div className="mb-4 p-3 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-blue-300 font-bold">🏋️ {workoutPlan.name}</span>
+                  <span className="text-blue-400 text-sm">Exercise {currentExerciseIndex + 1} of {workoutPlan.exercises.length}</span>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${((currentExerciseIndex + 1) / workoutPlan.exercises.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+            
             <div className="flex items-center gap-6 mb-6">
               <div className={`w-20 h-20 ${exercise.color} rounded-2xl flex items-center justify-center relative shadow-2xl border-2 border-orange-500/30`}>
                 <span className="text-4xl">{exercise.icon}</span>
@@ -445,7 +596,7 @@ export default function StartWorkout() {
         )}
 
         {/* Start Workout Button or Timer */}
-        {!workoutStarted && !showSetSelector && (
+        {!workoutStarted && !showSetSelector && !showWorkoutComplete && (
           <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30 rounded-lg p-6 mb-6 text-center">
             <div className="text-2xl font-bold text-white mb-2">Ready to Start?</div>
             <p className="text-slate-300 mb-2">Target: {workoutData.targetSets} {workoutData.targetSets === 1 ? 'set' : 'sets'}</p>
@@ -510,7 +661,7 @@ export default function StartWorkout() {
           </div>
         )}
 
-        {workoutStarted && !showWorkoutComplete && (
+        {workoutStarted && (
           <div className="bg-slate-800/50 rounded-lg p-4 mb-6">
             <div className="text-center mb-4">
               <div className="text-3xl font-bold text-blue-400 mb-2">
@@ -645,7 +796,7 @@ export default function StartWorkout() {
                 onClick={finishWorkout}
                 className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold"
               >
-                🏆 Finish Workout
+                {workoutPlan && currentExerciseIndex < workoutPlan.exercises.length - 1 ? '➡️ Next Exercise' : '🏆 Finish Workout'}
               </button>
             </div>
           </div>
@@ -918,13 +1069,86 @@ export default function StartWorkout() {
                 {isPaused ? 'Workout Paused' : isResting ? 'Resting...' : showRestChoice ? 'Choose Rest Option Above' : `✅ Finish Set ${workoutData.sets.length + 1}`}
               </button>
             )}
+            
+            {/* Show plan progress info */}
+            {workoutPlan && workoutData.sets.length > 0 && (
+              <div className="bg-blue-600/20 border border-blue-500/30 rounded-lg p-4 mb-6 text-center">
+                <div className="text-blue-300 text-sm mb-2">
+                  🏋️ Workout Plan Progress
+                </div>
+                <div className="text-white font-bold">
+                  {planExercisesCompleted.length} of {workoutPlan.exercises.length} exercises completed
+                </div>
+                {currentExerciseIndex < workoutPlan.exercises.length - 1 && (
+                  <div className="text-blue-400 text-sm mt-2">
+                    ➡️ Next: {workoutPlan.exercises[currentExerciseIndex + 1].name}
+                  </div>
+                )}
+              </div>
+            )}
           </>
+        )}
+
+        {/* Completed Exercises from Plan */}
+        {workoutPlan && planExercisesCompleted.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <span>✅</span>
+              <span>Completed Exercises ({planExercisesCompleted.length}/{workoutPlan.exercises.length})</span>
+            </h3>
+            <div className="space-y-3">
+              {planExercisesCompleted.map((completedEx, idx) => (
+                <div key={idx} className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                        ✓
+                      </div>
+                      <div>
+                        <div className="font-bold text-white">{completedEx.exerciseName}</div>
+                        <div className="text-sm text-green-300">Exercise {idx + 1} - Completed</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-green-400 font-bold">{formatTime(completedEx.duration)}</div>
+                      <div className="text-xs text-slate-400">Duration</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3 mb-3">
+                    <div className="bg-slate-800/50 rounded-lg p-2 text-center">
+                      <div className="text-lg font-bold text-blue-400">{completedEx.sets}</div>
+                      <div className="text-xs text-slate-400">Sets</div>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-2 text-center">
+                      <div className="text-lg font-bold text-purple-400">{completedEx.reps}</div>
+                      <div className="text-xs text-slate-400">Total Reps</div>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-2 text-center">
+                      <div className="text-lg font-bold text-orange-400">{completedEx.totalWeight.toFixed(1)}kg</div>
+                      <div className="text-xs text-slate-400">Total Weight</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-400 mb-1">Set Details:</div>
+                    {completedEx.setsData.map((set, setIdx) => (
+                      <div key={setIdx} className="flex items-center justify-between bg-slate-800/30 rounded p-2">
+                        <span className="text-slate-300 text-sm">Set {setIdx + 1}</span>
+                        <span className="text-white text-sm font-medium">{set.reps} reps × {set.weight}kg</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Completed Sets */}
         {workoutData.sets.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Completed Sets</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Completed Sets (Current Exercise)</h3>
             <div className="space-y-2">
               {workoutData.sets.map((set, index) => (
                 <div key={index} className={`rounded-lg p-3 transition-all duration-200 ${
@@ -1053,7 +1277,10 @@ export default function StartWorkout() {
             disabled={workoutData.sets.length === 0 || isPaused}
             className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 font-semibold"
           >
-            {isPaused ? '⏸️ Resume to Finish' : `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets} sets)`}
+            {isPaused ? '⏸️ Resume to Finish' : 
+             workoutPlan && currentExerciseIndex < workoutPlan.exercises.length - 1 ? 
+             `➡️ Next Exercise (${workoutData.sets.length}/${workoutData.targetSets} sets)` : 
+             `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets} sets)`}
           </button>
         </div>
         {/* Professional Stats Dashboard */}
