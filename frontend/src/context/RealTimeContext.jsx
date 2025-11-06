@@ -134,14 +134,24 @@ export const RealTimeProvider = ({ children }) => {
       setStats(prev => ({ ...prev, ...localStats }));
       
       // Sync with MongoDB - try multiple endpoints for comprehensive data
-      const mongoPromises = [
-        api.get('/analytics/hero-stats').catch(() => null),
-        api.get('/analytics').catch(() => null),
-        api.get('/users/stats').catch(() => null),
-        api.get('/workouts').catch(() => null)
-      ];
+      // Skip API calls if not authenticated
+      let heroStats = { status: 'rejected' };
+      let analyticsData = { status: 'rejected' };
+      let userStats = { status: 'rejected' };
+      let workoutsData = { status: 'rejected' };
+      
+      try {
+        const mongoPromises = [
+          api.get('/analytics/hero-stats').catch(() => null),
+          api.get('/analytics').catch(() => null),
+          api.get('/users/stats').catch(() => null),
+          api.get('/workouts').catch(() => null)
+        ];
 
-      const [heroStats, analyticsData, userStats, workoutsData] = await Promise.allSettled(mongoPromises);
+        [heroStats, analyticsData, userStats, workoutsData] = await Promise.allSettled(mongoPromises);
+      } catch (error) {
+        console.warn('⚠️ MongoDB API calls failed:', error.message);
+      }
 
       let realTimeData = {
         ...localStats,

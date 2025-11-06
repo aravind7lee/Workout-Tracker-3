@@ -39,6 +39,7 @@ import ThemeErrorBoundary from './components/ThemeErrorBoundary';
 
 import WorkoutCompletionHandler from './components/WorkoutCompletionHandler';
 import PRNotification from './components/PRNotification';
+import ScrollToTop from './components/ScrollToTop';
 
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -391,6 +392,7 @@ export default function App() {
 
                     <WorkoutCompletionProvider>
                   <div className="min-h-screen">
+                    <ScrollToTop />
                     <PRNotification />
                     <Navbar />
                     <WorkoutCompletionHandler />

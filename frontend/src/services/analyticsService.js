@@ -1,33 +1,55 @@
 // frontend/src/services/analyticsService.js - BACKEND ANALYTICS SERVICE
 import api from '../utils/api';
+import { isUserAuthenticated } from '../utils/authCheck';
 
 class AnalyticsService {
   // Fetch analytics stats from backend
   async getStats() {
+    if (!isUserAuthenticated()) {
+      return { workouts: 0, meals: 0, plans: 0, streak: 0 };
+    }
+    
     try {
       const response = await api.get('/analytics/stats');
       return response.data;
     } catch (error) {
+      if (error.message?.includes('authentication')) {
+        return { workouts: 0, meals: 0, plans: 0, streak: 0 };
+      }
       throw error;
     }
   }
 
   // Fetch workout analytics from backend
   async getWorkoutAnalytics() {
+    if (!isUserAuthenticated()) {
+      return { totalWorkouts: 0, weeklyWorkouts: 0, monthlyWorkouts: 0 };
+    }
+    
     try {
       const response = await api.get('/analytics/workouts');
       return response.data;
     } catch (error) {
+      if (error.message?.includes('authentication')) {
+        return { totalWorkouts: 0, weeklyWorkouts: 0, monthlyWorkouts: 0 };
+      }
       throw error;
     }
   }
 
   // Fetch nutrition analytics from backend
   async getNutritionAnalytics() {
+    if (!isUserAuthenticated()) {
+      return { totalMeals: 0, calories: 0, protein: 0 };
+    }
+    
     try {
       const response = await api.get('/analytics/nutrition');
       return response.data;
     } catch (error) {
+      if (error.message?.includes('authentication')) {
+        return { totalMeals: 0, calories: 0, protein: 0 };
+      }
       throw error;
     }
   }

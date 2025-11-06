@@ -59,6 +59,14 @@ console.log('🔗 API Base URL:', getApiBaseUrl());
 // Enhanced request interceptor with token validation
 api.interceptors.request.use(
   (config) => {
+    // Skip auth for public endpoints
+    const publicEndpoints = ['/health', '/auth/login', '/auth/register'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
+    
+    if (isPublicEndpoint) {
+      return config;
+    }
+    
     const token = localStorage.getItem('token');
     if (token && token !== 'null' && token !== 'undefined') {
       try {
@@ -70,12 +78,18 @@ api.interceptors.request.use(
           console.warn('Invalid token format, removing from storage');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
+          // Cancel request if token is invalid
+          return Promise.reject(new Error('Invalid authentication token'));
         }
       } catch (e) {
         console.warn('Token validation failed, removing from storage');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        return Promise.reject(new Error('Token validation failed'));
       }
+    } else if (!isPublicEndpoint) {
+      // No token for protected endpoint - cancel request
+      return Promise.reject(new Error('No authentication token'));
     }
     return config;
   },
