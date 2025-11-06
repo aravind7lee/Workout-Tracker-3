@@ -459,30 +459,30 @@ export default function StartWorkout() {
       <PRNotification />
       {/* Professional Gym Header */}
       <div className="bg-gradient-to-r from-orange-600/10 via-red-600/10 to-orange-600/10 border-b border-orange-500/20 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 md:py-4">
+          <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => navigate('/library')}
-              className="flex items-center gap-3 px-4 py-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-600/50 text-slate-300 hover:text-white transition-all duration-300 backdrop-blur-sm"
+              className="flex items-center gap-1.5 sm:gap-2 md:gap-3 px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg sm:rounded-xl border border-slate-600/50 text-slate-300 hover:text-white transition-all duration-300 backdrop-blur-sm"
             >
-              <span className="text-orange-400">←</span>
-              <span className="font-semibold">EXERCISE LIBRARY</span>
+              <span className="text-orange-400 text-sm sm:text-base">←</span>
+              <span className="font-semibold text-[10px] sm:text-xs md:text-sm">EXERCISE LIBRARY</span>
             </button>
-            <div className={`px-4 py-2 rounded-xl font-bold text-sm border backdrop-blur-sm ${
+            <div className={`px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-xs md:text-sm border backdrop-blur-sm ${
               isOnline 
                 ? 'bg-green-600/20 text-green-400 border-green-500/30 shadow-lg shadow-green-500/20' 
                 : 'bg-yellow-600/20 text-yellow-400 border-yellow-500/30 shadow-lg shadow-yellow-500/20'
             }`}>
-              {isOnline ? '🔥 LIVE SYNC ACTIVE' : '⚡ OFFLINE MODE'}
+              {isOnline ? '🔥 LIVE SYNC' : '⚡ OFFLINE'}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 md:space-y-8">
 
         {/* Professional Exercise Header */}
-        <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/90 via-gray-800/90 to-slate-900/90 border border-orange-500/20 backdrop-blur-sm ${
+        <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-800/90 via-gray-800/90 to-slate-900/90 border border-orange-500/20 backdrop-blur-sm ${
           isPaused ? 'ring-2 ring-yellow-500/50 shadow-2xl shadow-yellow-500/20' : 'shadow-2xl shadow-orange-500/10'
         }`}>
           {/* Gym-style background pattern */}
@@ -492,44 +492,44 @@ export default function StartWorkout() {
             }}></div>
           </div>
           
-          <div className="relative p-6">
+          <div className="relative p-3 sm:p-4 md:p-6">
             {/* Workout Plan Progress */}
             {workoutPlan && (
-              <div className="mb-4 p-3 bg-blue-600/20 border border-blue-500/30 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-blue-300 font-bold">🏋️ {workoutPlan.name}</span>
-                  <span className="text-blue-400 text-sm">Exercise {currentExerciseIndex + 1} of {workoutPlan.exercises.length}</span>
+              <div className="mb-3 sm:mb-4 p-2 sm:p-2.5 md:p-3 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+                <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                  <span className="text-blue-300 font-bold text-xs sm:text-sm">🏋️ {workoutPlan.name}</span>
+                  <span className="text-blue-400 text-[10px] sm:text-xs md:text-sm">Exercise {currentExerciseIndex + 1} of {workoutPlan.exercises.length}</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2">
+                <div className="w-full bg-slate-700 rounded-full h-1.5 sm:h-2">
                   <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-blue-500 h-1.5 sm:h-2 rounded-full transition-all duration-300"
                     style={{ width: `${((currentExerciseIndex + 1) / workoutPlan.exercises.length) * 100}%` }}
                   ></div>
                 </div>
               </div>
             )}
             
-            <div className="flex items-center gap-6 mb-6">
-              <div className={`w-20 h-20 ${exercise.color} rounded-2xl flex items-center justify-center relative shadow-2xl border-2 border-orange-500/30`}>
-                <span className="text-4xl">{exercise.icon}</span>
+            <div className="flex items-center gap-3 sm:gap-4 md:gap-6 mb-3 sm:mb-4 md:mb-6">
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 ${exercise.color} rounded-xl sm:rounded-2xl flex items-center justify-center relative shadow-2xl border-2 border-orange-500/30`}>
+                <span className="text-2xl sm:text-3xl md:text-4xl">{exercise.icon}</span>
                 {isPaused && (
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-sm text-black font-bold">⏸️</span>
+                  <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-xs sm:text-sm text-black font-bold">⏸️</span>
                   </div>
                 )}
               </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-black text-white mb-2 tracking-wide" style={{
+              <div className="flex-1 min-w-0">
+                <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white mb-1 sm:mb-1.5 md:mb-2 tracking-wide truncate" style={{
                   textShadow: '0 2px 4px rgba(0,0,0,0.5)'
                 }}>{exercise.name.toUpperCase()}</h1>
-                <div className="flex items-center gap-4">
-                  <span className="px-3 py-1 bg-orange-600/20 text-orange-400 rounded-lg text-sm font-bold border border-orange-500/30">
+                <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
+                  <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 md:px-3 md:py-1 bg-orange-600/20 text-orange-400 rounded-lg text-[10px] sm:text-xs md:text-sm font-bold border border-orange-500/30">
                     {exercise.category.toUpperCase()}
                   </span>
-                  <span className="text-slate-300 font-medium">{exercise.sets}</span>
+                  <span className="text-slate-300 font-medium text-[10px] sm:text-xs md:text-sm truncate">{exercise.sets}</span>
                 </div>
                 {isPaused && (
-                  <div className="mt-2 px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-lg text-sm font-bold animate-pulse border border-yellow-500/30">
+                  <div className="mt-1.5 sm:mt-2 px-2 py-0.5 sm:px-2.5 sm:py-1 md:px-3 md:py-1 bg-yellow-600/20 text-yellow-400 rounded-lg text-[10px] sm:text-xs md:text-sm font-bold animate-pulse border border-yellow-500/30">
                     ⏸️ WORKOUT PAUSED
                   </div>
                 )}
@@ -540,44 +540,44 @@ export default function StartWorkout() {
 
         {/* Set Selector Modal */}
         {showSetSelector && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
-              <h3 className="text-xl font-bold text-white mb-4">How many sets do you want to perform?</h3>
-              <p className="text-slate-300 mb-6">Choose the number of sets for your {exercise.name} workout.</p>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-3 sm:p-4 z-50">
+            <div className="bg-slate-800 rounded-xl p-4 sm:p-5 md:p-6 max-w-md w-full">
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-3 sm:mb-4">How many sets do you want to perform?</h3>
+              <p className="text-xs sm:text-sm text-slate-300 mb-4 sm:mb-5 md:mb-6">Choose the number of sets for your {exercise.name} workout.</p>
               
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-3 gap-2 sm:gap-2.5 md:gap-3 mb-4 sm:mb-5 md:mb-6">
                 {[1,2,3,4,5,6].map(num => (
                   <button
                     key={num}
                     onClick={() => setCustomSets(num)}
-                    className={`p-4 rounded-lg text-center transition-all ${
+                    className={`p-2.5 sm:p-3 md:p-4 rounded-lg text-center transition-all ${
                       customSets === num 
                         ? 'bg-blue-600 text-white border-2 border-blue-400' 
                         : 'bg-slate-700 text-slate-300 hover:bg-slate-600 border-2 border-transparent'
                     }`}
                   >
-                    <div className="text-2xl font-bold">{num}</div>
-                    <div className="text-xs">{num === 1 ? 'set' : 'sets'}</div>
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold">{num}</div>
+                    <div className="text-[9px] sm:text-[10px] md:text-xs">{num === 1 ? 'set' : 'sets'}</div>
                   </button>
                 ))}
               </div>
               
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-2">Custom amount:</label>
+              <div className="mb-4 sm:mb-5 md:mb-6">
+                <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-2">Custom amount:</label>
                 <input
                   type="number"
                   value={customSets}
                   onChange={(e) => setCustomSets(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 text-white"
+                  className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-700 border border-slate-600 text-white text-xs sm:text-sm"
                   min="1"
                   max="20"
                 />
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-2.5 md:gap-3">
                 <button
                   onClick={() => navigate('/library')}
-                  className="btn-secondary flex-1"
+                  className="btn-secondary flex-1 text-xs sm:text-sm py-2 sm:py-2.5"
                 >
                   Cancel
                 </button>
@@ -585,8 +585,9 @@ export default function StartWorkout() {
                   onClick={() => {
                     setWorkoutData(prev => ({ ...prev, targetSets: customSets }));
                     setShowSetSelector(false);
+                    setShowWorkoutComplete(false);
                   }}
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-xs sm:text-sm py-2 sm:py-2.5"
                 >
                   Start with {customSets} {customSets === 1 ? 'set' : 'sets'}
                 </button>
@@ -597,32 +598,32 @@ export default function StartWorkout() {
 
         {/* Start Workout Button or Timer */}
         {!workoutStarted && !showSetSelector && !showWorkoutComplete && (
-          <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30 rounded-lg p-6 mb-6 text-center">
-            <div className="text-2xl font-bold text-white mb-2">Ready to Start?</div>
-            <p className="text-slate-300 mb-2">Target: {workoutData.targetSets} {workoutData.targetSets === 1 ? 'set' : 'sets'}</p>
-            <p className="text-slate-400 mb-4 text-sm">Enter your reps and weight before starting the workout.</p>
+          <div className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30 rounded-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6 text-center">
+            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white mb-1.5 sm:mb-2">Ready to Start?</div>
+            <p className="text-xs sm:text-sm text-slate-300 mb-1.5 sm:mb-2">Target: {workoutData.targetSets} {workoutData.targetSets === 1 ? 'set' : 'sets'}</p>
+            <p className="text-slate-400 mb-3 sm:mb-4 text-[10px] sm:text-xs md:text-sm">Enter your reps and weight before starting the workout.</p>
             
             {/* Pre-workout validation inputs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 max-w-md mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4 max-w-md mx-auto">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Reps</label>
+                <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">Reps</label>
                 <input
                   type="number"
                   value={currentSet.reps}
                   onChange={(e) => setCurrentSet(prev => ({ ...prev, reps: e.target.value }))}
-                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center"
+                  className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center text-xs sm:text-sm"
                   placeholder="12"
                   min="1"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Weight (kg)</label>
+                <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">Weight (kg)</label>
                 <input
                   type="number"
                   step="0.5"
                   value={currentSet.weight}
                   onChange={(e) => setCurrentSet(prev => ({ ...prev, weight: e.target.value }))}
-                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center"
+                  className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center text-xs sm:text-sm"
                   placeholder="20"
                   min="0"
                 />
@@ -631,15 +632,15 @@ export default function StartWorkout() {
             
             {/* Validation message */}
             {(!currentSet.reps || !currentSet.weight) && (
-              <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-3 mb-4 text-yellow-300 text-sm">
+              <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-2 sm:p-2.5 md:p-3 mb-3 sm:mb-4 text-yellow-300 text-[10px] sm:text-xs md:text-sm">
                 ⚠️ Please enter both reps and weight to start your workout
               </div>
             )}
             
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 md:gap-3 justify-center">
               <button
                 onClick={() => setShowSetSelector(true)}
-                className="btn bg-slate-600 hover:bg-slate-700 text-white px-6 py-3"
+                className="btn bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 text-xs sm:text-sm"
               >
                 ⚙️ Change Sets
               </button>
@@ -653,7 +654,7 @@ export default function StartWorkout() {
                   setCurrentSetStarted(true);
                 }}
                 disabled={!currentSet.reps || !currentSet.weight}
-                className="btn bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 text-sm sm:text-base md:text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 🚀 Start Workout
               </button>
@@ -923,22 +924,22 @@ export default function StartWorkout() {
         )}
 
         {/* Current Set Input */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
               Reps {workoutData.sets.length > 0 && `(Set ${workoutData.sets.length + 1})`}
             </label>
             <input
               type="number"
               value={currentSet.reps}
               onChange={(e) => setCurrentSet(prev => ({ ...prev, reps: e.target.value }))}
-              className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
+              className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-xs sm:text-sm"
               placeholder={workoutData.sets.length > 0 ? "Enter reps for next set" : "12"}
               disabled={isPaused}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
               Weight (kg) {workoutData.sets.length > 0 && `(Set ${workoutData.sets.length + 1})`}
             </label>
             <input
@@ -946,20 +947,20 @@ export default function StartWorkout() {
               step="0.5"
               value={currentSet.weight}
               onChange={(e) => setCurrentSet(prev => ({ ...prev, weight: e.target.value }))}
-              className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
+              className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-xs sm:text-sm"
               placeholder={workoutData.sets.length > 0 ? "Enter weight for next set" : "20"}
               disabled={isPaused}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
               Rest Time ({Math.floor(currentSet.rest / 60)}:{(currentSet.rest % 60).toString().padStart(2, '0')})
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => setCurrentSet(prev => ({ ...prev, rest: Math.max(15, prev.rest - 15) }))}
                 disabled={isPaused}
-                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm disabled:opacity-50"
+                className="w-7 h-7 sm:w-8 sm:h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-xs sm:text-sm disabled:opacity-50"
               >
                 -
               </button>
@@ -967,7 +968,7 @@ export default function StartWorkout() {
                 type="number"
                 value={currentSet.rest}
                 onChange={(e) => setCurrentSet(prev => ({ ...prev, rest: parseInt(e.target.value) || 60 }))}
-                className="flex-1 p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center"
+                className="flex-1 p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-center text-xs sm:text-sm"
                 min="15"
                 max="900"
                 placeholder="60"
@@ -976,18 +977,18 @@ export default function StartWorkout() {
               <button
                 onClick={() => setCurrentSet(prev => ({ ...prev, rest: prev.rest + 15 }))}
                 disabled={isPaused}
-                className="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-sm disabled:opacity-50"
+                className="w-7 h-7 sm:w-8 sm:h-8 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-center text-white text-xs sm:text-sm disabled:opacity-50"
               >
                 +
               </button>
             </div>
-            <div className="flex gap-1 mt-2">
+            <div className="flex gap-0.5 sm:gap-1 mt-1.5 sm:mt-2">
               {[30, 60, 90, 120, 180].map(time => (
                 <button
                   key={time}
                   onClick={() => setCurrentSet(prev => ({ ...prev, rest: time }))}
                   disabled={isPaused}
-                  className={`px-2 py-1 rounded text-xs transition-colors disabled:opacity-50 ${
+                  className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-[9px] sm:text-[10px] md:text-xs transition-colors disabled:opacity-50 ${
                     currentSet.rest === time 
                       ? 'bg-blue-600 text-white' 
                       : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -1252,12 +1253,12 @@ export default function StartWorkout() {
         )}
 
         {/* Notes */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-slate-300 mb-2">Notes</label>
+        <div className="mb-4 sm:mb-5 md:mb-6">
+          <label className="block text-[10px] sm:text-xs md:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">Notes</label>
           <textarea
             value={workoutData.notes}
             onChange={(e) => setWorkoutData(prev => ({ ...prev, notes: e.target.value }))}
-            className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
+            className="w-full p-2.5 sm:p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-xs sm:text-sm"
             rows={3}
             placeholder="How did this exercise feel? Any observations..."
             disabled={isPaused}
@@ -1265,56 +1266,56 @@ export default function StartWorkout() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
           <button
             onClick={() => navigate('/library')}
-            className="btn-secondary flex-1"
+            className="btn-secondary flex-1 text-xs sm:text-sm py-2 sm:py-2.5"
           >
             Cancel
           </button>
           <button
             onClick={finishWorkout}
             disabled={workoutData.sets.length === 0 || isPaused}
-            className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 font-semibold"
+            className="btn bg-green-600 hover:bg-green-700 text-white flex-1 disabled:opacity-50 font-semibold text-xs sm:text-sm py-2 sm:py-2.5"
           >
             {isPaused ? '⏸️ Resume to Finish' : 
              workoutPlan && currentExerciseIndex < workoutPlan.exercises.length - 1 ? 
-             `➡️ Next Exercise (${workoutData.sets.length}/${workoutData.targetSets} sets)` : 
-             `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets} sets)`}
+             `➡️ Next Exercise (${workoutData.sets.length}/${workoutData.targetSets})` : 
+             `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets})`}
           </button>
         </div>
         {/* Professional Stats Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600/20 via-blue-700/20 to-blue-800/20 border border-blue-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+          <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-600/20 via-blue-700/20 to-blue-800/20 border border-blue-500/30 p-3 sm:p-4 md:p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent"></div>
             <div className="relative">
-              <div className="text-4xl font-black text-blue-400 mb-2">{workoutData.sets.length}</div>
-              <div className="text-sm font-bold text-blue-300 uppercase tracking-wider">🏆 SETS COMPLETED</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-blue-400 mb-1 sm:mb-1.5 md:mb-2">{workoutData.sets.length}</div>
+              <div className="text-[10px] sm:text-xs md:text-sm font-bold text-blue-300 uppercase tracking-wider">🏆 SETS COMPLETED</div>
             </div>
           </div>
-          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600/20 via-green-700/20 to-green-800/20 border border-green-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+          <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-600/20 via-green-700/20 to-green-800/20 border border-green-500/30 p-3 sm:p-4 md:p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
             <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent"></div>
             <div className="relative">
-              <div className="text-4xl font-black text-green-400 mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-green-400 mb-1 sm:mb-1.5 md:mb-2">
                 {workoutData.sets.reduce((total, set) => total + set.reps, 0)}
               </div>
-              <div className="text-sm font-bold text-green-300 uppercase tracking-wider">💥 TOTAL REPS</div>
+              <div className="text-[10px] sm:text-xs md:text-sm font-bold text-green-300 uppercase tracking-wider">💥 TOTAL REPS</div>
             </div>
           </div>
-          <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600/20 via-purple-700/20 to-purple-800/20 border border-purple-500/30 p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
+          <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-600/20 via-purple-700/20 to-purple-800/20 border border-purple-500/30 p-3 sm:p-4 md:p-6 text-center backdrop-blur-sm ${isPaused ? 'opacity-60' : ''}`}>
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent"></div>
             <div className="relative">
-              <div className="text-4xl font-black text-purple-400 mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-purple-400 mb-1 sm:mb-1.5 md:mb-2">
                 {showWorkoutComplete ? formatTime(totalWorkoutTime) : formatTime(totalWorkoutTime + currentSetTimer)}
               </div>
-              <div className="text-sm font-bold text-purple-300 uppercase tracking-wider">
+              <div className="text-[10px] sm:text-xs md:text-sm font-bold text-purple-300 uppercase tracking-wider">
                 ⚡ {showWorkoutComplete ? 'FINAL ACTIVE TIME' : 'ACTIVE TIME'}
               </div>
               {isPaused && !showWorkoutComplete && (
-                <div className="text-xs text-yellow-400 mt-2 font-bold animate-pulse">⏸️ PAUSED</div>
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-yellow-400 mt-1.5 sm:mt-2 font-bold animate-pulse">⏸️ PAUSED</div>
               )}
               {showWorkoutComplete && (
-                <div className="text-xs text-green-400 mt-2 font-bold">✅ COMPLETED</div>
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-green-400 mt-1.5 sm:mt-2 font-bold">✅ COMPLETED</div>
               )}
             </div>
           </div>

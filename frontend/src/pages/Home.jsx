@@ -836,18 +836,6 @@ export default function Home() {
                   >
                     🔑 LOGIN
                   </button>
-                  
-                  {process.env.NODE_ENV === 'development' && (
-                    <button 
-                      onClick={() => {
-                        forceStatsRefresh();
-                        setRefreshTrigger(prev => prev + 1);
-                      }}
-                      className="w-full sm:w-auto px-3 py-2 text-[10px] sm:text-sm bg-red-600 hover:bg-red-700 text-white font-black uppercase"
-                    >
-                      🔧 Debug: Refresh Stats
-                    </button>
-                  )}
                 </>
               )}
             </div>

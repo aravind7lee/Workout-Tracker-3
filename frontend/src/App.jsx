@@ -28,6 +28,7 @@ import StartWorkout from './pages/StartWorkout';
 
 
 import Workouts from './pages/Workouts';
+import WorkoutDetails from './pages/WorkoutDetails';
 import WorkoutsTest from './pages/WorkoutsTest';
 import WorkoutsFixed from './pages/WorkoutsFixed';
 import WorkoutsComplete from './pages/WorkoutsComplete';
@@ -423,6 +424,7 @@ export default function App() {
 
 
                       <Route path="/workouts" element={<Workouts />} />
+                      <Route path="/workout-details/:workoutId" element={<WorkoutDetails />} />
                       <Route path="/legends" element={<LegendsAndInfluencers />} />
                       <Route path="/search" element={<Search />} />
                       <Route path="/exercises/:id" element={<ExerciseDetail />} />

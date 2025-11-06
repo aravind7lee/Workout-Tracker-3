@@ -961,44 +961,45 @@ export default function Analytics() {
 
           {/* Premium Meal Tracking Calendar */}
           <motion.div 
-            className="mx-2 sm:mx-4 pb-6 sm:pb-8"
+            className="mx-2 sm:mx-4 pb-4 sm:pb-6 md:pb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
           >
-            <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/30 rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/30 rounded-xl sm:rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 relative overflow-hidden group">
               {/* Advanced Gym Branding Effects */}
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-green-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500 rounded-t-3xl"></div>
+              <div className="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500 rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl"></div>
               <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
                 {/* Professional Header */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl border border-emerald-400/30">
-                        <span className="text-white text-2xl animate-bounce">🍽️</span>
+                <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
+                    <div className="relative flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl border border-emerald-400/30">
+                        <span className="text-white text-lg sm:text-xl md:text-2xl animate-bounce">🍽️</span>
                       </div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                      <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
                     </div>
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-300 bg-clip-text text-transparent">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-300 bg-clip-text text-transparent truncate">
                         MEAL TRACKING CALENDAR
                       </h3>
-                      <p className="text-sm text-slate-400 font-medium">Track your daily nutrition consistency with real-time meal logging data</p>
+                      <p className="text-[10px] sm:text-xs md:text-sm text-slate-400 font-medium hidden sm:block">Track your daily nutrition consistency with real-time meal logging data</p>
+                      <p className="text-[10px] text-slate-400 font-medium sm:hidden">Track nutrition with real-time data</p>
                     </div>
                   </div>
                   
                   {/* Live Status Badge */}
-                  <div className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/40 rounded-full px-3 py-1.5">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span className="text-xs font-bold text-emerald-300 tracking-wider">NUTRITION</span>
+                  <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 bg-emerald-500/20 border border-emerald-400/40 rounded-full px-2 py-1 sm:px-2.5 sm:py-1 md:px-3 md:py-1.5 flex-shrink-0">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span className="text-[9px] sm:text-[10px] md:text-xs font-bold text-emerald-300 tracking-wider">NUTRITION</span>
                   </div>
                 </div>
                 
                 {/* Calendar Container */}
-                <div className="bg-gradient-to-br from-slate-900/60 to-black/40 rounded-2xl p-4 border border-emerald-500/20 shadow-inner">
+                <div className="bg-gradient-to-br from-slate-900/60 to-black/40 rounded-lg sm:rounded-xl md:rounded-2xl p-2 sm:p-3 md:p-4 border border-emerald-500/20 shadow-inner">
                   <MealTrackingCalendar />
                 </div>
               </div>

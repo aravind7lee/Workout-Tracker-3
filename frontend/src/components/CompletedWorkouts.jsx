@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import { workoutSync } from '../services/workoutSync';
@@ -6,6 +7,7 @@ import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
 
 
 export default function CompletedWorkouts() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { isOnline } = useRealTime();
   const [completedWorkouts, setCompletedWorkouts] = useState([]);
@@ -322,7 +324,7 @@ export default function CompletedWorkouts() {
                 </div>
               )}
 
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                   {workout.difficulty && (
                     <span className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-xs font-medium ${
@@ -338,7 +340,10 @@ export default function CompletedWorkouts() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                  <button className="text-blue-400 hover:text-blue-300 text-[10px] sm:text-sm hidden sm:inline">
+                  <button 
+                    onClick={() => navigate(`/workout-details/${workout.id}`)}
+                    className="flex-1 sm:flex-none text-blue-400 hover:text-blue-300 text-[10px] sm:text-sm px-3 py-1.5 bg-blue-900/20 sm:bg-transparent rounded-lg sm:rounded-none border border-blue-500/30 sm:border-0"
+                  >
                     View Details →
                   </button>
                   <button 
