@@ -133,6 +133,142 @@ const sampleExercises = [
     instructions: 'Start with feet together, arms at sides. Jump feet apart while raising arms overhead. Jump back to starting position.',
     difficulty: 'Beginner',
     reviewStats: { averageRating: 4.1, totalReviews: 123 }
+  },
+  {
+    name: 'Bayesian Cable Curl',
+    category: 'Arms',
+    muscles: ['Biceps', 'Forearms'],
+    instructions: 'Stand facing away from cable machine with handle behind you. Keep elbow stationary at your side. Curl the cable forward while maintaining constant tension on biceps. Focus on peak contraction.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.5, totalReviews: 45 }
+  },
+  {
+    name: 'Incline Dumbbell Curl',
+    category: 'Arms',
+    muscles: ['Biceps', 'Forearms'],
+    instructions: 'Sit on incline bench set at 45-60 degrees. Let arms hang straight down with dumbbells. Curl weights up while keeping elbows stationary. Lower with control for full stretch.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.6, totalReviews: 78 }
+  },
+  {
+    name: 'Close Grip Lat Pulldown',
+    category: 'Back',
+    muscles: ['Latissimus Dorsi', 'Biceps', 'Middle Back'],
+    instructions: 'Sit at lat pulldown machine with close grip attachment. Pull bar down to upper chest while keeping torso upright. Squeeze shoulder blades together at bottom. Control the weight back up.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.4, totalReviews: 92 }
+  },
+  {
+    name: 'Rowing Machine',
+    category: 'Back',
+    muscles: ['Back', 'Legs', 'Core', 'Arms'],
+    instructions: 'Sit on rowing machine with feet secured. Push with legs first, then lean back slightly and pull handle to lower chest. Extend arms, lean forward, then bend knees to return. Maintain smooth rhythm.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.7, totalReviews: 156 }
+  },
+  {
+    name: 'Svend Press',
+    category: 'Chest',
+    muscles: ['Chest', 'Front Deltoids'],
+    instructions: 'Hold weight plates together at chest level. Press plates forward while squeezing them together. Return to chest with control.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.2, totalReviews: 34 }
+  },
+  {
+    name: 'Floor Press',
+    category: 'Chest',
+    muscles: ['Chest', 'Triceps', 'Shoulders'],
+    instructions: 'Lie on floor with barbell. Lower bar until elbows touch floor. Press back up explosively.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.4, totalReviews: 56 }
+  },
+  {
+    name: 'Bradford Press',
+    category: 'Shoulders',
+    muscles: ['Shoulders', 'Traps'],
+    instructions: 'Press barbell from front to behind head and back. Keep weight light and controlled.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.3, totalReviews: 41 }
+  },
+  {
+    name: 'Seal Rows',
+    category: 'Back',
+    muscles: ['Latissimus Dorsi', 'Rhomboids', 'Traps'],
+    instructions: 'Lie face down on elevated bench. Row dumbbells or barbell to chest. Eliminate momentum.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.6, totalReviews: 67 }
+  },
+  {
+    name: 'Straight Arm Pulldown',
+    category: 'Back',
+    muscles: ['Latissimus Dorsi', 'Serratus'],
+    instructions: 'Stand at cable machine with straight arms. Pull bar down to thighs keeping arms straight.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.3, totalReviews: 52 }
+  },
+  {
+    name: 'EZ Bar Curls',
+    category: 'Arms',
+    muscles: ['Biceps', 'Forearms'],
+    instructions: 'Hold EZ bar with underhand grip. Curl bar up keeping elbows stationary. Lower with control.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.5, totalReviews: 89 }
+  },
+  {
+    name: 'JM Press',
+    category: 'Arms',
+    muscles: ['Triceps', 'Chest'],
+    instructions: 'Lie on bench with close grip. Lower bar to neck/chin area. Press back up focusing on triceps.',
+    difficulty: 'Advanced',
+    reviewStats: { averageRating: 4.4, totalReviews: 38 }
+  },
+  {
+    name: 'Box Squats',
+    category: 'Legs',
+    muscles: ['Quadriceps', 'Glutes', 'Hamstrings'],
+    instructions: 'Squat down to box. Pause briefly on box. Explode back up.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.5, totalReviews: 71 }
+  },
+  {
+    name: 'Hip Thrusts',
+    category: 'Legs',
+    muscles: ['Glutes', 'Hamstrings'],
+    instructions: 'Lean upper back on bench. Place barbell over hips. Thrust hips up squeezing glutes.',
+    difficulty: 'Beginner',
+    reviewStats: { averageRating: 4.7, totalReviews: 124 }
+  },
+  {
+    name: 'Nordic Curls',
+    category: 'Legs',
+    muscles: ['Hamstrings', 'Glutes'],
+    instructions: 'Kneel with ankles secured. Lower body forward with control. Use hamstrings to pull back up.',
+    difficulty: 'Advanced',
+    reviewStats: { averageRating: 4.8, totalReviews: 43 }
+  },
+  {
+    name: 'Pallof Press',
+    category: 'Core',
+    muscles: ['Core', 'Obliques'],
+    instructions: 'Stand sideways to cable. Press handle straight out resisting rotation. Return with control.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.6, totalReviews: 58 }
+  },
+  {
+    name: 'Landmine Rotation',
+    category: 'Core',
+    muscles: ['Obliques', 'Core', 'Shoulders'],
+    instructions: 'Hold end of barbell. Rotate from side to side keeping core tight.',
+    difficulty: 'Intermediate',
+    reviewStats: { averageRating: 4.4, totalReviews: 49 }
+  },
+  {
+    name: 'L-Sit Hold',
+    category: 'Core',
+    muscles: ['Core', 'Hip Flexors', 'Shoulders'],
+    instructions: 'Support body on parallel bars or floor. Lift legs to 90 degrees. Hold position.',
+    difficulty: 'Advanced',
+    reviewStats: { averageRating: 4.7, totalReviews: 36 }
   }
 ];
 

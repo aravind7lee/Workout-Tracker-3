@@ -477,7 +477,7 @@ export default function Home() {
                 <div className="flex items-center gap-1.5 sm:gap-2 bg-black border border-lime-500 sm:border-2 px-2 py-1 sm:px-6 sm:py-3">
                   <span className="text-lime-500 text-sm sm:text-lg">💪</span>
                   <div className="flex flex-col leading-none">
-                    <span className="font-black text-white text-xs sm:text-lg tabular-nums">120+</span>
+                    <span className="font-black text-white text-xs sm:text-lg tabular-nums">170+</span>
                     <span className="text-[8px] sm:text-xs text-lime-500 font-black tracking-wide">WORKOUTS</span>
                   </div>
                 </div>

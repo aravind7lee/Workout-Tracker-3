@@ -24,7 +24,12 @@ export const exerciseLibrary = {
       { id: 'chest-17', name: 'Wide-Grip Push-ups', sets: '3x12-15', type: 'compound', difficulty: 'beginner' },
       { id: 'chest-18', name: 'Archer Push-ups', sets: '3x6-8', type: 'compound', difficulty: 'advanced' },
       { id: 'chest-19', name: 'Single-Arm Cable Fly', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
-      { id: 'chest-20', name: 'Landmine Press', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' }
+      { id: 'chest-20', name: 'Landmine Press', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
+      { id: 'chest-21', name: 'Svend Press', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
+      { id: 'chest-22', name: 'Floor Press', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
+      { id: 'chest-23', name: 'Guillotine Press', sets: '3x8-10', type: 'compound', difficulty: 'advanced' },
+      { id: 'chest-24', name: 'Plate Press', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
+      { id: 'chest-25', name: 'Resistance Band Chest Fly', sets: '3x15-20', type: 'isolation', difficulty: 'beginner' }
     ]
   },
   shoulders: {
@@ -51,7 +56,12 @@ export const exerciseLibrary = {
       { id: 'shoulders-17', name: 'Single-Arm Lateral Raise', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
       { id: 'shoulders-18', name: 'Y-Raises', sets: '3x12-15', type: 'isolation', difficulty: 'intermediate' },
       { id: 'shoulders-19', name: 'Shrugs', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
-      { id: 'shoulders-20', name: 'Cuban Press', sets: '3x10-12', type: 'compound', difficulty: 'advanced' }
+      { id: 'shoulders-20', name: 'Cuban Press', sets: '3x10-12', type: 'compound', difficulty: 'advanced' },
+      { id: 'shoulders-21', name: 'Bradford Press', sets: '3x10-12', type: 'compound', difficulty: 'intermediate' },
+      { id: 'shoulders-22', name: 'Bus Drivers', sets: '3x12-15', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'shoulders-23', name: 'Barbell Front Raise', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'shoulders-24', name: 'Dumbbell Shrugs', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
+      { id: 'shoulders-25', name: 'Behind Neck Press', sets: '3x8-10', type: 'compound', difficulty: 'advanced' }
     ]
   },
   back: {
@@ -78,7 +88,17 @@ export const exerciseLibrary = {
       { id: 'back-17', name: 'Rack Pulls', sets: '3x6-8', type: 'compound', difficulty: 'advanced' },
       { id: 'back-18', name: 'Meadows Row', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
       { id: 'back-19', name: 'Cable Pullovers', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
-      { id: 'back-20', name: 'Pendlay Rows', sets: '4x6-8', type: 'compound', difficulty: 'advanced' }
+      { id: 'back-20', name: 'Pendlay Rows', sets: '4x6-8', type: 'compound', difficulty: 'advanced' },
+      { id: 'back-21', name: 'Close Grip Lat Pulldown', sets: '3x10-12', type: 'compound', difficulty: 'beginner' },
+      { id: 'back-22', name: 'Rowing Machine', sets: '3x15-20', type: 'compound', difficulty: 'beginner' },
+      { id: 'back-23', name: 'Seal Rows', sets: '3x10-12', type: 'compound', difficulty: 'intermediate' },
+      { id: 'back-24', name: 'Kroc Rows', sets: '3x15-20', type: 'compound', difficulty: 'advanced' },
+      { id: 'back-25', name: 'Straight Arm Pulldown', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
+      { id: 'back-26', name: 'Dumbbell Pullovers', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },
+      { id: 'back-27', name: 'Underhand Barbell Row', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
+      { id: 'back-28', name: 'Machine High Row', sets: '3x10-12', type: 'compound', difficulty: 'beginner' },
+      { id: 'back-29', name: 'Neutral Grip Pull-ups', sets: '3x6-10', type: 'compound', difficulty: 'intermediate' },
+      { id: 'back-30', name: 'Assisted Pull-ups', sets: '3x8-12', type: 'compound', difficulty: 'beginner' }
     ]
   },
   arms: {
@@ -105,7 +125,17 @@ export const exerciseLibrary = {
       { id: 'arms-17', name: 'Tricep Kickbacks', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
       { id: 'arms-18', name: 'Zottman Curls', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
       { id: 'arms-19', name: 'Overhead Cable Extension', sets: '3x12-15', type: 'isolation', difficulty: 'beginner' },
-      { id: 'arms-20', name: 'Spider Curls', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' }
+      { id: 'arms-20', name: 'Spider Curls', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'arms-21', name: 'Bayesian Cable Curl', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'arms-22', name: 'Incline Dumbbell Curl', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },
+      { id: 'arms-23', name: 'EZ Bar Curls', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },
+      { id: 'arms-24', name: 'Close Grip EZ Bar Curl', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'arms-25', name: 'Drag Curls', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'arms-26', name: 'Cross Body Hammer Curl', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },
+      { id: 'arms-27', name: 'Bench Dips', sets: '3x12-15', type: 'compound', difficulty: 'beginner' },
+      { id: 'arms-28', name: 'JM Press', sets: '3x8-10', type: 'compound', difficulty: 'advanced' },
+      { id: 'arms-29', name: 'Tate Press', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'arms-30', name: 'Single Arm Tricep Extension', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' }
     ]
   },
   legs: {
@@ -132,7 +162,17 @@ export const exerciseLibrary = {
       { id: 'legs-17', name: 'Wall Sits', sets: '3x30-60s', type: 'isometric', difficulty: 'beginner' },
       { id: 'legs-18', name: 'Jump Squats', sets: '3x10-15', type: 'compound', difficulty: 'intermediate' },
       { id: 'legs-19', name: 'Seated Calf Raises', sets: '4x15-20', type: 'isolation', difficulty: 'beginner' },
-      { id: 'legs-20', name: 'Pistol Squats', sets: '3x5-8', type: 'compound', difficulty: 'advanced' }
+      { id: 'legs-20', name: 'Pistol Squats', sets: '3x5-8', type: 'compound', difficulty: 'advanced' },
+      { id: 'legs-21', name: 'Box Squats', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
+      { id: 'legs-22', name: 'Sissy Squats', sets: '3x10-12', type: 'isolation', difficulty: 'advanced' },
+      { id: 'legs-23', name: 'Nordic Curls', sets: '3x6-8', type: 'isolation', difficulty: 'advanced' },
+      { id: 'legs-24', name: 'Glute Ham Raise', sets: '3x8-10', type: 'compound', difficulty: 'advanced' },
+      { id: 'legs-25', name: 'Hip Thrusts', sets: '3x12-15', type: 'compound', difficulty: 'beginner' },
+      { id: 'legs-26', name: 'Leg Press Calf Raise', sets: '4x15-20', type: 'isolation', difficulty: 'beginner' },
+      { id: 'legs-27', name: 'Donkey Calf Raises', sets: '4x15-20', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'legs-28', name: 'Curtsy Lunges', sets: '3x10-12', type: 'compound', difficulty: 'intermediate' },
+      { id: 'legs-29', name: 'Landmine Squats', sets: '3x10-12', type: 'compound', difficulty: 'beginner' },
+      { id: 'legs-30', name: 'Zercher Squats', sets: '3x8-10', type: 'compound', difficulty: 'advanced' }
     ]
   },
   abs: {
@@ -159,7 +199,17 @@ export const exerciseLibrary = {
       { id: 'abs-17', name: 'Hanging Leg Raises', sets: '3x8-12', type: 'isolation', difficulty: 'advanced' },
       { id: 'abs-18', name: 'Dragon Flags', sets: '3x5-8', type: 'compound', difficulty: 'advanced' },
       { id: 'abs-19', name: 'Sit-ups', sets: '3x15-20', type: 'isolation', difficulty: 'beginner' },
-      { id: 'abs-20', name: 'Plank to Push-up', sets: '3x8-12', type: 'compound', difficulty: 'intermediate' }
+      { id: 'abs-20', name: 'Plank to Push-up', sets: '3x8-12', type: 'compound', difficulty: 'intermediate' },
+      { id: 'abs-21', name: 'Pallof Press', sets: '3x10-12', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'abs-22', name: 'Landmine Rotation', sets: '3x10-12', type: 'compound', difficulty: 'intermediate' },
+      { id: 'abs-23', name: 'Toe Touches', sets: '3x15-20', type: 'isolation', difficulty: 'beginner' },
+      { id: 'abs-24', name: 'Oblique Crunches', sets: '3x15-20', type: 'isolation', difficulty: 'beginner' },
+      { id: 'abs-25', name: 'Windshield Wipers', sets: '3x8-10', type: 'isolation', difficulty: 'advanced' },
+      { id: 'abs-26', name: 'L-Sit Hold', sets: '3x20-30s', type: 'isometric', difficulty: 'advanced' },
+      { id: 'abs-27', name: 'Decline Sit-ups', sets: '3x12-15', type: 'isolation', difficulty: 'intermediate' },
+      { id: 'abs-28', name: 'Medicine Ball Slams', sets: '3x15-20', type: 'compound', difficulty: 'intermediate' },
+      { id: 'abs-29', name: 'Bird Dogs', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },
+      { id: 'abs-30', name: 'Stomach Vacuum', sets: '3x15-20s', type: 'isometric', difficulty: 'beginner' }
     ]
   }
 };
