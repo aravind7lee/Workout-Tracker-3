@@ -326,37 +326,37 @@ export default function Home() {
     return (
       <button
         onClick={() => handleNav(stat.path)}
-        className="relative group transform transition-all duration-300 text-left w-full hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-lime-500"
+        className="relative group transform transition-all duration-300 text-left w-full hover:translate-x-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500"
       >
-        <div className="relative bg-zinc-900 border-l-4 sm:border-l-8 border-lime-500 p-4 sm:p-8 shadow-2xl group-hover:bg-zinc-800 transition-all duration-300">
-          <div className="flex items-start justify-between mb-4 sm:mb-6">
-            <div className="flex items-center justify-center bg-black border-2 border-lime-500 p-2 sm:p-4">
-              <div className="text-xl sm:text-3xl">{stat.icon}</div>
+        <div className="relative bg-zinc-900 border-l-2 sm:border-l-8 border-lime-500 p-3 sm:p-8 shadow-2xl group-hover:bg-zinc-800 transition-all duration-300">
+          <div className="flex items-start justify-between mb-3 sm:mb-6">
+            <div className="flex items-center justify-center bg-black border border-lime-500 sm:border-2 p-1.5 sm:p-4">
+              <div className="text-lg sm:text-3xl">{stat.icon}</div>
             </div>
             
-            <div className="flex flex-col items-end gap-1 sm:gap-2">
-              <span className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 bg-black border-2 text-[10px] sm:text-xs font-black uppercase tracking-wider ${isLocked ? 'border-zinc-700 text-zinc-500' : (isOnline && stats?.isRealTime ? 'border-lime-500 text-lime-500' : 'border-zinc-700 text-zinc-500')}`}>
-                <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${isLocked ? 'bg-zinc-500' : (isOnline && stats?.isRealTime ? 'bg-lime-500' : 'bg-zinc-500')}`} />
+            <div className="flex flex-col items-end gap-1">
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-4 sm:py-2 bg-black border sm:border-2 text-[9px] sm:text-xs font-black uppercase tracking-wide ${isLocked ? 'border-zinc-700 text-zinc-500' : (isOnline && stats?.isRealTime ? 'border-lime-500 text-lime-500' : 'border-zinc-700 text-zinc-500')}`}>
+                <div className={`w-1 h-1 sm:w-2 sm:h-2 ${isLocked ? 'bg-zinc-500' : (isOnline && stats?.isRealTime ? 'bg-lime-500 animate-pulse' : 'bg-zinc-500')}`} />
                 {isLocked ? 'LOCKED' : (isOnline && stats?.isRealTime ? 'LIVE' : 'OFFLINE')}
               </span>
             </div>
           </div>
           
-          <div className="space-y-2 sm:space-y-3">
-            <div className="text-3xl sm:text-5xl font-black text-white">
+          <div className="space-y-1.5 sm:space-y-3">
+            <div className="text-2xl sm:text-5xl font-black text-white leading-none">
               {isLocked ? '🔒' : (typeof stat.value === 'number' ? count : stat.value)}
             </div>
             
-            <div className="text-xs sm:text-sm font-black text-lime-500 uppercase tracking-widest">
+            <div className="text-[10px] sm:text-sm font-black text-lime-500 uppercase tracking-wide sm:tracking-widest">
               {stat.label}
             </div>
             
-            <div className="text-xs sm:text-sm text-zinc-400 font-medium">
+            <div className="text-[10px] sm:text-sm text-zinc-400 font-medium leading-snug">
               {isLocked ? 'Login to view your stats' : stat.subtitle}
             </div>
             
             {process.env.NODE_ENV === 'development' && !isLocked && (
-              <div className="text-[10px] sm:text-xs text-zinc-600 mt-1 sm:mt-2">
+              <div className="text-[9px] sm:text-xs text-zinc-600 mt-1">
                 Source: {stats?.dataSource || 'Unknown'}
               </div>
             )}
@@ -440,33 +440,31 @@ export default function Home() {
         <Hero />
       </div>
 
-      <div className={`container mx-auto px-3 sm:px-6 py-4 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-8 sm:space-y-12`}>
+      <div className={`container mx-auto px-2 sm:px-6 py-3 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-6 sm:space-y-12`}>
         {/* Status Bar */}
-        <section data-animate data-id="status-bar" className="mb-6">
+        <section data-animate data-id="status-bar" className="mb-4 sm:mb-6">
           <div className={`transition-all duration-500 transform ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="relative bg-zinc-900 border-2 border-zinc-800 p-3 sm:p-6 shadow-2xl">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-                <div className="flex items-center justify-between sm:gap-6">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 ${isOnline ? 'bg-lime-500' : 'bg-red-600'}`} />
-                    <span className="text-xs font-black text-white tracking-widest uppercase">
-                      {isOnline ? 'LIVE' : 'OFFLINE'}
-                    </span>
-                  </div>
+            <div className="relative bg-zinc-900 border border-zinc-800 sm:border-2 p-2.5 sm:p-6 shadow-2xl">
+              <div className="flex items-center justify-between gap-2 sm:gap-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${isOnline ? 'bg-lime-500' : 'bg-red-600'} animate-pulse`} />
+                  <span className="text-[10px] sm:text-xs font-black text-white tracking-wider uppercase">
+                    {isOnline ? 'LIVE' : 'OFFLINE'}
+                  </span>
+                </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-lime-500 text-sm">⏱</span>
-                    <div className="text-xs text-white font-mono bg-black px-2 py-1 border border-zinc-800">
-                      {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="text-lime-500 text-xs sm:text-sm">⏱</span>
+                  <div className="text-[10px] sm:text-xs text-white font-mono bg-black px-1.5 py-0.5 sm:px-2 sm:py-1 border border-zinc-800">
+                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-black border-2 border-lime-500 px-3 py-2 sm:px-6 sm:py-3">
-                  <span className="text-lime-500 text-lg">💪</span>
-                  <div className="flex flex-col">
-                    <span className="font-black text-white text-sm sm:text-lg tabular-nums">120+</span>
-                    <span className="text-[10px] sm:text-xs text-lime-500 font-black tracking-wider">WORKOUTS</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-black border border-lime-500 sm:border-2 px-2 py-1 sm:px-6 sm:py-3">
+                  <span className="text-lime-500 text-sm sm:text-lg">💪</span>
+                  <div className="flex flex-col leading-none">
+                    <span className="font-black text-white text-xs sm:text-lg tabular-nums">120+</span>
+                    <span className="text-[8px] sm:text-xs text-lime-500 font-black tracking-wide">WORKOUTS</span>
                   </div>
                 </div>
               </div>
@@ -475,16 +473,16 @@ export default function Home() {
         </section>
 
         {/* Quick Stats */}
-        <section data-animate data-id="quick-stats" className="mb-8 sm:mb-16">
+        <section data-animate data-id="quick-stats" className="mb-6 sm:mb-16">
           <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-            <div className="text-center mb-6 sm:mb-10">
-              <div className="inline-block mb-3">
-                <div className="h-1 w-12 sm:w-20 bg-lime-500 mb-3" />
+            <div className="text-center mb-4 sm:mb-10">
+              <div className="inline-block mb-2 sm:mb-3">
+                <div className="h-0.5 w-8 sm:h-1 sm:w-20 bg-lime-500 mb-2 sm:mb-3" />
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4 text-white uppercase tracking-tight px-4">
+              <h2 className="text-xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-4 text-white uppercase tracking-tight px-3">
                 {isAuthenticated() && auth?.user ? 'YOUR STATS' : 'GET STARTED'}
               </h2>
-              <p className="text-sm sm:text-lg text-zinc-400 max-w-2xl mx-auto font-medium px-4">
+              <p className="text-xs sm:text-lg text-zinc-400 max-w-2xl mx-auto font-medium px-3 leading-snug">
                 {isAuthenticated() && auth?.user 
                   ? 'Track your performance in real-time' 
                   : 'Login to start tracking your fitness journey'
@@ -492,7 +490,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:gap-6 max-w-lg mx-auto">
+            <div className="grid grid-cols-1 gap-3 sm:gap-6 max-w-lg mx-auto px-3">
               {quickStats.map((stat, i) => (
                 <StatCard key={`stat-${i}`} stat={stat} />
               ))}
@@ -501,12 +499,12 @@ export default function Home() {
         </section>
 
         {/* Elite Training Experience - Home1.jpg */}
-        <section data-animate data-id="training-experience" id="training-experience" className="mb-8 sm:mb-20">
+        <section data-animate data-id="training-experience" id="training-experience" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-lime-500 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home1} 
                       alt="Elite Training Experience" 
@@ -514,33 +512,33 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4">
-                        <div className="bg-black border border-lime-500 px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-lime-500 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Equipment</div>
-                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">PRO</div>
+                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1 sm:gap-4">
+                        <div className="bg-black/90 border border-lime-500 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-lime-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Equipment</div>
+                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">PRO</div>
                         </div>
-                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Success</div>
-                          <div className="text-lime-500 text-xs sm:text-2xl font-black leading-tight">98.7%</div>
+                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Success</div>
+                          <div className="text-lime-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">98.7%</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="relative mb-4 sm:mb-8">
-                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
-                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-lime-500" />
-                        <span className="text-xs sm:text-sm font-black text-lime-500 tracking-widest uppercase">Elite Training</span>
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="relative mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-lime-500" />
+                        <span className="text-[9px] sm:text-sm font-black text-lime-500 tracking-wider uppercase">Elite Training</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-lime-500 bg-zinc-900 border-2 border-lime-500 uppercase tracking-wider">
-                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-lime-500" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-lime-500 bg-zinc-900 border sm:border-2 border-lime-500 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-500" />
                         PRO GRADE
                       </span>
                     </div>
                     
-                    <h3 className="relative text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                    <h3 className="relative text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
                         ELITE TRAINING
                       </span>
@@ -550,7 +548,7 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="relative text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                    <p className="relative text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
                       Experience world-class training with <span className="text-lime-500 font-black">state-of-the-art equipment</span> designed for elite performance.
                     </p>
                   </div>
@@ -561,24 +559,24 @@ export default function Home() {
         </section>
 
         {/* Strength & Power - Home2.jpg */}
-        <section data-animate data-id="strength-power" id="strength-power" className="mb-8 sm:mb-20">
+        <section data-animate data-id="strength-power" id="strength-power" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-red-600 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
-                    <div className="mb-4 sm:mb-8">
-                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
-                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-red-600" />
-                        <span className="text-xs sm:text-sm font-black text-red-600 tracking-widest uppercase">Power & Strength</span>
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
+                    <div className="mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-600" />
+                        <span className="text-[9px] sm:text-sm font-black text-red-600 tracking-wider uppercase">Power & Strength</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-red-600 bg-zinc-900 border-2 border-red-600 uppercase tracking-wider">
-                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-600" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-600 bg-zinc-900 border sm:border-2 border-red-600 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-600" />
                         MAX INTENSITY
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
                         UNLEASH YOUR
                       </span>
@@ -588,12 +586,12 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
                       Push beyond limits with <span className="text-red-600 font-black">intense strength training</span>. Build raw power and determination.
                     </p>
                   </div>
                   
-                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
                     <img 
                       src={Home2} 
                       alt="Strength and Power Training" 
@@ -601,15 +599,15 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4">
-                        <div className="bg-black border border-red-600 px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-red-600 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Power</div>
-                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">MAX</div>
+                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1 sm:gap-4">
+                        <div className="bg-black/90 border border-red-600 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-red-600 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Power</div>
+                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">MAX</div>
                         </div>
-                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Intensity</div>
-                          <div className="text-red-600 text-xs sm:text-2xl font-black leading-tight">BEAST</div>
+                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Intensity</div>
+                          <div className="text-red-600 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">BEAST</div>
                         </div>
                       </div>
                     </div>
@@ -621,12 +619,12 @@ export default function Home() {
         </section>
 
         {/* Cardio Excellence - Home3.jpg */}
-        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-8 sm:mb-20">
+        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-emerald-500 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home3} 
                       alt="Muscle Building Training" 
@@ -634,33 +632,33 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-black/40" />
                     
-                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4">
-                        <div className="bg-black border border-emerald-500 px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-emerald-500 text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Muscle</div>
-                          <div className="text-white text-xs sm:text-2xl font-black leading-tight">OPTIMAL</div>
+                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
+                      <div className="flex items-center gap-1 sm:gap-4">
+                        <div className="bg-black/90 border border-emerald-500 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-emerald-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Muscle</div>
+                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">OPTIMAL</div>
                         </div>
-                        <div className="bg-black border border-white px-2 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[8px] sm:text-xs font-black tracking-wide uppercase leading-none">Endurance</div>
-                          <div className="text-emerald-500 text-xs sm:text-2xl font-black leading-tight">ELITE</div>
+                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Endurance</div>
+                          <div className="text-emerald-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">ELITE</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="mb-4 sm:mb-8">
-                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
-                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-emerald-500" />
-                        <span className="text-xs sm:text-sm font-black text-emerald-500 tracking-widest uppercase">Muscle Building</span>
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-emerald-500" />
+                        <span className="text-[9px] sm:text-sm font-black text-emerald-500 tracking-wider uppercase">Muscle Building</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-emerald-500 bg-zinc-900 border-2 border-emerald-500 uppercase tracking-wider">
-                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-emerald-500 bg-zinc-900 border sm:border-2 border-emerald-500 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-emerald-500" />
                         HYPERTROPHY
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
                         BUILD MASSIVE
                       </span>
@@ -670,7 +668,7 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
                       Sculpt <span className="text-emerald-500 font-black">massive muscle gains</span> with proven hypertrophy training.
                     </p>
                   </div>
@@ -681,24 +679,24 @@ export default function Home() {
         </section>
 
         {/* Functional Training - Home4.jpg */}
-        <section data-animate data-id="functional-training" id="functional-training" className="mb-8 sm:mb-20">
+        <section data-animate data-id="functional-training" id="functional-training" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-purple-600 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
-                    <div className="mb-4 sm:mb-8">
-                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
-                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-purple-600" />
-                        <span className="text-xs sm:text-sm font-black text-purple-600 tracking-widest uppercase">Functional</span>
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
+                    <div className="mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-purple-600" />
+                        <span className="text-[9px] sm:text-sm font-black text-purple-600 tracking-wider uppercase">Functional</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-purple-600 bg-zinc-900 border-2 border-purple-600 uppercase tracking-wider">
-                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-600" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-purple-600 bg-zinc-900 border sm:border-2 border-purple-600 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-purple-600" />
                         SMART TRAINING
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
                         REAL-WORLD
                       </span>
@@ -708,12 +706,12 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
                       Master <span className="text-purple-600 font-black">functional movements</span> for real-world performance.
                     </p>
                   </div>
                   
-                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
                     <img 
                       src={Home4} 
                       alt="Functional Training" 
@@ -728,12 +726,12 @@ export default function Home() {
         </section>
 
         {/* Elite Community - Home5.jpg */}
-        <section data-animate data-id="elite-community" id="elite-community" className="mb-8 sm:mb-20">
+        <section data-animate data-id="elite-community" id="elite-community" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border-2 sm:border-4 border-amber-500 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl">
                 <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden">
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <img 
                       src={Home5} 
                       alt="Elite Community" 
@@ -742,19 +740,19 @@ export default function Home() {
                     <div className="absolute inset-0 bg-black/40" />
                   </div>
                   
-                  <div className="p-4 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="mb-4 sm:mb-8">
-                      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-6">
-                        <div className="w-1 sm:w-2 h-8 sm:h-16 bg-amber-500" />
-                        <span className="text-xs sm:text-sm font-black text-amber-500 tracking-widest uppercase">Elite Champions</span>
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
+                    <div className="mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-amber-500" />
+                        <span className="text-[9px] sm:text-sm font-black text-amber-500 tracking-wider uppercase">Elite Champions</span>
                       </div>
-                      <span className="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-amber-500 bg-zinc-900 border-2 border-amber-500 uppercase tracking-wider">
-                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-amber-500" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-amber-500 bg-zinc-900 border sm:border-2 border-amber-500 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-amber-500" />
                         EXCLUSIVE
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-8 leading-[0.9] uppercase">
+                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
                         JOIN THE
                       </span>
@@ -764,7 +762,7 @@ export default function Home() {
                       </span>
                     </h3>
                     
-                    <p className="text-zinc-400 text-sm sm:text-lg lg:text-xl leading-relaxed font-medium">
+                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
                       Connect with <span className="text-amber-500 font-black">elite athletes worldwide</span>. Share victories and push limits together.
                     </p>
                   </div>
@@ -775,16 +773,16 @@ export default function Home() {
         </section>
 
         {/* Enhanced CTA Section */}
-        <section data-animate data-id="cta" id="cta" className="text-center relative py-10 sm:py-20">
+        <section data-animate data-id="cta" id="cta" className="text-center relative py-6 sm:py-20">
           <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
-            <div className="mb-8 sm:mb-16 px-4">
-              <div className="inline-flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
-                <div className="w-12 sm:w-24 h-1 bg-lime-500" />
-                <span className="text-xs sm:text-sm font-black tracking-[0.2em] sm:tracking-[0.3em] text-lime-500 uppercase">Join The Elite</span>
-                <div className="w-12 sm:w-24 h-1 bg-lime-500" />
+            <div className="mb-6 sm:mb-16 px-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-8">
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-lime-500" />
+                <span className="text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-lime-500 uppercase">Join The Elite</span>
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-lime-500" />
               </div>
               
-              <h2 className="text-3xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-8 uppercase leading-[0.9]">
+              <h2 className="text-2xl sm:text-5xl md:text-7xl font-black mb-3 sm:mb-8 uppercase leading-[0.85]">
                 <span className="text-white">
                   READY TO
                 </span>
@@ -794,17 +792,17 @@ export default function Home() {
                 </span>
               </h2>
               
-              <p className="text-sm sm:text-xl lg:text-2xl text-zinc-400 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+              <p className="text-xs sm:text-xl lg:text-2xl text-zinc-400 mb-6 sm:mb-12 max-w-3xl mx-auto leading-snug sm:leading-relaxed font-medium">
                 Join elite athletes who track progress with <span className="text-lime-500 font-black">precision</span> and achieve <span className="text-white font-black">extraordinary results</span>.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-stretch sm:items-center px-3">
               {isAuthenticated() ? (
                 <>
                   <button 
                     onClick={() => navigate('/dashboard')} 
-                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wider"
+                    className="w-full sm:w-auto px-6 py-3 sm:px-12 sm:py-6 text-sm sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wide"
                   >
                     🚀 GO TO DASHBOARD
                   </button>
@@ -813,14 +811,14 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => navigate('/register')} 
-                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wider"
+                    className="w-full sm:w-auto px-6 py-3 sm:px-12 sm:py-6 text-sm sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-lime-500 uppercase tracking-wide"
                   >
                     🎆 START YOUR JOURNEY
                   </button>
                   
                   <button 
                     onClick={() => navigate('/login')} 
-                    className="w-full sm:w-auto px-8 py-4 sm:px-12 sm:py-6 text-base sm:text-xl font-black bg-zinc-900 border-2 sm:border-4 border-white text-white shadow-2xl transform transition-all duration-300 hover:bg-white hover:text-black hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-white uppercase tracking-wider"
+                    className="w-full sm:w-auto px-6 py-3 sm:px-12 sm:py-6 text-sm sm:text-xl font-black bg-zinc-900 border border-white sm:border-4 text-white shadow-2xl transform transition-all duration-300 hover:bg-white hover:text-black hover:translate-y-[-2px] active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-white uppercase tracking-wide"
                   >
                     🔑 LOGIN
                   </button>
@@ -831,7 +829,7 @@ export default function Home() {
                         forceStatsRefresh();
                         setRefreshTrigger(prev => prev + 1);
                       }}
-                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white font-black uppercase"
+                      className="w-full sm:w-auto px-3 py-2 text-[10px] sm:text-sm bg-red-600 hover:bg-red-700 text-white font-black uppercase"
                     >
                       🔧 Debug: Refresh Stats
                     </button>
