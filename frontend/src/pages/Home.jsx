@@ -522,9 +522,9 @@ export default function Home() {
                     <OptimizedImage 
                       src={Home1} 
                       alt="Elite Training Experience" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -609,9 +609,9 @@ export default function Home() {
                     <OptimizedImage 
                       src={Home2} 
                       alt="Strength and Power Training" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -642,9 +642,9 @@ export default function Home() {
                     <OptimizedImage 
                       src={Home3} 
                       alt="Muscle Building Training" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -729,9 +729,9 @@ export default function Home() {
                     <OptimizedImage 
                       src={Home4} 
                       alt="Functional Training" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -749,9 +749,9 @@ export default function Home() {
                     <OptimizedImage 
                       src={Home5} 
                       alt="Elite Community" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                   </div>
                   
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
