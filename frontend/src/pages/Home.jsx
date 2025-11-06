@@ -848,11 +848,6 @@ export default function Home() {
 
         {/* Enhanced CTA Section */}
         <section data-animate data-id="cta" id="cta" className="text-center relative">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-br from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-slow-pulse" />
-            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-gradient-to-tl from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-full blur-3xl animate-slow-pulse" style={{ animationDelay: '2s' }} />
-          </div>
-          
           <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-6 opacity-0 scale-95'}`}>
             <div className="mb-12">
               <div className="inline-flex items-center gap-3 mb-6">
