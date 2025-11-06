@@ -27,8 +27,11 @@ export const AuthProvider = ({ children }) => {
         profileStorage.clearCurrentUser();
       }
       
-      // Clear user-specific cached data
+      // CRITICAL: Clear ALL user-specific data
       localStorage.removeItem('mongodb_workouts_cache');
+      localStorage.removeItem('workoutSync_workouts');
+      localStorage.removeItem('workoutPlans');
+      localStorage.removeItem('recentMeals');
       
       // Clear plan service cache
       if (window.realTimePlanService) {
@@ -47,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       // Dispatch logout event to clean up components
       window.dispatchEvent(new CustomEvent('userLoggedOut'));
       
-      console.log('🔓 User logged out and data cleared');
+      console.log('🔓 User logged out - ALL data cleared');
     } catch (error) {
       console.error('Logout error:', error);
     }

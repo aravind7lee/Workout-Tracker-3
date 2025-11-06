@@ -44,7 +44,10 @@ class RealTimeWorkoutSync {
     });
     
     window.addEventListener('userLoggedOut', () => {
-      console.log('👤 User logged out - clearing stats');
+      console.log('👤 User logged out - clearing ALL workout data');
+      // CRITICAL: Clear ALL workout data on logout
+      localStorage.removeItem('workoutSync_workouts');
+      localStorage.removeItem('mongodb_workouts_cache');
       this.stats = {
         totalWorkouts: 0,
         todayWorkouts: 0,

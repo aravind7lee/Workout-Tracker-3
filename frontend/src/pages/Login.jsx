@@ -72,7 +72,7 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -85,12 +85,12 @@ const Login = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,69,19,0.15),transparent_50%)] animate-pulse"></div>
       
       <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-amber-100 mb-3 tracking-tight drop-shadow-2xl">
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-100 mb-2 sm:mb-3 tracking-tight drop-shadow-2xl">
             Welcome Back
           </h1>
-          <p className="text-amber-200/70 font-medium tracking-wide">Sign in to your workout tracker account</p>
-          <div className={`mt-4 px-4 py-2 rounded border border-amber-800/30 text-xs font-mono backdrop-blur-sm ${
+          <p className="text-xs sm:text-sm text-amber-200/70 font-medium tracking-wide px-2">Sign in to your workout tracker account</p>
+          <div className={`mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-amber-800/30 text-[10px] sm:text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
               ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
               : backendStatus === 'checking'
@@ -102,22 +102,22 @@ const Login = () => {
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-amber-600/30 rounded-xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-6">
-          <h2 className="text-2xl font-bold text-amber-100 mb-6 tracking-wide">Login</h2>
+        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-amber-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-4 sm:space-y-5 md:space-y-6">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-amber-100 mb-4 sm:mb-5 md:mb-6 tracking-wide">Login</h2>
           
           {error && (
-            <div className="bg-red-950/50 border border-red-600/50 rounded-lg p-4 text-red-200 text-sm font-medium backdrop-blur-sm">
+            <div className="bg-red-950/50 border border-red-600/50 rounded-lg p-3 sm:p-4 text-red-200 text-xs sm:text-sm font-medium backdrop-blur-sm">
               ⚠ {error}
             </div>
           )}
           
           <div>
-            <label className="block text-sm font-bold text-amber-200 mb-3 tracking-wide uppercase">Email</label>
+            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-amber-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
-              className="w-full p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
+              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
               value={formData.email}
               onChange={handleChange}
               required
@@ -125,13 +125,13 @@ const Login = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-bold text-amber-200 mb-3 tracking-wide uppercase">Password</label>
+            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-amber-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
-                className="w-full p-4 pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm"
+                className="w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -139,15 +139,15 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
+                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
                 tabIndex={-1}
               >
                 {showPassword ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
@@ -159,14 +159,14 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25"
+            className="w-full p-3 sm:p-3.5 md:p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25 text-xs sm:text-sm"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
           
 
           
-          <p className="text-center text-sm text-amber-300/70 mt-8 font-medium">
+          <p className="text-center text-xs sm:text-sm text-amber-300/70 mt-6 sm:mt-7 md:mt-8 font-medium">
             Don't have an account?{" "}
             <Link to="/register" className="text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors duration-200">
               Sign up here
