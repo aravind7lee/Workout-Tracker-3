@@ -1,5 +1,5 @@
-// Home.jsx - Performance Optimized Version
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+// Home.jsx - Ultra Performance Optimized
+import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
@@ -8,7 +8,7 @@ import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
 
-// Import images from assets folder
+// Lazy load images
 import Home1 from '../assets/Home1.jpg';
 import Home2 from '../assets/Home2.jpg';
 import Home3 from '../assets/Home3.jpg';
@@ -128,25 +128,27 @@ export default function Home() {
     };
   }, []);
 
-  // Optimized intersection observer
+  // Ultra-optimized intersection observer with passive listeners
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '50px'
+      threshold: 0.05,
+      rootMargin: '100px 0px'
     };
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        const updates = {};
-        entries.forEach(entry => {
-          const id = entry.target.getAttribute('data-id') || entry.target.id;
-          if (id) {
-            updates[id] = entry.isIntersecting;
+        requestAnimationFrame(() => {
+          const updates = {};
+          entries.forEach(entry => {
+            const id = entry.target.getAttribute('data-id') || entry.target.id;
+            if (id) {
+              updates[id] = entry.isIntersecting;
+            }
+          });
+          if (Object.keys(updates).length > 0) {
+            setIsVisible(prev => ({ ...prev, ...updates }));
           }
         });
-        if (Object.keys(updates).length > 0) {
-          setIsVisible(prev => ({ ...prev, ...updates }));
-        }
       },
       observerOptions
     );
@@ -154,7 +156,7 @@ export default function Home() {
     const timeoutId = setTimeout(() => {
       const elements = document.querySelectorAll('[data-animate]');
       elements.forEach(el => observerRef.current?.observe(el));
-    }, 100);
+    }, 50);
 
     return () => {
       clearTimeout(timeoutId);
@@ -316,6 +318,18 @@ export default function Home() {
     return display;
   }
 
+  // Optimized Image Component with lazy loading
+  const OptimizedImage = React.memo(({ src, alt, className }) => (
+    <img 
+      src={src} 
+      alt={alt} 
+      loading="lazy"
+      decoding="async"
+      className={className}
+      style={{ contentVisibility: 'auto' }}
+    />
+  ));
+
   // Optimized components
   const StatCard = React.memo(({ stat }) => {
     const numericValue = typeof stat.value === 'number' ? stat.value : parseInt(stat.value) || 0;
@@ -443,7 +457,7 @@ export default function Home() {
       <div className={`container mx-auto px-2 sm:px-6 py-3 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'} space-y-6 sm:space-y-12`}>
         {/* Status Bar */}
         <section data-animate data-id="status-bar" className="mb-4 sm:mb-6">
-          <div className={`transition-all duration-500 transform ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`transition-all duration-500 ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ willChange: isVisible['status-bar'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative bg-zinc-900 border border-zinc-800 sm:border-2 p-2.5 sm:p-6 shadow-2xl">
               <div className="flex items-center justify-between gap-2 sm:gap-6">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -474,7 +488,7 @@ export default function Home() {
 
         {/* Quick Stats */}
         <section data-animate data-id="quick-stats" className="mb-6 sm:mb-16">
-          <div className={`transition-all duration-500 delay-100 transform ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`transition-all duration-500 delay-100 ${isVisible['quick-stats'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ willChange: isVisible['quick-stats'] ? 'auto' : 'transform, opacity' }}>
             <div className="text-center mb-4 sm:mb-10">
               <div className="inline-block mb-2 sm:mb-3">
                 <div className="h-0.5 w-8 sm:h-1 sm:w-20 bg-lime-500 mb-2 sm:mb-3" />
@@ -500,17 +514,17 @@ export default function Home() {
 
         {/* Elite Training Experience - Home1.jpg */}
         <section data-animate data-id="training-experience" id="training-experience" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-300 transform ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`transition-all duration-700 delay-300 ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['training-experience'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <img 
+                    <OptimizedImage 
                       src={Home1} 
                       alt="Elite Training Experience" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -560,9 +574,9 @@ export default function Home() {
 
         {/* Strength & Power - Home2.jpg */}
         <section data-animate data-id="strength-power" id="strength-power" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-500 transform ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`transition-all duration-700 delay-500 ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['strength-power'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
@@ -592,12 +606,12 @@ export default function Home() {
                   </div>
                   
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                    <img 
+                    <OptimizedImage 
                       src={Home2} 
                       alt="Strength and Power Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -620,17 +634,17 @@ export default function Home() {
 
         {/* Cardio Excellence - Home3.jpg */}
         <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-600 transform ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`transition-all duration-700 delay-600 ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['cardio-excellence'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <img 
+                    <OptimizedImage 
                       src={Home3} 
                       alt="Muscle Building Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
@@ -680,9 +694,9 @@ export default function Home() {
 
         {/* Functional Training - Home4.jpg */}
         <section data-animate data-id="functional-training" id="functional-training" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-700 transform ${isVisible['functional-training'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`transition-all duration-700 delay-700 ${isVisible['functional-training'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['functional-training'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
@@ -712,12 +726,12 @@ export default function Home() {
                   </div>
                   
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                    <img 
+                    <OptimizedImage 
                       src={Home4} 
                       alt="Functional Training" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -727,17 +741,17 @@ export default function Home() {
 
         {/* Elite Community - Home5.jpg */}
         <section data-animate data-id="elite-community" id="elite-community" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-800 transform ${isVisible['elite-community'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`transition-all duration-700 delay-800 ${isVisible['elite-community'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['elite-community'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl">
+              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <img 
+                    <OptimizedImage 
                       src={Home5} 
                       alt="Elite Community" 
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter brightness-75 contrast-125"
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 filter brightness-75 contrast-125"
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                   </div>
                   
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
@@ -774,7 +788,7 @@ export default function Home() {
 
         {/* Enhanced CTA Section */}
         <section data-animate data-id="cta" id="cta" className="text-center relative py-6 sm:py-20">
-          <div className={`relative transition-all duration-700 delay-600 transform ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+          <div className={`relative transition-all duration-700 delay-600 ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['cta'] ? 'auto' : 'transform, opacity' }}>
             <div className="mb-6 sm:mb-16 px-3">
               <div className="inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-8">
                 <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-lime-500" />
@@ -843,18 +857,43 @@ export default function Home() {
 
       <style>
         {`
-          @keyframes animate-in {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
+          * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
           }
           
-          .animate-in { animation: animate-in 0.3s ease-out; }
+          @keyframes animate-in {
+            from { opacity: 0; transform: translate3d(100%, 0, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+          }
+          
+          .animate-in { 
+            animation: animate-in 0.3s ease-out;
+            will-change: transform, opacity;
+          }
+          
           .slide-in-from-right { animation-name: animate-in; }
+          
           .line-clamp-1 {
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
+          }
+          
+          [data-animate] {
+            will-change: transform, opacity;
+            transform: translate3d(0, 0, 0);
+          }
+          
+          img {
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+          }
+          
+          .group:hover img {
+            transform: translate3d(0, 0, 0) scale(1.05);
           }
         `}
       </style>
