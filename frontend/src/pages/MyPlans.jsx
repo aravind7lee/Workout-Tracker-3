@@ -19,6 +19,7 @@ export default function MyPlans() {
   const [syncStatus, setSyncStatus] = useState('idle');
   const [lastSync, setLastSync] = useState(null);
   const [realTimeStats, setRealTimeStats] = useState({ isOnline: false, totalPlans: 0 });
+  const [expandedPlans, setExpandedPlans] = useState({});
   
   // Filter plans based on search
   const filteredPlans = useMemo(() => {
@@ -434,7 +435,7 @@ export default function MyPlans() {
 
                 {/* Compact Exercise List */}
                 <div className="space-y-1.5 mb-3">
-                  {plan.exercises.slice(0, 2).map((exercise, index) => (
+                  {(expandedPlans[plan.id] ? plan.exercises : plan.exercises.slice(0, 2)).map((exercise, index) => (
                     <div key={index} className="flex items-center gap-2 p-2 bg-slate-800/40 border border-slate-700/30 rounded">
                       <div className="w-4 h-4 bg-gradient-to-br from-orange-500 to-red-600 rounded flex items-center justify-center text-white font-bold text-xs">
                         {index + 1}
@@ -446,11 +447,14 @@ export default function MyPlans() {
                     </div>
                   ))}
                   {plan.exercises.length > 2 && (
-                    <div className="text-center py-1">
-                      <span className="text-xs text-orange-400">
-                        +{plan.exercises.length - 2} more
+                    <button
+                      onClick={() => setExpandedPlans(prev => ({ ...prev, [plan.id]: !prev[plan.id] }))}
+                      className="w-full text-center py-1.5 hover:bg-slate-700/30 rounded transition-colors"
+                    >
+                      <span className="text-xs text-orange-400 font-medium">
+                        {expandedPlans[plan.id] ? '▲ Show Less' : `+${plan.exercises.length - 2} more`}
                       </span>
-                    </div>
+                    </button>
                   )}
                 </div>
 
