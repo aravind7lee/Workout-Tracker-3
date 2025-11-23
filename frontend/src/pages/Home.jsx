@@ -14,6 +14,7 @@ import Home2 from '../assets/Home2.jpg';
 import Home3 from '../assets/Home3.jpg';
 import Home4 from '../assets/Home4.jpg';
 import Home5 from '../assets/Home5.jpg';
+import NutritionHome from '../assets/NutritionHome.jpg';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -632,16 +633,16 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Cardio Excellence - Home3.jpg */}
-        <section data-animate data-id="cardio-excellence" id="cardio-excellence" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-600 ${isVisible['cardio-excellence'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['cardio-excellence'] ? 'auto' : 'transform, opacity' }}>
+        {/* Workout Tracking - Home3.jpg */}
+        <section data-animate data-id="workout-tracking" id="workout-tracking" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-600 ${isVisible['workout-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-tracking'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
               <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
                       src={Home3} 
-                      alt="Muscle Building Training" 
+                      alt="Workout Tracking" 
                       className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/20 pointer-events-none" />
@@ -649,12 +650,12 @@ export default function Home() {
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
                         <div className="bg-black/90 border border-emerald-500 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-emerald-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Muscle</div>
-                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">OPTIMAL</div>
+                          <div className="text-emerald-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Track</div>
+                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">LIVE</div>
                         </div>
                         <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Endurance</div>
-                          <div className="text-emerald-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">ELITE</div>
+                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Progress</div>
+                          <div className="text-emerald-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">REAL-TIME</div>
                         </div>
                       </div>
                     </div>
@@ -664,26 +665,26 @@ export default function Home() {
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
                         <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-emerald-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-emerald-500 tracking-wider uppercase">Muscle Building</span>
+                        <span className="text-[9px] sm:text-sm font-black text-emerald-500 tracking-wider uppercase">Workout Tracking</span>
                       </div>
                       <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-emerald-500 bg-zinc-900 border sm:border-2 border-emerald-500 uppercase tracking-wide">
                         <div className="w-1 h-1 sm:w-2 sm:h-2 bg-emerald-500" />
-                        HYPERTROPHY
+                        SMART LOGGING
                       </span>
                     </div>
                     
                     <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
-                        BUILD MASSIVE
+                        LOG EVERY
                       </span>
                       <br />
                       <span className="text-emerald-500">
-                        MUSCLE GAINS
+                        REP & SET
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Sculpt <span className="text-emerald-500 font-black">massive muscle gains</span> with proven hypertrophy training.
+                      Track <span className="text-emerald-500 font-black">every workout detail</span> with precision logging and real-time sync.
                     </p>
                   </div>
                 </div>
@@ -692,9 +693,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Functional Training - Home4.jpg */}
-        <section data-animate data-id="functional-training" id="functional-training" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-700 ${isVisible['functional-training'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['functional-training'] ? 'auto' : 'transform, opacity' }}>
+        {/* Analytics & Progress - Home4.jpg */}
+        <section data-animate data-id="analytics-progress" id="analytics-progress" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-700 ${isVisible['analytics-progress'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['analytics-progress'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
               <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
@@ -702,33 +703,33 @@ export default function Home() {
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
                         <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-purple-600" />
-                        <span className="text-[9px] sm:text-sm font-black text-purple-600 tracking-wider uppercase">Functional</span>
+                        <span className="text-[9px] sm:text-sm font-black text-purple-600 tracking-wider uppercase">Analytics</span>
                       </div>
                       <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-purple-600 bg-zinc-900 border sm:border-2 border-purple-600 uppercase tracking-wide">
                         <div className="w-1 h-1 sm:w-2 sm:h-2 bg-purple-600" />
-                        SMART TRAINING
+                        DATA DRIVEN
                       </span>
                     </div>
                     
                     <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
-                        REAL-WORLD
+                        VISUALIZE YOUR
                       </span>
                       <br />
                       <span className="text-purple-600">
-                        STRENGTH
+                        PROGRESS
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Master <span className="text-purple-600 font-black">functional movements</span> for real-world performance.
+                      Monitor <span className="text-purple-600 font-black">detailed analytics</span> with charts, trends, and performance insights.
                     </p>
                   </div>
                   
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
                     <OptimizedImage 
                       src={Home4} 
-                      alt="Functional Training" 
+                      alt="Analytics and Progress" 
                       className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/20 pointer-events-none" />
@@ -739,16 +740,16 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Elite Community - Home5.jpg */}
-        <section data-animate data-id="elite-community" id="elite-community" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-800 ${isVisible['elite-community'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['elite-community'] ? 'auto' : 'transform, opacity' }}>
+        {/* Workout Plans & Splits - Home5.jpg */}
+        <section data-animate data-id="workout-plans" id="workout-plans" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-800 ${isVisible['workout-plans'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-plans'] ? 'auto' : 'transform, opacity' }}>
             <div className="relative group">
               <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
                       src={Home5} 
-                      alt="Elite Community" 
+                      alt="Workout Plans and Splits" 
                       className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/20 pointer-events-none" />
@@ -758,27 +759,74 @@ export default function Home() {
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
                         <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-amber-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-amber-500 tracking-wider uppercase">Elite Champions</span>
+                        <span className="text-[9px] sm:text-sm font-black text-amber-500 tracking-wider uppercase">Custom Plans</span>
                       </div>
                       <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-amber-500 bg-zinc-900 border sm:border-2 border-amber-500 uppercase tracking-wide">
                         <div className="w-1 h-1 sm:w-2 sm:h-2 bg-amber-500" />
-                        EXCLUSIVE
+                        PERSONALIZED
                       </span>
                     </div>
                     
                     <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
                       <span className="text-white">
-                        JOIN THE
+                        BUILD YOUR
                       </span>
                       <br />
                       <span className="text-amber-500">
-                        CHAMPIONS
+                        PERFECT PLAN
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Connect with <span className="text-amber-500 font-black">elite athletes worldwide</span>. Share victories and push limits together.
+                      Create <span className="text-amber-500 font-black">custom workout splits</span> tailored to your goals and schedule.
                     </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Nutrition Tracking - NutritionHome.jpg */}
+        <section data-animate data-id="nutrition-tracking" id="nutrition-tracking" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-900 ${isVisible['nutrition-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['nutrition-tracking'] ? 'auto' : 'transform, opacity' }}>
+            <div className="relative group">
+              <div className="relative overflow-hidden bg-zinc-900 border border-orange-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
+                    <div className="mb-3 sm:mb-8">
+                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-orange-500" />
+                        <span className="text-[9px] sm:text-sm font-black text-orange-500 tracking-wider uppercase">Nutrition</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-orange-500 bg-zinc-900 border sm:border-2 border-orange-500 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-orange-500" />
+                        FUEL YOUR BODY
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
+                      <span className="text-white">
+                        TRACK YOUR
+                      </span>
+                      <br />
+                      <span className="text-orange-500">
+                        NUTRITION
+                      </span>
+                    </h3>
+                    
+                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
+                      Monitor <span className="text-orange-500 font-black">meals, calories, and macros</span> to fuel your fitness goals.
+                    </p>
+                  </div>
+                  
+                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
+                    <OptimizedImage 
+                      src={NutritionHome} 
+                      alt="Nutrition Tracking" 
+                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                   </div>
                 </div>
               </div>
