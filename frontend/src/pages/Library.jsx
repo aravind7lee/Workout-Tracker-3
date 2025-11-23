@@ -1,7 +1,6 @@
 // Real-time Exercise Library with User Progress Tracking
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
@@ -11,7 +10,6 @@ import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import SuccessNotification from '../components/SuccessNotification';
 import WorkoutSetupModal from '../components/WorkoutSetupModal';
-import SkeletonLoader from '../components/SkeletonLoader';
 import LibraryHeaderImg from '../assets/Libraryheader.jpg';
 
 export default function Library() {
@@ -81,9 +79,9 @@ export default function Library() {
   const [showWorkoutSetup, setShowWorkoutSetup] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  
-  // LQIP for Library
-  const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+  const [visibleCards, setVisibleCards] = useState(20);
+  const observerRef = useRef(null);
+  const loadMoreRef = useRef(null);
 
   // Load header image with optimization
   useEffect(() => {
@@ -93,6 +91,33 @@ export default function Library() {
     img.src = LibraryHeaderImg;
     img.loading = 'eager';
   }, []);
+
+  // Lazy load more cards on scroll
+  useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCards < filteredExercises.length) {
+          setVisibleCards(prev => Math.min(prev + 20, filteredExercises.length));
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect();
+    };
+  }, [visibleCards, filteredExercises.length]);
+
+  // Reset visible cards when filters change
+  useEffect(() => {
+    setVisibleCards(20);
+  }, [searchQuery, filters]);
   
   // Real-time data fetching with sync service
   useEffect(() => {
@@ -356,100 +381,43 @@ export default function Library() {
   return (
     <div className="min-h-screen bg-slate-900">
       {/* Premium Exercise Library Hero Section */}
-      <motion.div 
-        className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        {!imageLoaded && !imageError ? (
-          <SkeletonLoader className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50" />
-        ) : imageError ? (
-          <motion.div 
-            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+      <div className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden">
+        {imageError ? (
+          <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
             <div className="text-center text-white px-4">
-              <motion.div 
-                className="text-6xl mb-4"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                🏋️
-              </motion.div>
-              <motion.h1 
-                className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-2xl"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-              >
+              <div className="text-6xl mb-4">🏋️</div>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl">
                 Exercise Library
-              </motion.h1>
-              <motion.p 
-                className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto drop-shadow-lg"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
+              </h1>
+              <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto drop-shadow-lg">
                 Browse, track, and customize your exercises with ease.
-              </motion.p>
+              </p>
             </div>
-          </motion.div>
+          </div>
         ) : (
           <>
-            {/* LQIP Placeholder */}
-            <img
-              src={LIBRARY_LQIP}
-              alt=""
-              className="w-full h-full object-cover blur-sm transition-opacity duration-300"
-              style={{ opacity: imageLoaded ? 0 : 1 }}
-            />
-            
-            {/* Main Image */}
             <img
               src={LibraryHeaderImg}
-              alt="Exercise Library header – gym workout background"
-              className="w-full h-full absolute inset-0 transition-opacity duration-300"
+              alt="Exercise Library header"
+              className="w-full h-full object-cover"
               loading="eager"
               decoding="async"
-              fetchPriority="high"
-              style={{ 
-                opacity: imageLoaded ? 1 : 0,
-                objectFit: 'cover',
-                objectPosition: '50% 50%'
-              }}
+              style={{ objectPosition: '50% 50%' }}
             />
-            {/* Premium gradient overlay for optimal text contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-            
-            {/* Hero content with animations */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white px-4 max-w-4xl mx-auto">
-                <motion.h1 
-                  className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl leading-tight"
-                  style={{ color: '#f59e0b' }}
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl leading-tight" style={{ color: '#f59e0b' }}>
                   Exercise Library
-                </motion.h1>
-                <motion.p 
-                  className="text-lg md:text-xl lg:text-2xl opacity-95 max-w-2xl mx-auto drop-shadow-lg font-medium leading-relaxed"
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                >
+                </h1>
+                <p className="text-lg md:text-xl lg:text-2xl opacity-95 max-w-2xl mx-auto drop-shadow-lg font-medium leading-relaxed">
                   Browse, track, and customize your exercises with ease.
-                </motion.p>
+                </p>
               </div>
             </div>
           </>
         )}
-      </motion.div>
+      </div>
 
       {/* Main Content Area */}
       <div className="relative bg-slate-900 pt-8 pb-12">
@@ -621,10 +589,10 @@ export default function Library() {
                 </button>
               </div>
             ) : (
-              filteredExercises.map(exercise => (
-                <div key={exercise.id} className={`card hover:scale-105 transition-all duration-300 plan-card ${
+              filteredExercises.slice(0, visibleCards).map(exercise => (
+                <div key={exercise.id} className={`card transition-transform hover:scale-[1.02] will-change-transform plan-card ${
                   exercise.hasProgress ? 'ring-2 ring-green-500/30' : 'hover:ring-2 hover:ring-blue-500/30'
-                }`}>
+                }`} style={{ contain: 'layout style paint' }}>
                   <div className="flex items-start gap-3 mb-4">
                     <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0 relative`}>
                       <span className="text-2xl">{exercise.icon}</span>
@@ -725,6 +693,11 @@ export default function Library() {
                   </div>
                 </div>
               ))
+            )}
+            {visibleCards < filteredExercises.length && (
+              <div ref={loadMoreRef} className="col-span-full text-center py-8">
+                <div className="text-slate-400">Loading more exercises...</div>
+              </div>
             )}
           </div>
         </div>

@@ -210,6 +210,19 @@ body {
   position: relative;
 }
 
+/* Smooth Scrolling Performance */
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  isolation: isolate;
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -232,13 +245,20 @@ body::before {
   border: 1px solid var(--panel-border);
   padding: 2rem;
   color: var(--text);
-  transition: all 200ms ease;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  will-change: transform;
 }
 
 .card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-premium);
   border-color: var(--accent);
+}
+
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+  }
 }
 
 /* Premium Global Overrides */
