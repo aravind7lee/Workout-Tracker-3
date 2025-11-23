@@ -705,8 +705,8 @@ export default function Library() {
       
       {/* Exercise Detail Modal */}
       {selectedExercise && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-[60] overflow-y-auto" onClick={() => setSelectedExercise(null)}>
+          <div className="card max-w-md w-full my-4 sm:my-8" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
               <button
