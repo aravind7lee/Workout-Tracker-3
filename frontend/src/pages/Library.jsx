@@ -705,19 +705,19 @@ export default function Library() {
       
       {/* Exercise Detail Modal */}
       {selectedExercise && (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-[60] overflow-y-auto" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-md w-full my-4 sm:my-8" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-0" onClick={() => setSelectedExercise(null)}>
+          <div className="card max-w-md w-full h-full sm:h-auto sm:max-h-[90vh] sm:m-4 sm:rounded-xl rounded-none flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-slate-800/95 backdrop-blur-sm flex items-center justify-between p-4 border-b border-slate-700 rounded-t-xl sm:rounded-t-xl rounded-t-none z-10">
               <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
               <button
                 onClick={() => setSelectedExercise(null)}
-                className="text-slate-400 hover:text-white text-2xl"
+                className="text-slate-400 hover:text-white text-2xl flex-shrink-0 ml-2"
               >
                 ×
               </button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-4 overflow-y-auto flex-1 p-4">
               <div className="flex items-center gap-3">
                 <div className={`w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center relative`}>
                   <span className="text-2xl">{selectedExercise.icon}</span>
