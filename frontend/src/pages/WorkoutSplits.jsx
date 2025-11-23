@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Target, 
   TrendingUp, 
@@ -750,7 +750,7 @@ const WorkoutSplits = () => {
             {!heroImageError && (
               <motion.img
                 src={splitImg}
-                alt="Professional workout splits training - Choose your perfect fitness routine"
+                alt="Professional workout splits training"
                 className="w-full h-full object-cover object-center"
                 loading="eager"
                 decoding="async"
@@ -889,12 +889,10 @@ const WorkoutSplits = () => {
               {categories.map((category) => {
                 const Icon = category.icon;
                 return (
-                  <motion.button
+                  <button
                     key={category.id}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`group relative flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl transition-all duration-300 overflow-hidden ${
+                    className={`group relative flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl transition-all duration-200 overflow-hidden hover:scale-[1.05] hover:-translate-y-0.5 active:scale-[0.95] ${
                       selectedCategory === category.id
                         ? 'bg-gradient-to-r from-orange-500/30 to-red-500/30 text-white border border-orange-500/50 shadow-lg shadow-orange-500/25'
                         : 'bg-gray-900/80 text-gray-300 hover:text-white hover:bg-gray-800/90 border border-gray-700/50 hover:border-gray-600/50'
@@ -910,7 +908,7 @@ const WorkoutSplits = () => {
                       <span className="hidden sm:inline">{category.name.toUpperCase()}</span>
                       <span className="sm:hidden">{category.name.split(' ')[0].toUpperCase()}</span>
                     </span>
-                  </motion.button>
+                  </button>
                 );
               })}
             </div>
@@ -954,16 +952,10 @@ const WorkoutSplits = () => {
         {/* Enhanced Splits Grid */}
         {!loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            <AnimatePresence>
             {filteredSplits.map((split, index) => (
-              <motion.div
+              <div
                 key={split.id}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -30, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-md border border-gray-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:border-orange-500/50 transition-all duration-500 cursor-pointer overflow-hidden"
+                className="group relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-md border border-gray-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:border-orange-500/50 transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-2 hover:scale-[1.02]" style={{ contain: 'layout style paint' }}
                 onClick={() => setSelectedSplit(split)}
               >
                 {/* Animated Background Gradient */}
@@ -990,21 +982,19 @@ const WorkoutSplits = () => {
                     </div>
                     <div className="flex items-center space-x-1 sm:space-x-2">
                       {isAuthenticated() && (
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleToggleFavorite(split.id);
                           }}
-                          className={`p-1.5 sm:p-2 rounded-full transition-all duration-300 ${
+                          className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 hover:scale-110 active:scale-90 ${
                             favorites.includes(split.id)
                               ? 'text-red-400 hover:text-red-300 bg-red-500/20'
                               : 'text-gray-400 hover:text-red-400 hover:bg-red-500/20'
                           }`}
                         >
                           <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={favorites.includes(split.id) ? 'currentColor' : 'none'} />
-                        </motion.button>
+                        </button>
                       )}
                       <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-orange-400 transition-colors duration-300" />
                     </div>
@@ -1058,19 +1048,14 @@ const WorkoutSplits = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </AnimatePresence>
         </div>
         )}
 
         {/* Enhanced No Results */}
         {!loading && filteredSplits.length === 0 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-16"
-          >
+          <div className="text-center py-16">
             <div className="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-md border border-gray-700/50 rounded-3xl p-12 max-w-md mx-auto">
               <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                 <Filter className="w-10 h-10 text-orange-400" />
@@ -1087,24 +1072,17 @@ const WorkoutSplits = () => {
                 Reset Filters
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
 
       {/* Detailed Split Modal */}
-      <AnimatePresence>
         {selectedSplit && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={() => setSelectedSplit(null)}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+            <div
               className="bg-gradient-to-br from-gray-900 to-black rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-gray-700/50 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
@@ -1302,10 +1280,9 @@ const WorkoutSplits = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };
