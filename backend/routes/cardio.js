@@ -102,6 +102,8 @@ router.post('/', auth, async (req, res) => {
       notes: req.body.notes || '',
       linkedWorkout: req.body.linkedWorkout || null
     };
+
+    
     
     const session = new Cardio(cardioData);
     await session.save();

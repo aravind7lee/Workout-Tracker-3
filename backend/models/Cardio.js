@@ -10,7 +10,7 @@ const CardioSchema = new mongoose.Schema({
   activityType: { 
     type: String, 
     required: true,
-    enum: ['walking', 'running', 'cycling', 'swimming', 'hiking']
+    enum: ['walking', 'running', 'cycling', 'swimming']
   },
   steps: {
     type: Number,
@@ -79,8 +79,7 @@ CardioSchema.pre('save', function(next) {
       walking: 3.5,
       running: 9.8,
       cycling: 7.5,
-      swimming: 8.0,
-      hiking: 6.0
+      swimming: 8.0
     };
     
     const intensityMultiplier = {
