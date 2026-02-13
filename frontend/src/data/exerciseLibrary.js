@@ -1,11 +1,13 @@
 // frontend/src/data/exerciseLibrary.js
+import { getExerciseVideo } from './exerciseVideos';
+
 export const exerciseLibrary = {
   chest: {
     name: 'Chest',
     icon: '💪',
     color: 'bg-red-600',
     exercises: [
-      { id: 'chest-1', name: 'Barbell Bench Press', sets: '4x6-8', type: 'compound', difficulty: 'intermediate' },
+      { id: 'chest-1', name: 'Barbell Bench Press', sets: '4x6-8', type: 'compound', difficulty: 'intermediate', videoUrl: 'https://www.youtube.com/watch?v=rT7DgCr-3pg' },
       { id: 'chest-2', name: 'Incline Dumbbell Press', sets: '3x8-10', type: 'compound', difficulty: 'beginner' },
       { id: 'chest-3', name: 'Decline Bench Press', sets: '3x8-10', type: 'compound', difficulty: 'intermediate' },
       { id: 'chest-4', name: 'Cable Crossover', sets: '3x10-12', type: 'isolation', difficulty: 'beginner' },

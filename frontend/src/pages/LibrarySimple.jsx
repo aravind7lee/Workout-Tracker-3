@@ -7,6 +7,7 @@ import { useRealTime } from '../context/RealTimeContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { onlineService } from '../services/onlineService';
 import { getFormTips } from '../data/exerciseFormTips';
+import { getExerciseVideo } from '../data/exerciseVideos';
 import QuickPlanModal from '../components/QuickPlanModal';
 import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
 import WorkoutSuccessNotification from '../components/WorkoutSuccessNotification';
@@ -853,6 +854,18 @@ export default function LibrarySimple() {
               </div>
               
                 <div className="space-y-2 sm:space-y-3">
+                  {/* Watch Form Video Button */}
+                  {getExerciseVideo(exercise.name) && (
+                    <button
+                      onClick={() => window.open(getExerciseVideo(exercise.name), '_blank', 'noopener,noreferrer')}
+                      className="w-full p-2 sm:p-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold rounded-lg border border-red-500/30 transition-all duration-150 text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg"
+                      title={`Watch ${exercise.name} correct form video`}
+                    >
+                      <span className="text-base">🎥</span>
+                      <span>Watch Form Video</span>
+                    </button>
+                  )}
+                  
                   <button
                     onClick={() => setSelectedExercise(exercise)}
                     className="w-full p-2 sm:p-3 bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold rounded-lg border border-slate-500/30 transition-colors duration-150 text-sm sm:text-base"
@@ -1098,6 +1111,20 @@ export default function LibrarySimple() {
               
                 {/* Premium Action Buttons */}
                 <div className="space-y-3 sm:space-y-4">
+                  {/* Watch Form Video Button in Modal */}
+                  {getExerciseVideo(selectedExercise.name) && (
+                    <motion.button
+                      onClick={() => window.open(getExerciseVideo(selectedExercise.name), '_blank', 'noopener,noreferrer')}
+                      className="w-full p-3 sm:p-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-red-500/20 text-sm sm:text-base md:text-lg flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      title={`Watch ${selectedExercise.name} correct form video on YouTube`}
+                    >
+                      <span className="text-xl">🎥</span>
+                      <span>Watch Correct Form Video</span>
+                    </motion.button>
+                  )}
+                  
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <motion.button
                       onClick={() => {
