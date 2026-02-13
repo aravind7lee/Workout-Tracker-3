@@ -11,6 +11,7 @@ import { useRealTimeWorkouts } from '../hooks/useRealTimeWorkouts';
 import DashboardHero from '../components/DashboardHero';
 import AuthGuard from '../components/AuthGuard';
 import DashboardErrorBoundary from '../components/DashboardErrorBoundary';
+import LiveCardioTracker from '../components/LiveCardioTracker';
 
 import api from '../utils/api';
 import Dashboard1 from '../assets/Dashboard1.jpg';
@@ -864,6 +865,14 @@ const Dashboard = () => {
               ))}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* ⚡ LIVE CARDIO TRACKER SECTION */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-teal-500/5 rounded-2xl sm:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-cyan-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
+          <LiveCardioTracker />
         </div>
       </div>
         </div>
