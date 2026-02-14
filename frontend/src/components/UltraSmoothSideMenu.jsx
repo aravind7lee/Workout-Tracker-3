@@ -146,13 +146,23 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
               {/* Header Section */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700/50 flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <img
-                    src={logo}
-                    alt="GymTracker"
-                    className="h-8 w-auto"
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <button
+                    onClick={() => handleMenuItemClick('/')}
+                    className="hover:opacity-80 transition-opacity duration-200 active:scale-95 flex-shrink-0"
+                    style={{
+                      transition: 'all 0.06s ease-out',
+                      willChange: 'opacity, transform',
+                      backfaceVisibility: 'hidden',
+                    }}
+                  >
+                    <img
+                      src={logo}
+                      alt="GymTracker"
+                      className="h-8 w-auto"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </button>
                   <div>
                     <h2 className="text-xl font-bold text-white font-heading">GRIND-X</h2>
                     <div className="flex items-center space-x-2">
