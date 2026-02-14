@@ -976,7 +976,7 @@ export default function LibrarySimple() {
       {/* Premium Exercise Detail Modal */}
       {selectedExercise && (
         <motion.div 
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50" 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4" 
           onClick={() => setSelectedExercise(null)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -984,35 +984,27 @@ export default function LibrarySimple() {
           transition={{ duration: 0.3 }}
         >
           <motion.div 
-            className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border-2 border-slate-600/50 shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" 
+            className="bg-gradient-to-br from-slate-900 to-black rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-slate-700/50 shadow-2xl" 
             onClick={e => e.stopPropagation()}
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-600/50">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 ${selectedExercise.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg`}>
-                  <span className="text-xl sm:text-2xl md:text-3xl">{selectedExercise.icon}</span>
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">{selectedExercise.name}</h3>
-                  <p className="text-slate-300 font-medium text-sm sm:text-base">{selectedExercise.category} Exercise</p>
-                </div>
-              </div>
-              <motion.button
-                onClick={() => setSelectedExercise(null)}
-                className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-700/50 hover:bg-red-600/50 text-slate-400 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center text-lg sm:text-xl font-bold"
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                ×
-              </motion.button>
-            </div>
-            
             <div className="p-4 sm:p-6">
+              <div className="flex items-start justify-between mb-4 sm:mb-6">
+                <div>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">{selectedExercise.name}</h2>
+                  <p className="text-slate-300 text-sm sm:text-base">{selectedExercise.category}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedExercise(null)}
+                  className="text-slate-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
             
               <div className="space-y-4 sm:space-y-6">
                 {/* Exercise Stats */}

@@ -834,6 +834,161 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Top 25 Elite Workouts */}
+        <section data-animate data-id="top-workouts" id="top-workouts" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-1000 ${isVisible['top-workouts'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['top-workouts'] ? 'auto' : 'transform, opacity' }}>
+            <div className="text-center mb-6 sm:mb-12 px-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-6">
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-lime-500" />
+                <span className="text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-lime-500 uppercase">Elite Arsenal</span>
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-lime-500" />
+              </div>
+              
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 uppercase leading-[0.85]">
+                <span className="text-white">TOP 25</span>
+                <br />
+                <span className="text-lime-500">ELITE WORKOUTS</span>
+              </h2>
+              
+              <p className="text-xs sm:text-lg text-zinc-400 max-w-3xl mx-auto leading-snug font-medium">
+                Master these <span className="text-lime-500 font-black">proven exercises</span> to build strength, power, and muscle
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 px-3 mb-6 sm:mb-12">
+              {[
+                { rank: 25, name: 'Machine Lat Pullover', muscle: 'Lats & Back', intensity: 3, icon: '🦾', color: 'blue' },
+                { rank: 24, name: 'Dumbbell Shrugs', muscle: 'Traps', intensity: 3, icon: '💪', color: 'purple' },
+                { rank: 23, name: 'Standing Calf Raise', muscle: 'Calves', intensity: 3, icon: '🦵', color: 'green' },
+                { rank: 22, name: 'Dumbbell Wrist Curls', muscle: 'Forearms', intensity: 2, icon: '💪', color: 'amber' },
+                { rank: 21, name: 'Neck Curls & Extensions', muscle: 'Neck', intensity: 2, icon: '🎯', color: 'red' },
+                { rank: 20, name: 'Cable Crunch', muscle: 'Abs', intensity: 4, icon: '🔥', color: 'orange' },
+                { rank: 19, name: 'Machine Pec Deck', muscle: 'Chest', intensity: 3, icon: '💥', color: 'blue' },
+                { rank: 18, name: 'Reverse Pec Deck', muscle: 'Rear Delts', intensity: 3, icon: '🎯', color: 'purple' },
+                { rank: 17, name: 'Weighted Dips', muscle: 'Chest & Triceps', intensity: 5, icon: '⚡', color: 'red' },
+                { rank: 16, name: 'Nautilus Glute Drive', muscle: 'Glutes', intensity: 4, icon: '🍑', color: 'pink' },
+                { rank: 15, name: 'Bayesian Cable Curl', muscle: 'Biceps', intensity: 3, icon: '💪', color: 'blue' },
+                { rank: 14, name: 'Deadlift', muscle: 'Full Body', intensity: 5, icon: '🔥', color: 'red' },
+                { rank: 13, name: 'Overhead Press', muscle: 'Shoulders', intensity: 5, icon: '🏋️', color: 'amber' },
+                { rank: 12, name: 'Walking Lunges', muscle: 'Legs & Glutes', intensity: 4, icon: '🦵', color: 'green' },
+                { rank: 11, name: 'Bench Press', muscle: 'Chest', intensity: 5, icon: '💥', color: 'blue' },
+                { rank: 10, name: 'Seated Leg Curl', muscle: 'Hamstrings', intensity: 3, icon: '🦵', color: 'purple' },
+                { rank: 9, name: 'Leg Extension', muscle: 'Quads', intensity: 3, icon: '🦵', color: 'green' },
+                { rank: 8, name: 'Overhead Cable Tricep Extension', muscle: 'Triceps', intensity: 3, icon: '💪', color: 'orange' },
+                { rank: 7, name: 'Preacher Curl', muscle: 'Biceps', intensity: 4, icon: '💪', color: 'blue' },
+                { rank: 6, name: 'Lateral Raise', muscle: 'Side Delts', intensity: 3, icon: '🎯', color: 'amber' },
+                { rank: 5, name: 'Chest Supported T-Bar Row', muscle: 'Back', intensity: 5, icon: '🦾', color: 'purple' },
+                { rank: 4, name: 'Romanian Deadlift', muscle: 'Hamstrings & Glutes', intensity: 5, icon: '🔥', color: 'red' },
+                { rank: 3, name: 'Incline Bench Press', muscle: 'Upper Chest', intensity: 5, icon: '💥', color: 'blue' },
+                { rank: 2, name: 'Pull Up', muscle: 'Back & Biceps', intensity: 5, icon: '🦾', color: 'green' },
+                { rank: 1, name: 'Squat', muscle: 'Legs & Core', intensity: 5, icon: '👑', color: 'lime' }
+              ].map((workout) => (
+                <div key={workout.rank} className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
+                  <div className={`relative bg-zinc-900 border-2 border-${workout.color}-500 p-4 sm:p-6 shadow-2xl group-hover:border-lime-500 transition-all duration-300`}>
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+                      <div className={`w-10 h-10 sm:w-14 sm:h-14 bg-black border-2 border-${workout.color}-500 flex items-center justify-center`}>
+                        <span className="text-lg sm:text-2xl font-black text-${workout.color}-500">#{workout.rank}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-3 sm:mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-lime-500 mb-3">
+                        <span className="text-2xl sm:text-3xl">{workout.icon}</span>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-base sm:text-xl font-black text-white mb-2 uppercase leading-tight group-hover:text-lime-500 transition-colors duration-300">
+                      {workout.name}
+                    </h3>
+                    
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs sm:text-sm text-lime-500 font-black uppercase tracking-wide">🎯 {workout.muscle}</span>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] sm:text-xs text-zinc-400 font-bold uppercase">Intensity</span>
+                        <div className="flex gap-0.5 sm:gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span key={star} className={`text-xs sm:text-base ${star <= workout.intensity ? 'text-lime-500' : 'text-zinc-700'}`}>⭐</span>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2 border-t border-zinc-800">
+                        <div className="text-[9px] sm:text-xs text-zinc-500 font-medium">
+                          {workout.intensity === 5 ? '🔥 MAXIMUM INTENSITY' : workout.intensity === 4 ? '💪 HIGH INTENSITY' : workout.intensity === 3 ? '⚡ MODERATE INTENSITY' : '📊 LIGHT INTENSITY'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Call to Action Text */}
+            <div className="text-center mb-4 sm:mb-6 px-3">
+              <p className="text-xs sm:text-base text-zinc-400 font-medium">
+                💡 <span className="text-white font-bold">Want more workout details?</span> Explore our complete exercise library and create custom plans below
+              </p>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 px-3 max-w-5xl mx-auto">
+              <button
+                onClick={() => navigate('/library-simple')}
+                className="relative group transform transition-all duration-300 hover:translate-y-[-2px]"
+              >
+                <div className="relative bg-zinc-900 border-2 border-blue-500 p-4 sm:p-6 shadow-2xl group-hover:border-lime-500 group-hover:bg-zinc-800 transition-all duration-300">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-blue-500 flex items-center justify-center group-hover:border-lime-500 transition-colors duration-300">
+                      <span className="text-2xl sm:text-3xl">📚</span>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h4 className="text-sm sm:text-xl font-black text-white uppercase mb-1 group-hover:text-lime-500 transition-colors duration-300">Exercise Library</h4>
+                      <p className="text-[10px] sm:text-sm text-zinc-400 font-medium">Explore 170+ exercises</p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => navigate('/plan-builder')}
+                className="relative group transform transition-all duration-300 hover:translate-y-[-2px]"
+              >
+                <div className="relative bg-zinc-900 border-2 border-purple-500 p-4 sm:p-6 shadow-2xl group-hover:border-lime-500 group-hover:bg-zinc-800 transition-all duration-300">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-purple-500 flex items-center justify-center group-hover:border-lime-500 transition-colors duration-300">
+                      <span className="text-2xl sm:text-3xl">🏗️</span>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h4 className="text-sm sm:text-xl font-black text-white uppercase mb-1 group-hover:text-lime-500 transition-colors duration-300">Plan Builder</h4>
+                      <p className="text-[10px] sm:text-sm text-zinc-400 font-medium">Create custom plans</p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => navigate('/my-plans')}
+                className="relative group transform transition-all duration-300 hover:translate-y-[-2px]"
+              >
+                <div className="relative bg-zinc-900 border-2 border-green-500 p-4 sm:p-6 shadow-2xl group-hover:border-lime-500 group-hover:bg-zinc-800 transition-all duration-300">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-green-500 flex items-center justify-center group-hover:border-lime-500 transition-colors duration-300">
+                      <span className="text-2xl sm:text-3xl">📋</span>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h4 className="text-sm sm:text-xl font-black text-white uppercase mb-1 group-hover:text-lime-500 transition-colors duration-300">View Plans</h4>
+                      <p className="text-[10px] sm:text-sm text-zinc-400 font-medium">Access your workouts</p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* Enhanced CTA Section */}
         <section data-animate data-id="cta" id="cta" className="text-center relative py-6 sm:py-20">
           <div className={`relative transition-all duration-700 delay-600 ${isVisible['cta'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['cta'] ? 'auto' : 'transform, opacity' }}>

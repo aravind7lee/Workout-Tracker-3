@@ -255,177 +255,189 @@ const Dashboard = () => {
         </div>
       
       {/* Dashboard Content */}
-      <div className="space-y-3 sm:space-y-4 md:space-y-6 px-2 sm:px-3 md:px-4 lg:px-6 py-3 sm:py-4 md:py-6 lg:py-8">
+      <div className="space-y-2.5 sm:space-y-3 md:space-y-4 lg:space-y-6 px-2 sm:px-3 md:px-4 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-6">
       
       {/* Notification removed as requested */}
       
       {/* Header */}
-      <div className="card p-3 sm:p-4 md:p-6">
-        <div className="flex flex-col gap-3 sm:gap-4">
-          {/* Welcome Section */}
-          <div>
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
-              Welcome back{authUser?.name ? `, ${authUser.name}` : ''}! 👋
-            </h1>
-            <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
-              Track your progress, manage workouts, and achieve your fitness goals efficiently.
-            </p>
-          </div>
-          
-          {/* Status Section */}
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs">
-              <span className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-                plansOnline ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
-              }`}>
-                {plansOnline ? '🚀' : '❌'}
-                <span className="hidden sm:inline">{plansOnline ? 'REAL-TIME MongoDB + INSTANT Plan Updates' : 'MongoDB connection failed'}</span>
-                <span className="sm:hidden">{plansOnline ? 'LIVE' : 'OFFLINE'}</span>
-              </span>
-              {planLastSync && (
-                <span className="text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-                  Plans sync: {new Date(planLastSync).toLocaleTimeString()}
-                </span>
-              )}
-              {planSyncStatus !== 'idle' && (
-                <span className={`px-2 py-1 rounded-full ${
-                  planSyncStatus === 'syncing' ? 'bg-blue-900/30 text-blue-400' :
-                  planSyncStatus === 'synced' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
-                }`}>
-                  {planSyncStatus === 'syncing' ? '🔄 Syncing...' : 
-                      planSyncStatus === 'synced' ? '✅ Synced' : '❌ Sync Error'}
-                </span>
-              )}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-cyan-500/5 blur-2xl"></div>
+        <div className="relative card p-2.5 sm:p-3 md:p-4 lg:p-6 backdrop-blur-sm border border-slate-700/50">
+          <div className="flex flex-col gap-2 sm:gap-2.5 md:gap-3">
+            {/* Welcome Section */}
+            <div>
+              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-black text-white mb-1 sm:mb-1.5 md:mb-2 uppercase tracking-wide">
+                Welcome{authUser?.name ? `, ${authUser.name}` : ''}! 👋
+              </h1>
+              <p className="text-slate-400 text-[10px] sm:text-xs md:text-sm leading-relaxed">
+                Track progress, manage workouts, achieve goals.
+              </p>
             </div>
-          </div>
-          
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button
-              onClick={handleRefresh}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none"
-            >
-              🔄 <span className="hidden sm:inline">Refresh</span>
-            </button>
-            <button
-              onClick={handleForceSync}
-              disabled={planSyncStatus === 'syncing'}
-              className="btn bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none disabled:opacity-50"
-            >
-              {planSyncStatus === 'syncing' ? '🔄' : '⚡'} <span className="hidden sm:inline">{planSyncStatus === 'syncing' ? 'Syncing...' : 'Force Sync'}</span>
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="btn bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-3 py-2 flex-1 sm:flex-none"
-            >
-              <span className="hidden sm:inline">Logout</span><span className="sm:hidden">Exit</span>
-            </button>
+            
+            {/* Status Section */}
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 md:gap-2 text-[9px] sm:text-[10px] md:text-xs">
+                <span className={`flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold uppercase tracking-wide ${
+                  plansOnline ? 'bg-green-900/30 text-green-400 border border-green-500/30' : 'bg-red-900/30 text-red-400 border border-red-500/30'
+                }`}>
+                  {plansOnline ? '🚀' : '❌'}
+                  <span className="hidden xs:inline sm:hidden md:inline">{plansOnline ? 'LIVE' : 'OFFLINE'}</span>
+                  <span className="xs:hidden sm:inline md:hidden">{plansOnline ? 'REAL-TIME' : 'OFFLINE'}</span>
+                </span>
+                {planLastSync && (
+                  <span className="text-slate-500 bg-slate-800/50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full border border-slate-700/50 hidden sm:inline">
+                    {new Date(planLastSync).toLocaleTimeString()}
+                  </span>
+                )}
+                {planSyncStatus !== 'idle' && (
+                  <span className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold border ${
+                    planSyncStatus === 'syncing' ? 'bg-blue-900/30 text-blue-400 border-blue-500/30' :
+                    planSyncStatus === 'synced' ? 'bg-green-900/30 text-green-400 border-green-500/30' : 'bg-red-900/30 text-red-400 border-red-500/30'
+                  }`}>
+                    {planSyncStatus === 'syncing' ? '🔄' : planSyncStatus === 'synced' ? '✅' : '❌'}
+                    <span className="hidden sm:inline ml-1">{planSyncStatus === 'syncing' ? 'SYNC' : planSyncStatus === 'synced' ? 'SYNCED' : 'ERROR'}</span>
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <button
+                onClick={handleRefresh}
+                className="btn bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-[10px] sm:text-xs md:text-sm px-2 py-1.5 sm:px-3 sm:py-2 flex-1 sm:flex-none min-w-[80px] font-bold uppercase tracking-wide transition-all hover:scale-105 active:scale-95 shadow-lg"
+              >
+                🔄 <span className="hidden xs:inline">Refresh</span>
+              </button>
+              <button
+                onClick={handleForceSync}
+                disabled={planSyncStatus === 'syncing'}
+                className="btn bg-green-600 hover:bg-green-700 active:bg-green-800 text-white text-[10px] sm:text-xs md:text-sm px-2 py-1.5 sm:px-3 sm:py-2 flex-1 sm:flex-none min-w-[80px] disabled:opacity-50 font-bold uppercase tracking-wide transition-all hover:scale-105 active:scale-95 shadow-lg"
+              >
+                {planSyncStatus === 'syncing' ? '🔄' : '⚡'} <span className="hidden xs:inline">{planSyncStatus === 'syncing' ? 'Sync...' : 'Sync'}</span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-[10px] sm:text-xs md:text-sm px-2 py-1.5 sm:px-3 sm:py-2 flex-1 sm:flex-none min-w-[80px] font-bold uppercase tracking-wide transition-all hover:scale-105 active:scale-95 shadow-lg"
+              >
+                <span className="hidden xs:inline">Logout</span><span className="xs:hidden">Exit</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Enhanced Gym-Style Feature Hero */}
-      <div className="relative mb-4 sm:mb-6 md:mb-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-red-500/10 to-yellow-500/10 rounded-2xl sm:rounded-3xl blur-xl"></div>
-        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-orange-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-            <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">🔥</span>
+      <div className="relative mb-2.5 sm:mb-3 md:mb-4 lg:mb-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-red-500/10 to-yellow-500/10 rounded-xl sm:rounded-2xl md:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-xl sm:rounded-2xl md:rounded-3xl border border-orange-500/20 overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Text Content */}
+            <div className="p-3 sm:p-4 md:p-6 lg:p-8 space-y-2.5 sm:space-y-3 md:space-y-4 lg:space-y-6 order-last lg:order-first">
+              <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                  <span className="text-base sm:text-xl md:text-2xl">🔥</span>
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider">BEAST MODE</h3>
-                  <p className="text-orange-400 text-xs sm:text-sm font-semibold">ACTIVATED</p>
+                  <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-black text-white uppercase tracking-wider leading-none">BEAST MODE</h3>
+                  <p className="text-orange-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold uppercase tracking-wide">ACTIVATED</p>
                 </div>
               </div>
-              <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+              <p className="text-slate-300 text-[10px] sm:text-xs md:text-sm lg:text-base leading-relaxed">
                 Transform your physique with precision tracking, real-time analytics, and the mindset of champions.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col xs:flex-row gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
                 <button 
                   onClick={() => navigate('/my-plans')}
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/25 text-sm sm:text-base"
+                  className="relative group overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl shadow-orange-500/30"
                 >
-                  🏋️ <span className="hidden sm:inline">START TRAINING</span><span className="sm:hidden">TRAIN</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  <span className="relative">🏋️ <span className="hidden xs:inline">TRAIN</span><span className="xs:hidden">GO</span></span>
                 </button>
                 <button 
                   onClick={() => navigate('/analytics')}
-                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:bg-slate-600/50 transition-all duration-300 text-sm sm:text-base"
+                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-wide hover:bg-slate-600/50 hover:scale-105 active:scale-95 transition-all duration-300"
                 >
-                  📊 <span className="hidden sm:inline">VIEW STATS</span><span className="sm:hidden">STATS</span>
+                  📊 <span className="hidden xs:inline">STATS</span><span className="xs:hidden">VIEW</span>
                 </button>
               </div>
             </div>
+            
+            {/* Full-Width Image */}
             <motion.div 
-              className="relative"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              className="relative order-first lg:order-last h-64 sm:h-80 md:h-96 lg:h-full lg:min-h-[400px]"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-lg"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 blur-2xl"></div>
               <img 
                 src={Dashboard1} 
                 alt="Gym Training" 
-                className="relative w-full h-48 sm:h-64 md:h-72 lg:h-96 object-contain rounded-2xl border border-orange-500/30 bg-slate-800/50"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent lg:bg-gradient-to-r lg:from-slate-900/90 lg:via-slate-900/30 lg:to-transparent"></div>
             </motion.div>
           </div>
         </div>
       </div>
 
       {/* Second Enhanced Gym Feature Section */}
-      <div className="relative mb-4 sm:mb-6 md:mb-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 rounded-2xl sm:rounded-3xl blur-xl"></div>
-        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-blue-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+      <div className="relative mb-2.5 sm:mb-3 md:mb-4 lg:mb-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 rounded-xl sm:rounded-2xl md:rounded-3xl blur-xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-xl sm:rounded-2xl md:rounded-3xl border border-blue-500/20 overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Full-Width Image */}
             <motion.div 
-              className="relative order-2 lg:order-1"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              className="relative order-first h-64 sm:h-80 md:h-96 lg:h-full lg:min-h-[400px]"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-lg"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-2xl"></div>
               <img 
                 src={Dashboard2} 
                 alt="Elite Performance" 
-                className="relative w-full h-48 sm:h-64 md:h-72 lg:h-96 object-contain rounded-2xl border border-blue-500/30 bg-slate-800/50"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent lg:bg-gradient-to-l lg:from-slate-900/90 lg:via-slate-900/30 lg:to-transparent"></div>
             </motion.div>
+            
+            {/* Text Content */}
             <motion.div 
-              className="space-y-6 order-1 lg:order-2"
+              className="p-3 sm:p-4 md:p-6 lg:p-8 space-y-2.5 sm:space-y-3 md:space-y-4 lg:space-y-6 order-last"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
             >
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                  <span className="text-xl sm:text-2xl">⚡</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <span className="text-base sm:text-xl md:text-2xl">⚡</span>
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider">ELITE PERFORMANCE</h3>
-                  <p className="text-blue-400 text-xs sm:text-sm font-semibold">UNLEASHED</p>
+                  <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-black text-white uppercase tracking-wider leading-none">ELITE PERFORMANCE</h3>
+                  <p className="text-blue-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold uppercase tracking-wide">UNLEASHED</p>
                 </div>
               </div>
-              <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+              <p className="text-slate-300 text-[10px] sm:text-xs md:text-sm lg:text-base leading-relaxed">
                 Elevate your training with advanced analytics, personalized insights, and the power to break every limit.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col xs:flex-row gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
                 <button 
                   onClick={() => navigate('/analytics')}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 text-sm sm:text-base"
+                  className="relative group overflow-hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl shadow-blue-500/30"
                 >
-                  📊 <span className="hidden sm:inline">VIEW ANALYTICS</span><span className="sm:hidden">ANALYTICS</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  <span className="relative">📊 <span className="hidden xs:inline">ANALYTICS</span><span className="xs:hidden">VIEW</span></span>
                 </button>
                 <button 
                   onClick={() => navigate('/library')}
-                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:bg-slate-600/50 transition-all duration-300 text-sm sm:text-base"
+                  className="bg-slate-700/50 border border-slate-600 text-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs md:text-sm lg:text-base uppercase tracking-wide hover:bg-slate-600/50 hover:scale-105 active:scale-95 transition-all duration-300"
                 >
-                  📚 <span className="hidden sm:inline">EXERCISE LIBRARY</span><span className="sm:hidden">LIBRARY</span>
+                  📚 <span className="hidden xs:inline">LIBRARY</span><span className="xs:hidden">BROWSE</span>
                 </button>
               </div>
             </motion.div>
@@ -434,26 +446,25 @@ const Dashboard = () => {
       </div>
 
       {/* Enhanced Gym-Style Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
         <button 
           onClick={() => navigate('/workouts')}
-          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-blue-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 text-left overflow-hidden"
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-blue-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 text-left overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-lg sm:text-xl md:text-2xl">💪</span>
+            <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <span className="text-base sm:text-lg md:text-xl lg:text-2xl">💪</span>
               </div>
-              <div className="text-xs text-blue-400 bg-blue-500/20 px-2 py-1 rounded-full">
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-blue-400 bg-blue-500/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold uppercase tracking-wide border border-blue-500/30">
                 {workoutStats?.lastUpdate ? 'LIVE' : isOnline && stats.isRealTime ? 'LIVE' : 'OFF'}
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
-            <div className="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-1 sm:mb-2">TOTAL WORKOUTS</div>
-            <div className="text-xs text-blue-400 font-medium">
-              <span className="hidden sm:inline">{(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} sessions crushed!` : 'Ready to dominate?'}</span>
-              <span className="sm:hidden">{(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} done!` : 'Start now!'}</span>
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-1 leading-none">{workoutStats?.totalWorkouts || stats?.totalWorkouts || 0}</div>
+            <div className="text-slate-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-black uppercase tracking-widest mb-1 sm:mb-2">TOTAL WORKOUTS</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-blue-400 font-bold">
+              {(workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0 ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} done!` : 'Start now!'}
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
@@ -463,52 +474,50 @@ const Dashboard = () => {
         
         <button 
           onClick={() => navigate('/analytics')}
-          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-green-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 text-left overflow-hidden"
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-green-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 text-left overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-2xl">📊</span>
+            <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                <span className="text-base sm:text-lg md:text-xl lg:text-2xl">📊</span>
               </div>
-              <div className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-full">
-                {isOnline && stats.isRealTime ? 'LIVE' : 'OFFLINE'}
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-green-400 bg-green-500/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold uppercase tracking-wide border border-green-500/30">
+                {isOnline && stats.isRealTime ? 'LIVE' : 'OFF'}
               </div>
             </div>
-            <div className="text-3xl font-black text-white mb-2">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
-            <div className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">THIS WEEK</div>
-            <div className="text-xs text-green-400 font-medium">
-              {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} sessions this week!` : 'Time to get started!'}
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-1 leading-none">{workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0}</div>
+            <div className="text-slate-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-black uppercase tracking-widest mb-1 sm:mb-2">THIS WEEK</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-green-400 font-bold">
+              {(workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) > 0 ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} this week!` : 'Get started!'}
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         </button>
         
-
-        
         <button 
           onClick={() => navigate('/my-plans')}
-          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-orange-500/30 rounded-2xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 text-left overflow-hidden"
+          className="group relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-orange-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 text-left overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-2xl">📋</span>
+            <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                <span className="text-base sm:text-lg md:text-xl lg:text-2xl">📋</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {planSyncStatus === 'syncing' && (
-                  <div className="animate-spin w-3 h-3 border border-orange-500 border-t-transparent rounded-full"></div>
+                  <div className="animate-spin w-2 h-2 sm:w-3 sm:h-3 border border-orange-500 border-t-transparent rounded-full"></div>
                 )}
-                <div className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-full">
-                  {plansOnline && isRealTime ? 'SYNC' : 'OFFLINE'}
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-orange-400 bg-orange-500/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold uppercase tracking-wide border border-orange-500/30">
+                  {plansOnline && isRealTime ? 'SYNC' : 'OFF'}
                 </div>
               </div>
             </div>
-            <div className="text-3xl font-black text-white mb-2">{dashboardStats.totalPlans}</div>
-            <div className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">WORKOUT PLANS</div>
-            <div className="text-xs text-orange-400 font-medium">
-              {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} plans locked & loaded!` : 'Build your arsenal!'}
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-1 leading-none">{dashboardStats.totalPlans}</div>
+            <div className="text-slate-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-black uppercase tracking-widest mb-1 sm:mb-2">WORKOUT PLANS</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-orange-400 font-bold">
+              {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} ready!` : 'Build now!'}
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-yellow-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
@@ -516,60 +525,52 @@ const Dashboard = () => {
       </div>
 
       {/* Enhanced Quick Actions - Gym Style */}
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-cyan-500/5 rounded-2xl sm:rounded-3xl blur-xl"></div>
-        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl sm:rounded-3xl border border-purple-500/20 p-4 sm:p-6 md:p-8 backdrop-blur-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-cyan-500/5 rounded-xl sm:rounded-2xl md:rounded-3xl blur-2xl"></div>
+        <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-xl sm:rounded-2xl md:rounded-3xl border border-purple-500/20 p-3 sm:p-4 md:p-6 lg:p-8 backdrop-blur-sm shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
             <div>
-              <h2 className="text-lg sm:text-xl md:text-2xl font-black text-white uppercase tracking-wider mb-1 sm:mb-2">QUICK ACTIONS</h2>
-              <p className="text-slate-400 text-xs sm:text-sm">Your fitness arsenal at your fingertips</p>
+              <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl font-black text-white uppercase tracking-wider mb-0.5 sm:mb-1 md:mb-2 leading-none">QUICK ACTIONS</h2>
+              <p className="text-slate-400 text-[9px] sm:text-[10px] md:text-xs lg:text-sm">Your fitness arsenal</p>
             </div>
-            <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/20 px-2 sm:px-3 py-1 sm:py-2 rounded-full">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <span className="hidden sm:inline">REAL-TIME DATA</span>
-              <span className="sm:hidden">LIVE</span>
+            <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] md:text-xs text-green-400 bg-green-500/20 px-2 py-1 sm:px-2.5 sm:py-1.5 md:px-3 md:py-2 rounded-full border border-green-500/30">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></span>
+              <span className="font-bold uppercase tracking-wide">LIVE</span>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
             <button 
               onClick={() => navigate('/library')}
-              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-blue-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 text-center overflow-hidden"
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-blue-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 text-center overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <span className="text-lg sm:text-2xl">📚</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg shadow-blue-500/30">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl">📚</span>
                 </div>
-                <div className="font-bold text-white text-xs sm:text-sm uppercase tracking-wide mb-1 sm:mb-2">EXERCISE LIBRARY</div>
-                <div className="text-xs text-blue-400 font-medium">Browse arsenal</div>
-                <div className="absolute top-2 right-2 text-xs text-blue-400">
-                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
-                </div>
+                <div className="font-black text-white text-[10px] sm:text-xs md:text-sm uppercase tracking-wide mb-1 leading-none">LIBRARY</div>
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-blue-400 font-bold">Browse</div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </button>
             
             <button 
               onClick={() => navigate('/my-plans')}
-              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-green-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 text-center overflow-hidden"
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-green-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 text-center overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <span className="text-lg sm:text-2xl">📋</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg shadow-green-500/30">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl">📋</span>
                 </div>
-                <div className="font-bold text-white text-xs sm:text-sm uppercase tracking-wide mb-1 flex items-center justify-center gap-1 sm:gap-2">
-                  <span className="hidden sm:inline">MY PLANS ({dashboardStats.totalPlans})</span>
-                  <span className="sm:hidden">PLANS ({dashboardStats.totalPlans})</span>
+                <div className="font-black text-white text-[10px] sm:text-xs md:text-sm uppercase tracking-wide mb-1 flex items-center justify-center gap-1 leading-none">
+                  <span>PLANS ({dashboardStats.totalPlans})</span>
                   {planSyncStatus === 'syncing' && (
-                    <div className="animate-spin w-2 h-2 sm:w-3 sm:h-3 border border-green-300 border-t-transparent rounded-full"></div>
+                    <div className="animate-spin w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 border border-green-300 border-t-transparent rounded-full"></div>
                   )}
                 </div>
-                <div className="text-xs text-green-400 font-medium">
-                  {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} ready` : 'Build arsenal'}
-                </div>
-                <div className="absolute top-2 right-2 text-xs text-green-400">
-                  {plansOnline && isRealTime ? '🚀' : '❌'}
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-green-400 font-bold">
+                  {dashboardStats.totalPlans > 0 ? `${dashboardStats.totalPlans} ready` : 'Build'}
                 </div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
@@ -577,19 +578,16 @@ const Dashboard = () => {
             
             <button 
               onClick={() => navigate('/nutrition')}
-              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-orange-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/20 text-center overflow-hidden"
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-orange-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/20 text-center overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <span className="text-lg sm:text-2xl">🍎</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg shadow-orange-500/30">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl">🍎</span>
                 </div>
-                <div className="font-bold text-white text-xs sm:text-sm uppercase tracking-wide mb-1 sm:mb-2">MEAL PLANNER</div>
-                <div className="text-xs text-orange-400 font-medium">
-                  {stats.totalMeals > 0 ? `${stats.totalMeals} meals` : 'Fuel up'}
-                </div>
-                <div className="absolute top-2 right-2 text-xs text-orange-400">
-                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
+                <div className="font-black text-white text-[10px] sm:text-xs md:text-sm uppercase tracking-wide mb-1 leading-none">MEALS</div>
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-orange-400 font-bold">
+                  {stats.totalMeals > 0 ? `${stats.totalMeals}` : 'Fuel'}
                 </div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-yellow-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
@@ -597,18 +595,15 @@ const Dashboard = () => {
             
             <button 
               onClick={() => navigate('/analytics')}
-              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-purple-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 text-center overflow-hidden"
+              className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 border border-purple-500/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 text-center overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <span className="text-lg sm:text-2xl">📊</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg shadow-purple-500/30">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl">📊</span>
                 </div>
-                <div className="font-bold text-white text-xs sm:text-sm uppercase tracking-wide mb-1 sm:mb-2">ANALYTICS</div>
-                <div className="text-xs text-purple-400 font-medium">Track progress</div>
-                <div className="absolute top-2 right-2 text-xs text-purple-400">
-                  {isOnline && stats.isRealTime ? '🔴' : '❌'}
-                </div>
+                <div className="font-black text-white text-[10px] sm:text-xs md:text-sm uppercase tracking-wide mb-1 leading-none">ANALYTICS</div>
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-purple-400 font-bold">Track</div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
             </button>

@@ -705,131 +705,143 @@ export default function Library() {
       
       {/* Exercise Detail Modal */}
       {selectedExercise && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-0" onClick={() => setSelectedExercise(null)}>
-          <div className="card max-w-md w-full h-full sm:h-auto sm:max-h-[90vh] sm:m-4 sm:rounded-xl rounded-none flex flex-col" onClick={e => e.stopPropagation()}>
-            <div className="sticky top-0 bg-slate-800/95 backdrop-blur-sm flex items-center justify-between p-4 border-b border-slate-700 rounded-t-xl sm:rounded-t-xl rounded-t-none z-10">
-              <h3 className="text-xl font-semibold text-white">{selectedExercise.name}</h3>
-              <button
-                onClick={() => setSelectedExercise(null)}
-                className="text-slate-400 hover:text-white text-2xl flex-shrink-0 ml-2"
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="space-y-4 overflow-y-auto flex-1 p-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center relative`}>
-                  <span className="text-2xl">{selectedExercise.icon}</span>
-                  {selectedExercise.hasProgress && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-white">✓</span>
-                    </div>
-                  )}
-                </div>
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4"
+          onClick={() => setSelectedExercise(null)}
+        >
+          <div 
+            className="bg-gradient-to-br from-slate-900 to-black rounded-2xl sm:rounded-3xl max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-slate-700/50 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="p-4 sm:p-6">
+              <div className="flex items-start justify-between mb-4 sm:mb-6">
                 <div>
-                  <div className="font-medium text-white">{selectedExercise.category}</div>
-                  <div className="text-sm text-slate-400">{selectedExercise.sets}</div>
-                  {selectedExercise.hasProgress && (
-                    <div className="text-xs text-green-400 mt-1">
-                      {selectedExercise.totalSessions} sessions completed
-                    </div>
-                  )}
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">{selectedExercise.name}</h2>
+                  <p className="text-slate-300 text-sm sm:text-base">{selectedExercise.category}</p>
                 </div>
-              </div>
-              
-              {selectedExercise.hasProgress && (
-                <div className="bg-slate-800/50 rounded-lg p-3 space-y-2">
-                  <div className="text-sm font-medium text-white mb-2">📊 Your Progress</div>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <div className="text-slate-400">Total Sessions</div>
-                      <div className="text-blue-400 font-medium">{selectedExercise.userStats.totalSessions}</div>
-                    </div>
-                    <div>
-                      <div className="text-slate-400">Total Sets</div>
-                      <div className="text-green-400 font-medium">{selectedExercise.userStats.totalSets}</div>
-                    </div>
-                    <div>
-                      <div className="text-slate-400">Total Reps</div>
-                      <div className="text-purple-400 font-medium">{selectedExercise.userStats.totalReps}</div>
-                    </div>
-                    <div>
-                      <div className="text-slate-400">Max Weight</div>
-                      <div className="text-orange-400 font-medium">{selectedExercise.userStats.maxWeight}kg</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-slate-400 mt-2">
-                    Last performed: {selectedExercise.lastPerformed ? 
-                      new Date(selectedExercise.lastPerformed).toLocaleDateString() : 'Never'
-                    }
-                  </div>
-                </div>
-              )}
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Type</div>
-                  <div className={`text-xs px-2 py-1 rounded inline-block ${
-                    selectedExercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
-                    selectedExercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
-                    'bg-green-900/30 text-green-300'
-                  }`}>
-                    {selectedExercise.type}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Difficulty</div>
-                  <div className={`text-xs px-2 py-1 rounded inline-block ${
-                    selectedExercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
-                    selectedExercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
-                    'bg-red-900/30 text-red-300'
-                  }`}>
-                    {selectedExercise.difficulty}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedExercise(null);
-                      handleQuickPlan(selectedExercise);
-                    }}
-                    className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
-                  >
-                    New Plan
-                  </button>
-                  <button
-                    onClick={() => {
-                      const exerciseToAdd = selectedExercise;
-                      setSelectedExercise(null);
-                      handleAddToExisting(exerciseToAdd);
-                    }}
-                    className="btn bg-green-600 hover:bg-green-700 text-white flex-1"
-                  >
-                    Add to Plan
-                  </button>
-                </div>
-                <button
-                  onClick={() => {
-                    console.log('💆 Modal Start Workout button clicked for:', selectedExercise.name);
-                    console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
-                    const exerciseToStart = selectedExercise;
-                    setSelectedExercise(null);
-                    handleStartWorkout(exerciseToStart);
-                  }}
-                  className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full`}
-                >
-                  🎯 {isOnline ? 'Start Workout Session' : 'Start Workout (Offline)'}
-                </button>
                 <button
                   onClick={() => setSelectedExercise(null)}
-                  className="btn-secondary w-full"
+                  className="text-slate-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
+                  aria-label="Close"
                 >
-                  Close
+                  ✕
                 </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center relative`}>
+                    <span className="text-2xl">{selectedExercise.icon}</span>
+                    {selectedExercise.hasProgress && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white">✓</span>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-medium text-white">{selectedExercise.category}</div>
+                    <div className="text-sm text-slate-400">{selectedExercise.sets}</div>
+                    {selectedExercise.hasProgress && (
+                      <div className="text-xs text-green-400 mt-1">
+                        {selectedExercise.totalSessions} sessions completed
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {selectedExercise.hasProgress && (
+                  <div className="bg-slate-800/50 rounded-lg p-3 space-y-2">
+                    <div className="text-sm font-medium text-white mb-2">📊 Your Progress</div>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <div className="text-slate-400">Total Sessions</div>
+                        <div className="text-blue-400 font-medium">{selectedExercise.userStats.totalSessions}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400">Total Sets</div>
+                        <div className="text-green-400 font-medium">{selectedExercise.userStats.totalSets}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400">Total Reps</div>
+                        <div className="text-purple-400 font-medium">{selectedExercise.userStats.totalReps}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400">Max Weight</div>
+                        <div className="text-orange-400 font-medium">{selectedExercise.userStats.maxWeight}kg</div>
+                      </div>
+                    </div>
+                    <div className="text-xs text-slate-400 mt-2">
+                      Last performed: {selectedExercise.lastPerformed ? 
+                        new Date(selectedExercise.lastPerformed).toLocaleDateString() : 'Never'
+                      }
+                    </div>
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-slate-400 mb-1">Type</div>
+                    <div className={`text-xs px-2 py-1 rounded inline-block ${
+                      selectedExercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
+                      selectedExercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
+                      'bg-green-900/30 text-green-300'
+                    }`}>
+                      {selectedExercise.type}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-slate-400 mb-1">Difficulty</div>
+                    <div className={`text-xs px-2 py-1 rounded inline-block ${
+                      selectedExercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
+                      selectedExercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
+                      'bg-red-900/30 text-red-300'
+                    }`}>
+                      {selectedExercise.difficulty}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 pt-4 border-t border-slate-700/50">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedExercise(null);
+                        handleQuickPlan(selectedExercise);
+                      }}
+                      className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                    >
+                      New Plan
+                    </button>
+                    <button
+                      onClick={() => {
+                        const exerciseToAdd = selectedExercise;
+                        setSelectedExercise(null);
+                        handleAddToExisting(exerciseToAdd);
+                      }}
+                      className="btn bg-green-600 hover:bg-green-700 text-white flex-1"
+                    >
+                      Add to Plan
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      console.log('💆 Modal Start Workout button clicked for:', selectedExercise.name);
+                      console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
+                      const exerciseToStart = selectedExercise;
+                      setSelectedExercise(null);
+                      handleStartWorkout(exerciseToStart);
+                    }}
+                    className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full`}
+                  >
+                    🎯 {isOnline ? 'Start Workout Session' : 'Start Workout (Offline)'}
+                  </button>
+                  <button
+                    onClick={() => setSelectedExercise(null)}
+                    className="btn-secondary w-full"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
