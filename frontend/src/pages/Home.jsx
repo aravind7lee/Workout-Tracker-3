@@ -7,6 +7,7 @@ import { useRealTime } from '../context/RealTimeContext';
 import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
 import LoadingScreen from '../components/LoadingScreen';
+import BodyFatCard from '../components/BodyFatCard';
 
 // Lazy load images
 import Home1 from '../assets/Home1.jpg';
@@ -15,6 +16,17 @@ import Home3 from '../assets/Home3.jpg';
 import Home4 from '../assets/Home4.jpg';
 import Home5 from '../assets/Home5.jpg';
 import NutritionHome from '../assets/NutritionHome.jpg';
+
+// Body Fat Percentage Images
+import BF45 from '../assets/BD-Fat-45.png';
+import BF40 from '../assets/BD-Fat-40.png';
+import BF30 from '../assets/BD-Fat-30.png';
+import BF20 from '../assets/BD-Fat-20.png';
+import BF15 from '../assets/BD-Fat-15.png';
+import BF12 from '../assets/BD-Fat-12.png';
+import BF10 from '../assets/BD-Fat-10.png';
+import BF8 from '../assets/BD-Fat-8.png';
+import BF5 from '../assets/BD-Fat-5.png';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -516,8 +528,11 @@ export default function Home() {
         {/* Elite Training Experience - Home1.jpg */}
         <section data-animate data-id="training-experience" id="training-experience" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-300 ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['training-experience'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/dashboard')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
@@ -576,8 +591,11 @@ export default function Home() {
         {/* Strength & Power - Home2.jpg */}
         <section data-animate data-id="strength-power" id="strength-power" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-500 ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['strength-power'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/plans')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
@@ -636,8 +654,11 @@ export default function Home() {
         {/* Workout Tracking - Home3.jpg */}
         <section data-animate data-id="workout-tracking" id="workout-tracking" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-600 ${isVisible['workout-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-tracking'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/library')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
@@ -696,8 +717,11 @@ export default function Home() {
         {/* Analytics & Progress - Home4.jpg */}
         <section data-animate data-id="analytics-progress" id="analytics-progress" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-700 ${isVisible['analytics-progress'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['analytics-progress'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/analytics')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
@@ -743,8 +767,11 @@ export default function Home() {
         {/* Workout Plans & Splits - Home5.jpg */}
         <section data-animate data-id="workout-plans" id="workout-plans" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-800 ${isVisible['workout-plans'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-plans'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/my-plans')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
@@ -790,8 +817,11 @@ export default function Home() {
         {/* Nutrition Tracking - NutritionHome.jpg */}
         <section data-animate data-id="nutrition-tracking" id="nutrition-tracking" className="mb-6 sm:mb-20">
           <div className={`transition-all duration-700 delay-900 ${isVisible['nutrition-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['nutrition-tracking'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative group">
-              <div className="relative overflow-hidden bg-zinc-900 border border-orange-500 sm:border-4 shadow-2xl" style={{ contain: 'layout style paint' }}>
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => navigate('/nutrition')}
+            >
+              <div className="relative overflow-hidden bg-zinc-900 border border-orange-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
@@ -827,6 +857,128 @@ export default function Home() {
                       className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Body Fat Percentage Section */}
+        <section data-animate data-id="body-fat" id="body-fat" className="mb-6 sm:mb-20">
+          <div className={`transition-all duration-700 delay-950 ${isVisible['body-fat'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['body-fat'] ? 'auto' : 'transform, opacity' }}>
+            <div className="text-center mb-6 sm:mb-12 px-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-6">
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-cyan-500" />
+                <span className="text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-cyan-500 uppercase">Body Composition</span>
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-cyan-500" />
+              </div>
+              
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 uppercase leading-[0.85]">
+                <span className="text-white">NATURAL BODY FAT</span>
+                <br />
+                <span className="text-cyan-500">PERCENTAGE GUIDE</span>
+              </h2>
+              
+              <p className="text-xs sm:text-lg text-zinc-400 max-w-3xl mx-auto leading-snug font-medium">
+                Understand how <span className="text-cyan-500 font-black">natural men look</span> at different body fat percentages
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-3">
+              {[
+                { 
+                  percent: 45, 
+                  img: BF45, 
+                  title: 'This is how natural men look at 45% body fat',
+                  desc: 'Severely obese range. High health risks including cardiovascular disease, diabetes, and joint problems. Mobility significantly impaired. Testosterone levels critically low. Immediate lifestyle changes essential.',
+                  health: '🔴 Critical',
+                  color: 'red'
+                },
+                { 
+                  percent: 40, 
+                  img: BF40, 
+                  title: 'This is how natural men look at 40% body fat',
+                  desc: 'Obese category. Major health concerns with metabolic syndrome risk. Energy levels very low. Hormonal imbalances severe. Testosterone production significantly suppressed. Medical intervention recommended.',
+                  health: '🔴 High Risk',
+                  color: 'red'
+                },
+                { 
+                  percent: 30, 
+                  img: BF30, 
+                  title: 'This is how natural men look at 30% body fat',
+                  desc: 'Overweight to obese. Visible fat accumulation around midsection and chest. Reduced athletic performance. Testosterone levels below optimal. Increased inflammation. Weight loss strongly advised for health.',
+                  health: '🟠 Elevated Risk',
+                  color: 'orange'
+                },
+                { 
+                  percent: 20, 
+                  img: BF20, 
+                  title: 'This is how natural men look at 20% body fat',
+                  desc: 'Average range for men. Some muscle definition visible. Moderate energy levels. Testosterone within normal range. Good starting point for cutting phase. Healthy but room for improvement in physique.',
+                  health: '🟡 Average',
+                  color: 'yellow'
+                },
+                { 
+                  percent: 15, 
+                  img: BF15, 
+                  title: 'This is how natural men look at 15% body fat',
+                  desc: 'Fit and athletic appearance. Abs visible with good lighting. Strong muscle definition. Optimal testosterone production. Excellent energy and performance. Ideal for most natural lifters year-round.',
+                  health: '🟢 Healthy',
+                  color: 'lime'
+                },
+                { 
+                  percent: 12, 
+                  img: BF12, 
+                  title: 'This is how natural men look at 12% body fat',
+                  desc: 'Very lean and defined. Clear six-pack abs. Vascularity emerging. Peak testosterone levels. High energy but requires disciplined nutrition. Excellent for photo shoots and competitions.',
+                  health: '🟢 Athletic',
+                  color: 'green'
+                },
+                { 
+                  percent: 10, 
+                  img: BF10, 
+                  title: 'This is how natural men look at 10% body fat',
+                  desc: 'Shredded physique. Striations visible. Prominent vascularity. Maximum muscle definition. Testosterone optimal but hunger increases. Requires strict diet. Competition-ready condition for naturals.',
+                  health: '🔵 Peak',
+                  color: 'blue'
+                },
+                { 
+                  percent: 8, 
+                  img: BF8, 
+                  title: 'This is how natural men look at 8% body fat',
+                  desc: 'Stage-ready condition. Extreme definition and vascularity. Every muscle fiber visible. Hunger very high. Energy may fluctuate. Testosterone can drop if maintained too long. Not sustainable year-round.',
+                  health: '🟣 Contest',
+                  color: 'purple'
+                },
+                { 
+                  percent: 5, 
+                  img: BF5, 
+                  title: 'This is how natural men look at 5% body fat',
+                  desc: 'Extremely lean - unsustainable. Paper-thin skin. Severe hunger and fatigue. Testosterone crashes. Libido drops. Mental fog. Only achievable briefly for peak week. Health risks if prolonged. Not recommended.',
+                  health: '⚠️ Extreme',
+                  color: 'red'
+                }
+              ].map((bf, idx) => (
+                <BodyFatCard key={bf.percent} bf={bf} OptimizedImage={OptimizedImage} />
+              ))}
+            </div>
+
+            {/* Bottom Info */}
+            <div className="mt-8 sm:mt-12 px-3 max-w-4xl mx-auto">
+              <div className="bg-zinc-900 border-2 border-cyan-500 p-4 sm:p-8">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black border-2 border-cyan-500 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xl sm:text-2xl">💡</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm sm:text-xl font-black text-white uppercase mb-2 sm:mb-3">Natural Physique Reality</h4>
+                    <p className="text-[11px] sm:text-base text-zinc-400 leading-relaxed font-medium">
+                      These images represent <span className="text-cyan-500 font-black">natural, drug-free physiques</span> at various body fat percentages. 
+                      For optimal health and testosterone, most natural men thrive between <span className="text-lime-500 font-black">12-15%</span>. 
+                      Going below 10% requires extreme discipline and may not be sustainable long-term. 
+                      Focus on <span className="text-white font-black">progressive overload, consistent training, and proper nutrition</span> for best results.
+                    </p>
                   </div>
                 </div>
               </div>
