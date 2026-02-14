@@ -125,27 +125,50 @@ const LiveCardioTracker = () => {
 
     // Main interval for duration and calories
     intervalRef.current = setInterval(() => {
-      if (!isTrackingRef.current || isPaused) return;
+      if (!isTrackingRef.current) return;
       
-      const elapsed = Math.floor((Date.now() - startTimeRef.current - pausedTimeRef.current) / 1000);
-      const minutes = Math.floor(elapsed / 60);
-      setDuration(minutes);
-      
-      // Demo mode: simulate steps for laptops
-      if (demoMode && !isPaused) {
-        setMotionDetected(true);
+      // Check if paused - if so, don't update anything
+      setIsPaused(prev => {
+        if (prev) return prev; // If paused, skip all updates
         
-        // Simulate realistic step counting
-        if (currentActivity.stepTime > 0) {
-          const stepsPerSecond = activityType === 'running' ? 2.5 : 1.5;
-          const newSteps = Math.floor(elapsed * stepsPerSecond);
-          setSteps(newSteps);
-          setDistance(newSteps / 1300);
-          if (elapsed % 5 === 0) {
-            console.log(`💻 Demo: ${newSteps} steps, ${(newSteps / 1300).toFixed(2)} km`);
+        const elapsed = Math.floor((Date.now() - startTimeRef.current - pausedTimeRef.current) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        setDuration(minutes);
+      
+        // Demo mode: simulate steps for laptops
+        if (demoMode) {
+          setMotionDetected(true);
+          
+          // Simulate realistic step counting
+          if (currentActivity.stepTime > 0) {
+            const stepsPerSecond = activityType === 'running' ? 2.5 : 1.5;
+            const newSteps = Math.floor(elapsed * stepsPerSecond);
+            setSteps(newSteps);
+            setDistance(newSteps / 1300);
+            if (elapsed % 5 === 0) {
+              console.log(`💻 Demo: ${newSteps} steps, ${(newSteps / 1300).toFixed(2)} km`);
+            }
+          } else {
+            // For cycling/swimming, use time-based distance
+            const mins = elapsed / 60;
+            if (activityType === 'cycling') {
+              setDistance(mins * 0.3);
+            } else if (activityType === 'swimming') {
+              setDistance(mins * 0.05);
+            }
           }
-        } else {
-          // For cycling/swimming, use time-based distance
+        }
+        
+        // Calculate calories
+        setCalories(() => {
+          const met = MET_VALUES[activityType];
+          const weight = 70;
+          const hours = elapsed / 3600;
+          return Math.round(met * weight * hours);
+        });
+
+        // For cycling/swimming with real sensors
+        if (hasMotion && currentActivity.stepTime === 0) {
           const mins = elapsed / 60;
           if (activityType === 'cycling') {
             setDistance(mins * 0.3);
@@ -153,43 +176,66 @@ const LiveCardioTracker = () => {
             setDistance(mins * 0.05);
           }
         }
-      }
-      
-      // Calculate calories
-      setCalories(prev => {
-        const met = MET_VALUES[activityType];
-        const weight = 70;
-        const hours = elapsed / 3600;
-        return Math.round(met * weight * hours);
+        
+        return prev; // Return previous paused state
       });
-
-      // For cycling/swimming with real sensors
-      if (hasMotion && currentActivity.stepTime === 0) {
-        const mins = elapsed / 60;
-        if (activityType === 'cycling') {
-          setDistance(mins * 0.3);
-        } else if (activityType === 'swimming') {
-          setDistance(mins * 0.05);
-        }
-      }
     }, 1000);
   };
 
   const pauseTracking = () => {
+    console.log('⏸️ Pausing tracking...');
     setIsPaused(true);
-    pausedTimeRef.current = Date.now() - startTimeRef.current - pausedTimeRef.current;
+    const currentPausedTime = Date.now() - startTimeRef.current;
+    pausedTimeRef.current = currentPausedTime;
+    console.log('✅ Tracking paused at:', currentPausedTime / 1000, 'seconds');
   };
 
   const resumeTracking = () => {
+    console.log('▶️ Resuming tracking...');
     setIsPaused(false);
     startTimeRef.current = Date.now() - pausedTimeRef.current;
+    console.log('✅ Tracking resumed');
   };
 
   const stopTracking = () => {
     if (!isTracking) return;
     
-    const shouldSave = window.confirm('Do you want to save this session?\n\nClick OK to save, Cancel to discard.');
+    console.log('⏹️ Stopping tracking. Duration:', duration, 'minutes');
     
+    // Check minimum duration BEFORE asking to save
+    if (duration < 1) {
+      const confirmDiscard = window.confirm('⚠️ Session is less than 1 minute.\n\nMinimum tracking time is 1 minute to save.\n\nClick OK to discard this session.');
+      
+      // Stop tracking regardless
+      setIsTracking(false);
+      setIsPaused(false);
+      isTrackingRef.current = false;
+      
+      if (motionHandlerRef.current) {
+        window.removeEventListener('devicemotion', motionHandlerRef.current);
+        motionHandlerRef.current = null;
+      }
+      
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      
+      // Reset all values
+      setSteps(0);
+      setDistance(0);
+      setDuration(0);
+      setCalories(0);
+      setMotionDetected(false);
+      
+      console.log('❌ Session discarded - less than 1 minute');
+      return;
+    }
+    
+    // If duration is valid, ask to save
+    const shouldSave = window.confirm(`Do you want to save this session?\n\n${currentActivity.icon} ${currentActivity.label}\n⏱️ Duration: ${duration} min\n📍 Distance: ${distance.toFixed(2)} km\n🔥 Calories: ${calories}\n\nClick OK to save, Cancel to discard.`);
+    
+    // Stop tracking
     setIsTracking(false);
     setIsPaused(false);
     isTrackingRef.current = false;
@@ -204,16 +250,12 @@ const LiveCardioTracker = () => {
       intervalRef.current = null;
     }
 
-    if (shouldSave && duration >= 1) {
+    if (shouldSave) {
+      console.log('💾 Saving session...');
       saveSession();
-    } else if (shouldSave && duration < 1) {
-      alert('⚠️ Please track for at least 1 minute before saving');
-      setSteps(0);
-      setDistance(0);
-      setDuration(0);
-      setCalories(0);
-      setMotionDetected(false);
     } else {
+      console.log('❌ Session discarded by user');
+      // Reset all values
       setSteps(0);
       setDistance(0);
       setDuration(0);
@@ -225,10 +267,24 @@ const LiveCardioTracker = () => {
   const saveSession = async () => {
     if (duration < 1) {
       alert('⚠️ Please track for at least 1 minute before saving');
+      // Reset values
+      setSteps(0);
+      setDistance(0);
+      setDuration(0);
+      setCalories(0);
+      setMotionDetected(false);
       return;
     }
 
     try {
+      console.log('📤 Sending session data to server:', {
+        activityType,
+        duration,
+        distance: parseFloat(distance.toFixed(2)),
+        steps,
+        calories
+      });
+      
       const response = await api.post('/cardio', {
         activityType,
         duration,
@@ -239,8 +295,10 @@ const LiveCardioTracker = () => {
         notes: demoMode ? `Demo tracked ${activityType} session` : `Live tracked ${activityType} session`
       });
 
+      console.log('📥 Server response:', response.data);
+
       if (response.data.success) {
-        alert(`✅ Session saved!\n\n${currentActivity.icon} ${currentActivity.label}\n${steps.toLocaleString()} steps\n${distance.toFixed(2)} km\n${duration} min\n${calories} cal`);
+        alert(`✅ Session saved successfully!\n\n${currentActivity.icon} ${currentActivity.label}\n${steps > 0 ? steps.toLocaleString() + ' steps\n' : ''}${distance.toFixed(2)} km\n${duration} min\n${calories} cal`);
         
         // Reset values
         setSteps(0);
@@ -254,10 +312,16 @@ const LiveCardioTracker = () => {
           loadRecentSessions();
           setShowHistory(true);
         }, 500);
+      } else {
+        throw new Error(response.data.message || 'Failed to save session');
       }
     } catch (error) {
-      console.error('Failed to save session:', error);
-      alert('❌ Failed to save session. Please try again.');
+      console.error('❌ Failed to save session:', error);
+      const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
+      alert(`❌ Failed to save session\n\nError: ${errorMsg}\n\nPlease check your internet connection and try again.`);
+      
+      // Don't reset values so user can try again
+      console.log('💡 Session data preserved for retry');
     }
   };
 
