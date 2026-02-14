@@ -151,134 +151,136 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
       {/* Analytics Header */}
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-indigo-200 dark:border-indigo-800">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <span className="text-white text-xl">📈</span>
+      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-indigo-200 dark:border-indigo-800 shadow-lg">
+        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <span className="text-white text-base sm:text-lg md:text-xl">📈</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-black text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide leading-none">
                 Nutrition Analytics
               </h3>
-              <div className="text-sm text-light-text-muted dark:text-dark-text-muted">
-                Advanced insights into your nutrition patterns
+              <div className="text-[10px] sm:text-xs md:text-sm text-light-text-muted dark:text-dark-text-muted font-semibold mt-0.5">
+                <span className="hidden sm:inline">Advanced insights into your nutrition patterns</span>
+                <span className="sm:hidden">Advanced insights</span>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value)}
-              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded-lg px-3 py-1.5 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 transition-all"
+              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 transition-all font-bold"
             >
               <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Overall Score */}
-      <div className={`rounded-xl p-6 border ${getScoreBg(analytics.overallScore)}`}>
+      <div className={`rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-5 md:p-6 border shadow-xl ${getScoreBg(analytics.overallScore)}`}>
         <div className="text-center">
-          <div className={`text-4xl font-bold ${getScoreColor(analytics.overallScore)} mb-2`}>
+          <div className={`text-3xl sm:text-4xl md:text-5xl font-black ${getScoreColor(analytics.overallScore)} mb-1 sm:mb-2 leading-none`}>
             {analytics.overallScore}%
           </div>
-          <div className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+          <div className="text-xs sm:text-sm md:text-base lg:text-lg font-black text-light-text-primary dark:text-dark-text-primary mb-0.5 sm:mb-1 uppercase tracking-wide">
             Overall Nutrition Score
           </div>
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted">
-            Based on macro targets, timing, and consistency
+          <div className="text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-light-text-muted dark:text-dark-text-muted font-semibold">
+            <span className="hidden sm:inline">Based on macro targets, timing, and consistency</span>
+            <span className="sm:hidden">Macro targets & timing</span>
           </div>
         </div>
       </div>
 
       {/* Detailed Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="text-center p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl">
-          <div className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
+      <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
+        <div className="text-center p-2.5 sm:p-3 md:p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg sm:rounded-xl shadow-lg">
+          <div className="text-base sm:text-lg md:text-xl font-black text-light-text-primary dark:text-dark-text-primary leading-none">
             {analytics.proteinDensity}g
           </div>
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted">Protein/1000cal</div>
-          <div className="text-xs text-light-text-muted/70 dark:text-dark-text-muted/70">
+          <div className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-bold mt-1 uppercase tracking-wide">Protein/1000cal</div>
+          <div className="text-[8px] sm:text-[9px] md:text-[10px] text-light-text-muted/70 dark:text-dark-text-muted/70 font-semibold mt-0.5">
             {analytics.proteinDensity >= 25 ? 'Excellent' : analytics.proteinDensity >= 20 ? 'Good' : 'Low'}
           </div>
         </div>
         
-        <div className="text-center p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl">
-          <div className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
+        <div className="text-center p-2.5 sm:p-3 md:p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg sm:rounded-xl shadow-lg">
+          <div className="text-base sm:text-lg md:text-xl font-black text-light-text-primary dark:text-dark-text-primary leading-none">
             {analytics.avgMealSize}
           </div>
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted">Avg Meal Size</div>
-          <div className="text-xs text-light-text-muted/70 dark:text-dark-text-muted/70">
+          <div className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-bold mt-1 uppercase tracking-wide">Avg Meal Size</div>
+          <div className="text-[8px] sm:text-[9px] md:text-[10px] text-light-text-muted/70 dark:text-dark-text-muted/70 font-semibold mt-0.5">
             ±{analytics.mealVariance} calories
           </div>
         </div>
         
-        <div className="text-center p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl">
-          <div className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
+        <div className="text-center p-2.5 sm:p-3 md:p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg sm:rounded-xl shadow-lg">
+          <div className="text-base sm:text-lg md:text-xl font-black text-light-text-primary dark:text-dark-text-primary leading-none">
             {Math.round(analytics.calorieAccuracy)}%
           </div>
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted">Calorie Accuracy</div>
-          <div className="text-xs text-light-text-muted/70 dark:text-dark-text-muted/70">
+          <div className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-bold mt-1 uppercase tracking-wide">Calorie Accuracy</div>
+          <div className="text-[8px] sm:text-[9px] md:text-[10px] text-light-text-muted/70 dark:text-dark-text-muted/70 font-semibold mt-0.5">
             Macro vs Total
           </div>
         </div>
         
-        <div className="text-center p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl">
-          <div className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
+        <div className="text-center p-2.5 sm:p-3 md:p-4 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg sm:rounded-xl shadow-lg">
+          <div className="text-base sm:text-lg md:text-xl font-black text-light-text-primary dark:text-dark-text-primary leading-none">
             {analytics.mealTiming.total}
           </div>
-          <div className="text-sm text-light-text-muted dark:text-dark-text-muted">Meals Today</div>
-          <div className="text-xs text-light-text-muted/70 dark:text-dark-text-muted/70">
+          <div className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-bold mt-1 uppercase tracking-wide">Meals Today</div>
+          <div className="text-[8px] sm:text-[9px] md:text-[10px] text-light-text-muted/70 dark:text-dark-text-muted/70 font-semibold mt-0.5">
             {analytics.mealTiming.early} early, {analytics.mealTiming.late} late
           </div>
         </div>
       </div>
 
       {/* Macro Balance Breakdown */}
-      <div className="bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl p-6">
-        <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
-          <span>⚖️</span> Macro Balance Scores
+      <div className="bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 shadow-lg">
+        <h4 className="font-black text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary mb-2.5 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2 uppercase tracking-wide">
+          <span>⚖️</span> Macro Balance
         </h4>
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${getScoreColor(analytics.macroBalance.protein)}`}>
+        <div className="grid grid-cols-2 xs:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+            <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.protein)} leading-none`}>
               {analytics.macroBalance.protein}%
             </div>
-            <div className="text-sm text-blue-600 dark:text-blue-400">Protein</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-blue-600 dark:text-blue-400 font-black mt-1 uppercase tracking-wider">Protein</div>
           </div>
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${getScoreColor(analytics.macroBalance.calories)}`}>
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+            <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.calories)} leading-none`}>
               {analytics.macroBalance.calories}%
             </div>
-            <div className="text-sm text-green-600 dark:text-green-400">Calories</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-green-600 dark:text-green-400 font-black mt-1 uppercase tracking-wider">Calories</div>
           </div>
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${getScoreColor(analytics.macroBalance.carbs)}`}>
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+            <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.carbs)} leading-none`}>
               {analytics.macroBalance.carbs}%
             </div>
-            <div className="text-sm text-yellow-600 dark:text-yellow-400">Carbs</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-yellow-600 dark:text-yellow-400 font-black mt-1 uppercase tracking-wider">Carbs</div>
           </div>
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${getScoreColor(analytics.macroBalance.fat)}`}>
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+            <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.fat)} leading-none`}>
               {analytics.macroBalance.fat}%
             </div>
-            <div className="text-sm text-orange-600 dark:text-orange-400">Fat</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-orange-600 dark:text-orange-400 font-black mt-1 uppercase tracking-wider">Fat</div>
           </div>
         </div>
       </div>
 
       {/* Insights */}
-      <div className="space-y-3">
-        <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary flex items-center gap-2">
-          <span>🔍</span> Analytics Insights
+      <div className="space-y-2 sm:space-y-2.5 md:space-y-3">
+        <h4 className="font-black text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary flex items-center gap-1.5 sm:gap-2 uppercase tracking-wide">
+          <span>🔍</span> Insights
         </h4>
         
         {insights.slice(0, showDetails ? insights.length : 3).map((insight, index) => (
@@ -287,7 +289,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className={`p-4 rounded-xl border ${
+            className={`p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl border shadow-lg ${
               insight.type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
               insight.type === 'good' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
               insight.type === 'warning' ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' :
@@ -295,13 +297,13 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
               'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800'
             }`}
           >
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">{insight.icon}</span>
+            <div className="flex items-start gap-2 sm:gap-2.5 md:gap-3">
+              <span className="text-lg sm:text-xl md:text-2xl flex-shrink-0">{insight.icon}</span>
               <div>
-                <h5 className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                <h5 className="font-black text-[10px] sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide leading-tight">
                   {insight.title}
                 </h5>
-                <p className="text-sm text-light-text-muted dark:text-dark-text-muted">
+                <p className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-semibold mt-0.5">
                   {insight.message}
                 </p>
               </div>
@@ -312,38 +314,38 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
         {insights.length > 3 && (
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="w-full text-center text-sm text-indigo-600 dark:text-indigo-400 hover:underline py-2"
+            className="w-full text-center text-[10px] sm:text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:underline py-1.5 sm:py-2 font-bold uppercase tracking-wide"
           >
-            {showDetails ? 'Show Less' : `Show ${insights.length - 3} More Insights`}
+            {showDetails ? 'Less' : `+${insights.length - 3} More`}
           </button>
         )}
       </div>
 
       {/* Trends */}
-      <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-gray-200 dark:border-gray-800">
-        <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-4 flex items-center gap-2">
-          <span>📊</span> Trend Analysis
+      <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900/20 dark:to-blue-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200 dark:border-gray-800 shadow-lg">
+        <h4 className="font-black text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary mb-2.5 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2 uppercase tracking-wide">
+          <span>📊</span> Trends
         </h4>
         
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className={`text-center p-3 rounded-lg ${analytics.trends.improving ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
-            <div className="text-lg">{analytics.trends.improving ? '📈' : '📊'}</div>
-            <div className="text-sm font-medium">
-              {analytics.trends.improving ? 'Improving' : 'Stable'}
+        <div className="grid grid-cols-3 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.improving ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+            <div className="text-base sm:text-lg md:text-xl">{analytics.trends.improving ? '📈' : '📊'}</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
+              {analytics.trends.improving ? 'Up' : 'Stable'}
             </div>
           </div>
           
-          <div className={`text-center p-3 rounded-lg ${analytics.trends.consistent ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
-            <div className="text-lg">{analytics.trends.consistent ? '🎯' : '📊'}</div>
-            <div className="text-sm font-medium">
-              {analytics.trends.consistent ? 'Consistent' : 'Variable'}
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.consistent ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+            <div className="text-base sm:text-lg md:text-xl">{analytics.trends.consistent ? '🎯' : '📊'}</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
+              {analytics.trends.consistent ? 'Steady' : 'Variable'}
             </div>
           </div>
           
-          <div className={`text-center p-3 rounded-lg ${analytics.trends.balanced ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
-            <div className="text-lg">{analytics.trends.balanced ? '⚖️' : '📊'}</div>
-            <div className="text-sm font-medium">
-              {analytics.trends.balanced ? 'Balanced' : 'Unbalanced'}
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.balanced ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+            <div className="text-base sm:text-lg md:text-xl">{analytics.trends.balanced ? '⚖️' : '📊'}</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
+              {analytics.trends.balanced ? 'Balanced' : 'Off'}
             </div>
           </div>
         </div>

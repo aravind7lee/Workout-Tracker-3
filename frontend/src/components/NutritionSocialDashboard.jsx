@@ -139,31 +139,34 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
       {/* Social Stats Header */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-              <span className="text-white text-xl">🌟</span>
+      <div className="relative overflow-hidden bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-purple-200 dark:border-purple-800 shadow-lg">
+        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <span className="text-white text-base sm:text-lg md:text-xl">🌟</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-black text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide leading-none">
                 Your Nutrition Journey
               </h3>
-              <div className="text-sm text-light-text-muted dark:text-dark-text-muted">
-                Share your progress with friends and family
+              <div className="text-[10px] sm:text-xs md:text-sm text-light-text-muted dark:text-dark-text-muted font-semibold mt-0.5">
+                <span className="hidden sm:inline">Share your progress with friends and family</span>
+                <span className="sm:hidden">Share your progress</span>
               </div>
             </div>
           </div>
           
           <button
             onClick={() => setShowShareModal(true)}
-            className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="relative group overflow-hidden px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs md:text-sm uppercase tracking-wider hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
           >
-            <span className="flex items-center gap-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            <span className="relative flex items-center gap-1 sm:gap-1.5 md:gap-2">
               <span>📤</span>
-              Share Progress
+              <span className="hidden xs:inline">Share</span>
+              <span className="xs:hidden">Post</span>
             </span>
           </button>
         </div>
@@ -171,27 +174,27 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
 
       {/* Achievement Showcase */}
       {currentAchievements.length > 0 && (
-        <div className="space-y-4">
-          <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary flex items-center gap-2">
+        <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
+          <h4 className="font-black text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary flex items-center gap-1.5 sm:gap-2 uppercase tracking-wide">
             <span>🏆</span> Today's Achievements
           </h4>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
             {currentAchievements.map((achievement, index) => (
               <motion.div
                 key={achievement.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className={`p-4 rounded-xl border ${achievement.bgColor} border-current/20`}
+                className={`p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl border ${achievement.bgColor} border-current/20 shadow-lg`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{achievement.icon}</span>
+                <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
+                  <span className="text-xl sm:text-2xl md:text-3xl flex-shrink-0">{achievement.icon}</span>
                   <div>
-                    <h5 className={`font-medium ${achievement.color}`}>
+                    <h5 className={`font-black text-[10px] sm:text-xs md:text-sm ${achievement.color} uppercase tracking-wide leading-tight`}>
                       {achievement.title}
                     </h5>
-                    <p className="text-sm text-light-text-muted dark:text-dark-text-muted">
+                    <p className="text-[9px] sm:text-[10px] md:text-xs text-light-text-muted dark:text-dark-text-muted font-semibold mt-0.5">
                       {achievement.description}
                     </p>
                   </div>
