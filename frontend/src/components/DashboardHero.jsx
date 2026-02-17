@@ -179,32 +179,34 @@ const DashboardHero = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 inline-block"
+              className="mt-4 sm:mt-6 inline-block"
             >
               <div 
-                className="px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 lg:px-10 lg:py-5 rounded-xl sm:rounded-2xl backdrop-blur-md border border-orange-500/30 shadow-2xl"
+                className="px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 rounded-md sm:rounded-lg md:rounded-xl backdrop-blur-md border border-orange-500/20 shadow-lg"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255,107,53,0.2) 0%, rgba(247,147,30,0.1) 100%)',
-                  boxShadow: '0 8px 32px rgba(255,107,53,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
+                  background: 'linear-gradient(135deg, rgba(255,107,53,0.12) 0%, rgba(247,147,30,0.06) 100%)',
+                  boxShadow: '0 2px 12px rgba(255,107,53,0.25), inset 0 1px 0 rgba(255,255,255,0.08)'
                 }}
               >
-                <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-sm sm:text-base md:text-lg font-bold">
+                <div className="flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2">
                   <div 
-                    className="w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-pulse shadow-lg flex-shrink-0"
+                    className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full animate-pulse shadow-md flex-shrink-0"
                     style={{ 
                       background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)',
-                      boxShadow: '0 0 16px rgba(255,107,53, 0.8)'
+                      boxShadow: '0 0 8px rgba(255,107,53, 0.6)'
                     }}
                   ></div>
                   <span 
-                    className="font-body tracking-wide sm:tracking-wider uppercase text-center"
+                    className="font-body text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold tracking-wide uppercase text-center leading-none"
                     style={{
                       color: '#f8fafc',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.7)'
+                      textShadow: '0 1px 3px rgba(0,0,0,0.7)'
                     }}
                   >
-                    <span className="hidden sm:inline">🔥 REAL-TIME BEAST TRACKING ACTIVE</span>
-                    <span className="sm:hidden">🔥 BEAST MODE ACTIVE</span>
+                    <span className="hidden lg:inline">🔥 REAL-TIME BEAST TRACKING ACTIVE</span>
+                    <span className="hidden md:inline lg:hidden">🔥 BEAST TRACKING</span>
+                    <span className="hidden sm:inline md:hidden">🔥 TRACKING</span>
+                    <span className="sm:hidden">🔥 LIVE</span>
                   </span>
                 </div>
               </div>
