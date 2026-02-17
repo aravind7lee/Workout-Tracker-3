@@ -10,7 +10,7 @@
 /* Mobile devices - Ensure head is visible */
 @media (max-width: 640px) {
   .library-hero-image {
-    object-position: center 15%;
+    object-position: 58% center;
     min-height: 100vh;
   }
 }

@@ -4,6 +4,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        'xs': '475px',
+      },
       fontFamily: {
         'heading': ['Bebas Neue', 'cursive'],
         'body': ['Inter', 'sans-serif'],

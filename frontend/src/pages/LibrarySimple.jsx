@@ -373,7 +373,7 @@ export default function LibrarySimple() {
             transition={{ duration: 0.8 }}
           >
             <motion.h2 
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -383,7 +383,7 @@ export default function LibrarySimple() {
             </motion.h2>
             
             <motion.p 
-              className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed"
+              className="text-sm sm:text-base md:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed px-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

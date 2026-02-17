@@ -500,6 +500,16 @@ select:focus {
   background: var(--accent);
 }
 
+/* Scrollbar Hide Utility for Mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Ultra Premium Selection */
 ::selection {
   background: var(--accent-glow);
@@ -516,12 +526,43 @@ select:focus {
 
 @media (max-width: 640px) {
   .card {
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+  
+  .card-premium {
     border-radius: 20px;
     padding: 1.5rem;
   }
   
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 475px) {
+  .card {
+    border-radius: 14px;
+    padding: 1rem;
+  }
+  
   .card-premium {
-    border-radius: 24px;
-    padding: 2rem;
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+  
+  body {
+    font-size: 13px;
+  }
+}
+
+/* Touch-friendly interactions for mobile */
+@media (hover: none) and (pointer: coarse) {
+  button, a, .card {
+    -webkit-tap-highlight-color: rgba(0, 212, 255, 0.1);
+  }
+  
+  button:active, a:active {
+    transform: scale(0.98);
   }
 }

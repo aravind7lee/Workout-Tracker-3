@@ -198,50 +198,50 @@ export default function Forum() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-4 sm:py-6 lg:py-8">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-3 sm:py-4 md:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-2 xs:px-3 sm:px-4 md:px-5 lg:px-6">
         {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3 sm:mb-4">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs sm:text-sm font-medium text-white font-body text-center">
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 md:mb-4">
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-white font-body text-center tracking-wide">
               🔴 LIVE COMMUNITY • {liveUsers.toLocaleString()} ATHLETES ONLINE
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-white mb-3 sm:mb-4 px-2">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-white mb-2 sm:mb-3 md:mb-4 px-2 leading-tight">
             GRIND-X ATHLETES FORUM
           </h1>
-          <p className="text-sm sm:text-base text-slate-400 font-body max-w-2xl mx-auto px-4 leading-relaxed">
+          <p className="text-xs xs:text-sm sm:text-base text-slate-400 font-body max-w-2xl mx-auto px-3 sm:px-4 leading-relaxed">
             Connect with certified trainers, elite athletes, and fitness enthusiasts. Share your journey, get expert advice, and motivate each other.
           </p>
-          <div className="mt-3 sm:mt-4 text-xs text-slate-500 font-body flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+          <div className="mt-2 sm:mt-3 md:mt-4 text-[10px] xs:text-xs text-slate-500 font-body flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
             <span>Live Updates</span>
             <span className="hidden sm:inline">•</span>
             <span>{currentTime.toLocaleTimeString()}</span>
             <span className="hidden sm:inline">•</span>
-            <span>Real-time Discussions</span>
+            <span className="hidden xs:inline">Real-time Discussions</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-1 space-y-3 sm:space-y-4 md:space-y-6">
             {/* Mobile Categories Horizontal Scroll */}
             <div className="lg:hidden">
               <div className="card">
-                <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">CATEGORIES</h3>
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-2 sm:mb-3 md:mb-4 tracking-wide">CATEGORIES</h3>
+                <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
                   {categories.map((category) => (
                     <button
                       key={category.name}
                       onClick={() => setActiveFilter(category.name.toLowerCase())}
-                      className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 font-body text-sm ${
+                      className={`flex-shrink-0 flex items-center gap-1.5 sm:gap-2 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg transition-all duration-300 font-body text-xs xs:text-sm active:scale-95 ${
                         activeFilter === category.name.toLowerCase()
-                          ? 'bg-cyan-600/20 border border-cyan-500/30 text-cyan-400'
-                          : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                          ? 'bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/20'
+                          : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white border border-transparent'
                       }`}
                     >
-                      <span className="text-base">{category.icon}</span>
+                      <span className="text-sm xs:text-base">{category.icon}</span>
                       <span className="font-medium whitespace-nowrap">{category.name}</span>
                     </button>
                   ))}
@@ -273,28 +273,28 @@ export default function Forum() {
             {/* Mobile Filters */}
             <div className="lg:hidden">
               <div className="card">
-                <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">FILTERS</h3>
-                <div className="flex gap-2">
+                <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-2 sm:mb-3 md:mb-4 tracking-wide">FILTERS</h3>
+                <div className="flex gap-2 sm:gap-3">
                   <button
                     onClick={() => setActiveFilter('trending')}
-                    className={`flex-1 flex items-center justify-center gap-2 p-2 sm:p-3 rounded-lg transition-all duration-300 font-body text-sm ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 p-2 xs:p-2.5 sm:p-3 rounded-lg transition-all duration-300 font-body text-xs xs:text-sm active:scale-95 ${
                       activeFilter === 'trending'
-                        ? 'bg-orange-600/20 border border-orange-500/30 text-orange-400'
-                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                        ? 'bg-orange-600/20 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/20'
+                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white border border-transparent'
                     }`}
                   >
-                    <span className="text-base">🔥</span>
+                    <span className="text-sm xs:text-base">🔥</span>
                     <span className="font-medium">Trending</span>
                   </button>
                   <button
                     onClick={() => setActiveFilter('recent')}
-                    className={`flex-1 flex items-center justify-center gap-2 p-2 sm:p-3 rounded-lg transition-all duration-300 font-body text-sm ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 p-2 xs:p-2.5 sm:p-3 rounded-lg transition-all duration-300 font-body text-xs xs:text-sm active:scale-95 ${
                       activeFilter === 'recent'
-                        ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400'
-                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white'
+                        ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400 shadow-lg shadow-blue-500/20'
+                        : 'bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white border border-transparent'
                     }`}
                   >
-                    <span className="text-base">⏰</span>
+                    <span className="text-sm xs:text-base">⏰</span>
                     <span className="font-medium">Recent</span>
                   </button>
                 </div>
@@ -332,40 +332,40 @@ export default function Forum() {
 
             {/* Live Stats */}
             <div className="card">
-              <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">LIVE STATS</h3>
-              <div className="grid grid-cols-3 lg:grid-cols-1 gap-3 lg:gap-0 lg:space-y-3">
-                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
-                  <span className="text-slate-400 font-body text-xs sm:text-sm">Online Now</span>
-                  <span className="text-green-400 font-bold font-body text-sm sm:text-base">{liveUsers.toLocaleString()}</span>
+              <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-2 sm:mb-3 md:mb-4 tracking-wide">LIVE STATS</h3>
+              <div className="grid grid-cols-3 lg:grid-cols-1 gap-2 xs:gap-3 lg:gap-0 lg:space-y-3">
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left gap-0.5 lg:gap-0">
+                  <span className="text-slate-400 font-body text-[10px] xs:text-xs sm:text-sm">Online Now</span>
+                  <span className="text-green-400 font-bold font-body text-xs xs:text-sm sm:text-base">{liveUsers.toLocaleString()}</span>
                 </div>
-                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
-                  <span className="text-slate-400 font-body text-xs sm:text-sm">Total Posts</span>
-                  <span className="text-blue-400 font-bold font-body text-sm sm:text-base">{totalPosts}</span>
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left gap-0.5 lg:gap-0">
+                  <span className="text-slate-400 font-body text-[10px] xs:text-xs sm:text-sm">Total Posts</span>
+                  <span className="text-blue-400 font-bold font-body text-xs xs:text-sm sm:text-base">{totalPosts}</span>
                 </div>
-                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
-                  <span className="text-slate-400 font-body text-xs sm:text-sm">User Posts</span>
-                  <span className="text-purple-400 font-bold font-body text-sm sm:text-base">{posts.filter(p => !p._id.startsWith('expert_')).length}</span>
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left gap-0.5 lg:gap-0">
+                  <span className="text-slate-400 font-body text-[10px] xs:text-xs sm:text-sm">User Posts</span>
+                  <span className="text-purple-400 font-bold font-body text-xs xs:text-sm sm:text-base">{posts.filter(p => !p._id.startsWith('expert_')).length}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-3 space-y-3 sm:space-y-4 md:space-y-6">
             {/* Success Message */}
             {postSuccess && (
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card bg-green-600/20 border border-green-500/30 mb-6"
+                className="card bg-green-600/20 border border-green-500/30 mb-3 sm:mb-4 md:mb-6 shadow-lg shadow-green-500/10"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-lg">✓</span>
+                <div className="flex items-center gap-2 xs:gap-3">
+                  <div className="w-8 h-8 xs:w-10 xs:h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-base xs:text-lg">✓</span>
                   </div>
-                  <div>
-                    <div className="font-semibold text-green-400 font-body">Journey Shared Successfully!</div>
-                    <div className="text-sm text-green-300 font-body">Your fitness journey is now visible to the entire GymTracker community. Keep inspiring others!</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold text-green-400 font-body text-xs xs:text-sm sm:text-base">Journey Shared Successfully!</div>
+                    <div className="text-[10px] xs:text-xs sm:text-sm text-green-300 font-body leading-relaxed">Your fitness journey is now visible to the entire GymTracker community. Keep inspiring others!</div>
                   </div>
                 </div>
               </motion.div>
@@ -374,30 +374,30 @@ export default function Forum() {
             {/* Create Post - SHARE YOUR FITNESS JOURNEY */}
             {isAuthenticated() ? (
               <div className="card">
-                <h3 className="text-base sm:text-lg lg:text-xl font-heading text-white mb-3 sm:mb-4 text-center sm:text-left">
+                <h3 className="text-sm xs:text-base sm:text-lg lg:text-xl font-heading text-white mb-2 sm:mb-3 md:mb-4 text-center sm:text-left tracking-wide">
                   SHARE YOUR FITNESS JOURNEY
                 </h3>
-                <div className="bg-blue-600/10 border border-blue-500/20 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-blue-400 text-sm">🔴</span>
-                      <span className="text-blue-400 font-semibold text-xs sm:text-sm font-body">REAL-TIME POSTING</span>
+                <div className="bg-blue-600/10 border border-blue-500/20 rounded-lg p-2.5 xs:p-3 sm:p-4 mb-2 sm:mb-3 md:mb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="text-blue-400 text-xs xs:text-sm">🔴</span>
+                      <span className="text-blue-400 font-semibold text-[10px] xs:text-xs sm:text-sm font-body tracking-wide">REAL-TIME POSTING</span>
                     </div>
                   </div>
-                  <p className="text-slate-300 text-xs sm:text-sm font-body leading-relaxed">
+                  <p className="text-slate-300 text-[10px] xs:text-xs sm:text-sm font-body leading-relaxed">
                     Your journey will be instantly visible to all {liveUsers.toLocaleString()} online athletes and stored permanently in our community.
                   </p>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm sm:text-base">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-2 xs:gap-3 sm:gap-4">
+                    <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-xs xs:text-sm sm:text-base shadow-lg">
                       {user?.name?.charAt(0) || 'U'}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-white font-body text-sm sm:text-base truncate">
+                      <div className="font-semibold text-white font-body text-xs xs:text-sm sm:text-base truncate">
                         {user?.name || 'Elite Athlete'}
                       </div>
-                      <div className="text-xs text-slate-400 font-body">Member • Online Now</div>
+                      <div className="text-[10px] xs:text-xs text-slate-400 font-body">Member • Online Now</div>
                     </div>
                   </div>
                   
@@ -405,7 +405,7 @@ export default function Forum() {
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-3 py-2 sm:py-3 bg-slate-800/60 border border-slate-600/50 rounded-lg text-white font-body text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20"
+                      className="w-full px-2.5 xs:px-3 py-2 xs:py-2.5 sm:py-3 bg-slate-800/60 border border-slate-600/50 rounded-lg text-white font-body text-xs xs:text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
                     >
                       {categories.map(cat => (
                         <option key={cat.name} value={cat.name}>{cat.icon} {cat.name}</option>
@@ -418,27 +418,27 @@ export default function Forum() {
                       value={newPost}
                       onChange={(e) => setNewPost(e.target.value)}
                       placeholder="Share your workout achievements, nutrition discoveries, transformation milestones, training tips, or motivational stories. Your journey inspires others! 💪"
-                      className="w-full p-3 sm:p-4 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 font-body resize-none text-sm sm:text-base"
+                      className="w-full p-2.5 xs:p-3 sm:p-4 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 font-body resize-none text-xs xs:text-sm sm:text-base transition-all"
                       rows={window.innerWidth < 640 ? 3 : 4}
                       maxLength={500}
                     />
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2">
-                      <span className="text-xs text-slate-500 font-body">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-1.5 sm:mt-2 gap-1 sm:gap-2">
+                      <span className="text-[10px] xs:text-xs text-slate-500 font-body">
                         {newPost.length}/500 characters
                       </span>
-                      <span className="text-xs text-green-400 font-body">
+                      <span className="text-[10px] xs:text-xs text-green-400 font-body">
                         ✓ Auto-saved • Visible to all users
                       </span>
                     </div>
                   </div>
                   
-                  <div className="flex justify-center sm:justify-end">
+                  <div className="flex justify-center sm:justify-end pt-1">
                     <motion.button
                       type="submit"
                       disabled={!newPost.trim()}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 font-body text-sm sm:text-base"
+                      className="w-full sm:w-auto px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 font-body text-xs xs:text-sm sm:text-base active:scale-95"
                     >
                       🚀 Share Journey
                     </motion.button>
@@ -447,22 +447,22 @@ export default function Forum() {
               </div>
             ) : (
               <div className="card bg-slate-800/40 border border-slate-600/30">
-                <div className="text-center py-6 sm:py-8 px-4">
-                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🔒</div>
-                  <h3 className="text-base sm:text-lg font-heading text-white mb-2">JOIN THE COMMUNITY</h3>
-                  <p className="text-sm sm:text-base text-slate-400 font-body mb-4 leading-relaxed">
+                <div className="text-center py-4 xs:py-6 sm:py-8 px-3 xs:px-4">
+                  <div className="text-2xl xs:text-3xl sm:text-4xl mb-2 xs:mb-3 sm:mb-4">🔒</div>
+                  <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-1.5 xs:mb-2 tracking-wide">JOIN THE COMMUNITY</h3>
+                  <p className="text-xs xs:text-sm sm:text-base text-slate-400 font-body mb-3 xs:mb-4 leading-relaxed">
                     Login to share your fitness journey with {liveUsers.toLocaleString()} elite athletes worldwide
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xs mx-auto">
+                  <div className="flex flex-col sm:flex-row gap-2 xs:gap-3 justify-center max-w-xs mx-auto">
                     <button 
                       onClick={() => window.location.href = '/login'}
-                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-body transition-colors text-sm sm:text-base"
+                      className="w-full sm:w-auto px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-body transition-all active:scale-95 text-xs xs:text-sm sm:text-base shadow-lg"
                     >
                       Login
                     </button>
                     <button 
                       onClick={() => window.location.href = '/register'}
-                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-body transition-colors text-sm sm:text-base"
+                      className="w-full sm:w-auto px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-body transition-all active:scale-95 text-xs xs:text-sm sm:text-base shadow-lg"
                     >
                       Sign Up
                     </button>
@@ -473,18 +473,18 @@ export default function Forum() {
 
             {/* Posts Feed */}
             {isLoading ? (
-              <div className="text-center py-8 sm:py-12">
-                <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto mb-3 sm:mb-4"></div>
-                <p className="text-sm sm:text-base text-slate-400 font-body">Loading community posts...</p>
+              <div className="text-center py-6 xs:py-8 sm:py-12">
+                <div className="animate-spin w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto mb-2 xs:mb-3 sm:mb-4"></div>
+                <p className="text-xs xs:text-sm sm:text-base text-slate-400 font-body">Loading community posts...</p>
               </div>
             ) : (
               <AnimatePresence>
-                <div className="space-y-4 sm:space-y-6">
+                <div className="space-y-3 sm:space-y-4 md:space-y-6">
                   {filteredPosts.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12 px-4">
-                      <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📝</div>
-                      <h3 className="text-base sm:text-lg font-heading text-white mb-2">NO POSTS YET</h3>
-                      <p className="text-sm sm:text-base text-slate-400 font-body">
+                    <div className="text-center py-6 xs:py-8 sm:py-12 px-3 xs:px-4">
+                      <div className="text-2xl xs:text-3xl sm:text-4xl mb-2 xs:mb-3 sm:mb-4">📝</div>
+                      <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-1.5 xs:mb-2 tracking-wide">NO POSTS YET</h3>
+                      <p className="text-xs xs:text-sm sm:text-base text-slate-400 font-body">
                         Be the first to share your fitness journey in this category!
                       </p>
                     </div>
@@ -498,34 +498,34 @@ export default function Forum() {
                     className="card hover:scale-[1.01] transition-all duration-300 relative"
                   >
                     {post.trending && (
-                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse">
+                      <div className="absolute -top-1.5 xs:-top-2 -right-1.5 xs:-right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] xs:text-xs px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full font-bold animate-pulse shadow-lg">
                         🔥 TRENDING
                       </div>
                     )}
                     
-                    <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="flex items-start gap-2 xs:gap-3 sm:gap-4">
                       <div className="relative flex-shrink-0">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
+                        <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs xs:text-sm sm:text-base shadow-lg">
                           {post.user.avatar}
                         </div>
                         {post.user.verified && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
+                          <div className="absolute -bottom-0.5 xs:-bottom-1 -right-0.5 xs:-right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span className="text-white text-[8px] xs:text-[10px] sm:text-xs">✓</span>
                           </div>
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
-                          <h4 className="font-semibold text-white font-body text-sm sm:text-base truncate">
+                        <div className="flex flex-wrap items-center gap-1 xs:gap-1.5 sm:gap-2 mb-1.5 xs:mb-2">
+                          <h4 className="font-semibold text-white font-body text-xs xs:text-sm sm:text-base truncate max-w-[120px] xs:max-w-[150px] sm:max-w-none">
                             {post.user.name}
                           </h4>
-                          {post.user.verified && <span className="text-blue-400 text-xs">✓</span>}
-                          <span className="px-2 py-1 bg-slate-700/50 rounded-full text-xs text-slate-300 font-body">
+                          {post.user.verified && <span className="text-blue-400 text-[10px] xs:text-xs">✓</span>}
+                          <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-slate-700/50 rounded-full text-[10px] xs:text-xs text-slate-300 font-body">
                             {post.user.level}
                           </span>
-                          <span className="text-xs text-slate-500 font-body hidden sm:inline">• {post.timestamp}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-body ${
+                          <span className="text-[10px] xs:text-xs text-slate-500 font-body hidden sm:inline">• {post.timestamp}</span>
+                          <span className={`px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs font-body ${
                             post.category === 'Strength' ? 'bg-red-600/20 text-red-400' :
                             post.category === 'Cardio' ? 'bg-green-600/20 text-green-400' :
                             post.category === 'Nutrition' ? 'bg-orange-600/20 text-orange-400' :
@@ -536,41 +536,41 @@ export default function Forum() {
                           </span>
                         </div>
                         
-                        <div className="sm:hidden text-xs text-slate-500 font-body mb-2">
+                        <div className="sm:hidden text-[10px] xs:text-xs text-slate-500 font-body mb-1.5 xs:mb-2">
                           {post.timestamp}
                         </div>
                         
-                        <p className="text-slate-300 mb-3 sm:mb-4 font-body leading-relaxed text-sm sm:text-base">
+                        <p className="text-slate-300 mb-2 xs:mb-3 sm:mb-4 font-body leading-relaxed text-xs xs:text-sm sm:text-base break-words">
                           {post.content}
                         </p>
                         
-                        <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+                        <div className="flex items-center gap-2 xs:gap-3 sm:gap-6 flex-wrap">
                           <motion.button 
                             onClick={() => handleLike(post._id)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            className={`flex items-center gap-1 sm:gap-2 transition-colors font-body ${
+                            className={`flex items-center gap-1 xs:gap-1.5 sm:gap-2 transition-colors font-body active:scale-90 ${
                               post.liked ? 'text-red-400' : 'text-slate-400 hover:text-red-400'
                             }`}
                           >
-                            <span className="text-sm sm:text-base">{post.liked ? '❤️' : '🤍'}</span>
-                            <span className="text-xs sm:text-sm font-semibold">{post.likes}</span>
+                            <span className="text-xs xs:text-sm sm:text-base">{post.liked ? '❤️' : '🤍'}</span>
+                            <span className="text-[10px] xs:text-xs sm:text-sm font-semibold">{post.likes}</span>
                           </motion.button>
                           
-                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-blue-400 transition-colors font-body">
-                            <span className="text-sm sm:text-base">💬</span>
-                            <span className="text-xs sm:text-sm">{post.replies}</span>
-                            <span className="hidden sm:inline text-xs sm:text-sm">replies</span>
+                          <button className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 text-slate-400 hover:text-blue-400 transition-colors font-body active:scale-90">
+                            <span className="text-xs xs:text-sm sm:text-base">💬</span>
+                            <span className="text-[10px] xs:text-xs sm:text-sm">{post.replies}</span>
+                            <span className="hidden sm:inline text-[10px] xs:text-xs sm:text-sm">replies</span>
                           </button>
                           
-                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-green-400 transition-colors font-body">
-                            <span className="text-sm sm:text-base">🔄</span>
-                            <span className="hidden sm:inline text-xs sm:text-sm">Share</span>
+                          <button className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 text-slate-400 hover:text-green-400 transition-colors font-body active:scale-90">
+                            <span className="text-xs xs:text-sm sm:text-base">🔄</span>
+                            <span className="hidden sm:inline text-[10px] xs:text-xs sm:text-sm">Share</span>
                           </button>
                           
-                          <button className="flex items-center gap-1 sm:gap-2 text-slate-400 hover:text-yellow-400 transition-colors font-body ml-auto">
-                            <span className="text-sm sm:text-base">⭐</span>
-                            <span className="hidden sm:inline text-xs sm:text-sm">Save</span>
+                          <button className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 text-slate-400 hover:text-yellow-400 transition-colors font-body ml-auto active:scale-90">
+                            <span className="text-xs xs:text-sm sm:text-base">⭐</span>
+                            <span className="hidden sm:inline text-[10px] xs:text-xs sm:text-sm">Save</span>
                           </button>
                         </div>
                       </div>
@@ -584,24 +584,24 @@ export default function Forum() {
 
             {/* Community Stats */}
             <div className="text-center">
-              <div className="card bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20">
-                <div className="text-center px-2 sm:px-4">
-                  <h3 className="text-base sm:text-lg font-heading text-white mb-3 sm:mb-4">COMMUNITY IMPACT</h3>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              <div className="card bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 shadow-lg">
+                <div className="text-center px-2 xs:px-3 sm:px-4">
+                  <h3 className="text-sm xs:text-base sm:text-lg font-heading text-white mb-2 xs:mb-3 sm:mb-4 tracking-wide">COMMUNITY IMPACT</h3>
+                  <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4">
                     <div>
-                      <div className="text-lg sm:text-2xl font-bold text-blue-400 font-body">{totalPosts}</div>
-                      <div className="text-xs text-slate-400 font-body">Total Journeys</div>
+                      <div className="text-base xs:text-lg sm:text-2xl font-bold text-blue-400 font-body">{totalPosts}</div>
+                      <div className="text-[10px] xs:text-xs text-slate-400 font-body">Total Journeys</div>
                     </div>
                     <div>
-                      <div className="text-lg sm:text-2xl font-bold text-green-400 font-body">{posts.reduce((sum, p) => sum + p.likes, 0)}</div>
-                      <div className="text-xs text-slate-400 font-body">Total Likes</div>
+                      <div className="text-base xs:text-lg sm:text-2xl font-bold text-green-400 font-body">{posts.reduce((sum, p) => sum + p.likes, 0)}</div>
+                      <div className="text-[10px] xs:text-xs text-slate-400 font-body">Total Likes</div>
                     </div>
                     <div>
-                      <div className="text-lg sm:text-2xl font-bold text-purple-400 font-body">{liveUsers.toLocaleString()}</div>
-                      <div className="text-xs text-slate-400 font-body">Active Users</div>
+                      <div className="text-base xs:text-lg sm:text-2xl font-bold text-purple-400 font-body">{liveUsers.toLocaleString()}</div>
+                      <div className="text-[10px] xs:text-xs text-slate-400 font-body">Active Users</div>
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-500 font-body mt-3 sm:mt-4 leading-relaxed">
+                  <p className="text-[10px] xs:text-xs sm:text-sm text-slate-500 font-body mt-2 xs:mt-3 sm:mt-4 leading-relaxed">
                     Every journey shared inspires others to achieve their fitness goals
                   </p>
                 </div>

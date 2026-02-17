@@ -169,7 +169,7 @@ export default function Footer() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-2">
               <div className="text-center sm:text-left">
                 <p className="text-[9px] sm:text-xs text-slate-400 font-body">
-                  © 2025 GRIND-X. 
+                  © 2026 GRIND-X. 
                 </p>
                 <p className="text-[9px] sm:text-xs text-slate-500 font-body mt-0.5 sm:mt-1">
                   Empowering fitness transformations globally
