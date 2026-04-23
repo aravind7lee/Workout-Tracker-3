@@ -14,7 +14,6 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import LibrarySimple from './pages/LibrarySimple';
 import Analytics from './pages/Analytics';
-import CardioAnalytics from './pages/CardioAnalytics';
 import Nutrition from './pages/Nutrition';
 import PlansBuilder from './pages/PlansBuilder';
 import MyPlans from './pages/MyPlans';
@@ -406,7 +405,6 @@ export default function App() {
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/library" element={<LibrarySimple />} />
                       <Route path="/analytics" element={<Analytics />} />
-                      <Route path="/cardio-analytics" element={<CardioAnalytics />} />
                       <Route path="/nutrition" element={<Nutrition />} />
                       <Route path="/plans" element={<PlansBuilder />} />
                       <Route path="/my-plans" element={<MyPlans />} />

@@ -17,7 +17,6 @@ import dashboardRoutes from './routes/dashboard.js';
 import reviewRoutes from './routes/reviews.js';
 import syncRoutes from './routes/sync.js';
 import workoutSplitsRoutes from './routes/workoutSplits.js';
-import cardioRoutes from './routes/cardio.js';
 
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
@@ -106,7 +105,6 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/workout-splits', workoutSplitsRoutes);
-app.use('/api/cardio', cardioRoutes);
 
 // Enhanced preflight handling
 app.use((req, res, next) => {
