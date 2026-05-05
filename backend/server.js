@@ -21,6 +21,7 @@ import workoutSplitsRoutes from './routes/workoutSplits.js';
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
 import rateLimit from 'express-rate-limit';
+import './config/cloudinary.js';
 
 dotenv.config();
 
@@ -198,12 +199,66 @@ app.use('*', (req, res) => {
   });
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
-    console.log('🔧 Cloudinary configured:', !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY));
+// MongoDB connection with DNS fallback
+const connectDB = async () => {
+  const options = {
+    serverSelectionTimeoutMS: 15000,
+    socketTimeoutMS: 45000,
+    family: 4, // Force IPv4
+  };
+
+  console.log('\n🔄 Attempting to connect to MongoDB Atlas...');
+  
+  const strategies = [
+    {
+      name: 'Primary SRV Connection',
+      uri: process.env.MONGO_URI
+    },
+    {
+      name: 'Backup Connection',
+      uri: process.env.MONGO_URI_BACKUP
+    }
+  ];
+
+  for (const strategy of strategies) {
+    if (!strategy.uri) continue;
     
+    console.log(`\n📡 Trying: ${strategy.name}`);
+    
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await mongoose.connect(strategy.uri, options);
+        console.log('✅ Connected to MongoDB successfully!');
+        console.log(`📊 Using: ${strategy.name}`);
+        console.log('🔧 Cloudinary configured:', !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY));
+        return;
+      } catch (error) {
+        console.log(`❌ Attempt ${attempt}/3 failed: ${error.message}`);
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+    }
+  }
+
+  // All strategies failed
+  console.error('\n🚨 CRITICAL: Cannot connect to MongoDB!');
+  console.error('\n📋 SOLUTION:');
+  console.error('1. Go to MongoDB Atlas: https://cloud.mongodb.com/');
+  console.error('2. Click "Connect" on Cluster0');
+  console.error('3. Choose "Connect your application"');
+  console.error('4. Copy the connection string');
+  console.error('5. Update MONGO_URI in your .env file');
+  console.error('6. Make sure to replace <password> with: aravvvvc1');
+  console.error('7. Make sure to replace <dbname> with: gym-tracker');
+  console.error('8. Check if cluster is paused (Resume it if paused)');
+  console.error('9. Restart this server\n');
+  throw new Error('MongoDB connection failed');
+};
+
+// Start server
+connectDB()
+  .then(() => {
     const server = app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 API Health: http://localhost:${PORT}/api/health`);
@@ -222,7 +277,7 @@ mongoose.connect(process.env.MONGO_URI)
     });
   })
   .catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
+    console.error('❌ Failed to start server:', error.message);
     process.exit(1);
   });
 

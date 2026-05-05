@@ -23,6 +23,7 @@ import Library11 from '../assets/Library11.jpg';
 import '../styles/shimmer.css';
 import '../styles/library-header.css';
 import '../styles/exercise-gallery.css';
+import '../styles/performance-optimizations.css';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export default function LibrarySimple() {
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get('search') || '';
   const [searchQuery, setSearchQuery] = useState(navbarSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(navbarSearch);
   const [filters, setFilters] = useState({
     category: '',
     difficulty: '',
@@ -54,16 +56,19 @@ export default function LibrarySimple() {
   // LQIP (Low Quality Image Placeholder)
   const LIBRARY_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
   
-  // Optimized animations for smooth performance
+  // Minimal animations for maximum performance
   const fadeIn = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.2, ease: "easeOut" } }
+    visible: { opacity: 1, transition: { duration: 0.15 } }
   };
   
-  const slideUp = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } }
-  };
+  // Debounce search for better performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
   
   // Update search when navbar search parameter changes
   useEffect(() => {
@@ -154,21 +159,19 @@ export default function LibrarySimple() {
     return exercises;
   }, []);
 
-  // Filter exercises based on search and filters
+  // Optimized filtering with early returns
   const filteredExercises = useMemo(() => {
+    const query = debouncedSearch.toLowerCase();
     return allExercises.filter(exercise => {
-      const matchesSearch = !searchQuery || 
-        exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exercise.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exercise.category.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesCategory = !filters.category || exercise.category === filters.category;
-      const matchesDifficulty = !filters.difficulty || exercise.difficulty === filters.difficulty;
-      const matchesMuscle = !filters.muscle || exercise.muscle === filters.muscle;
-      
-      return matchesSearch && matchesCategory && matchesDifficulty && matchesMuscle;
+      if (filters.category && exercise.category !== filters.category) return false;
+      if (filters.difficulty && exercise.difficulty !== filters.difficulty) return false;
+      if (filters.muscle && exercise.muscle !== filters.muscle) return false;
+      if (query && !exercise.name.toLowerCase().includes(query) && 
+          !exercise.type.toLowerCase().includes(query) && 
+          !exercise.category.toLowerCase().includes(query)) return false;
+      return true;
     });
-  }, [allExercises, searchQuery, filters]);
+  }, [allExercises, debouncedSearch, filters]);
 
   // Get unique values for filters
   const categories = [...new Set(allExercises.map(ex => ex.category))];
@@ -361,38 +364,20 @@ export default function LibrarySimple() {
         )}
       </motion.div>
 
-      {/* Exercise Categories Gallery Section */}
+      {/* Exercise Categories Gallery Section - OPTIMIZED */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <motion.div 
-            className="text-center mb-12 sm:mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.h2 
-              className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
               Exercise Categories
-            </motion.h2>
+            </h2>
             
-            <motion.p 
-              className="text-sm sm:text-base md:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed px-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
+            <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed px-4">
               Discover powerful features designed to transform your fitness journey with precision tracking, 
               smart insights, and personalized recommendations.
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -419,14 +404,8 @@ export default function LibrarySimple() {
           </div>
 
           {/* Call to Action */}
-          <motion.div 
-            className="text-center mt-12 sm:mt-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <motion.button
+          <div className="text-center mt-12 sm:mt-16">
+            <button
               onClick={() => {
                 const exerciseGrid = document.getElementById('exercise-grid');
                 if (exerciseGrid) {
@@ -437,13 +416,11 @@ export default function LibrarySimple() {
                   }, 500);
                 }
               }}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
             >
               Start Your Exercise Journey
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -545,16 +522,12 @@ export default function LibrarySimple() {
         </div>
       </motion.div>
 
-      {/* Premium Real-Time Stats Dashboard */}
-      <motion.div 
+      {/* Premium Real-Time Stats Dashboard - Optimized */}
+      <div 
         className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2 sm:px-0"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <motion.div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/20"
-          whileHover={{ y: -5 }}
+        <div 
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-blue-500/20"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
@@ -566,11 +539,10 @@ export default function LibrarySimple() {
               <span className="sm:hidden">💪 READY</span>
             </div>
           </div>
-        </motion.div>
+        </div>
         
-        <motion.div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/20"
-          whileHover={{ y: -5 }}
+        <div 
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-green-500/20"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
@@ -582,11 +554,10 @@ export default function LibrarySimple() {
               <span className="sm:hidden">🎯 ZONES</span>
             </div>
           </div>
-        </motion.div>
+        </div>
         
-        <motion.div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
-          whileHover={{ y: -5 }}
+        <div 
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-purple-500/20"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
@@ -598,11 +569,10 @@ export default function LibrarySimple() {
               <span className="sm:hidden">🔥 FILTER</span>
             </div>
           </div>
-        </motion.div>
+        </div>
         
-        <motion.div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-600/20 to-orange-800/20 border border-orange-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/20"
-          whileHover={{ y: -5 }}
+        <div 
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-600/20 to-orange-800/20 border border-orange-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-orange-500/20"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
@@ -614,15 +584,12 @@ export default function LibrarySimple() {
               <span className="sm:hidden">⚡ MODES</span>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
       
-      {/* Premium Results Header */}
-      <motion.div 
+      {/* Premium Results Header - Optimized */}
+      <div 
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-slate-800/60 to-slate-700/60 border border-slate-600/50 backdrop-blur-sm mx-2 sm:mx-0"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
       >
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -643,44 +610,30 @@ export default function LibrarySimple() {
           </div>
         </div>
         
-        <motion.button
+        <button
           onClick={() => {
             setSearchQuery('');
             setFilters({ category: '', difficulty: '', muscle: '' });
           }}
-          className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-red-500/20 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30 text-sm sm:text-base"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-red-500/20 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30 text-sm sm:text-base"
         >
           <span className="hidden sm:inline">🗑️ Clear Filters</span>
           <span className="sm:hidden">🗑️ Clear</span>
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
 
-      {/* Exercise Grid */}
+      {/* Exercise Grid - Optimized */}
       <div id="exercise-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredExercises.length === 0 ? (
-          <motion.div 
-            className="col-span-full text-center py-12 sm:py-16"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
+          <div 
+            className="col-span-full text-center py-12 sm:py-16 animate-fadeIn"
           >
             <div className="max-w-md mx-auto">
-              <motion.div 
+              <div 
                 className="text-8xl mb-6"
-                animate={{ 
-                  rotate: [0, -10, 10, -10, 0],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatDelay: 3
-                }}
               >
                 🔍
-              </motion.div>
+              </div>
               
               <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-8 border border-slate-600/50 backdrop-blur-sm">
                 <h3 className="text-2xl font-bold text-white mb-3">No exercises found</h3>
@@ -690,17 +643,15 @@ export default function LibrarySimple() {
                 </p>
                 
                 <div className="space-y-3">
-                  <motion.button
+                  <button
                     onClick={() => {
                       setSearchQuery('');
                       setFilters({ category: '', difficulty: '', muscle: '' });
                     }}
-                    className="w-full p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="w-full p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
                   >
                     🗑️ Clear All Filters
-                  </motion.button>
+                  </button>
                   
                   <div className="text-sm text-slate-400">
                     Or try searching for: <span className="text-blue-300 font-medium">"push ups"</span>, <span className="text-green-300 font-medium">"chest"</span>, <span className="text-purple-300 font-medium">"beginner"</span>
@@ -708,22 +659,15 @@ export default function LibrarySimple() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         ) : (
           filteredExercises.map(exercise => (
-            <motion.div 
+            <div 
               key={exercise.id} 
-              className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border border-slate-600/50 hover:border-orange-500/50 transition-colors duration-200 shadow-lg"
-              variants={slideUp}
-              initial="hidden"
-              animate="visible"
-              whileHover={{ 
-                y: -4,
-                transition: { duration: 0.15, ease: "easeOut" }
-              }}
+              className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border border-slate-600/50 hover:border-orange-500/50 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
               {/* Subtle Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-150"></div>
               
               <div className="relative z-10 p-4 sm:p-6">
                 <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -802,12 +746,8 @@ export default function LibrarySimple() {
                   </button>
                 
                 {expandedFormTips[exercise.id] && (
-                  <motion.div 
-                    className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
+                  <div 
+                    className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3 animate-fadeIn"
                   >
                     {(() => {
                       const tips = getFormTips(exercise.name);
@@ -849,7 +789,7 @@ export default function LibrarySimple() {
                         </>
                       );
                     })()}
-                  </motion.div>
+                  </div>
                 )}
               </div>
               
@@ -968,28 +908,20 @@ export default function LibrarySimple() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))
         )}
       </div>
       
-      {/* Premium Exercise Detail Modal */}
+      {/* Premium Exercise Detail Modal - Optimized */}
       {selectedExercise && (
-        <motion.div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4" 
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4 animate-fadeIn" 
           onClick={() => setSelectedExercise(null)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
         >
-          <motion.div 
+          <div 
             className="bg-gradient-to-br from-slate-900 to-black rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-slate-700/50 shadow-2xl" 
             onClick={e => e.stopPropagation()}
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4 sm:mb-6">
@@ -1105,72 +1037,62 @@ export default function LibrarySimple() {
                 <div className="space-y-3 sm:space-y-4">
                   {/* Watch Form Video Button in Modal */}
                   {getExerciseVideo(selectedExercise.name) && (
-                    <motion.button
+                    <button
                       onClick={() => window.open(getExerciseVideo(selectedExercise.name), '_blank', 'noopener,noreferrer')}
-                      className="w-full p-3 sm:p-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-red-500/20 text-sm sm:text-base md:text-lg flex items-center justify-center gap-2"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="w-full p-3 sm:p-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-red-500/20 text-sm sm:text-base md:text-lg flex items-center justify-center gap-2"
                       title={`Watch ${selectedExercise.name} correct form video on YouTube`}
                     >
                       <span className="text-xl">🎥</span>
                       <span>Watch Correct Form Video</span>
-                    </motion.button>
+                    </button>
                   )}
                   
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    <motion.button
+                    <button
                       onClick={() => {
                         setSelectedExercise(null);
                         handleQuickPlan(selectedExercise);
                       }}
-                      className="p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20 text-sm sm:text-base"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20 text-sm sm:text-base"
                     >
                       <span className="hidden sm:inline">➕ New Plan</span>
                       <span className="sm:hidden">➕ Plan</span>
-                    </motion.button>
-                    <motion.button
+                    </button>
+                    <button
                       onClick={() => {
                         const exerciseToAdd = selectedExercise;
                         setSelectedExercise(null);
                         handleAddToExisting(exerciseToAdd);
                       }}
-                      className="p-3 sm:p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20 text-sm sm:text-base"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="p-3 sm:p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20 text-sm sm:text-base"
                     >
                       <span className="hidden sm:inline">📝 Add to Plan</span>
                       <span className="sm:hidden">📝 Add</span>
-                    </motion.button>
+                    </button>
                   </div>
                   
-                  <motion.button
+                  <button
                     onClick={() => {
                       trackExerciseView(selectedExercise);
                       setSelectedExercise(null);
                     }}
-                    className="w-full p-3 sm:p-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20 text-sm sm:text-base md:text-lg"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="w-full p-3 sm:p-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20 text-sm sm:text-base md:text-lg"
                   >
                     <span className="hidden sm:inline">🎯 Start Workout Session</span>
                     <span className="sm:hidden">🎯 Start Workout</span>
-                  </motion.button>
+                  </button>
                   
-                  <motion.button
+                  <button
                     onClick={() => setSelectedExercise(null)}
-                    className="w-full p-2 sm:p-3 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30 text-sm sm:text-base"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="w-full p-2 sm:p-3 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30 text-sm sm:text-base"
                   >
                     Close
-                  </motion.button>
+                  </button>
                 </div>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
       
       {/* Quick Plan Modal */}
@@ -1209,8 +1131,8 @@ export default function LibrarySimple() {
   );
 }
 
-// Exercise Card with Nutrition Gallery Performance
-const ExerciseCard = ({ image, title, subtitle, description, category, index }) => {
+// Optimized Exercise Card with React.memo for performance
+const ExerciseCard = React.memo(({ image, title, subtitle, description, category, index }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -1219,6 +1141,10 @@ const ExerciseCard = ({ image, title, subtitle, description, category, index }) 
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
     img.src = image;
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, [image]);
 
   const categoryColors = {
@@ -1237,20 +1163,9 @@ const ExerciseCard = ({ image, title, subtitle, description, category, index }) 
   const icon = categoryIcons[category] || '💪';
   
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ 
-        duration: 0.8, 
-        delay: index * 0.15,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }}
-      whileHover={{ 
-        y: -8,
-        transition: { duration: 0.3, ease: "easeOut" }
-      }}
-      className="exercise-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 backdrop-blur-sm"
+    <div
+      className="exercise-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 backdrop-blur-sm hover:-translate-y-2"
+      style={{ animationDelay: `${index * 50}ms` }}
     >
       <div className="relative h-64 sm:h-72 lg:h-80 overflow-hidden">
         {!imageLoaded && !imageError && (
@@ -1260,10 +1175,10 @@ const ExerciseCard = ({ image, title, subtitle, description, category, index }) 
         )}
         
         {!imageError && (
-          <motion.img
+          <img
             src={image}
             alt={title}
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
             style={{ opacity: imageLoaded ? 1 : 0 }}
             loading="lazy"
             decoding="async"
@@ -1280,39 +1195,27 @@ const ExerciseCard = ({ image, title, subtitle, description, category, index }) 
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         
         <div className="absolute inset-0 flex flex-col justify-end p-6">
-          <motion.h3 
+          <h3 
             className="text-xl sm:text-2xl font-bold mb-2 text-white"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.15 + 0.3 }}
           >
             {title}
-          </motion.h3>
+          </h3>
           
-          <motion.p 
+          <p 
             className={`text-sm sm:text-base font-medium mb-3 bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent`}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.15 + 0.4 }}
           >
             {subtitle}
-          </motion.p>
+          </p>
           
-          <motion.p 
+          <p 
             className="text-xs sm:text-sm text-gray-300 opacity-90 leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.15 + 0.5 }}
           >
             {description}
-          </motion.p>
+          </p>
         </div>
         
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-    </motion.div>
+    </div>
   );
-};
+});

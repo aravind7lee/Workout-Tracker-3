@@ -8,12 +8,7 @@ const getApiBaseUrl = () => {
     return import.meta.env.VITE_API_BASE;
   }
   
-  // In development, prefer local backend if available
-  if (import.meta.env.DEV) {
-    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-  }
-  
-  // In production, use the deployed backend
+  // ALWAYS use deployed backend (local MongoDB connection is blocked)
   return 'https://workout-tracker-backend-wga7.onrender.com/api';
 };
 
