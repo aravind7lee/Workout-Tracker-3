@@ -287,54 +287,80 @@ export default function Home() {
   const mountedRef = useRef(true);
   const timersRef = useRef({});
 
-  // Scroll Pinning references and state
-  const scrollContainerRef = useRef(null);
-  const flexContainerRef = useRef(null);
-  const [scrollAmount, setScrollAmount] = useState(0);
-  const [sectionHeight, setSectionHeight] = useState("120vh");
+  // ─────────────────────────────────────────────────────────────────────────
+  // SCROLL PINNING — horizontal gallery driven by vertical scroll
+  // ─────────────────────────────────────────────────────────────────────────
+  const scrollContainerRef = useRef(null); // outer sticky section
+  const flexContainerRef   = useRef(null); // inner motion.div (all cards)
+  // A ref (not state) so the Framer Motion closure always reads the LIVE value.
+  // React state is captured at MotionValue creation time (= 0) and stale forever.
+  const scrollAmountRef = useRef(0);
+
+  // Direct-DOM height updater — bypasses React render cycle so useScroll
+  // never sees a stale/short section height.
+  const applyHeight = useCallback((px) => {
+    const section = scrollContainerRef.current;
+    if (section) section.style.height = px + "px";
+  }, []);
 
   useEffect(() => {
-    if (!flexContainerRef.current) return;
+    const measure = () => {
+      const flex    = flexContainerRef.current;
+      const section = scrollContainerRef.current;
+      if (!flex || !section) return;
 
-    const handleMeasure = () => {
-      if (flexContainerRef.current) {
-        // Precise scroll amount = total scrollable width - current viewport width
-        const amount = flexContainerRef.current.scrollWidth - window.innerWidth;
-        const safeAmount = amount > 0 ? amount : 0;
-        setScrollAmount(safeAmount);
-        // Section height must equal viewportHeight + scrollAmount so that
-        // scrollYProgress reaches exactly 1.0 when the last card is centred.
-        // Add a 10% buffer so spring physics settle before section unpins.
-        const height = window.innerHeight + safeAmount * 1.1;
-        setSectionHeight(height + "px");
-      }
+      const amount = Math.max(0, flex.scrollWidth - window.innerWidth);
+      scrollAmountRef.current = amount;
+
+      // height = viewportH + scrollAmount × 1.2 (20 % spring-settle buffer)
+      applyHeight(window.innerHeight + amount * 1.2);
     };
 
-    // ResizeObserver fires on image loads, font swaps, layout shifts – keeps
-    // the section height perfectly in sync at all times.
-    const observer = new ResizeObserver(() => {
-      requestAnimationFrame(handleMeasure);
-    });
+    let resizeObs = null;
 
-    observer.observe(flexContainerRef.current);
-    window.addEventListener("resize", handleMeasure);
+    const attach = () => {
+      const flex = flexContainerRef.current;
+      if (!flex) return;
 
-    // Initial measurement
-    handleMeasure();
+      resizeObs = new ResizeObserver(() => requestAnimationFrame(measure));
+      resizeObs.observe(flex);
+      window.addEventListener("resize", measure);
+
+      // Also re-measure when any image inside the gallery finishes loading
+      flex.querySelectorAll("img").forEach((img) => {
+        if (!img.complete) img.addEventListener("load", measure, { once: true });
+      });
+
+      measure();
+    };
+
+    if (flexContainerRef.current) {
+      attach();
+    } else {
+      // Body-fat section may not be in DOM yet on first paint — wait one frame
+      const raf = requestAnimationFrame(() => {
+        requestAnimationFrame(attach); // double-RAF ensures layout is settled
+      });
+      return () => cancelAnimationFrame(raf);
+    }
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", handleMeasure);
+      resizeObs?.disconnect();
+      window.removeEventListener("resize", measure);
     };
-  }, [isLoading]);
+  }, [isLoading, applyHeight]);
 
   const { scrollYProgress } = useScroll({
     target: scrollContainerRef,
     offset: ["start start", "end end"],
   });
 
-  const xTransform = useTransform(scrollYProgress, (latest) => -latest * scrollAmount);
-  const springX = useSpring(xTransform, { stiffness: 100, damping: 22, mass: 0.6 });
+  // Always reads scrollAmountRef.current at tick time — zero stale-closure risk
+  const xTransform = useTransform(
+    scrollYProgress,
+    (latest) => -latest * scrollAmountRef.current
+  );
+  const springX = useSpring(xTransform, { stiffness: 80, damping: 20, mass: 0.5 });
 
   // Memoized auth check
   const isAuthenticated = useCallback(() => {
@@ -1299,9 +1325,9 @@ export default function Home() {
     {
       ref: scrollContainerRef,
       className: "relative w-full bg-black",
-      style: {
-        height: sectionHeight,
-      },
+      // 600vh is a safe initial fallback; the useEffect immediately overwrites
+      // this with the exact measured value via direct DOM style mutation.
+      style: { height: "600vh" },
       id: "body-fat",
     },
         /*#__PURE__*/ React.createElement(
