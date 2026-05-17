@@ -321,7 +321,7 @@
 
 /* Button specific overrides for header */
 .workout-builder-header .btn-primary {
-  background: #2563eb !important;
+  background: #FF0000 !important;
   color: white !important;
   border: none !important;
 }

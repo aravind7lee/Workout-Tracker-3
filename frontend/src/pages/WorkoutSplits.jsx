@@ -231,12 +231,12 @@ const WorkoutSplits = () => {
 
   // Workout Split Categories
   const categories = [
-    { id: 'all', name: 'All Splits', icon: Dumbbell, color: '#00d4ff' },
+    { id: 'all', name: 'All Splits', icon: Dumbbell, color: '#FF0000' },
     { id: 'custom', name: 'Custom', icon: Zap, color: '#ff6b6b' },
     { id: 'bulking', name: 'Bulking', icon: TrendingUp, color: '#00ff88' },
     { id: 'cutting', name: 'Cutting', icon: TrendingDown, color: '#ff6b6b' },
     { id: 'recomp', name: 'Body Recomp', icon: BarChart3, color: '#ffa502' },
-    { id: 'beginner', name: 'Beginner', icon: Star, color: '#8b5cf6' },
+    { id: 'beginner', name: 'Beginner', icon: Star, color: '#8B0000' },
     { id: 'advanced', name: 'Advanced', icon: Target, color: '#ffd700' }
   ];
 

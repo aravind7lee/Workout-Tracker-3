@@ -382,7 +382,7 @@ export default function Home() {
         onClick={() => handleNav(stat.path)}
         className="relative group transform transition-all duration-300 text-left w-full hover:translate-x-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500"
       >
-        <div className="relative bg-zinc-900 border-l-2 sm:border-l-8 border-lime-500 p-3 sm:p-8 shadow-2xl group-hover:bg-zinc-800 transition-all duration-300">
+        <div className="relative bg-zinc-900 border-l-2 sm:border-l-8 border-lime-500 p-3 sm:p-8 shadow-2xl group-hover:bg-neutral-900 transition-all duration-300">
           <div className="flex items-start justify-between mb-3 sm:mb-6">
             <div className="flex items-center justify-center bg-black border border-lime-500 sm:border-2 p-1.5 sm:p-4">
               <div className="text-lg sm:text-3xl">{stat.icon}</div>
@@ -431,7 +431,7 @@ export default function Home() {
         aria-pressed={isActive}
         className={`relative group cursor-pointer transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-lime-500 ${isActive ? 'translate-x-1' : 'hover:translate-x-0.5'}`}
       >
-        <div className={`relative bg-zinc-900 border-l-4 p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-300 ${isActive ? 'border-lime-500 bg-zinc-800' : 'border-zinc-700 hover:border-zinc-600'}`}>
+        <div className={`relative bg-zinc-900 border-l-4 p-4 sm:p-6 lg:p-8 shadow-2xl transition-all duration-300 ${isActive ? 'border-lime-500 bg-neutral-900' : 'border-zinc-700 hover:border-zinc-600'}`}>
           <div className="mb-4 sm:mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-lime-500">
               <span className="text-2xl sm:text-3xl">{feature.icon}</span>
@@ -461,7 +461,7 @@ export default function Home() {
   const GlobalStat = ({ stat }) => {
     return (
       <div className="relative group transform transition-all duration-300 hover:translate-y-[-2px]">
-        <div className="relative bg-zinc-900 border-2 border-zinc-800 p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-lime-500 transition-all duration-300">
+        <div className="relative bg-zinc-900 border-2 border-neutral-900 p-4 sm:p-6 lg:p-8 text-center shadow-2xl group-hover:border-lime-500 transition-all duration-300">
           <div className="mb-4 sm:mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-black border-2 border-lime-500">
               <span className="text-2xl sm:text-3xl">{stat.icon}</span>
@@ -498,7 +498,7 @@ export default function Home() {
         {/* Status Bar */}
         <section data-animate data-id="status-bar" className="mb-4 sm:mb-6">
           <div className={`transition-all duration-500 ${isVisible['status-bar'] ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ willChange: isVisible['status-bar'] ? 'auto' : 'transform, opacity' }}>
-            <div className="relative bg-zinc-900 border border-zinc-800 sm:border-2 p-2.5 sm:p-6 shadow-2xl">
+            <div className="relative bg-zinc-900 border border-neutral-900 sm:border-2 p-2.5 sm:p-6 shadow-2xl">
               <div className="flex items-center justify-between gap-2 sm:gap-6">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${isOnline ? 'bg-lime-500' : 'bg-red-600'} animate-pulse`} />
@@ -509,7 +509,7 @@ export default function Home() {
 
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <span className="text-lime-500 text-xs sm:text-sm">⏱</span>
-                  <div className="text-[10px] sm:text-xs text-white font-mono bg-black px-1.5 py-0.5 sm:px-2 sm:py-1 border border-zinc-800">
+                  <div className="text-[10px] sm:text-xs text-white font-mono bg-black px-1.5 py-0.5 sm:px-2 sm:py-1 border border-neutral-900">
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -798,7 +798,7 @@ export default function Home() {
               className="relative group cursor-pointer"
               onClick={() => navigate('/my-plans')}
             >
-              <div className="relative overflow-hidden bg-zinc-900 border border-amber-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
@@ -812,11 +812,11 @@ export default function Home() {
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-amber-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-amber-500 tracking-wider uppercase">Custom Plans</span>
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-500" />
+                        <span className="text-[9px] sm:text-sm font-black text-red-500 tracking-wider uppercase">Custom Plans</span>
                       </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-amber-500 bg-zinc-900 border sm:border-2 border-amber-500 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-amber-500" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-500 bg-zinc-900 border sm:border-2 border-red-500 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-500" />
                         PERSONALIZED
                       </span>
                     </div>
@@ -826,13 +826,13 @@ export default function Home() {
                         BUILD YOUR
                       </span>
                       <br />
-                      <span className="text-amber-500">
+                      <span className="text-red-500">
                         PERFECT PLAN
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Create <span className="text-amber-500 font-black">custom workout splits</span> tailored to your goals and schedule.
+                      Create <span className="text-red-500 font-black">custom workout splits</span> tailored to your goals and schedule.
                     </p>
                   </div>
                 </div>

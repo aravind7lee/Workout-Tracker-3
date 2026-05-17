@@ -250,7 +250,7 @@
 [data-theme="light"] {
   --text-contrast: #000000;
   --heading-contrast: #020617;
-  --muted-contrast: #475569;
+  --muted-contrast: #333333;
 }
 
 .light-theme *:not(.preserve-color):not(svg):not(path),

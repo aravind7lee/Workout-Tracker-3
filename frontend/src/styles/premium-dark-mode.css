@@ -7,12 +7,12 @@
   --premium-bg-primary: #000000 !important;
   --premium-bg-secondary: #0D0D0D !important;
   --premium-bg-tertiary: #1A1A1A !important;
-  --premium-bg-quaternary: #475569 !important;
+  --premium-bg-quaternary: #333333 !important;
   
   /* Solid Backgrounds */
   --glass-primary: #0D0D0D !important;
   --glass-secondary: #1A1A1A !important;
-  --glass-tertiary: #475569 !important;
+  --glass-tertiary: #333333 !important;
   
   /* Clean Accent System */
   --neon-cyan: #FF0000 !important;
@@ -28,8 +28,8 @@
   --shadow-floating: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
   
   /* Clean Borders */
-  --border-premium: #475569 !important;
-  --border-subtle: #475569 !important;
+  --border-premium: #333333 !important;
+  --border-subtle: #333333 !important;
 }
 
 /* ===== DEEP SLATE BODY STYLING ===== */

@@ -1150,8 +1150,8 @@ const ExerciseCard = React.memo(({ image, title, subtitle, description, category
   const categoryColors = {
     strength: 'from-red-500 to-orange-500', muscle: 'from-red-600 to-red-600',
     functional: 'from-red-600 to-red-600', flexibility: 'from-red-700 to-pink-500',
-    lifting: 'from-yellow-500 to-orange-500', bodyweight: 'from-indigo-500 to-red-600',
-    sports: 'from-teal-500 to-red-600', power: 'from-violet-500 to-red-700'
+    lifting: 'from-yellow-500 to-orange-500', bodyweight: 'from-red-700 to-red-600',
+    sports: 'from-red-600 to-red-600', power: 'from-violet-500 to-red-700'
   };
   
   const categoryIcons = {

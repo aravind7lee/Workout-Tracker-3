@@ -91,7 +91,7 @@ html[data-theme="light"] body {
 
 .light-theme .text-purple-400, .light-theme .text-purple-500,
 [data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
-  color: #7c3aed !important;
+  color: #8B0000 !important;
 }
 
 .light-theme .text-orange-400, .light-theme .text-orange-500,
@@ -147,7 +147,7 @@ html[data-theme="light"] body {
 
 .light-theme input::placeholder, .light-theme textarea::placeholder,
 [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 .light-theme label,
@@ -212,7 +212,7 @@ html[data-theme="light"] body {
 /* Muted Text */
 .light-theme .text-muted,
 [data-theme="light"] .text-muted {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 /* ===== FINAL CATCH-ALL FOR ANY MISSED ELEMENTS ===== */

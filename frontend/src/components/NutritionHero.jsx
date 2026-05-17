@@ -109,7 +109,7 @@ export default function NutritionHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{ 
-              color: theme === 'light' ? '#16A34A' : '#4ADE80',
+              color: theme === 'light' ? '#FF0000' : '#FF0000',
               textShadow: 'none',
               fontWeight: theme === 'light' ? '900' : '800'
             }}
@@ -176,7 +176,7 @@ export default function NutritionHero() {
               }}
               className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4"
               style={{
-                background: '#2563EB',
+                background: '#FF0000',
                 color: '#FFFFFF',
                 border: 'none'
               }}

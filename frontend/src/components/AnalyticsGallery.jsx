@@ -298,8 +298,8 @@ const AnalyticsGallery = () => {
           className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
           style={{
             background: theme === 'dark' 
-              ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4)'
-              : 'linear-gradient(135deg, #1e40af, #7c3aed, #0891b2)',
+              ? 'linear-gradient(135deg, #3b82f6, #8B0000, #FF0000)'
+              : 'linear-gradient(135deg, #E60000, #8B0000, #8B0000)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'

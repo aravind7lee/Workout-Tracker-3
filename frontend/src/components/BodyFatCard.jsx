@@ -75,7 +75,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
             {bf.desc}
           </p>
 
-          <div className="pt-3 border-t border-zinc-800">
+          <div className="pt-3 border-t border-neutral-900">
             <div className="flex items-center justify-between">
               <span className="text-[9px] sm:text-xs text-zinc-500 font-bold uppercase">Condition</span>
               <div className={`px-2 py-1 ${colors.bg} border ${colors.border}`}>

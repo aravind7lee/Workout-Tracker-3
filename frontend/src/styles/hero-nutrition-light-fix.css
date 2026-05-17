@@ -126,7 +126,7 @@
 
 .light-theme .hero-stats-label,
 [data-theme="light"] .hero-stats-label {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 .hero-stats-divider {
@@ -310,7 +310,7 @@
 }
 
 .nutrition-modal-confirm {
-  background: #2563eb;
+  background: #FF0000;
   color: #ffffff;
 }
 
@@ -320,7 +320,7 @@
 
 .light-theme .nutrition-modal-confirm,
 [data-theme="light"] .nutrition-modal-confirm {
-  background: #2563eb !important;
+  background: #FF0000 !important;
   color: #ffffff !important;
 }
 

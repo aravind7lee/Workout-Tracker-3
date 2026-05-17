@@ -50,7 +50,7 @@ export function useAnalytics() {
         { muscle: 'Back', percentage: 20, color: '#10B981' },
         { muscle: 'Legs', percentage: 30, color: '#F59E0B' },
         { muscle: 'Arms', percentage: 15, color: '#EF4444' },
-        { muscle: 'Shoulders', percentage: 10, color: '#8B5CF6' }
+        { muscle: 'Shoulders', percentage: 10, color: '#8B0000' }
       ];
       
       const mockAchievements = [
@@ -118,7 +118,7 @@ export function useAnalytics() {
           data: mockMuscleData.map(d => d.percentage),
           backgroundColor: mockMuscleData.map(d => d.color),
           borderWidth: 2,
-          borderColor: '#1e293b'
+          borderColor: '#0D0D0D'
         }]
       });
 

@@ -63,7 +63,7 @@ export default function WorkoutPlanBuilderHeader() {
           <div className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
           <div className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
           <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
-          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-indigo-400 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
           <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
         </div>
       </div>
@@ -116,11 +116,11 @@ export default function WorkoutPlanBuilderHeader() {
                 onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 shadow-lg"
                 style={{
-                  backgroundColor: 'var(--color-accent, #2563EB)',
+                  backgroundColor: 'var(--color-accent, #FF0000)',
                   color: 'var(--color-on-accent, #FFFFFF)'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #2563EB)'}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#FF0000'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #FF0000)'}
                 aria-label="View your workout plans"
               >
                 View My Plans
@@ -129,12 +129,12 @@ export default function WorkoutPlanBuilderHeader() {
                 to="/plans"
                 className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
                 style={{
-                  backgroundColor: 'var(--color-accent, #2563EB)',
+                  backgroundColor: 'var(--color-accent, #FF0000)',
                   color: 'var(--color-on-accent, #FFFFFF)',
                   borderColor: 'transparent'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #2563EB)'}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#FF0000'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #FF0000)'}
                 aria-label="Create new workout plan"
               >
                 Build New Plan

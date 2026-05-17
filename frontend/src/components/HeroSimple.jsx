@@ -6,7 +6,7 @@ export default function HeroSimple() {
   return (
     <section className="relative rounded-2xl overflow-hidden mb-6 sm:mb-8 min-h-[500px] md:min-h-[600px]">
       {/* Simple Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-black"></div>
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
       {/* Content */}

@@ -48,7 +48,7 @@ const RealTimeNutritionProgress = ({
     if (percentage < 50) return 'from-red-500 to-red-600';
     if (percentage < 80) return 'from-yellow-500 to-orange-500';
     if (percentage <= 100) return 'from-red-600 to-emerald-600';
-    return 'from-red-600 to-indigo-600';
+    return 'from-red-600 to-red-800';
   };
 
   const getGoalGuidance = () => {
@@ -477,7 +477,7 @@ const RealTimeNutritionProgress = ({
               
               <div className="grid gap-4">
                 {/* Protein Insight */}
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-black/20 rounded-xl border border-blue-200 dark:border-blue-800">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">💪</span>
                     <div>

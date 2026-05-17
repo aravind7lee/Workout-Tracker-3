@@ -91,7 +91,7 @@ export default function Hero() {
 
           {/* Fallback */}
           {imageError && (
-            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 absolute inset-0"></div>
+            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-black absolute inset-0"></div>
           )}
 
           {/* Gradient Overlay - Semantic overlay for proper text contrast */}
@@ -161,7 +161,7 @@ export default function Hero() {
                   </motion.span>
                   <motion.span
                     style={{
-                      color: "#4DB6AC",
+                      color: "#8B0000",
                       textShadow: "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
                     }}
                     initial={{ opacity: 0, x: 20, rotateX: -45 }}

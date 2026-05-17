@@ -29,7 +29,7 @@
 
 .hero-feature-badge {
   background: rgba(30, 41, 59, 0.8);
-  border: 1px solid #475569;
+  border: 1px solid #333333;
 }
 
 .hero-feature-text {
@@ -38,7 +38,7 @@
 
 .hero-secondary-btn {
   background: rgba(30, 41, 59, 0.8);
-  border: 2px solid #475569;
+  border: 2px solid #333333;
   color: #cbd5e1;
 }
 
@@ -52,7 +52,7 @@
 
 .hero-stats-card {
   background: rgba(30, 41, 59, 0.9);
-  border: 1px solid #475569;
+  border: 1px solid #333333;
 }
 
 .hero-stats-title {
@@ -64,11 +64,11 @@
 }
 
 .hero-stats-divider {
-  border-top: 1px solid #475569;
+  border-top: 1px solid #333333;
 }
 
 .hero-progress-bg {
-  background: #475569;
+  background: #333333;
 }
 
 .hero-progress-text {
@@ -110,13 +110,13 @@
 
 .light-theme .hero-description,
 [data-theme="light"] .hero-description {
-  color: #475569;
+  color: #333333;
   text-shadow: none;
 }
 
 .light-theme .hero-accent,
 [data-theme="light"] .hero-accent {
-  color: #2563eb;
+  color: #FF0000;
 }
 
 .light-theme .hero-feature-badge,

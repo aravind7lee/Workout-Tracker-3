@@ -81,29 +81,29 @@ const Login = () => {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
       {/* Gym Atmosphere */}
-      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/20 via-transparent to-red-950/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-red-950/20 via-transparent to-red-950/10"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,69,19,0.15),transparent_50%)] animate-pulse"></div>
       
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-100 mb-2 sm:mb-3 tracking-tight drop-shadow-2xl">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-red-100 mb-2 sm:mb-3 tracking-tight drop-shadow-2xl">
             Welcome Back
           </h1>
-          <p className="text-xs sm:text-sm text-amber-200/70 font-medium tracking-wide px-2">Sign in to your workout tracker account</p>
-          <div className={`mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-amber-800/30 text-[10px] sm:text-xs font-mono backdrop-blur-sm ${
+          <p className="text-xs sm:text-sm text-red-200/70 font-medium tracking-wide px-2">Sign in to your workout tracker account</p>
+          <div className={`mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-red-800/30 text-[10px] sm:text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
-              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
+              ? 'bg-red-950/40 text-red-300 border-red-800/50' 
               : backendStatus === 'checking'
               ? 'bg-blue-950/40 text-blue-300 border-blue-800/50'
-              : 'bg-amber-950/40 text-amber-300 border-amber-800/50'
+              : 'bg-red-950/40 text-red-300 border-red-800/50'
           }`}>
             {backendStatus === 'online' ? '● SYSTEM ONLINE' : 
              backendStatus === 'checking' ? '● CONNECTING...' : '● OFFLINE MODE'}
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-amber-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-4 sm:space-y-5 md:space-y-6">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-amber-100 mb-4 sm:mb-5 md:mb-6 tracking-wide">Login</h2>
+        <form onSubmit={handleSubmit} className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-red-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-4 sm:space-y-5 md:space-y-6">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-red-100 mb-4 sm:mb-5 md:mb-6 tracking-wide">Login</h2>
           
           {error && (
             <div className="bg-red-950/50 border border-red-600/50 rounded-lg p-3 sm:p-4 text-red-200 text-xs sm:text-sm font-medium backdrop-blur-sm">
@@ -112,12 +112,12 @@ const Login = () => {
           )}
           
           <div>
-            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-amber-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Email</label>
+            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-red-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
-              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
+              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-neutral-900/80 border border-red-900/30 text-red-100 placeholder-red-600/50 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
               value={formData.email}
               onChange={handleChange}
               required
@@ -125,13 +125,13 @@ const Login = () => {
           </div>
           
           <div>
-            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-amber-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Password</label>
+            <label className="block text-[10px] sm:text-xs md:text-sm font-bold text-red-200 mb-2 sm:mb-2.5 md:mb-3 tracking-wide uppercase">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
-                className="w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
+                className="w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-neutral-900/80 border border-red-900/30 text-red-100 placeholder-red-600/50 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -139,7 +139,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
+                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-red-600/70 hover:text-red-400 transition-colors duration-200"
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -159,16 +159,16 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full p-3 sm:p-3.5 md:p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25 text-xs sm:text-sm"
+            className="w-full p-3 sm:p-3.5 md:p-4 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-red-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-red-600/25 text-xs sm:text-sm"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
           
 
           
-          <p className="text-center text-xs sm:text-sm text-amber-300/70 mt-6 sm:mt-7 md:mt-8 font-medium">
+          <p className="text-center text-xs sm:text-sm text-red-300/70 mt-6 sm:mt-7 md:mt-8 font-medium">
             Don't have an account?{" "}
-            <Link to="/register" className="text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors duration-200">
+            <Link to="/register" className="text-red-400 hover:text-red-300 font-bold tracking-wide transition-colors duration-200">
               Sign up here
             </Link>
           </p>

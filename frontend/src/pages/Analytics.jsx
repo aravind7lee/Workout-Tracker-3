@@ -187,9 +187,9 @@ export default function Analytics() {
         'Back': '#3b82f6', 
         'Shoulders': '#f59e0b',
         'Arms': '#10b981',
-        'Legs': '#8b5cf6',
+        'Legs': '#8B0000',
         'Core': '#f97316',
-        'Cardio': '#06b6d4',
+        'Cardio': '#FF0000',
         'Other': '#6b7280'
       };
       
@@ -223,7 +223,7 @@ export default function Analytics() {
               muscleColors[muscle] || muscleColors['Other']
             ),
             borderWidth: 2,
-            borderColor: '#1e293b'
+            borderColor: '#0D0D0D'
           }]
         } : null
       };
@@ -558,11 +558,11 @@ export default function Analytics() {
                 {/* Mobile-Optimized Header */}
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
                       <span className="text-white text-sm sm:text-lg lg:text-xl">⏱️</span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm sm:text-base lg:text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent truncate">
+                      <h3 className="text-sm sm:text-base lg:text-lg font-bold bg-gradient-to-r from-orange-400 to-red-300 bg-clip-text text-transparent truncate">
                         Weekly Duration
                       </h3>
                       <p className="text-xs text-neutral-400 font-medium hidden sm:block">Real-time workout tracking</p>
@@ -585,7 +585,7 @@ export default function Analytics() {
                         <div className="text-xs text-neutral-400">Total</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-sm sm:text-lg font-bold text-amber-400">
+                        <div className="text-sm sm:text-lg font-bold text-red-400">
                           {Math.max(...durationData.datasets[0].data)}m
                         </div>
                         <div className="text-xs text-neutral-400">Peak</div>
@@ -662,7 +662,7 @@ export default function Analytics() {
                       <span className="text-white text-sm sm:text-lg lg:text-xl">💪</span>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm sm:text-base lg:text-lg font-bold bg-gradient-to-r from-red-500 to-emerald-300 bg-clip-text text-transparent truncate">
+                      <h3 className="text-sm sm:text-base lg:text-lg font-bold bg-gradient-to-r from-red-500 to-red-300 bg-clip-text text-transparent truncate">
                         Weekly Workouts
                       </h3>
                       <p className="text-xs text-neutral-400 font-medium hidden sm:block">Performance analytics</p>
@@ -691,7 +691,7 @@ export default function Analytics() {
                         <div className="text-xs text-neutral-400">Best</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-sm sm:text-lg font-bold text-teal-400">
+                        <div className="text-sm sm:text-lg font-bold text-red-500">
                           {(frequencyData.datasets[0].data.reduce((a, b) => a + b, 0) / 7).toFixed(1)}
                         </div>
                         <div className="text-xs text-neutral-400">Avg</div>
@@ -805,9 +805,9 @@ export default function Analytics() {
                           ...muscleData.datasets[0],
                           backgroundColor: [
                             '#ef4444', '#3b82f6', '#f59e0b', '#10b981', 
-                            '#8b5cf6', '#f97316', '#06b6d4', '#6b7280'
+                            '#8B0000', '#f97316', '#FF0000', '#6b7280'
                           ],
-                          borderColor: '#1e293b',
+                          borderColor: '#0D0D0D',
                           borderWidth: 2
                         }]
                       }} options={{
@@ -907,9 +907,9 @@ export default function Analytics() {
                     </div>
                   </div>
                   
-                  <div className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-red-600/10 to-indigo-500/10 rounded-lg border border-red-500/30">
+                  <div className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-lg border border-red-500/30">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-red-600 to-indigo-500 rounded-md flex items-center justify-center">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-red-600 to-red-700 rounded-md flex items-center justify-center">
                         <span className="text-white text-xs sm:text-sm">📋</span>
                       </div>
                       <div className="min-w-0">
@@ -939,14 +939,14 @@ export default function Analytics() {
                     </div>
                   </div>
                   
-                  <div className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-red-600/10 to-teal-500/10 rounded-lg border border-red-500/30">
+                  <div className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-red-600/10 to-red-600/10 rounded-lg border border-red-500/30">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-red-600 to-teal-500 rounded-md flex items-center justify-center">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-red-600 to-red-600 rounded-md flex items-center justify-center">
                         <span className="text-white text-xs sm:text-sm">🌟</span>
                       </div>
                       <div className="min-w-0">
                         <span className="text-white font-semibold text-xs sm:text-sm block truncate">Today's Meals</span>
-                        <div className="text-xs text-emerald-300 hidden sm:block">Daily progress</div>
+                        <div className="text-xs text-red-300 hidden sm:block">Daily progress</div>
                       </div>
                     </div>
                     <div className="text-right">
@@ -968,8 +968,8 @@ export default function Analytics() {
           >
             <div className="bg-gradient-to-br from-neutral-900/95 to-black/95 backdrop-blur-xl border-2 border-red-600/30 rounded-xl sm:rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-2xl hover:shadow-red-600/20 transition-all duration-500 relative overflow-hidden group">
               {/* Advanced Gym Branding Effects */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-red-600/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-              <div className="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-red-600 via-red-500 to-teal-500 rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600 rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl"></div>
               <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-red-600/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div className="relative z-10">
@@ -994,7 +994,7 @@ export default function Analytics() {
                   {/* Live Status Badge */}
                   <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 bg-red-600/20 border border-red-500/40 rounded-full px-2 py-1 sm:px-2.5 sm:py-1 md:px-3 md:py-1.5 flex-shrink-0">
                     <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] sm:text-[10px] md:text-xs font-bold text-emerald-300 tracking-wider">NUTRITION</span>
+                    <span className="text-[9px] sm:text-[10px] md:text-xs font-bold text-red-300 tracking-wider">NUTRITION</span>
                   </div>
                 </div>
                 

@@ -173,7 +173,7 @@ export function useRealAnalytics() {
   const generateMuscleData = () => {
     const plans = getWorkoutPlans();
     const muscleCount = {};
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B0000', '#EC4899'];
     
     // Count exercises by muscle group
     plans.forEach(plan => {
@@ -197,7 +197,7 @@ export function useRealAnalytics() {
           data: [1],
           backgroundColor: ['#64748b'],
           borderWidth: 2,
-          borderColor: '#1e293b'
+          borderColor: '#0D0D0D'
         }]
       };
     }
@@ -208,7 +208,7 @@ export function useRealAnalytics() {
         data: muscles.map(([, count]) => Math.round((count / total) * 100)),
         backgroundColor: muscles.map((_, i) => colors[i % colors.length]),
         borderWidth: 2,
-        borderColor: '#1e293b'
+        borderColor: '#0D0D0D'
       }]
     };
   };

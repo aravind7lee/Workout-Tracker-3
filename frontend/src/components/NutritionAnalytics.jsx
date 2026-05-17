@@ -153,10 +153,10 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
   return (
     <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
       {/* Analytics Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-indigo-200 dark:border-indigo-800 shadow-lg">
+      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-black/20 dark:to-purple-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-indigo-200 dark:border-red-950 shadow-lg">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-red-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-700 to-red-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-red-700/30">
               <span className="text-white text-base sm:text-lg md:text-xl">📈</span>
             </div>
             <div>
@@ -174,7 +174,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value)}
-              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 transition-all font-bold"
+              className="bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary focus:border-red-700 dark:focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-700/20 dark:focus:ring-red-600/20 transition-all font-bold"
             >
               <option value="today">Today</option>
               <option value="week">Week</option>
@@ -314,7 +314,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
         {insights.length > 3 && (
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="w-full text-center text-[10px] sm:text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:underline py-1.5 sm:py-2 font-bold uppercase tracking-wide"
+            className="w-full text-center text-[10px] sm:text-xs md:text-sm text-red-800 dark:text-red-600 hover:underline py-1.5 sm:py-2 font-bold uppercase tracking-wide"
           >
             {showDetails ? 'Less' : `+${insights.length - 3} More`}
           </button>

@@ -17,21 +17,21 @@ export default {
         accent: '#FF0000',
         // Deep Slate Dark Mode Palette
         'slate': {
-          'primary': '#0f172a',
-          'secondary': '#1e293b',
-          'tertiary': '#334155',
-          'border': '#475569'
+          'primary': '#000000',
+          'secondary': '#0D0D0D',
+          'tertiary': '#1A1A1A',
+          'border': '#333333'
         },
         'premium': {
-          'bg-primary': '#0f172a',
-          'bg-secondary': '#1e293b',
-          'bg-tertiary': '#334155',
-          'bg-quaternary': '#475569'
+          'bg-primary': '#000000',
+          'bg-secondary': '#0D0D0D',
+          'bg-tertiary': '#1A1A1A',
+          'bg-quaternary': '#333333'
         },
         'glass': {
-          'primary': '#1e293b',
-          'secondary': '#334155',
-          'tertiary': '#475569'
+          'primary': '#0D0D0D',
+          'secondary': '#1A1A1A',
+          'tertiary': '#333333'
         },
         'neon': {
           'red': '#FF0000',
@@ -54,7 +54,7 @@ export default {
           DEFAULT: '#FF0000',
           hover: '#E60000'
         },
-        'dark-border': '#475569',
+        'dark-border': '#333333',
         // Light mode enhanced colors
         'light-bg': {
           primary: '#ffffff',
@@ -62,8 +62,8 @@ export default {
           soft: 'rgba(255, 255, 255, 0.95)'
         },
         'light-text': {
-          primary: '#0f172a',
-          secondary: '#475569',
+          primary: '#000000',
+          secondary: '#333333',
           muted: '#64748b'
         }
       },

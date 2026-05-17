@@ -55,7 +55,7 @@
   /* === TEXT COLORS - MAXIMUM CONTRAST === */
   --text: #000000;                  /* Very dark text - maximum contrast */
   --heading: #020617;               /* Nearly black headings - ultimate visibility */
-  --muted: #475569;                 /* Dark gray muted text - still readable */
+  --muted: #333333;                 /* Dark gray muted text - still readable */
   --link: #FF0000;                  /* Strong blue links */
   
   /* === BORDERS & STRUCTURE === */
@@ -633,7 +633,7 @@ input::placeholder, textarea::placeholder {
 /* Dark mode containers with Deep Slate colors */
 .dark .bg-white {
   background-color: #0D0D0D !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
 }
 
 .dark .bg-gray-50 {
@@ -645,7 +645,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .bg-gray-200 {
-  background-color: #475569 !important;
+  background-color: #333333 !important;
 }
 
 .dark .bg-slate-800 {
@@ -691,11 +691,11 @@ input::placeholder, textarea::placeholder {
 
 /* Dark mode borders */
 .dark .border-gray-200 {
-  border-color: #475569 !important;
+  border-color: #333333 !important;
 }
 
 .dark .border-gray-300 {
-  border-color: #475569 !important;
+  border-color: #333333 !important;
 }
 
 /* Dark mode inputs */
@@ -703,7 +703,7 @@ input::placeholder, textarea::placeholder {
 .dark textarea,
 .dark select {
   background-color: #1A1A1A !important;
-  border-color: #475569 !important;
+  border-color: #333333 !important;
   color: #cbd5e1 !important;
 }
 
@@ -767,11 +767,11 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .border-slate-700 {
-  border-color: #475569 !important;
+  border-color: #333333 !important;
 }
 
 .dark .border-slate-600 {
-  border-color: #475569 !important;
+  border-color: #333333 !important;
 }
 
 .dark .bg-slate-800\/60 {
@@ -828,7 +828,7 @@ input::placeholder, textarea::placeholder {
 
 .light-theme .text-purple-400, .light-theme .text-purple-500,
 [data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
-  color: #7c3aed !important;
+  color: #8B0000 !important;
 }
 
 .light-theme .text-orange-400, .light-theme .text-orange-500,
@@ -951,7 +951,7 @@ input::placeholder, textarea::placeholder {
 /* ===== DEEP SLATE DARK MODE ===== */
 .dark .glassmorphism {
   background: #0D0D0D !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -982,14 +982,14 @@ input::placeholder, textarea::placeholder {
 
 .dark .modal {
   background: #0D0D0D !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Dark mode tooltips */
 .dark .tooltip {
   background: #1A1A1A !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   color: #f8fafc !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }

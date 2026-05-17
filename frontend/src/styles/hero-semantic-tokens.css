@@ -9,8 +9,8 @@
   --color-text-muted: #999999;             /* Professional Gym Tracker tagline - Dark Mode */
   
   /* === HERO ACCENT COLORS === */
-  --color-accent: #2563EB;                 /* Bright blue for buttons - Dark Mode */
-  --color-text-accent: #4ADE80;            /* Fresh green tone for titles - Dark Mode */
+  --color-accent: #FF0000;                 /* Bright blue for buttons - Dark Mode */
+  --color-text-accent: #FF0000;            /* Fresh green tone for titles - Dark Mode */
   --color-on-accent: #FFFFFF;              /* White text on accent buttons */
   --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
   --color-surface: rgba(255,255,255,0.1);  /* Surface background - Dark Mode */
@@ -19,7 +19,7 @@
   --color-background-overlay: rgba(0,0,0,0.2);  /* Light overlay - Dark Mode for better image visibility */
   
   /* === HERO BUTTON COLORS === */
-  --color-button-primary-bg: #2563eb;      /* Primary button background */
+  --color-button-primary-bg: #FF0000;      /* Primary button background */
   --color-button-primary-text: #ffffff;    /* Primary button text */
   --color-button-secondary-bg: rgba(255,255,255,0.1);  /* Secondary button bg */
   --color-button-secondary-text: #ffffff;  /* Secondary button text */
@@ -48,8 +48,8 @@
   --color-text-muted: #555555;             /* Professional Gym Tracker tagline - Light Mode */
   
   /* === HERO ACCENT COLORS - LIGHT MODE === */
-  --color-accent: #2563EB;                 /* Bright blue for buttons - Light Mode */
-  --color-text-accent: #16A34A;            /* Fresh green tone for titles - Light Mode */
+  --color-accent: #FF0000;                 /* Bright blue for buttons - Light Mode */
+  --color-text-accent: #FF0000;            /* Fresh green tone for titles - Light Mode */
   --color-on-accent: #FFFFFF;              /* White text on accent buttons */
   --color-icon-accent: #ff5722;            /* Flame icon - orange/red color */
   --color-surface: #F3F4F6;                /* Surface background - Light Mode */
@@ -58,7 +58,7 @@
   --color-background-overlay: rgba(0,0,0,0.35);  /* Subtle overlay for Light Mode readability while maintaining 4.5:1 contrast */
   
   /* === HERO BUTTON COLORS - LIGHT MODE === */
-  --color-button-primary-bg: #2563eb;      /* Solid bright blue */
+  --color-button-primary-bg: #FF0000;      /* Solid bright blue */
   --color-button-primary-text: #ffffff;    /* White text */
   --color-button-secondary-bg: rgba(0,0,0,0.1);  /* Light dark background */
   --color-button-secondary-text: #111111;  /* Dark text */
@@ -112,7 +112,7 @@
 }
 
 .hero-accent-text {
-  color: #22d3ee !important;
+  color: #FF0000 !important;
   font-weight: 900 !important;
   font-size: 1.1em !important;
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8) !important;
@@ -266,15 +266,15 @@
 
 /* ===== BUILD NEW PLAN BUTTON STYLING ===== */
 .my-plans-button-secondary {
-  background: linear-gradient(135deg, #8B0000, #7c3aed) !important;
+  background: linear-gradient(135deg, #8B0000, #8B0000) !important;
   color: #ffffff !important;
   border: 2px solid #8B0000 !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .my-plans-button-secondary:hover {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
-  border-color: #7c3aed !important;
+  background: linear-gradient(135deg, #8B0000, #000000) !important;
+  border-color: #8B0000 !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6) !important;
 }
@@ -295,7 +295,7 @@
 
 .light-theme .nutrition-hero-title,
 [data-theme="light"] .nutrition-hero-title {
-  color: #16A34A !important; /* Fresh green tone for healthy, energetic look */
+  color: #FF0000 !important; /* Fresh green tone for healthy, energetic look */
 }
 
 .light-theme .nutrition-hero-subtitle,

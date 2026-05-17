@@ -152,7 +152,7 @@ export default function Navbar() {
                   whileTap={{ scale: 0.95 }}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center ${
                     isActiveRoute(link.to)
-                      ? "text-white bg-[#238636]/20 border border-[#238636]/30"
+                      ? "text-white bg-[#FF0000]/20 border border-[#FF0000]/30"
                       : "text-neutral-300 hover:text-white hover:bg-neutral-800/30"
                   }`}
                 >
@@ -163,7 +163,7 @@ export default function Navbar() {
                 {isActiveRoute(link.to) && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#238636] rounded-full"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#FF0000] rounded-full"
                     initial={false}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
@@ -177,7 +177,7 @@ export default function Navbar() {
             {/* Connection Status Indicator */}
             <div className="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-neutral-900/50 backdrop-blur-sm">
               {connectionStatus.fullyOnline ? (
-                <Wifi size={14} className="text-[#238636]" />
+                <Wifi size={14} className="text-[#FF0000]" />
               ) : (
                 <WifiOff size={14} className="text-red-400" />
               )}
@@ -206,10 +206,10 @@ export default function Navbar() {
                     <img
                       src={user.profileImage}
                       alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover border-2 border-[#238636]/30"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-[#FF0000]/30"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#238636] flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white font-bold text-sm">
                       {(user?.name && user.name.charAt(0)?.toUpperCase()) ||
                         "U"}
                     </div>
@@ -217,7 +217,7 @@ export default function Navbar() {
                   <span className="hidden sm:block text-white font-medium font-body">
                     {user?.name || "User"}
                   </span>
-                  <span className="hidden lg:block text-xs text-[#238636] bg-[#238636]/20 px-2 py-1 rounded-full">
+                  <span className="hidden lg:block text-xs text-[#FF0000] bg-[#FF0000]/20 px-2 py-1 rounded-full">
                     <Wifi size={14} />
                   </span>
                 </motion.button>
@@ -306,14 +306,14 @@ export default function Navbar() {
               <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
                 <Link
                   to="/login"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#21262d] text-white rounded-lg hover:bg-[#30363d] transition-all duration-200 flex items-center justify-center shadow-lg border border-[#30363d]"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#0D0D0D] text-white rounded-lg hover:bg-[#1A1A1A] transition-all duration-200 flex items-center justify-center shadow-lg border border-[#1A1A1A]"
                 >
                   <User size={16} className="mr-1" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#238636] text-white rounded-lg hover:bg-[#238636]/90 transition-all duration-200 flex items-center justify-center shadow-lg"
+                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#FF0000] text-white rounded-lg hover:bg-[#FF0000]/90 transition-all duration-200 flex items-center justify-center shadow-lg"
                 >
                   <Zap size={16} className="mr-1" />
                   Sign Up
@@ -326,7 +326,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="xl:hidden p-3 rounded-full bg-[#161b22] transition-all duration-300 ml-2 relative group border border-[#30363d]"
+              className="xl:hidden p-3 rounded-full bg-[#000000] transition-all duration-300 ml-2 relative group border border-[#1A1A1A]"
             >
               <motion.div
                 animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
@@ -349,7 +349,7 @@ export default function Navbar() {
                   />
                 )}
               </motion.div>
-              <div className="absolute inset-0 rounded-full bg-[#238636]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="absolute inset-0 rounded-full bg-[#FF0000]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </motion.button>
           </div>
         </div>

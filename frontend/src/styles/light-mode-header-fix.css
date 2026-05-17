@@ -56,7 +56,7 @@
 
 .light-theme .workout-builder-section .muted-text,
 [data-theme="light"] .workout-builder-section .muted-text {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 /* ===== PLAN BUILDER HEADER FIXES ===== */

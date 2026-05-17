@@ -57,7 +57,7 @@
 
 .light-theme .text-purple-400, .light-theme .text-purple-500,
 [data-theme="light"] .text-purple-400, [data-theme="light"] .text-purple-500 {
-  color: #7c3aed !important;
+  color: #8B0000 !important;
 }
 
 .light-theme .text-orange-400, .light-theme .text-orange-500,
@@ -95,7 +95,7 @@
 /* Hero gradient text preservation */
 .light-theme .bg-gradient-to-r.from-blue-400.to-purple-400,
 [data-theme="light"] .bg-gradient-to-r.from-blue-400.to-purple-400 {
-  background: linear-gradient(to right, #FF0000, #7c3aed) !important;
+  background: linear-gradient(to right, #FF0000, #8B0000) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -191,7 +191,7 @@
 
 .light-theme input::placeholder, .light-theme textarea::placeholder,
 [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 .light-theme label,
@@ -231,7 +231,7 @@
 /* ===== MUTED TEXT ===== */
 .light-theme .text-muted,
 [data-theme="light"] .text-muted {
-  color: #475569 !important;
+  color: #333333 !important;
 }
 
 /* ===== DASHBOARD SPECIFIC FIXES ===== */

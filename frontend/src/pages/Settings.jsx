@@ -87,7 +87,7 @@ export default function Settings() {
     { id: 'notifications', label: 'Notifications', icon: Bell, color: 'from-yellow-500 to-orange-500' },
     { id: 'privacy', label: 'Privacy & Security', icon: Shield, color: 'from-red-500 to-pink-500' },
     { id: 'preferences', label: 'App Preferences', icon: Palette, color: 'from-red-700 to-violet-500' },
-    { id: 'data', label: 'Data & Storage', icon: Database, color: 'from-indigo-500 to-red-600' },
+    { id: 'data', label: 'Data & Storage', icon: Database, color: 'from-red-700 to-red-600' },
     { id: 'help', label: 'Help & Support', icon: HelpCircle, color: 'from-gray-500 to-neutral-500' }
   ];
 

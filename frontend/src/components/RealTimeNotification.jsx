@@ -31,7 +31,7 @@ export default function RealTimeNotification({ message, type = 'success', onClos
       case 'workout': return 'from-red-600/20 to-red-600/20 border-red-600/30';
       case 'xp': return 'from-yellow-500/20 to-orange-500/20 border-yellow-500/30';
 
-      case 'sync': return 'from-red-700/20 to-indigo-500/20 border-red-700/30';
+      case 'sync': return 'from-red-700/20 to-red-700/20 border-red-700/30';
       default: return 'from-gray-500/20 to-neutral-500/20 border-gray-500/30';
     }
   };

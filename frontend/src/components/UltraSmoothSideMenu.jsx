@@ -17,15 +17,15 @@ const mobileTransition = {
 };
 
 const menuItems = [
-  { to: "/dashboard", label: "Dashboard", icon: Home, color: "#00d4ff" },
-  { to: "/library", label: "Library", icon: Dumbbell, color: "#8b5cf6" },
+  { to: "/dashboard", label: "Dashboard", icon: Home, color: "#FF0000" },
+  { to: "/library", label: "Library", icon: Dumbbell, color: "#8B0000" },
   { to: "/my-plans", label: "My Plans", icon: Calendar, color: "#00ff88" },
   { to: "/plans", label: "Plan Builder", icon: Target, color: "#ff6b6b" },
   { to: "/splits", label: "Splits", icon: BarChart3, color: "#ff9500" },
   { to: "/nutrition", label: "Nutrition", icon: Apple, color: "#ffa502" },
-  { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#00d4ff" },
+  { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#FF0000" },
   { to: "/legends", label: "Champs", icon: Award, color: "#ffd700" },
-  { to: "/profile", label: "Profile", icon: UserCircle, color: "#8b5cf6" },
+  { to: "/profile", label: "Profile", icon: UserCircle, color: "#8B0000" },
 ];
 
 export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {

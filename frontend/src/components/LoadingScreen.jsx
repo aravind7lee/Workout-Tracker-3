@@ -103,7 +103,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
         </div>
 
         <div className="mt-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 border border-zinc-800 bg-zinc-950/80">
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-900 bg-zinc-950/80">
             <div className="w-1 h-1 bg-white animate-pulse" style={{ boxShadow: '0 0 6px rgba(255,255,255,0.6)' }} />
             <span className="text-[9px] font-black tracking-widest uppercase text-zinc-500">
               💪 LOADING GRIND X

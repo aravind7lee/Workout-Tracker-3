@@ -554,14 +554,14 @@ export default function PlansBuilder() {
                     onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
                     className="px-6 py-3 text-white rounded-lg font-medium text-sm shadow-lg transition-all duration-200"
                     style={{
-                      background: 'linear-gradient(to right, #2563eb, #7c3aed)',
+                      background: 'linear-gradient(to right, #FF0000, #8B0000)',
                       boxShadow: '0 4px 14px 0 rgba(37, 99, 235, 0.39)'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #1d4ed8, #6d28d9)';
+                      e.target.style.background = 'linear-gradient(to right, #FF0000, #000000)';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)';
+                      e.target.style.background = 'linear-gradient(to right, #FF0000, #8B0000)';
                     }}
                   >
                     🏋️ Build Plan
@@ -1390,7 +1390,7 @@ export default function PlansBuilder() {
               
               {/* Mobile-Optimized Plan Summary */}
               {plan.length > 0 && (
-                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-indigo-900/30 border border-blue-700/50 rounded-lg sm:rounded-xl shadow-lg">
+                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-black/30 border border-blue-700/50 rounded-lg sm:rounded-xl shadow-lg">
                   <div className="text-blue-300">
                     {/* Summary Header */}
                     <div className="flex items-center justify-between gap-2 mb-3">

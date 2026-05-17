@@ -33,17 +33,17 @@ function getContrastRatio(color1, color2) {
 
 // Dark Mode Contrast Checks
 console.log('=== DARK MODE CONTRAST RATIOS ===');
-console.log('Body text (#f8fafc on #0f172a):', getContrastRatio('#f8fafc', '#0f172a').toFixed(2) + ':1');
-console.log('Headings (#f8fafc on #0f172a):', getContrastRatio('#f8fafc', '#0f172a').toFixed(2) + ':1');
-console.log('Muted text (#94a3b8 on #0f172a):', getContrastRatio('#94a3b8', '#0f172a').toFixed(2) + ':1');
-console.log('Accent (#00d4ff on #0f172a):', getContrastRatio('#00d4ff', '#0f172a').toFixed(2) + ':1');
+console.log('Body text (#f8fafc on #000000):', getContrastRatio('#f8fafc', '#000000').toFixed(2) + ':1');
+console.log('Headings (#f8fafc on #000000):', getContrastRatio('#f8fafc', '#000000').toFixed(2) + ':1');
+console.log('Muted text (#94a3b8 on #000000):', getContrastRatio('#94a3b8', '#000000').toFixed(2) + ':1');
+console.log('Accent (#FF0000 on #000000):', getContrastRatio('#FF0000', '#000000').toFixed(2) + ':1');
 
 // Light Mode Contrast Checks
 console.log('\n=== LIGHT MODE CONTRAST RATIOS ===');
-console.log('Body text (#0f172a on #ffffff):', getContrastRatio('#0f172a', '#ffffff').toFixed(2) + ':1');
+console.log('Body text (#000000 on #ffffff):', getContrastRatio('#000000', '#ffffff').toFixed(2) + ':1');
 console.log('Headings (#020617 on #ffffff):', getContrastRatio('#020617', '#ffffff').toFixed(2) + ':1');
-console.log('Muted text (#475569 on #ffffff):', getContrastRatio('#475569', '#ffffff').toFixed(2) + ':1');
-console.log('Accent (#1d4ed8 on #ffffff):', getContrastRatio('#1d4ed8', '#ffffff').toFixed(2) + ':1');
+console.log('Muted text (#333333 on #ffffff):', getContrastRatio('#333333', '#ffffff').toFixed(2) + ':1');
+console.log('Accent (#FF0000 on #ffffff):', getContrastRatio('#FF0000', '#ffffff').toFixed(2) + ':1');
 
 // WCAG Compliance Check
 console.log('\n=== WCAG COMPLIANCE ===');

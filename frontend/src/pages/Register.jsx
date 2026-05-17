@@ -91,19 +91,19 @@ const Register = () => {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
       {/* Gym Atmosphere */}
-      <div className="absolute inset-0 bg-gradient-to-t from-amber-950/20 via-transparent to-red-950/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-red-950/20 via-transparent to-red-950/10"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,69,19,0.15),transparent_50%)] animate-pulse"></div>
       
-      <div className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-amber-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-md relative z-10">
+      <div className="bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-red-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-md relative z-10">
         <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-100 mb-2 sm:mb-3 tracking-tight drop-shadow-2xl">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-red-100 mb-2 sm:mb-3 tracking-tight drop-shadow-2xl">
             Create Account
           </h1>
-          <p className="text-xs sm:text-sm text-amber-200/70 font-medium tracking-wide px-2">Join the ultimate fitness experience</p>
-          <div className={`mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-amber-800/30 text-[10px] sm:text-xs font-mono backdrop-blur-sm ${
+          <p className="text-xs sm:text-sm text-red-200/70 font-medium tracking-wide px-2">Join the ultimate fitness experience</p>
+          <div className={`mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-red-800/30 text-[10px] sm:text-xs font-mono backdrop-blur-sm ${
             backendStatus === 'online' 
-              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50' 
-              : 'bg-amber-950/40 text-amber-300 border-amber-800/50'
+              ? 'bg-red-950/40 text-red-300 border-red-800/50' 
+              : 'bg-red-950/40 text-red-300 border-red-800/50'
           }`}>
             {backendStatus === 'online' 
               ? '● DATABASE CONNECTED' 
@@ -123,7 +123,7 @@ const Register = () => {
               type="text"
               name="name"
               placeholder="Full Name"
-              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm uppercase tracking-wide text-xs sm:text-sm"
+              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-neutral-900/80 border border-red-900/30 text-red-100 placeholder-red-600/50 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-300 font-medium backdrop-blur-sm uppercase tracking-wide text-xs sm:text-sm"
               value={formData.name}
               onChange={handleChange}
               required
@@ -136,7 +136,7 @@ const Register = () => {
               type="email"
               name="email"
               placeholder="Email Address"
-              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
+              className="w-full p-3 sm:p-3.5 md:p-4 rounded-lg bg-neutral-900/80 border border-red-900/30 text-red-100 placeholder-red-600/50 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
               value={formData.email}
               onChange={handleChange}
               required
@@ -150,7 +150,7 @@ const Register = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
-                className="w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-zinc-800/80 border border-amber-900/30 text-amber-100 placeholder-amber-600/50 focus:border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
+                className="w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-neutral-900/80 border border-red-900/30 text-red-100 placeholder-red-600/50 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -159,7 +159,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
+                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-red-600/70 hover:text-red-400 transition-colors duration-200"
                 tabIndex={-1}
                 disabled={loading}
               >
@@ -183,9 +183,9 @@ const Register = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Confirm Password"
-                className={`w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-zinc-800/80 border text-amber-100 placeholder-amber-600/50 focus:outline-none focus:ring-2 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm ${
+                className={`w-full p-3 sm:p-3.5 md:p-4 pr-12 sm:pr-14 rounded-lg bg-neutral-900/80 border text-red-100 placeholder-red-600/50 focus:outline-none focus:ring-2 transition-all duration-300 font-medium backdrop-blur-sm text-xs sm:text-sm ${
                   passwordMatch === null 
-                    ? 'border-amber-900/30 focus:border-amber-600 focus:ring-amber-600/20'
+                    ? 'border-red-900/30 focus:border-red-600 focus:ring-red-600/20'
                     : passwordMatch 
                     ? 'border-red-600/50 focus:border-red-600 focus:ring-red-600/20'
                     : 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
@@ -198,7 +198,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-amber-600/70 hover:text-amber-400 transition-colors duration-200"
+                className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-red-600/70 hover:text-red-400 transition-colors duration-200"
                 tabIndex={-1}
                 disabled={loading}
               >
@@ -242,7 +242,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full p-3 sm:p-3.5 md:p-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-amber-600/25 text-xs sm:text-sm"
+            className="w-full p-3 sm:p-3.5 md:p-4 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-red-100 font-bold tracking-wide uppercase rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:transform-none shadow-lg hover:shadow-red-600/25 text-xs sm:text-sm"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
@@ -251,17 +251,17 @@ const Register = () => {
 
 
         <div className="mt-6 sm:mt-7 md:mt-8 text-center">
-          <p className="text-amber-300/70 text-xs sm:text-sm font-medium">
+          <p className="text-red-300/70 text-xs sm:text-sm font-medium">
             Already have an account?{' '}
-            <Link to="/login" className="text-amber-400 hover:text-amber-300 font-bold tracking-wide transition-colors duration-200">
+            <Link to="/login" className="text-red-400 hover:text-red-300 font-bold tracking-wide transition-colors duration-200">
               Sign In
             </Link>
           </p>
         </div>
 
         {/* Quick Registration for Testing */}
-        <div className="mt-4 sm:mt-5 md:mt-6 p-3 sm:p-4 bg-zinc-800/50 border border-amber-900/20 rounded-lg backdrop-blur-sm">
-          <p className="text-amber-300/70 text-[10px] sm:text-xs md:text-sm text-center mb-2 sm:mb-3 font-medium">Quick Test Registration:</p>
+        <div className="mt-4 sm:mt-5 md:mt-6 p-3 sm:p-4 bg-neutral-900/50 border border-red-900/20 rounded-lg backdrop-blur-sm">
+          <p className="text-red-300/70 text-[10px] sm:text-xs md:text-sm text-center mb-2 sm:mb-3 font-medium">Quick Test Registration:</p>
           <button
             onClick={() => setFormData({
               name: 'Test User',
@@ -269,7 +269,7 @@ const Register = () => {
               password: 'password123',
               confirmPassword: 'password123'
             })}
-            className="w-full px-3 py-2 sm:px-4 sm:py-2 bg-amber-800/30 hover:bg-amber-700/40 rounded text-[10px] sm:text-xs md:text-sm text-amber-300 transition-all duration-200 font-medium tracking-wide border border-amber-800/30"
+            className="w-full px-3 py-2 sm:px-4 sm:py-2 bg-red-800/30 hover:bg-red-700/40 rounded text-[10px] sm:text-xs md:text-sm text-red-300 transition-all duration-200 font-medium tracking-wide border border-red-800/30"
             disabled={loading}
           >
             📝 Fill Test Data

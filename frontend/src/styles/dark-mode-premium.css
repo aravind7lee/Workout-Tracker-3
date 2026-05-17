@@ -11,7 +11,7 @@
   --dark-text-muted: #94a3b8 !important;
   --dark-accent: #FF0000 !important;
   --dark-accent-glow: rgba(255, 0, 0, 0.3) !important;
-  --dark-border: #475569 !important;
+  --dark-border: #333333 !important;
   --dark-shadow: rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -21,7 +21,7 @@
 .dark .bg-gray-50,
 .dark .bg-gray-100 {
   background: #0D0D0D !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -50,7 +50,7 @@
 .dark .btn,
 .dark button {
   background: #1A1A1A !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   color: #cbd5e1 !important;
   transition: all 0.2s ease !important;
 }
@@ -85,7 +85,7 @@
 .dark textarea,
 .dark select {
   background: #1A1A1A !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   color: #cbd5e1 !important;
 }
 
@@ -167,14 +167,14 @@
 .dark .modal,
 .dark .dialog {
   background: #0D0D0D !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* ===== TOOLTIPS ===== */
 .dark .tooltip {
   background: #1A1A1A !important;
-  border: 1px solid #475569 !important;
+  border: 1px solid #333333 !important;
   color: #f8fafc !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
