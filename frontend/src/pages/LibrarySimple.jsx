@@ -24,6 +24,7 @@ import '../styles/shimmer.css';
 import '../styles/library-header.css';
 import '../styles/exercise-gallery.css';
 import '../styles/performance-optimizations.css';
+import '../styles/hero-semantic-tokens.css';
 
 export default function LibrarySimple() {
   const navigate = useNavigate();
@@ -337,20 +338,20 @@ export default function LibrarySimple() {
                   animate={imageLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.8, delay: 0.7 }}
                 >
-                  <motion.button 
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: '0 8px 30px rgba(255, 0, 0, 0.5)' }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => document.getElementById('exercise-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center gap-2"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="hero-button-primary font-bold rounded-md shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wider"
                   >
                     <span>💪</span>
                     <span>EXPLORE EXERCISES</span>
                   </motion.button>
-                  <motion.button 
+                  <motion.button
+                    whileHover={{ scale: 1.05, background: 'rgba(255, 255, 255, 0.25)' }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => document.getElementById('search-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center gap-2"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="hero-button-secondary font-semibold rounded-md transition-all duration-300 font-body flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wider"
                   >
                     <span>🔥</span>
                     <span>START TRAINING</span>

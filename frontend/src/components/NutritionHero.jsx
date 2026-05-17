@@ -104,12 +104,11 @@ export default function NutritionHero() {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
           <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight nutrition-hero-title"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight nutrition-hero-title text-green-500"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{ 
-              color: theme === 'light' ? '#FF0000' : '#FF0000',
               textShadow: 'none',
               fontWeight: theme === 'light' ? '900' : '800'
             }}
@@ -174,12 +173,7 @@ export default function NutritionHero() {
                   }, 500);
                 }
               }}
-              className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4"
-              style={{
-                background: '#FF0000',
-                color: '#FFFFFF',
-                border: 'none'
-              }}
+              className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Start tracking your nutrition now"
             >
               Start Tracking
@@ -194,13 +188,7 @@ export default function NutritionHero() {
                   window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }
               }}
-              className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 w-auto sm:min-w-[140px] focus:outline-none focus:ring-4"
-              style={{
-                background: theme === 'light' ? '#F3F4F6' : 'rgba(255,255,255,0.1)',
-                color: theme === 'light' ? '#111111' : '#FFFFFF',
-                border: theme === 'light' ? '2px solid rgba(0,0,0,0.1)' : '2px solid rgba(255,255,255,0.3)',
-                backdropFilter: 'blur(10px)'
-              }}
+              className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Learn more about nutrition tracking features"
             >
               Learn More

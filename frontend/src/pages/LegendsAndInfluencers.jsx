@@ -209,7 +209,7 @@ const LegendsAndInfluencers = () => {
             className="space-y-6"
           >
              <motion.h1 
-              className="text-5xl md:text-7xl lg:text-8xl font-black text-red-300 mb-2 sm:mb-3 drop-shadow-lg font-heading"
+              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-yellow-400 via-amber-500 to-red-600 bg-clip-text text-transparent mb-2 sm:mb-3 drop-shadow-lg font-heading"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}

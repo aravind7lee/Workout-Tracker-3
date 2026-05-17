@@ -114,27 +114,14 @@ export default function WorkoutPlanBuilderHeader() {
             >
               <button 
                 onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 transform hover:scale-105 shadow-lg"
-                style={{
-                  backgroundColor: 'var(--color-accent, #FF0000)',
-                  color: 'var(--color-on-accent, #FFFFFF)'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#FF0000'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #FF0000)'}
+                className="px-6 py-3 font-bold rounded-lg text-sm sm:text-base transition-all duration-300 shadow-lg hero-button-primary flex items-center justify-center gap-2"
                 aria-label="View your workout plans"
               >
                 View My Plans
               </button>
               <Link
                 to="/plans"
-                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base border-2 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
-                style={{
-                  backgroundColor: 'var(--color-accent, #FF0000)',
-                  color: 'var(--color-on-accent, #FFFFFF)',
-                  borderColor: 'transparent'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#FF0000'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent, #FF0000)'}
+                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 hero-button-secondary flex items-center justify-center gap-2"
                 aria-label="Create new workout plan"
               >
                 Build New Plan

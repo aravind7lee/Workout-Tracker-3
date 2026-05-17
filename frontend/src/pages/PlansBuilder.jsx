@@ -529,40 +529,14 @@ export default function PlansBuilder() {
                   className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6"
                 >
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
                     onClick={() => navigate('/my-plans')}
-                    className="px-6 py-3 text-white rounded-lg font-medium text-sm shadow-lg transition-all duration-200"
-                    style={{
-                      background: 'linear-gradient(to right, #f97316, #dc2626)',
-                      boxShadow: '0 4px 14px 0 rgba(249, 115, 22, 0.39)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #ea580c, #b91c1c)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #f97316, #dc2626)';
-                    }}
+                    className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2"
                   >
                     📋 View Plans
                   </motion.button>
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
                     onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-6 py-3 text-white rounded-lg font-medium text-sm shadow-lg transition-all duration-200"
-                    style={{
-                      background: 'linear-gradient(to right, #FF0000, #8B0000)',
-                      boxShadow: '0 4px 14px 0 rgba(37, 99, 235, 0.39)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #FF0000, #000000)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'linear-gradient(to right, #FF0000, #8B0000)';
-                    }}
+                    className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2"
                   >
                     🏋️ Build Plan
                   </motion.button>

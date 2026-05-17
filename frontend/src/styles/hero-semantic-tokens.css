@@ -122,30 +122,62 @@
   color: var(--color-icon-accent) !important;
 }
 
-.hero-button-primary {
-  background: var(--color-button-primary-bg) !important;
-  color: var(--color-button-primary-text) !important;
+.hero-button-primary,
+button.hero-button-primary,
+.dark .hero-button-primary,
+.dark button.hero-button-primary {
+  background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%) !important;
+  color: #ffffff !important;
   border: none !important;
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.hero-button-primary:hover {
-  background: #FF0000 !important; /* Fallback for older browsers */
-  background: color-mix(in srgb, var(--color-button-primary-bg) 85%, black) !important;
+.hero-button-primary *,
+button.hero-button-primary *,
+.dark .hero-button-primary *,
+.dark button.hero-button-primary * {
+  color: #ffffff !important;
+}
+
+.hero-button-primary:hover,
+button.hero-button-primary:hover,
+.dark .hero-button-primary:hover,
+.dark button.hero-button-primary:hover {
+  background: linear-gradient(135deg, #FF3333 0%, #E60000 100%) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4) !important;
+  box-shadow: 0 8px 30px rgba(255, 0, 0, 0.65) !important;
 }
 
-.hero-button-secondary {
-  background: var(--color-button-secondary-bg) !important;
-  color: var(--color-button-secondary-text) !important;
-  border: 1px solid var(--color-button-secondary-border) !important;
+.hero-button-secondary,
+button.hero-button-secondary,
+.dark .hero-button-secondary,
+.dark button.hero-button-secondary {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
   backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: none !important;
 }
 
-.hero-button-secondary:hover {
-  background: var(--color-accent) !important;
-  color: var(--color-on-accent) !important;
-  border-color: var(--color-accent) !important;
+.hero-button-secondary *,
+button.hero-button-secondary *,
+.dark .hero-button-secondary *,
+.dark button.hero-button-secondary * {
+  color: #ffffff !important;
+}
+
+.hero-button-secondary:hover,
+button.hero-button-secondary:hover,
+.dark .hero-button-secondary:hover,
+.dark button.hero-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15) !important;
 }
 
 .hero-card {
@@ -280,8 +312,13 @@
 }
 
 /* ===== NUTRITION HERO TEXT STYLING ===== */
-.nutrition-hero-title {
-  color: var(--color-text-accent) !important;
+.nutrition-hero-title,
+.light-theme .nutrition-hero-title,
+[data-theme="light"] .nutrition-hero-title {
+  color: #10B981 !important; /* Premium Natural Emerald Green for healthy, energetic look */
+  background: linear-gradient(135deg, #4ADE80 0%, #10B981 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 .nutrition-hero-subtitle {
@@ -291,11 +328,6 @@
 .nutrition-hero-accent {
   color: var(--color-text-secondary) !important;
   font-weight: 700 !important;
-}
-
-.light-theme .nutrition-hero-title,
-[data-theme="light"] .nutrition-hero-title {
-  color: #FF0000 !important; /* Fresh green tone for healthy, energetic look */
 }
 
 .light-theme .nutrition-hero-subtitle,

@@ -825,28 +825,22 @@ const WorkoutSplits = () => {
                 transition={{ duration: 0.8, delay: 1.0 }}
               >
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => navigate('/custom-split-builder')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-red-800 via-red-700 to-red-600 hover:from-purple-700 hover:via-blue-700 hover:to-red-700 text-white font-semibold px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none"
+                  className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body w-full sm:w-auto"
                 >
                   <div className="relative flex items-center justify-center space-x-2">
                     <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="text-xs sm:text-sm font-medium tracking-wide">CREATE YOUR OWN SPLIT</span>
-                    <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </motion.button>
                 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => navigate('/your-workout-splits')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-orange-600 via-red-600 to-pink-500 hover:from-orange-700 hover:via-red-700 hover:to-pink-600 text-white font-semibold px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none"
+                  className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body w-full sm:w-auto"
                 >
                   <div className="relative flex items-center justify-center space-x-2">
                     <Target className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="text-xs sm:text-sm font-medium tracking-wide">YOUR WORKOUT SPLITS</span>
-                    <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </motion.button>
               </motion.div>
