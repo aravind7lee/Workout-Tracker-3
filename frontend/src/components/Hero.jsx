@@ -18,6 +18,8 @@ export default function Hero() {
   const { isAuthenticated } = useAuth();
   const { isOnline } = useRealTime();
 
+  const heroRef = useRef(null);
+
   const [imageLoaded, setImageLoaded]   = useState(false);
   const [imageError,  setImageError]    = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
