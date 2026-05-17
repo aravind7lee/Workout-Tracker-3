@@ -145,7 +145,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
 
   const getScoreBg = (score) => {
     if (score >= 90) return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
-    if (score >= 75) return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800';
+    if (score >= 75) return 'bg-red-500/5 dark:bg-red-950/20 border-red-200/20 dark:border-red-950/30';
     if (score >= 50) return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
     return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
   };
@@ -153,7 +153,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
   return (
     <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
       {/* Analytics Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-black/20 dark:to-purple-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-indigo-200 dark:border-red-950 shadow-lg">
+      <div className="relative overflow-hidden bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
             <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-700 to-red-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-red-700/30">
@@ -291,7 +291,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
             transition={{ delay: index * 0.1 }}
             className={`p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl border shadow-lg ${
               insight.type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
-              insight.type === 'good' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
+              insight.type === 'good' ? 'bg-red-500/5 dark:bg-red-950/20 border-red-200/20 dark:border-red-950/30' :
               insight.type === 'warning' ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' :
               insight.type === 'alert' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' :
               'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800'
@@ -322,27 +322,27 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
       </div>
 
       {/* Trends */}
-      <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900/20 dark:to-blue-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200 dark:border-gray-800 shadow-lg">
+      <div className="bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg">
         <h4 className="font-black text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary mb-2.5 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2 uppercase tracking-wide">
           <span>📊</span> Trends
         </h4>
         
         <div className="grid grid-cols-3 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
-          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.improving ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.improving ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850'}`}>
             <div className="text-base sm:text-lg md:text-xl">{analytics.trends.improving ? '📈' : '📊'}</div>
             <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
               {analytics.trends.improving ? 'Up' : 'Stable'}
             </div>
           </div>
           
-          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.consistent ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.consistent ? 'bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300' : 'bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850'}`}>
             <div className="text-base sm:text-lg md:text-xl">{analytics.trends.consistent ? '🎯' : '📊'}</div>
             <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
               {analytics.trends.consistent ? 'Steady' : 'Variable'}
             </div>
           </div>
           
-          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.balanced ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+          <div className={`text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.balanced ? 'bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300' : 'bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850'}`}>
             <div className="text-base sm:text-lg md:text-xl">{analytics.trends.balanced ? '⚖️' : '📊'}</div>
             <div className="text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider mt-0.5">
               {analytics.trends.balanced ? 'Balanced' : 'Off'}

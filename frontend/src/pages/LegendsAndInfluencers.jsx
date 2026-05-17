@@ -209,10 +209,15 @@ const LegendsAndInfluencers = () => {
             className="space-y-6"
           >
              <motion.h1 
-              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-yellow-400 via-amber-500 to-red-600 bg-clip-text text-transparent mb-2 sm:mb-3 drop-shadow-lg font-heading"
+              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent mb-2 sm:mb-3 drop-shadow-lg font-heading preserve-color"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              style={{
+                backgroundImage: 'linear-gradient(to right, #dc2626, #ef4444, #f97316)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
             >
               Legends & Influencers
             </motion.h1>

@@ -230,7 +230,7 @@ export default function NutritionGallery() {
                 }, 500);
               }
             }}
-            className="px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-600/50"
+            className="px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-600/50"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

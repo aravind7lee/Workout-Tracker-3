@@ -223,11 +223,11 @@ export default function Nutrition() {
 
   return (
     <NutritionErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black relative overflow-hidden">
+      <div className="nutrition-page min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black relative overflow-hidden">
         {/* Premium Background Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-900/20 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-950/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-neutral-950/30 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-red-950/10 via-transparent to-transparent"></div>
         
         {/* Floating Nutrition Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-red-600/10 rounded-full blur-xl animate-pulse"></div>
@@ -254,7 +254,7 @@ export default function Nutrition() {
                   <span className="text-white font-bold text-base sm:text-lg md:text-xl">🍎</span>
                 </div>
                 <div>
-                  <div className="text-white font-black text-xs sm:text-sm md:text-base lg:text-lg mb-0.5 sm:mb-1 uppercase tracking-wide leading-none">Nutrition Tracker</div>
+                  <div className="preserve-color font-black text-xs sm:text-sm md:text-base lg:text-lg mb-0.5 sm:mb-1 uppercase tracking-wide leading-none" style={{ color: '#22c55e' }}>Nutrition Tracker</div>
                   <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-1.5 sm:gap-2 md:gap-3 text-[9px] sm:text-[10px] md:text-xs lg:text-sm">
                     <span className="inline-flex items-center gap-1 sm:gap-1.5 text-red-500 font-bold">
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-600 rounded-full animate-pulse shadow-lg shadow-red-600/50"></span>
@@ -355,7 +355,7 @@ export default function Nutrition() {
         </div>
         
         {/* Premium Footer Glow */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-green-900/20 to-transparent pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-950/20 to-transparent pointer-events-none"></div>
       </div>
     </NutritionErrorBoundary>
   );

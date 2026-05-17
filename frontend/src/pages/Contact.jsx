@@ -174,7 +174,7 @@ export default function Contact() {
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-4 xs:px-5 sm:px-6 py-3 xs:py-3.5 sm:py-4 bg-gradient-to-r from-red-700 to-red-700 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-red-600/25 font-body text-xs xs:text-sm sm:text-base active:scale-95"
+                className="w-full px-4 xs:px-5 sm:px-6 py-3 xs:py-3.5 sm:py-4 bg-gradient-to-r from-red-700 to-red-700 hover:from-red-600 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-red-600/25 font-body text-xs xs:text-sm sm:text-base active:scale-95"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2">

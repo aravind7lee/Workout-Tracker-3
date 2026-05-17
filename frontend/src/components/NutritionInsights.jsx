@@ -157,7 +157,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
     switch (priority) {
       case 'high': return 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20';
       case 'medium': return 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20';
-      case 'low': return 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20';
+      case 'low': return 'border-neutral-800 dark:border-red-950/20 bg-neutral-900/40 dark:bg-neutral-950/40';
       default: return 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/20';
     }
   };
@@ -176,7 +176,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
   return (
     <div className="space-y-6">
       {/* Real-Time Status */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-black/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+      <div className="bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-xl p-4 border border-neutral-800 dark:border-red-950/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center">
@@ -300,7 +300,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
             <div className="text-sm font-medium">Dinner</div>
             <div className="text-xs">{analytics.mealTiming.dinner ? '✅' : '⏳'}</div>
           </div>
-          <div className="text-center p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+          <div className="text-center p-2 rounded-lg bg-red-100/10 dark:bg-red-950/30 text-red-700 dark:text-red-300">
             <div className="text-sm font-medium">Snacks</div>
             <div className="text-xs">{analytics.mealTiming.snacks}</div>
           </div>

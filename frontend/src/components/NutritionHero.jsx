@@ -104,13 +104,16 @@ export default function NutritionHero() {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
           <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight nutrition-hero-title text-green-500"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 leading-tight nutrition-hero-title preserve-color bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{ 
-              textShadow: 'none',
-              fontWeight: theme === 'light' ? '900' : '800'
+              fontWeight: '900',
+              backgroundImage: 'linear-gradient(to right, #4ade80, #10b981, #059669)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: 'none'
             }}
           >
             Nutrition Tracker
@@ -173,7 +176,7 @@ export default function NutritionHero() {
                   }, 500);
                 }
               }}
-              className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body w-auto sm:min-w-[140px]"
+              className="px-4 py-2 sm:px-6 sm:py-3 nutrition-hero-btn nutrition-hero-btn-primary font-semibold rounded-md text-sm transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Start tracking your nutrition now"
             >
               Start Tracking
@@ -184,11 +187,10 @@ export default function NutritionHero() {
                 if (progressSection) {
                   progressSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
-                  // Fallback: scroll to the main content area
                   window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }
               }}
-              className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body w-auto sm:min-w-[140px]"
+              className="px-4 py-2 sm:px-6 sm:py-3 nutrition-hero-btn nutrition-hero-btn-secondary font-medium rounded-md text-sm transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Learn more about nutrition tracking features"
             >
               Learn More

@@ -86,7 +86,7 @@ export default function Footer() {
                     type="submit"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-red-700 to-red-700 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-300 font-body text-[10px] sm:text-sm shadow-lg hover:shadow-red-600/25"
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-red-700 to-red-700 hover:from-red-600 hover:to-red-800 text-white rounded-lg font-medium transition-all duration-300 font-body text-[10px] sm:text-sm shadow-lg hover:shadow-red-600/25"
                   >
                     {subscribed ? '✓ Subscribed' : 'Join GRIND-X'}
                   </motion.button>

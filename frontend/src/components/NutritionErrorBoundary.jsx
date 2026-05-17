@@ -26,7 +26,7 @@ class NutritionErrorBoundary extends React.Component {
             </p>
             <button
               onClick={() => this.setState({ hasError: false, error: null })}
-              className="btn bg-red-700 hover:bg-blue-700 text-white"
+              className="btn bg-red-700 hover:bg-red-800 text-white"
             >
               Try Again
             </button>

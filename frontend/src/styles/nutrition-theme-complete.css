@@ -3,165 +3,167 @@
 
 /* ===== GLOBAL THEME OVERRIDES ===== */
 /* Ensure no white boxes in dark mode */
-.dark .bg-white,
-.dark [class*="bg-white"] {
-  background: rgba(30, 41, 59, 0.8) !important;
+/* Ensures no white boxes in dark mode, scoped to .nutrition-page */
+.dark .nutrition-page .bg-white,
+.dark .nutrition-page [class*="bg-white"] {
+  background: rgba(10, 10, 10, 0.9) !important;
   backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
 }
 
-.dark .bg-gray-50,
-.dark [class*="bg-gray-50"] {
-  background: rgba(51, 65, 85, 0.6) !important;
+.dark .nutrition-page .bg-gray-50,
+.dark .nutrition-page [class*="bg-gray-50"] {
+  background: rgba(18, 18, 18, 0.85) !important;
   backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(38, 38, 38, 0.5) !important;
 }
 
-.dark .bg-gray-100,
-.dark [class*="bg-gray-100"] {
-  background: rgba(71, 85, 105, 0.4) !important;
+.dark .nutrition-page .bg-gray-100,
+.dark .nutrition-page [class*="bg-gray-100"] {
+  background: rgba(15, 15, 15, 0.8) !important;
   backdrop-filter: blur(6px) !important;
 }
 
-.dark .bg-gray-200,
-.dark [class*="bg-gray-200"] {
-  background: rgba(71, 85, 105, 0.6) !important;
+.dark .nutrition-page .bg-gray-200,
+.dark .nutrition-page [class*="bg-gray-200"] {
+  background: rgba(20, 20, 20, 0.8) !important;
 }
 
 /* ===== TEXT CONTRAST COMPLIANCE ===== */
-/* Ensure ≥4.5:1 contrast ratio for body text, ≥3:1 for headings */
-.dark .text-gray-900,
-.dark .text-black,
-.dark [class*="text-gray-9"] {
+/* Ensure ≥4.5:1 contrast ratio for body text, ≥3:1 for headings inside .nutrition-page */
+.dark .nutrition-page .text-gray-900,
+.dark .nutrition-page .text-black,
+.dark .nutrition-page [class*="text-gray-9"] {
   color: rgb(248, 250, 252) !important; /* 18.7:1 contrast */
 }
 
-.dark .text-gray-800,
-.dark [class*="text-gray-8"] {
+.dark .nutrition-page .text-gray-800,
+.dark .nutrition-page [class*="text-gray-8"] {
   color: rgb(241, 245, 249) !important; /* 16.8:1 contrast */
 }
 
-.dark .text-gray-700,
-.dark [class*="text-gray-7"] {
+.dark .nutrition-page .text-gray-700,
+.dark .nutrition-page [class*="text-gray-7"] {
   color: rgb(226, 232, 240) !important; /* 12.6:1 contrast */
 }
 
-.dark .text-gray-600,
-.dark [class*="text-gray-6"] {
+.dark .nutrition-page .text-gray-600,
+.dark .nutrition-page [class*="text-gray-6"] {
   color: rgb(203, 213, 225) !important; /* 9.5:1 contrast */
 }
 
-.dark .text-gray-500,
-.dark [class*="text-gray-5"] {
+.dark .nutrition-page .text-gray-500,
+.dark .nutrition-page [class*="text-gray-5"] {
   color: rgb(148, 163, 184) !important; /* 5.9:1 contrast */
 }
 
-.dark .text-slate-400,
-.dark [class*="text-slate-4"] {
+.dark .nutrition-page .text-slate-400,
+.dark .nutrition-page [class*="text-slate-4"] {
   color: rgb(148, 163, 184) !important; /* 5.9:1 contrast */
 }
 
-.dark .text-slate-500,
-.dark [class*="text-slate-5"] {
+.dark .nutrition-page .text-slate-500,
+.dark .nutrition-page [class*="text-slate-5"] {
   color: rgb(148, 163, 184) !important; /* 5.9:1 contrast */
 }
 
 /* ===== PREMIUM GLASSMORPHISM CARDS ===== */
-.dark .card,
-.dark .nutrition-card {
-  background: rgba(30, 41, 59, 0.8) !important;
+.dark .nutrition-page .card,
+.dark .nutrition-page .nutrition-card {
+  background: rgba(10, 10, 10, 0.9) !important;
   backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
   border-radius: 16px !important;
 }
 
-.dark .card:hover,
-.dark .nutrition-card:hover {
-  background: rgba(30, 41, 59, 0.9) !important;
+.dark .nutrition-page .card:hover,
+.dark .nutrition-page .nutrition-card:hover {
+  background: rgba(18, 18, 18, 0.95) !important;
   border-color: #FF0000 !important;
   box-shadow: 0 8px 30px rgba(255, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   transform: translateY(-2px) !important;
 }
 
 /* ===== PREMIUM INPUTS & SELECTS ===== */
-.dark input,
-.dark textarea,
-.dark select {
-  background: rgba(15, 23, 42, 0.9) !important;
-  border: 1px solid rgba(71, 85, 105, 0.5) !important;
+.dark .nutrition-page input,
+.dark .nutrition-page textarea,
+.dark .nutrition-page select {
+  background: rgba(8, 8, 8, 0.95) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
   color: rgb(248, 250, 252) !important;
   backdrop-filter: blur(8px) !important;
 }
 
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus {
+.dark .nutrition-page input:focus,
+.dark .nutrition-page textarea:focus,
+.dark .nutrition-page select:focus {
   border-color: #FF0000 !important;
   box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2), 0 0 15px rgba(255, 0, 0, 0.3) !important;
-  background: rgba(15, 23, 42, 0.95) !important;
+  background: rgba(5, 5, 5, 0.98) !important;
 }
 
-.dark input::placeholder,
-.dark textarea::placeholder {
+.dark .nutrition-page input::placeholder,
+.dark .nutrition-page textarea::placeholder {
   color: rgb(148, 163, 184) !important;
   opacity: 0.8;
 }
 
 /* ===== PREMIUM BUTTONS ===== */
-.dark .btn-primary,
-.dark .bg-blue-600,
-.dark .bg-blue-500 {
+.dark .nutrition-page .btn-primary,
+.dark .nutrition-page .bg-blue-600,
+.dark .nutrition-page .bg-blue-500 {
   background: linear-gradient(135deg, #FF0000, #E60000) !important;
   border: none !important;
   box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4), 0 0 20px rgba(255, 0, 0, 0.2) !important;
 }
 
-.dark .btn-primary:hover,
-.dark .bg-blue-600:hover,
-.dark .bg-blue-500:hover {
+.dark .nutrition-page .btn-primary:hover,
+.dark .nutrition-page .bg-blue-600:hover,
+.dark .nutrition-page .bg-blue-500:hover {
   box-shadow: 0 8px 25px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.4) !important;
   transform: translateY(-2px) !important;
 }
 
-.dark button {
-  background: rgba(30, 41, 59, 0.8) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+.dark .nutrition-page button:not(.nutrition-hero-btn) {
+  background: rgba(18, 18, 18, 0.95) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
   color: rgb(248, 250, 252) !important;
   backdrop-filter: blur(8px) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.dark button:hover {
-  background: rgba(51, 65, 85, 0.9) !important;
+.dark .nutrition-page button:not(.nutrition-hero-btn):hover {
+  background: rgba(30, 30, 30, 0.95) !important;
   border-color: #FF0000 !important;
   box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== CHIP PILLS & BADGES ===== */
-.dark .chip,
-.dark .badge,
-.dark .pill,
-.dark .rounded-full {
+.dark .nutrition-page .chip,
+.dark .nutrition-page .badge,
+.dark .nutrition-page .pill,
+.dark .nutrition-page .rounded-full {
   background: rgba(255, 0, 0, 0.1) !important;
   border: 1px solid rgba(255, 0, 0, 0.3) !important;
   color: #FF0000 !important;
   backdrop-filter: blur(8px) !important;
 }
 
-.dark .chip:hover,
-.dark .badge:hover,
-.dark .pill:hover,
-.dark .rounded-full:hover {
+.dark .nutrition-page .chip:hover,
+.dark .nutrition-page .badge:hover,
+.dark .nutrition-page .pill:hover,
+.dark .nutrition-page .rounded-full:hover {
   background: rgba(255, 0, 0, 0.2) !important;
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== SKELETON LOADERS ===== */
-.dark .animate-pulse {
+.dark .nutrition-page .animate-pulse {
   background: linear-gradient(90deg, 
-    rgba(71, 85, 105, 0.3) 25%, 
-    rgba(71, 85, 105, 0.5) 50%, 
-    rgba(71, 85, 105, 0.3) 75%) !important;
+    rgba(38, 38, 38, 0.3) 25%, 
+    rgba(38, 38, 38, 0.5) 50%, 
+    rgba(38, 38, 38, 0.3) 75%) !important;
   background-size: 200% 100%;
   animation: shimmer-dark 1.5s infinite;
 }
@@ -172,108 +174,108 @@
 }
 
 /* ===== PROGRESS BARS ===== */
-.dark .progress-bar,
-.dark .bg-green-500,
-.dark .bg-red-500,
-.dark .bg-yellow-500,
-.dark .bg-purple-500 {
+.dark .nutrition-page .progress-bar,
+.dark .nutrition-page .bg-green-500,
+.dark .nutrition-page .bg-red-500,
+.dark .nutrition-page .bg-yellow-500,
+.dark .nutrition-page .bg-purple-500 {
   background: linear-gradient(90deg, #FF0000, #E60000, #8B0000) !important;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
 }
 
 /* ===== BORDERS & DIVIDERS ===== */
-.dark .border-gray-200,
-.dark .border-gray-300 {
-  border-color: rgba(71, 85, 105, 0.4) !important;
+.dark .nutrition-page .border-gray-200,
+.dark .nutrition-page .border-gray-300 {
+  border-color: rgba(38, 38, 38, 0.6) !important;
 }
 
-.dark .border-blue-500,
-.dark .border-blue-600 {
+.dark .nutrition-page .border-blue-500,
+.dark .nutrition-page .border-blue-600 {
   border-color: #FF0000 !important;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== TOOLTIPS & MODALS ===== */
 .dark .tooltip {
-  background: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid rgba(71, 85, 105, 0.5) !important;
+  background: rgba(8, 8, 8, 0.98) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
   color: rgb(248, 250, 252) !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(12px) !important;
 }
 
-.dark .modal {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+.dark .nutrition-page .modal {
+  background: rgba(10, 10, 10, 0.98) !important;
+  border: 1px solid rgba(38, 38, 38, 0.9) !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 0, 0.1) !important;
   backdrop-filter: blur(20px) !important;
 }
 
 /* ===== SCROLLBARS ===== */
-.dark ::-webkit-scrollbar {
+.dark .nutrition-page ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.dark ::-webkit-scrollbar-track {
-  background: rgba(71, 85, 105, 0.2);
+.dark .nutrition-page ::-webkit-scrollbar-track {
+  background: rgba(15, 15, 15, 0.5);
   border-radius: 4px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
+.dark .nutrition-page ::-webkit-scrollbar-thumb {
   background: rgba(255, 0, 0, 0.3);
   border-radius: 4px;
   border: 1px solid rgba(255, 0, 0, 0.1);
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
+.dark .nutrition-page ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 0, 0, 0.5);
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
 }
 
 /* ===== FOCUS STATES ===== */
-.dark *:focus-visible {
+.dark .nutrition-page *:focus-visible {
   outline: 2px solid #FF0000 !important;
   outline-offset: 2px !important;
   box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* ===== SELECTION ===== */
-.dark ::selection {
+.dark .nutrition-page ::selection {
   background: rgba(255, 0, 0, 0.3) !important;
   color: rgb(248, 250, 252) !important;
 }
 
 /* ===== LIGHT MODE ENHANCEMENTS ===== */
-/* Ensure maximum contrast in light mode */
-.light-theme,
-[data-theme="light"] {
+/* Ensure maximum contrast inside .nutrition-page in light mode */
+.light-theme .nutrition-page,
+[data-theme="light"] .nutrition-page {
   --text-contrast: #000000;
   --heading-contrast: #020617;
   --muted-contrast: #333333;
 }
 
-.light-theme *:not(.preserve-color):not(svg):not(path),
-[data-theme="light"] *:not(.preserve-color):not(svg):not(path) {
+.light-theme .nutrition-page *:not(.preserve-color):not(svg):not(path),
+[data-theme="light"] .nutrition-page *:not(.preserve-color):not(svg):not(path) {
   color: var(--text-contrast) !important;
 }
 
-.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
-[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+.light-theme .nutrition-page h1, .light-theme .nutrition-page h2, .light-theme .nutrition-page h3, .light-theme .nutrition-page h4, .light-theme .nutrition-page h5, .light-theme .nutrition-page h6,
+[data-theme="light"] .nutrition-page h1, [data-theme="light"] .nutrition-page h2, [data-theme="light"] .nutrition-page h3, [data-theme="light"] .nutrition-page h4, [data-theme="light"] .nutrition-page h5, [data-theme="light"] .nutrition-page h6 {
   color: var(--heading-contrast) !important;
   font-weight: 700 !important;
 }
 
 /* ===== MOBILE OPTIMIZATIONS ===== */
 @media (max-width: 768px) {
-  .dark .card,
-  .dark .nutrition-card {
+  .dark .nutrition-page .card,
+  .dark .nutrition-page .nutrition-card {
     backdrop-filter: blur(8px) !important;
   }
   
-  .dark input,
-  .dark textarea,
-  .dark select {
+  .dark .nutrition-page input,
+  .dark .nutrition-page textarea,
+  .dark .nutrition-page select {
     backdrop-filter: blur(6px) !important;
   }
 }
@@ -309,8 +311,8 @@
 /* ===== NUTRITION PAGE SPECIFIC FIXES ===== */
 /* Food category buttons */
 .dark .food-category-btn {
-  background: rgba(30, 41, 59, 0.8) !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+  background: rgba(15, 15, 15, 0.9) !important;
+  border: 1px solid rgba(38, 38, 38, 0.8) !important;
   color: rgb(248, 250, 252) !important;
   backdrop-filter: blur(8px) !important;
 }
@@ -322,32 +324,32 @@
 
 /* Food item cards */
 .dark .food-item-card {
-  background: rgba(30, 41, 59, 0.7) !important;
-  border: 1px solid rgba(71, 85, 105, 0.3) !important;
+  background: rgba(10, 10, 10, 0.85) !important;
+  border: 1px solid rgba(38, 38, 38, 0.6) !important;
   backdrop-filter: blur(10px) !important;
 }
 
 .dark .food-item-card:hover {
-  background: rgba(30, 41, 59, 0.9) !important;
+  background: rgba(20, 20, 20, 0.95) !important;
   border-color: rgba(255, 0, 0, 0.5) !important;
   box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* Meal entries */
 .dark .meal-entry {
-  background: rgba(30, 41, 59, 0.6) !important;
-  border: 1px solid rgba(71, 85, 105, 0.3) !important;
+  background: rgba(12, 12, 12, 0.8) !important;
+  border: 1px solid rgba(38, 38, 38, 0.6) !important;
   backdrop-filter: blur(8px) !important;
 }
 
 .dark .meal-entry:hover {
-  background: rgba(30, 41, 59, 0.8) !important;
-  border-color: rgba(71, 85, 105, 0.5) !important;
+  background: rgba(22, 22, 22, 0.9) !important;
+  border-color: rgba(38, 38, 38, 0.8) !important;
 }
 
 /* Progress indicators */
 .dark .progress-bg {
-  background: rgba(71, 85, 105, 0.4) !important;
+  background: rgba(38, 38, 38, 0.5) !important;
 }
 
 /* Quick add pills */

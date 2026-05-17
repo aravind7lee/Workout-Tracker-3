@@ -29,7 +29,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
         type: 'daily',
         icon: '🏆',
         color: 'text-red-700 dark:text-red-500',
-        bgColor: 'bg-blue-50 dark:bg-blue-900/20'
+        bgColor: 'bg-red-500/5 dark:bg-red-950/20'
       });
     }
 
@@ -55,7 +55,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
         type: 'daily',
         icon: '📅',
         color: 'text-red-800 dark:text-red-600',
-        bgColor: 'bg-purple-50 dark:bg-purple-900/20'
+        bgColor: 'bg-neutral-900/40 dark:bg-neutral-950/30'
       });
     }
 
@@ -141,7 +141,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
   return (
     <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
       {/* Social Stats Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-purple-200 dark:border-purple-800 shadow-lg">
+      <div className="relative overflow-hidden bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
             <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-700 to-pink-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-red-700/30">

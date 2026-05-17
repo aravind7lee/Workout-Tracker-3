@@ -150,7 +150,7 @@ const RealTimeNutritionProgress = ({
       </div>
 
       {/* Goal Guidance */}
-      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-dark-bg-tertiary/30 dark:to-blue-900/20 rounded-lg sm:rounded-xl border border-gray-200 dark:border-dark-border">
+      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-neutral-900 to-neutral-950 dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl border border-neutral-800 dark:border-red-950/20 shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-lg sm:text-2xl">{guidance.icon}</span>
@@ -422,7 +422,7 @@ const RealTimeNutritionProgress = ({
 
             {/* Detailed Macro Info */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+              <div className="p-4 bg-neutral-900/50 dark:bg-neutral-950/40 rounded-xl border border-neutral-800 dark:border-red-950/30">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-red-700 dark:text-red-500">
                     {Math.round((totals.protein || 0) * 4)}
@@ -477,11 +477,11 @@ const RealTimeNutritionProgress = ({
               
               <div className="grid gap-4">
                 {/* Protein Insight */}
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-black/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                <div className="p-4 bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-xl border border-neutral-800 dark:border-red-950/30">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">💪</span>
                     <div>
-                      <div className="font-medium text-blue-700 dark:text-blue-300">Protein Status</div>
+                      <div className="font-medium text-red-600 dark:text-red-500">Protein Status</div>
                       <div className="text-sm text-light-text-muted dark:text-dark-text-muted mt-1">
                         {progress.protein >= 100 
                           ? "Excellent! You've hit your protein target. Great for muscle maintenance and growth."
