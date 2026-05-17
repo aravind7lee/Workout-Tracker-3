@@ -22,8 +22,13 @@ export default function Hero() {
 
   const [imageLoaded, setImageLoaded]   = useState(false);
   const [imageError,  setImageError]    = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(() => 
+    typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
+  );
+  const [isMobile, setIsMobile] = useState(() => 
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false
+  );
+  const [showContent, setShowContent] = useState(false);
 
   // ── Accessibility & Performance Tracking ──────────────────────
   useEffect(() => {
@@ -52,6 +57,21 @@ export default function Hero() {
     img.onerror = () => setImageError(true);
     img.fetchPriority = "high";
     img.src = Heroimg;
+  }, []);
+
+  // Ensure content always reveals gracefully and never gets blocked
+  useEffect(() => {
+    if (imageLoaded || imageError) {
+      setShowContent(true);
+    }
+  }, [imageLoaded, imageError]);
+
+  useEffect(() => {
+    // 350ms safety fallback to guarantee animations start instantly even on slow connections/cached loads
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 350);
+    return () => clearTimeout(timer);
   }, []);
 
   // ── Scroll tracking (hero section only) ───────────────────────────────
@@ -96,8 +116,17 @@ export default function Hero() {
     visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.25 } },
   };
   const rise = {
-    hidden:  { opacity: 0, y: 28, filter: "blur(6px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+    hidden:  { 
+      opacity: 0, 
+      y: isMobile ? 12 : 28, 
+      filter: (reducedMotion || isMobile) ? "none" : "blur(6px)" 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      filter: (reducedMotion || isMobile) ? "none" : "blur(0px)", 
+      transition: { duration: isMobile ? 0.45 : 0.75, ease: [0.22, 1, 0.36, 1] } 
+    },
   };
   const lineGrow = {
     hidden:  { scaleX: 0, opacity: 0 },
@@ -222,7 +251,7 @@ export default function Hero() {
           HERO CONTENT — scrolls up and fades
       ════════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
-        {imageLoaded && (
+        {showContent && (
           <motion.div
             className="absolute inset-0 z-10 flex flex-col items-center justify-center"
             style={{ y: contentY, opacity: contentOp }}
