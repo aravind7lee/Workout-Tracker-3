@@ -49,14 +49,14 @@ export default function HeroSimple() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link 
                   to="/dashboard" 
-                  className="group relative px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 text-white font-bold rounded-xl shadow-2xl hover:shadow-red-600/25 transform hover:scale-105 transition-all duration-300 overflow-hidden"
+                  className="premium-btn-primary btn-primary preserve-color"
                 >
-                  <span className="relative z-10">Start Your Journey</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  Start Your Journey
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </Link>
                 <Link 
                   to="/library" 
-                  className="px-8 py-4 bg-white bg-opacity-10 border-2 border-white border-opacity-30 text-gray-200 font-bold rounded-xl backdrop-blur-sm hover:bg-red-700 hover:border-red-700 hover:text-white transition-all duration-300"
+                  className="premium-btn-secondary btn-secondary preserve-color"
                 >
                   Explore Exercises
                 </Link>

@@ -521,24 +521,29 @@ export default function PlansBuilder() {
                   CREATE PROFESSIONAL WORKOUT PLANS
                 </motion.p>
                 
-                {/* CTA Buttons - Reduced Size */}
+                {/* CTA Buttons */}
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6"
+                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-6"
                 >
                   <motion.button
-                    onClick={() => navigate('/my-plans')}
-                    className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2"
+                    whileHover={{ scale: 1.04, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="premium-btn-primary btn-primary preserve-color"
                   >
-                    📋 View Plans
+                    Build Plan
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </motion.button>
                   <motion.button
-                    onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2"
+                    whileHover={{ scale: 1.04, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => navigate('/my-plans')}
+                    className="premium-btn-secondary btn-secondary preserve-color"
                   >
-                    🏋️ Build Plan
+                    View Plans
                   </motion.button>
                 </motion.div>
                 

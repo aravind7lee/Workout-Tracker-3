@@ -819,29 +819,28 @@ const WorkoutSplits = () => {
               
               {/* Action Buttons - Mobile Optimized */}
               <motion.div
-                className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 sm:px-0"
+                className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-6 sm:mt-8 px-4 sm:px-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1.0 }}
               >
                 <motion.button
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => navigate('/custom-split-builder')}
-                  className="px-4 py-2 sm:px-6 sm:py-3 hero-button-primary font-semibold rounded-md text-sm shadow-lg transition-all duration-300 font-body w-full sm:w-auto"
+                  className="premium-btn-primary btn-primary preserve-color w-full sm:w-auto justify-center"
                 >
-                  <div className="relative flex items-center justify-center space-x-2">
-                    <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-xs sm:text-sm font-medium tracking-wide">CREATE YOUR OWN SPLIT</span>
-                  </div>
+                  Create Your Split
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </motion.button>
-                
+
                 <motion.button
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => navigate('/your-workout-splits')}
-                  className="px-4 py-2 sm:px-6 sm:py-3 hero-button-secondary font-medium rounded-md text-sm shadow-lg transition-all duration-300 font-body w-full sm:w-auto"
+                  className="premium-btn-secondary btn-secondary preserve-color w-full sm:w-auto justify-center"
                 >
-                  <div className="relative flex items-center justify-center space-x-2">
-                    <Target className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-xs sm:text-sm font-medium tracking-wide">YOUR WORKOUT SPLITS</span>
-                  </div>
+                  Your Splits
                 </motion.button>
               </motion.div>
             </div>

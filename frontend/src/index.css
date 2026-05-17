@@ -566,3 +566,68 @@ select:focus {
     transform: scale(0.98);
   }
 }
+
+/* ==========================================================================
+   GOATED CINEMATIC DESIGN SYSTEM - UTILITY BUTTONS
+   ========================================================================== */
+.premium-btn-primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-size: clamp(10px, 1.5vw, 12px) !important;
+  padding: 13px 30px !important;
+  border: 1px solid rgba(255,100,100,0.25) !important;
+  box-shadow: 0 0 24px rgba(185,28,28,0.45), 0 4px 20px rgba(0,0,0,0.7) !important;
+  border-radius: 0px !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+.premium-btn-primary:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
+  box-shadow: 0 0 32px rgba(220,38,38,0.6), 0 6px 24px rgba(0,0,0,0.85) !important;
+  color: #ffffff !important;
+}
+
+.premium-btn-primary * {
+  color: #ffffff !important;
+}
+
+.premium-btn-secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: rgba(255,255,255,0.07) !important;
+  color: rgba(255,255,255,0.9) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-size: clamp(10px, 1.5vw, 12px) !important;
+  padding: 13px 30px !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+  border-radius: 0px !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+.premium-btn-secondary:hover {
+  background: rgba(255,255,255,0.15) !important;
+  border-color: rgba(255,255,255,0.3) !important;
+  color: #ffffff !important;
+}
+
+.premium-btn-secondary * {
+  color: rgba(255,255,255,0.9) !important;
+}

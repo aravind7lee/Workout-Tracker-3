@@ -112,20 +112,25 @@ export default function WorkoutPlanBuilderHeader() {
               transition={{ duration: 1, delay: 0.7 }}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-6"
             >
-              <button 
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-6 py-3 font-bold rounded-lg text-sm sm:text-base transition-all duration-300 shadow-lg hero-button-primary flex items-center justify-center gap-2"
                 aria-label="View your workout plans"
+                className="premium-btn-primary btn-primary preserve-color"
               >
                 View My Plans
-              </button>
-              <Link
-                to="/plans"
-                className="px-6 py-3 font-semibold rounded-lg text-sm sm:text-base transition-all duration-300 hero-button-secondary flex items-center justify-center gap-2"
-                aria-label="Create new workout plan"
-              >
-                Build New Plan
-              </Link>
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </motion.button>
+              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  to="/plans"
+                  aria-label="Create new workout plan"
+                  className="premium-btn-secondary btn-secondary preserve-color"
+                >
+                  Build New Plan
+                </Link>
+              </motion.div>
             </motion.div>
             
             {/* Professional Badge */}

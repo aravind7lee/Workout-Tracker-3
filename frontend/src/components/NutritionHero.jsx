@@ -160,12 +160,14 @@ export default function NutritionHero() {
           </motion.p>
           
           <motion.div 
-            className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
           >
-            <button 
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => {
                 const mealInput = document.querySelector('[data-meal-input]');
                 if (mealInput) {
@@ -176,12 +178,15 @@ export default function NutritionHero() {
                   }, 500);
                 }
               }}
-              className="px-4 py-2 sm:px-6 sm:py-3 nutrition-hero-btn nutrition-hero-btn-primary font-semibold rounded-md text-sm transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Start tracking your nutrition now"
+              className="premium-btn-primary btn-primary preserve-color nutrition-hero-btn"
             >
               Start Tracking
-            </button>
-            <button 
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => {
                 const progressSection = document.querySelector('[data-progress-section]');
                 if (progressSection) {
@@ -190,11 +195,11 @@ export default function NutritionHero() {
                   window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }
               }}
-              className="px-4 py-2 sm:px-6 sm:py-3 nutrition-hero-btn nutrition-hero-btn-secondary font-medium rounded-md text-sm transition-all duration-300 font-body w-auto sm:min-w-[140px]"
               aria-label="Learn more about nutrition tracking features"
+              className="premium-btn-secondary btn-secondary preserve-color nutrition-hero-btn"
             >
               Learn More
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </div>

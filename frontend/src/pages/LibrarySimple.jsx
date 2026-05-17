@@ -339,33 +339,21 @@ export default function LibrarySimple() {
                   transition={{ duration: 0.8, delay: 0.7 }}
                 >
                   <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 8px 30px rgba(255, 0, 0, 0.8)' }}
+                    whileHover={{ scale: 1.04, y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => document.getElementById('exercise-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="hero-button-primary preserve-color font-bold rounded-md shadow-lg transition-all duration-300 font-body flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wider"
-                    style={{
-                      background: 'linear-gradient(135deg, #FF0000 0%, #CC0000 100%)',
-                      color: '#ffffff',
-                      border: 'none',
-                      boxShadow: '0 4px 20px rgba(255, 0, 0, 0.5)'
-                    }}
+                    className="premium-btn-primary btn-primary preserve-color"
                   >
-                    <span className="preserve-color text-white text-base">💪</span>
-                    <span className="preserve-color text-white font-extrabold tracking-widest text-sm" style={{ color: '#ffffff' }}>EXPLORE EXERCISES</span>
+                    Explore Exercises
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </motion.button>
                   <motion.button
-                    whileHover={{ scale: 1.05, background: 'rgba(255, 255, 255, 0.25)' }}
+                    whileHover={{ scale: 1.04, y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => document.getElementById('search-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="hero-button-secondary preserve-color font-semibold rounded-md transition-all duration-300 font-body flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wider"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.12)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.35)'
-                    }}
+                    className="premium-btn-secondary btn-secondary preserve-color"
                   >
-                    <span className="preserve-color text-white text-base">🔥</span>
-                    <span className="preserve-color text-white font-extrabold tracking-widest text-sm" style={{ color: '#ffffff' }}>START TRAINING</span>
+                    Start Training
                   </motion.button>
                 </motion.div>
               </motion.div>

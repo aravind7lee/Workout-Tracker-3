@@ -1,248 +1,523 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useRealTime } from "../context/RealTimeContext";
-
 import Heroimg from "../assets/Heroimg.jpg";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Scroll Zoom Hero — Professional Edition
+// ─────────────────────────────────────────────────────────────────────────────
 export default function Hero() {
   const { isAuthenticated } = useAuth();
-  const { stats, isOnline, lastSync, updateTrigger } = useRealTime();
+  const { isOnline } = useRealTime();
 
-  const [loading, setLoading] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded]   = useState(false);
+  const [imageError,  setImageError]    = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  const formatNumber = (num) => {
-    if (typeof num !== "number" || isNaN(num)) return "0";
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K";
-    }
-    return num.toString();
-  };
+  const heroRef = useRef(null);
 
-  // LQIP for Home hero
-  const HOME_LQIP =
-    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
-
+  // ── Accessibility: respect prefers-reduced-motion ──────────────────────
   useEffect(() => {
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageError(true);
-    img.src = Heroimg;
-    img.loading = "eager";
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const h = (e) => setReducedMotion(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
   }, []);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  // ── Preload hero image at highest priority ─────────────────────────────
+  useEffect(() => {
+    const img = new Image();
+    img.onload  = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.fetchPriority = "high";
+    img.src = Heroimg;
+  }, []);
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 12 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
+  // ── Scroll tracking (hero section only) ───────────────────────────────
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  // ── Spring smoothing for buttery 60fps ────────────────────────────────
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: reducedMotion ? 1000 : 75,
+    damping:   reducedMotion ? 100  : 20,
+    restDelta: 0.001,
+  });
+
+  // ── Cinematic scroll-driven transforms ────────────────────────────────
+  const bgScale   = useTransform(smooth, [0, 1], [1, reducedMotion ? 1 : 1.32]);
+  const bgBlurVal = useTransform(smooth, [0, 0.75], [0, reducedMotion ? 0 : 20]);
+  const bgFilter  = useTransform(bgBlurVal, (v) => `blur(${v}px)`);
+  const bgOpacity = useTransform(smooth, [0, 0.8],  [1, 0]);
+
+  // Overlay darkens as you scroll
+  const overlayOp = useTransform(smooth, [0, 0.65], [0.2, 0.85]);
+
+  // Red vignette swells
+  const vignetteOp = useTransform(smooth, [0, 0.55], [0.25, 0.9]);
+
+  // Content floats up and fades
+  const contentOp = useTransform(smooth, [0, 0.42], [1, 0]);
+  const contentY  = useTransform(smooth, [0, 0.42], ["0%", "-10%"]);
+
+  // Scroll cue fades immediately
+  const arrowOp = useTransform(smooth, [0, 0.1], [1, 0]);
+
+  // LQIP base64 tiny preview
+  const LQIP =
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
+
+  // ── Entry animation variants ───────────────────────────────────────────
+  const stagger = {
+    hidden:  { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.25 } },
+  };
+  const rise = {
+    hidden:  { opacity: 0, y: 28, filter: "blur(6px)" },
+    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+  };
+  const lineGrow = {
+    hidden:  { scaleX: 0, opacity: 0 },
+    visible: { scaleX: 1, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
   };
 
   return (
-    <section className="relative w-full overflow-hidden mb-0">
-      {/* Hero Container with Responsive Heights */}
-      <div className="relative w-full h-screen min-h-[100vh] max-h-screen">
-        {/* Skeleton Loader */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-black animate-pulse">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
-          </div>
+    <section
+      ref={heroRef}
+      className="relative w-full overflow-hidden"
+      style={{ height: "100vh", minHeight: "100svh" }}
+      aria-label="GrindX Hero"
+    >
+
+      {/* ════════════════════════════════════════════════════════════════
+          SCROLL-ZOOM BACKGROUND LAYER
+      ════════════════════════════════════════════════════════════════ */}
+      <motion.div
+        className="absolute inset-0 w-full h-full"
+        style={{
+          scale: bgScale,
+          filter: bgFilter,
+          opacity: bgOpacity,
+          transformOrigin: "center center",
+          willChange: "transform, filter, opacity",
+        }}
+      >
+        {/* LQIP blurred placeholder */}
+        <img
+          src={LQIP}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "blur(10px)", transform: "scale(1.05)" }}
+        />
+
+        {/* Full-res hero image */}
+        {!imageError && (
+          <img
+            src={Heroimg}
+            alt="GrindX — Elite Fitness Gym"
+            fetchPriority="high"
+            decoding="async"
+            loading="eager"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{ opacity: imageLoaded ? 1 : 0, transition: "opacity 0.6s ease" }}
+          />
         )}
 
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          {/* LQIP Placeholder */}
-          <img
-            src={HOME_LQIP}
-            alt=""
-            className="w-full h-full object-cover blur-sm transition-opacity duration-300"
-            style={{ opacity: imageLoaded ? 0 : 1 }}
-          />
+        {/* Error fallback */}
+        {imageError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-red-950/40 to-black" />
+        )}
+      </motion.div>
 
-          {/* Main Image */}
-          {!imageError && (
-            <img
-              src={Heroimg}
-              alt="Welcome to GymTracker - Professional Fitness Tracking"
-              className="w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-300"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              style={{ opacity: imageLoaded ? 1 : 0 }}
-            />
-          )}
+      {/* ════════════════════════════════════════════════════════════════
+          OVERLAY STACK — cinematic depth
+      ════════════════════════════════════════════════════════════════ */}
 
-          {/* Fallback */}
-          {imageError && (
-            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-black absolute inset-0"></div>
-          )}
+      {/* 1. Base black — scrolls darker */}
+      <motion.div
+        className="absolute inset-0 bg-black pointer-events-none"
+        style={{ opacity: overlayOp }}
+      />
 
-          {/* Gradient Overlay - Semantic overlay for proper text contrast */}
-          <div
-            className="absolute inset-0 hero-overlay"
-            style={{ background: "rgba(0,0,0,0.15)" }}
-          ></div>
-        </div>
+      {/* 2. Static gradient — always ensures text legibility */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.10) 100%)",
+        }}
+      />
 
-        {/* Content Overlay */}
+      {/* 3. Red cinematic vignette — blooms on scroll */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 110% 80% at 50% 110%, rgba(120,0,0,0.75) 0%, transparent 62%)",
+          opacity: vignetteOp,
+        }}
+      />
+
+      {/* 4. Subtle top vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 100% 55% at 50% 0%, rgba(0,0,0,0.6) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* ════════════════════════════════════════════════════════════════
+          CORNER ACCENT MARKS
+      ════════════════════════════════════════════════════════════════ */}
+      {[
+        "top-5 left-5 border-t-2 border-l-2",
+        "top-5 right-5 border-t-2 border-r-2",
+        "bottom-5 left-5 border-b-2 border-l-2",
+        "bottom-5 right-5 border-b-2 border-r-2",
+      ].map((cls, i) => (
+        <div
+          key={i}
+          className={`absolute z-10 pointer-events-none w-6 h-6 sm:w-8 sm:h-8 border-red-700/50 ${cls}`}
+        />
+      ))}
+
+      {/* Horizontal scan line */}
+      <div
+        className="absolute left-0 right-0 z-10 pointer-events-none"
+        style={{
+          bottom: "20%",
+          height: "1px",
+          background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.5) 40%, rgba(185,28,28,0.5) 60%, transparent 100%)",
+        }}
+      />
+
+      {/* ════════════════════════════════════════════════════════════════
+          HERO CONTENT — scrolls up and fades
+      ════════════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
         {imageLoaded && (
           <motion.div
-            className="relative z-10 h-full flex items-center justify-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center"
+            style={{ y: contentY, opacity: contentOp }}
           >
-            <div className="text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-              {/* Main Title with Advanced Animation */}
-              <motion.h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold hero-text-primary mb-2 sm:mb-3 drop-shadow-lg font-heading"
-                initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ 
-                  duration: 1.2, 
-                  delay: 0.3,
-                  ease: [0.25, 0.46, 0.45, 0.94]
+            <motion.div
+              className="w-full text-center px-5 sm:px-10 lg:px-16"
+              variants={stagger}
+              initial="hidden"
+              animate="visible"
+              style={{ maxWidth: "900px", margin: "0 auto" }}
+            >
+
+              {/* ── Eyebrow label ──────────────────────────────────── */}
+              <motion.div
+                className="flex items-center justify-center gap-3 mb-5 sm:mb-6"
+                variants={rise}
+              >
+                <motion.div
+                  className="h-px bg-red-600"
+                  style={{ width: 40, originX: 0 }}
+                  variants={lineGrow}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.28em",
+                    color: "#ef4444",
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Elite Fitness Tracker
+                </span>
+                <motion.div
+                  className="h-px bg-red-600"
+                  style={{ width: 40, originX: 1 }}
+                  variants={lineGrow}
+                />
+              </motion.div>
+
+              {/* ── Main heading block ─────────────────────────────── */}
+              <motion.div variants={rise}>
+                {/* "Welcome to" — refined, not oversized */}
+                <p
+                  style={{
+                    fontSize: "clamp(0.85rem, 2.2vw, 1.4rem)",
+                    color: "rgba(255,255,255,0.72)",
+                    fontWeight: 500,
+                    letterSpacing: "0.35em",
+                    textTransform: "uppercase",
+                    marginBottom: "8px",
+                    textShadow: "0 2px 12px rgba(0,0,0,0.9)",
+                  }}
+                >
+                  Welcome to
+                </p>
+
+                {/* "GRINDX" — the hero brand name, sharp & solid */}
+                <h1
+                  style={{
+                    fontSize: "clamp(3.6rem, 11vw, 8rem)",
+                    fontWeight: 900,
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    textTransform: "uppercase",
+                    color: "#ffffff",
+                    textShadow: "0 2px 40px rgba(0,0,0,0.95), 0 0 80px rgba(0,0,0,0.6)",
+                    marginBottom: "2px",
+                  }}
+                >
+                  GRIND
+                  <motion.span
+                    style={{
+                      color: "#dc2626",
+                      display: "inline-block",
+                      textShadow: "0 0 40px rgba(220,38,38,0.6), 0 2px 20px rgba(0,0,0,0.9)",
+                    }}
+                    animate={
+                      reducedMotion ? {} : {
+                        textShadow: [
+                          "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
+                          "0 0 50px rgba(220,38,38,0.85), 0 2px 20px rgba(0,0,0,0.9)",
+                          "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
+                        ],
+                      }
+                    }
+                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    X
+                  </motion.span>
+                </h1>
+
+                {/* Red underline accent */}
+                <motion.div
+                  style={{
+                    height: "3px",
+                    background: "linear-gradient(90deg, transparent, #dc2626 30%, #dc2626 70%, transparent)",
+                    marginTop: "10px",
+                    marginBottom: "20px",
+                    originX: 0.5,
+                  }}
+                  variants={lineGrow}
+                />
+              </motion.div>
+
+              {/* ── Tagline ────────────────────────────────────────── */}
+              <motion.p
+                variants={rise}
+                style={{
+                  fontSize: "clamp(0.78rem, 1.8vw, 1rem)",
+                  color: "rgba(228,228,231,0.8)",
+                  fontWeight: 400,
+                  lineHeight: 1.7,
+                  maxWidth: "440px",
+                  margin: "0 auto 32px",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.85)",
                 }}
               >
-                <motion.span
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
+                Track workouts, monitor progress, and{" "}
+                <span style={{ color: "#f87171", fontWeight: 700 }}>dominate</span>{" "}
+                your fitness goals with precision.
+              </motion.p>
+
+              {/* ── CTA Buttons ────────────────────────────────────── */}
+              <motion.div
+                variants={rise}
+                className="flex flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap"
+              >
+                {/* Primary — red */}
+                <motion.div
+                  whileHover={reducedMotion ? {} : { scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  Welcome to{" "}
-                </motion.span>
-                <motion.span
-                  className="font-heading font-black"
-                  style={{ fontSize: "1.1em" }}
-                  initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                  transition={{ 
-                    duration: 1.0, 
-                    delay: 0.8,
-                    ease: "backOut"
+                  <Link
+                    to={isAuthenticated?.() ? "/dashboard" : "/register"}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
+                      color: "#fff",
+                      fontWeight: 800,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      fontSize: "clamp(10px, 1.5vw, 12px)",
+                      padding: "13px 30px",
+                      border: "1px solid rgba(255,100,100,0.25)",
+                      boxShadow: "0 0 24px rgba(185,28,28,0.45), 0 4px 20px rgba(0,0,0,0.7)",
+                      transition: "all 0.3s ease",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {isAuthenticated?.() ? "Go to Dashboard" : "Start Training"}
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                      <path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </motion.div>
+
+                {/* Secondary — glass */}
+                <motion.div
+                  whileHover={reducedMotion ? {} : { scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Link
+                    to="/library"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: "rgba(255,255,255,0.07)",
+                      color: "rgba(255,255,255,0.9)",
+                      fontWeight: 700,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      fontSize: "clamp(10px, 1.5vw, 12px)",
+                      padding: "13px 30px",
+                      border: "1px solid rgba(255,255,255,0.18)",
+                      backdropFilter: "blur(12px)",
+                      WebkitBackdropFilter: "blur(12px)",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+                      transition: "all 0.3s ease",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Exercise Library
+                  </Link>
+                </motion.div>
+              </motion.div>
+
+              {/* ── Live sync badge ────────────────────────────────── */}
+              {isAuthenticated?.() && isOnline && (
+                <motion.div
+                  variants={rise}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "24px",
+                    padding: "6px 14px",
+                    background: "rgba(0,0,0,0.5)",
+                    border: "1px solid rgba(185,28,28,0.3)",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
                   }}
                 >
                   <motion.span
                     style={{
-                      color: "#C62828",
-                      textShadow: "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
+                      width: 7,
+                      height: 7,
+                      borderRadius: "50%",
+                      background: "#4ade80",
+                      display: "inline-block",
                     }}
-                    initial={{ opacity: 0, x: -20, rotateX: 45 }}
-                    animate={{ opacity: 1, x: 0, rotateX: 0 }}
-                    transition={{ 
-                      duration: 0.8, 
-                      delay: 1.0,
-                      ease: "easeOut"
-                    }}
-                    whileHover={{ 
-                      scale: 1.1, 
-                      textShadow: "5px 5px 10px rgba(198,40,40,0.8), 0 0 20px rgba(198,40,40,0.6)",
-                      transition: { duration: 0.3 }
-                    }}
-                  >
-                    GRIND
-                  </motion.span>
-                  <motion.span
+                    animate={{ opacity: [1, 0.25, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                  <span
                     style={{
-                      color: "#8B0000",
-                      textShadow: "3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.8)",
-                    }}
-                    initial={{ opacity: 0, x: 20, rotateX: -45 }}
-                    animate={{ opacity: 1, x: 0, rotateX: 0 }}
-                    transition={{ 
-                      duration: 0.8, 
-                      delay: 1.2,
-                      ease: "easeOut"
-                    }}
-                    whileHover={{ 
-                      scale: 1.15, 
-                      textShadow: "5px 5px 10px rgba(77,182,172,0.8), 0 0 20px rgba(77,182,172,0.6)",
-                      rotate: [0, -5, 5, 0],
-                      transition: { duration: 0.5 }
+                      fontSize: "10px",
+                      fontWeight: 800,
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      color: "#4ade80",
                     }}
                   >
-                    X
-                  </motion.span>
-                </motion.span>
-              </motion.h1>
+                    Real-time sync active
+                  </span>
+                </motion.div>
+              )}
 
-              {/* Subtitle with Staggered Animation */}
-              <motion.p
-                className="text-sm sm:text-base md:text-lg font-bold mb-4 sm:mb-6 max-w-2xl mx-auto leading-relaxed px-2 font-body"
-                style={{
-                  color: "#ffffff",
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
-                }}
-                initial={{ opacity: 0, y: 30, blur: 10 }}
-                animate={{ opacity: 1, y: 0, blur: 0 }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: 1.4,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              >
-                Track workouts, monitor progress, and achieve your fitness goals
-                efficiently.
-              </motion.p>
-
-              {/* CTA Buttons with Advanced Animation */}
-              <motion.div
-                className="flex flex-row gap-2 sm:gap-3 justify-center items-center"
-                initial={{ opacity: 0, y: 40, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: 1.6,
-                  ease: "backOut"
-                }}
-              >
-                <Link
-                  to={isAuthenticated?.() ? "/dashboard" : "/register"}
-                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-primary font-semibold rounded-md text-xs sm:text-sm shadow-lg transition-all duration-300 font-body"
-                >
-                  {isAuthenticated?.() ? "Dashboard" : "Start Now"}
-                </Link>
-
-                <Link
-                  to="/library"
-                  className="px-3 py-2 sm:px-4 sm:py-2 hero-button-secondary font-medium rounded-md text-xs sm:text-sm transition-all duration-300 font-body"
-                >
-                  Exercises
-                </Link>
-              </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Real-time update indicator */}
-        {isAuthenticated?.() && isOnline && (
-          <motion.div
-            className="absolute bottom-4 right-4 bg-red-600/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-green-300 border border-red-600/30"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            🟢 Real-time sync active
-          </motion.div>
-        )}
-      </div>
+      {/* ════════════════════════════════════════════════════════════════
+          LOADING SPINNER (while image fetches)
+      ════════════════════════════════════════════════════════════════ */}
+      {!imageLoaded && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-neutral-950">
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              border: "2px solid #dc2626",
+              borderTopColor: "transparent",
+              borderRadius: "50%",
+              animation: "spin 0.75s linear infinite",
+            }}
+          />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════════════════════
+          SCROLL INDICATOR
+      ════════════════════════════════════════════════════════════════ */}
+      <motion.button
+        className="absolute left-1/2 z-20 flex flex-col items-center gap-1 focus:outline-none"
+        style={{
+          bottom: "28px",
+          x: "-50%",
+          opacity: arrowOp,
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+        }}
+        onClick={() =>
+          window.scrollBy({ top: window.innerHeight * 0.88, behavior: "smooth" })
+        }
+        aria-label="Scroll down"
+      >
+        <span
+          style={{
+            fontSize: "9px",
+            fontWeight: 800,
+            letterSpacing: "0.25em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.4)",
+          }}
+        >
+          Scroll
+        </span>
+        {/* Triple bouncing chevrons */}
+        <div className="flex flex-col items-center" style={{ gap: 1 }}>
+          {[0, 1, 2].map((i) => (
+            <motion.svg
+              key={i}
+              width="18"
+              height="11"
+              viewBox="0 0 18 11"
+              fill="none"
+              aria-hidden="true"
+              animate={reducedMotion ? {} : { opacity: [0.15, 0.9, 0.15], y: [0, 5, 0] }}
+              transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <path
+                d="M1 1.5l8 7 8-7"
+                stroke="#dc2626"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </motion.svg>
+          ))}
+        </div>
+      </motion.button>
+
     </section>
   );
 }
