@@ -291,23 +291,40 @@ export default function Home() {
   const scrollContainerRef = useRef(null);
   const flexContainerRef = useRef(null);
   const [scrollAmount, setScrollAmount] = useState(0);
+  const [sectionHeight, setSectionHeight] = useState("120vh");
 
   useEffect(() => {
-    const handleResize = () => {
+    if (!flexContainerRef.current) return;
+
+    const handleMeasure = () => {
       if (flexContainerRef.current) {
         // Precise scroll amount = total scrollable width - current viewport width
         const amount = flexContainerRef.current.scrollWidth - window.innerWidth;
-        setScrollAmount(amount > 0 ? amount : 0);
+        const safeAmount = amount > 0 ? amount : 0;
+        setScrollAmount(safeAmount);
+        // Section height must equal viewportHeight + scrollAmount so that
+        // scrollYProgress reaches exactly 1.0 when the last card is centred.
+        // Add a 10% buffer so spring physics settle before section unpins.
+        const height = window.innerHeight + safeAmount * 1.1;
+        setSectionHeight(height + "px");
       }
     };
-    
-    // Give it a tiny delay to ensure components are fully rendered
-    const timer = setTimeout(handleResize, 150);
-    window.addEventListener("resize", handleResize);
-    
+
+    // ResizeObserver fires on image loads, font swaps, layout shifts – keeps
+    // the section height perfectly in sync at all times.
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(handleMeasure);
+    });
+
+    observer.observe(flexContainerRef.current);
+    window.addEventListener("resize", handleMeasure);
+
+    // Initial measurement
+    handleMeasure();
+
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", handleResize);
+      observer.disconnect();
+      window.removeEventListener("resize", handleMeasure);
     };
   }, [isLoading]);
 
@@ -1283,7 +1300,7 @@ export default function Home() {
       ref: scrollContainerRef,
       className: "relative w-full bg-black",
       style: {
-        height: "320vh",
+        height: sectionHeight,
       },
       id: "body-fat",
     },
@@ -1496,7 +1513,7 @@ export default function Home() {
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
-                  className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch pr-[15vw]",
+                  className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch",
                 },
                 /*#__PURE__*/ React.createElement(
                   "div",
@@ -1570,6 +1587,12 @@ export default function Home() {
                   )
                 )
               )
+            ),
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className: "body-fat-spacer",
+              }
             ),
         ),
           /*#__PURE__*/ React.createElement(
@@ -2542,6 +2565,17 @@ export default function Home() {
           @media (min-width: 640px) {
             .body-fat-card-wrapper {
               width: 380px;
+            }
+          }
+          .body-fat-spacer {
+            width: 15vw;
+            min-width: 15vw;
+            flex-shrink: 0;
+          }
+          @media (min-width: 640px) {
+            .body-fat-spacer {
+              width: 25vw;
+              min-width: 25vw;
             }
           }
           @media (max-height: 800px) {

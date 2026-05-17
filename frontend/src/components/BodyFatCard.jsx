@@ -42,9 +42,9 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
   const colors = colorClasses[bf.color] || colorClasses.red;
 
   return (
-    <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
+    <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px] w-full h-full">
       <div
-        className={`relative bg-zinc-900 border-2 ${colors.border} shadow-2xl overflow-hidden group-hover:border-red-600 transition-all duration-300`}
+        className={`relative bg-zinc-900 border-2 ${colors.border} shadow-2xl overflow-hidden group-hover:border-red-600 transition-all duration-300 h-full`}
       >
         <div className="relative h-[280px] sm:h-[350px] overflow-hidden bg-black">
           <OptimizedImage
