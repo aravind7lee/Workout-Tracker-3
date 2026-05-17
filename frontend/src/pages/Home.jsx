@@ -12,7 +12,7 @@ import React, {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useRealTime } from "../context/RealTimeContext";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { forceStatsRefresh } from "../utils/forceStatsRefresh";
 import Hero from "../components/Hero";
 import LoadingScreen from "../components/LoadingScreen";
@@ -286,6 +286,38 @@ export default function Home() {
   const observerRef = useRef(null);
   const mountedRef = useRef(true);
   const timersRef = useRef({});
+
+  // Scroll Pinning references and state
+  const scrollContainerRef = useRef(null);
+  const flexContainerRef = useRef(null);
+  const [scrollAmount, setScrollAmount] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (flexContainerRef.current) {
+        // Precise scroll amount = total scrollable width - current viewport width
+        const amount = flexContainerRef.current.scrollWidth - window.innerWidth;
+        setScrollAmount(amount > 0 ? amount : 0);
+      }
+    };
+    
+    // Give it a tiny delay to ensure components are fully rendered
+    const timer = setTimeout(handleResize, 150);
+    window.addEventListener("resize", handleResize);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isLoading]);
+
+  const { scrollYProgress } = useScroll({
+    target: scrollContainerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const xTransform = useTransform(scrollYProgress, (latest) => -latest * scrollAmount);
+  const springX = useSpring(xTransform, { stiffness: 100, damping: 22, mass: 0.6 });
 
   // Memoized auth check
   const isAuthenticated = useCallback(() => {
@@ -907,7 +939,7 @@ export default function Home() {
   return /*#__PURE__*/ React.createElement(
     "div",
     {
-      className: "min-h-screen bg-black relative overflow-hidden",
+      className: "min-h-screen bg-black relative",
     },
     isLoading &&
       /*#__PURE__*/ React.createElement(LoadingScreen, {
@@ -1244,320 +1276,339 @@ export default function Home() {
         isReversed: true,
         onClick: () => navigate("/nutrition"),
       }),
-      /*#__PURE__*/ React.createElement(
-        "section",
-        {
-          "data-animate": true,
-          "data-id": "body-fat",
-          id: "body-fat",
-          className: "mb-6 sm:mb-20",
-        },
+  ),
+  /*#__PURE__*/ React.createElement(
+    "section",
+    {
+      ref: scrollContainerRef,
+      className: "relative w-full bg-black",
+      style: {
+        height: "320vh",
+      },
+      id: "body-fat",
+    },
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: `transition-all duration-700 delay-950 ${isVisible["body-fat"] ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`,
-            style: {
-              willChange: isVisible["body-fat"] ? "auto" : "transform, opacity",
-            },
+            className: "sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between py-6 sm:py-10 bg-black",
           },
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className: "text-center mb-6 sm:mb-12 px-3",
+              className: "text-center mb-2 sm:mb-6 px-3 flex-shrink-0 relative z-10",
             },
             /*#__PURE__*/ React.createElement(
               "div",
               {
-                className:
-                  "inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-6",
+                className: "inline-flex items-center gap-1.5 sm:gap-4 mb-1 sm:mb-3",
               },
-              /*#__PURE__*/ React.createElement("div", {
-                className: "w-8 sm:w-24 h-0.5 sm:h-1 bg-red-600",
-              }),
+              /*#__PURE__*/ React.createElement("div", { className: "w-8 sm:w-20 h-[1px] sm:h-0.5 bg-red-600" }),
               /*#__PURE__*/ React.createElement(
                 "span",
                 {
-                  className:
-                    "text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-red-600 uppercase",
+                  className: "text-[9px] sm:text-xs font-black tracking-[0.1em] sm:tracking-[0.2em] text-red-600 uppercase",
                 },
-                "Body Composition",
+                "Body Composition"
               ),
-              /*#__PURE__*/ React.createElement("div", {
-                className: "w-8 sm:w-24 h-0.5 sm:h-1 bg-red-600",
-              }),
+              /*#__PURE__*/ React.createElement("div", { className: "w-8 sm:w-20 h-[1px] sm:h-0.5 bg-red-600" })
             ),
             /*#__PURE__*/ React.createElement(
               "h2",
               {
-                className:
-                  "text-2xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 uppercase leading-[0.85]",
+                className: "text-xl sm:text-4xl md:text-5xl font-black mb-1 sm:mb-2 uppercase leading-[0.85] tracking-tight",
               },
-              /*#__PURE__*/ React.createElement(
-                "span",
-                {
-                  className: "text-white",
-                },
-                "NATURAL BODY FAT",
-              ),
-              /*#__PURE__*/ React.createElement("br", null),
-              /*#__PURE__*/ React.createElement(
-                "span",
-                {
-                  className: "text-red-600",
-                },
-                "PERCENTAGE GUIDE",
-              ),
+              /*#__PURE__*/ React.createElement("span", { className: "text-white" }, "NATURAL BODY FAT "),
+              /*#__PURE__*/ React.createElement("span", { className: "text-red-600" }, "PERCENTAGE GUIDE")
             ),
             /*#__PURE__*/ React.createElement(
               "p",
               {
-                className:
-                  "text-xs sm:text-lg text-zinc-400 max-w-3xl mx-auto leading-snug font-medium",
+                className: "text-[10px] sm:text-sm text-zinc-400 max-w-2xl mx-auto leading-snug font-medium",
               },
               "Understand how ",
-              /*#__PURE__*/ React.createElement(
-                "span",
-                {
-                  className: "text-red-600 font-black",
-                },
-                "natural men look",
-              ),
-              " at different body fat percentages",
-            ),
+              /*#__PURE__*/ React.createElement("span", { className: "text-red-600 font-black" }, "natural men look"),
+              " at different body fat percentages."
+            )
           ),
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className:
-                "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-3",
+              className: "w-full overflow-hidden flex-1 flex items-center relative z-10 my-auto",
             },
-            [
+            /*#__PURE__*/ React.createElement(
+              motion.div,
               {
-                percent: 45,
-                img: BF45,
-                title: "This is how natural men look at 45% body fat",
-                desc: "Severely obese range. High health risks including cardiovascular disease, diabetes, and joint problems. Mobility significantly impaired. Testosterone levels critically low. Immediate lifestyle changes essential.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Critical",
-                ),
-                color: "red",
+                ref: flexContainerRef,
+                style: {
+                  x: springX,
+                },
+                className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[80%] sm:h-[85%] max-h-[500px]",
               },
-              {
-                percent: 40,
-                img: BF40,
-                title: "This is how natural men look at 40% body fat",
-                desc: "Obese category. Major health concerns with metabolic syndrome risk. Energy levels very low. Hormonal imbalances severe. Testosterone production significantly suppressed. Medical intervention recommended.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " High Risk",
-                ),
-                color: "red",
-              },
-              {
-                percent: 30,
-                img: BF30,
-                title: "This is how natural men look at 30% body fat",
-                desc: "Overweight to obese. Visible fat accumulation around midsection and chest. Reduced athletic performance. Testosterone levels below optimal. Increased inflammation. Weight loss strongly advised for health.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Elevated Risk",
-                ),
-                color: "orange",
-              },
-              {
-                percent: 20,
-                img: BF20,
-                title: "This is how natural men look at 20% body fat",
-                desc: "Average range for men. Some muscle definition visible. Moderate energy levels. Testosterone within normal range. Good starting point for cutting phase. Healthy but room for improvement in physique.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Average",
-                ),
-                color: "yellow",
-              },
-              {
-                percent: 15,
-                img: BF15,
-                title: "This is how natural men look at 15% body fat",
-                desc: "Fit and athletic appearance. Abs visible with good lighting. Strong muscle definition. Optimal testosterone production. Excellent energy and performance. Ideal for most natural lifters year-round.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Healthy",
-                ),
-                color: "lime",
-              },
-              {
-                percent: 12,
-                img: BF12,
-                title: "This is how natural men look at 12% body fat",
-                desc: "Very lean and defined. Clear six-pack abs. Vascularity emerging. Peak testosterone levels. High energy but requires disciplined nutrition. Excellent for photo shoots and competitions.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Athletic",
-                ),
-                color: "green",
-              },
-              {
-                percent: 10,
-                img: BF10,
-                title: "This is how natural men look at 10% body fat",
-                desc: "Shredded physique. Striations visible. Prominent vascularity. Maximum muscle definition. Testosterone optimal but hunger increases. Requires strict diet. Competition-ready condition for naturals.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Peak",
-                ),
-                color: "blue",
-              },
-              {
-                percent: 8,
-                img: BF8,
-                title: "This is how natural men look at 8% body fat",
-                desc: "Stage-ready condition. Extreme definition and vascularity. Every muscle fiber visible. Hunger very high. Energy may fluctuate. Testosterone can drop if maintained too long. Not sustainable year-round.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(Circle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Contest",
-                ),
-                color: "purple",
-              },
-              {
-                percent: 5,
-                img: BF5,
-                title: "This is how natural men look at 5% body fat",
-                desc: "Extremely lean - unsustainable. Paper-thin skin. Severe hunger and fatigue. Testosterone crashes. Libido drops. Mental fog. Only achievable briefly for peak week. Health risks if prolonged. Not recommended.",
-                health: /*#__PURE__*/ React.createElement(
-                  React.Fragment,
-                  null,
-                  /*#__PURE__*/ React.createElement(AlertTriangle, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Extreme",
-                ),
-                color: "red",
-              },
-            ].map((bf, idx) =>
-              /*#__PURE__*/ React.createElement(BodyFatCard, {
-                key: bf.percent,
-                bf: bf,
-                OptimizedImage: OptimizedImage,
-              }),
+              [
+                {
+                  percent: 45,
+                  img: BF45,
+                  title: "This is how natural men look at 45% body fat",
+                  desc: "Severely obese range. High health risks including cardiovascular disease, diabetes, and joint problems. Mobility significantly impaired. Testosterone levels critically low. Immediate lifestyle changes essential.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Critical",
+                  ),
+                  color: "red",
+                },
+                {
+                  percent: 40,
+                  img: BF40,
+                  title: "This is how natural men look at 40% body fat",
+                  desc: "Obese category. Major health concerns with metabolic syndrome risk. Energy levels very low. Hormonal imbalances severe. Testosterone production significantly suppressed. Medical intervention recommended.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " High Risk",
+                  ),
+                  color: "red",
+                },
+                {
+                  percent: 30,
+                  img: BF30,
+                  title: "This is how natural men look at 30% body fat",
+                  desc: "Overweight to obese. Visible fat accumulation around midsection and chest. Reduced athletic performance. Testosterone levels below optimal. Increased inflammation. Weight loss strongly advised for health.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Elevated Risk",
+                  ),
+                  color: "orange",
+                },
+                {
+                  percent: 20,
+                  img: BF20,
+                  title: "This is how natural men look at 20% body fat",
+                  desc: "Average range for men. Some muscle definition visible. Moderate energy levels. Testosterone within normal range. Good starting point for cutting phase. Healthy but room for improvement in physique.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Average",
+                  ),
+                  color: "yellow",
+                },
+                {
+                  percent: 15,
+                  img: BF15,
+                  title: "This is how natural men look at 15% body fat",
+                  desc: "Fit and athletic appearance. Abs visible with good lighting. Strong muscle definition. Optimal testosterone production. Excellent energy and performance. Ideal for most natural lifters year-round.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Healthy",
+                  ),
+                  color: "lime",
+                },
+                {
+                  percent: 12,
+                  img: BF12,
+                  title: "This is how natural men look at 12% body fat",
+                  desc: "Very lean and defined. Clear six-pack abs. Vascularity emerging. Peak testosterone levels. High energy but requires disciplined nutrition. Excellent for photo shoots and competitions.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Athletic",
+                  ),
+                  color: "green",
+                },
+                {
+                  percent: 10,
+                  img: BF10,
+                  title: "This is how natural men look at 10% body fat",
+                  desc: "Shredded physique. Striations visible. Prominent vascularity. Maximum muscle definition. Testosterone optimal but hunger increases. Requires strict diet. Competition-ready condition for naturals.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Peak",
+                  ),
+                  color: "blue",
+                },
+                {
+                  percent: 8,
+                  img: BF8,
+                  title: "This is how natural men look at 8% body fat",
+                  desc: "Stage-ready condition. Extreme definition and vascularity. Every muscle fiber visible. Hunger very high. Energy may fluctuate. Testosterone can drop if maintained too long. Not sustainable year-round.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(Circle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Contest",
+                  ),
+                  color: "purple",
+                },
+                {
+                  percent: 5,
+                  img: BF5,
+                  title: "This is how natural men look at 5% body fat",
+                  desc: "Extremely lean - unsustainable. Paper-thin skin. Severe hunger and fatigue. Testosterone crashes. Libido drops. Mental fog. Only achievable briefly for peak week. Health risks if prolonged. Not recommended.",
+                  health: /*#__PURE__*/ React.createElement(
+                    React.Fragment,
+                    null,
+                    /*#__PURE__*/ React.createElement(AlertTriangle, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " Extreme",
+                  ),
+                  color: "red",
+                },
+              ].map((bf, idx) =>
+                /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    key: bf.percent,
+                    className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch",
+                  },
+                  /*#__PURE__*/ React.createElement(BodyFatCard, {
+                    bf: bf,
+                    OptimizedImage: OptimizedImage,
+                  })
+                )
+              ),
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch pr-[15vw]",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "bg-zinc-900 border-2 border-red-600 p-4 sm:p-8 flex flex-col justify-center relative shadow-2xl overflow-hidden w-full",
+                  },
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "absolute top-0 right-0 w-24 h-24 bg-red-600/10 rounded-full blur-2xl pointer-events-none",
+                    }
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "flex flex-col gap-3 sm:gap-6",
+                    },
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "w-10 h-10 sm:w-14 sm:h-14 bg-black border-2 border-red-600 flex items-center justify-center flex-shrink-0 shadow-lg",
+                      },
+                      /*#__PURE__*/ React.createElement(Lightbulb, {
+                        className: "w-5 h-5 sm:w-7 sm:h-7 text-red-600",
+                      })
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "space-y-1.5 sm:space-y-4",
+                      },
+                      /*#__PURE__*/ React.createElement(
+                        "h4",
+                        {
+                          className: "text-sm sm:text-2xl font-black text-white uppercase tracking-wide leading-tight",
+                        },
+                        "Natural Physique Reality"
+                      ),
+                      /*#__PURE__*/ React.createElement(
+                        "p",
+                        {
+                          className: "text-[11px] sm:text-base text-zinc-400 leading-relaxed font-medium",
+                        },
+                        "These images represent ",
+                        /*#__PURE__*/ React.createElement(
+                          "span",
+                          {
+                            className: "text-red-600 font-black",
+                          },
+                          "natural, drug-free physiques"
+                        ),
+                        " at various body fat percentages. For optimal health and testosterone, most natural men thrive between ",
+                        /*#__PURE__*/ React.createElement(
+                          "span",
+                          {
+                            className: "text-lime-500 font-black",
+                          },
+                          "12-15%"
+                        ),
+                        ". Going below 10% requires extreme discipline and may not be sustainable long-term. Focus on ",
+                        /*#__PURE__*/ React.createElement(
+                          "span",
+                          {
+                            className: "text-white font-black",
+                          },
+                          "progressive overload, consistent training, and proper nutrition"
+                        ),
+                        " for best results."
+                      )
+                    )
+                  )
+                )
+              )
             ),
-          ),
+        ),
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className: "mt-8 sm:mt-12 px-3 max-w-4xl mx-auto",
+              className: "absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 z-20 pointer-events-none",
             },
             /*#__PURE__*/ React.createElement(
               "div",
               {
-                className: "bg-zinc-900 border-2 border-red-600 p-4 sm:p-8",
+                className: "w-32 sm:w-56 h-[3px] bg-zinc-900 rounded-full overflow-hidden relative",
               },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "flex items-start gap-3 sm:gap-4",
+              /*#__PURE__*/ React.createElement(motion.div, {
+                style: {
+                  scaleX: scrollYProgress,
+                  transformOrigin: "left",
                 },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className:
-                      "w-10 h-10 sm:w-12 sm:h-12 bg-black border-2 border-red-600 flex items-center justify-center flex-shrink-0",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "span",
-                    {
-                      className: "text-xl sm:text-2xl",
-                    },
-                    /*#__PURE__*/ React.createElement(Lightbulb, {
-                      className: "w-[1em] h-[1em] inline-block",
-                    }),
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "flex-1",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "h4",
-                    {
-                      className:
-                        "text-sm sm:text-xl font-black text-white uppercase mb-2 sm:mb-3",
-                    },
-                    "Natural Physique Reality",
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "p",
-                    {
-                      className:
-                        "text-[11px] sm:text-base text-zinc-400 leading-relaxed font-medium",
-                    },
-                    "These images represent ",
-                    /*#__PURE__*/ React.createElement(
-                      "span",
-                      {
-                        className: "text-red-600 font-black",
-                      },
-                      "natural, drug-free physiques",
-                    ),
-                    " at various body fat percentages. For optimal health and testosterone, most natural men thrive between ",
-                    /*#__PURE__*/ React.createElement(
-                      "span",
-                      {
-                        className: "text-lime-500 font-black",
-                      },
-                      "12-15%",
-                    ),
-                    ". Going below 10% requires extreme discipline and may not be sustainable long-term. Focus on ",
-                    /*#__PURE__*/ React.createElement(
-                      "span",
-                      {
-                        className: "text-white font-black",
-                      },
-                      "progressive overload, consistent training, and proper nutrition",
-                    ),
-                    " for best results.",
-                  ),
-                ),
-              ),
+                className: "absolute inset-0 bg-red-600",
+              })
             ),
-          ),
-        ),
+            /*#__PURE__*/ React.createElement(
+              motion.span,
+              {
+                style: {
+                  opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]),
+                },
+                className: "text-[9px] font-black text-red-600 uppercase tracking-widest animate-pulse flex items-center gap-1.5",
+              },
+              "Scroll down to explore \u2192"
+            )
+          )
+        )
       ),
-      showRestDay &&
+      /*#__PURE__*/ React.createElement(
+        "div",
+        {
+          className: `container mx-auto px-2 sm:px-6 py-3 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"} space-y-6 sm:space-y-12 mt-6 sm:mt-12`,
+        },
+        showRestDay &&
         /*#__PURE__*/ React.createElement(
           "section",
           {
@@ -2478,6 +2529,54 @@ export default function Home() {
           
           .group:hover img {
             transform: translate3d(0, 0, 0) scale(1.05);
+          }
+
+          /* Goated Responsive Sizing for Scroll Pinning Cards */
+          .body-fat-card-wrapper {
+            width: 300px;
+            flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: stretch;
+          }
+          @media (min-width: 640px) {
+            .body-fat-card-wrapper {
+              width: 380px;
+            }
+          }
+          @media (max-height: 800px) {
+            .body-fat-card-wrapper .relative.h-\\[280px\\],
+            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
+              height: 220px !important;
+            }
+            .body-fat-card-wrapper .p-4 {
+              padding: 0.75rem !important;
+            }
+            .body-fat-card-wrapper .space-y-3 > * + * {
+              margin-top: 0.5rem !important;
+            }
+          }
+          @media (max-height: 700px) {
+            .body-fat-card-wrapper .relative.h-\\[280px\\],
+            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
+              height: 170px !important;
+            }
+            .body-fat-card-wrapper p {
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              font-size: 11px !important;
+            }
+          }
+          @media (max-height: 600px) {
+            .body-fat-card-wrapper .relative.h-\\[280px\\],
+            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
+              height: 120px !important;
+            }
+            .body-fat-card-wrapper p {
+              -webkit-line-clamp: 2;
+            }
           }
         `,
     ),
