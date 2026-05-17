@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspens
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 import { forceStatsRefresh } from '../utils/forceStatsRefresh';
 import Hero from '../components/Hero';
@@ -34,6 +35,113 @@ import StretchingProtocol from '../assets/STRETCHING-PROTOCOL.jpg';
 import RecoveryNutrition from '../assets/RECOVERY-NUTRITION.jpg';
 import Dominance from '../assets/Dominance.jpg';
 import Again from '../assets/Again.png';
+
+// Parallax Section Component
+const ParallaxSection = ({ 
+  id,
+  imageSrc,
+  imageAlt,
+  accentColorClass, // e.g., 'lime-500', 'red-600'
+  accentText,
+  badgeText,
+  titleTop,
+  titleBottom,
+  descriptionPrefix,
+  descriptionHighlight,
+  descriptionSuffix,
+  imageBadges, // array of { title, value, titleClass, valueClass, borderClass }
+  isReversed,
+  onClick
+}) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  // Mathematically perfect parallax:
+  // Container is 100%. Image is 125% and shifted up by -12.5%.
+  // Moving y by [-10%, 10%] translates it by exactly +/-12.5% of the container height.
+  // This results in strong parallax movement with absolutely ZERO gaps at the top or bottom!
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  
+  // Foreground text moves slightly faster in the opposite direction for 3D depth
+  const textY = useTransform(scrollYProgress, [0, 1], ["15%", "-15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  return (
+    <section id={id} ref={ref} className="mb-6 sm:mb-20 overflow-hidden">
+      <motion.div 
+        style={{ opacity }}
+        className="relative group cursor-pointer"
+        onClick={onClick}
+      >
+        <div className={`relative overflow-hidden bg-zinc-900 border border-${accentColorClass} sm:border-4 shadow-2xl transition-all duration-300 hover:border-white`} style={{ contain: 'layout style paint' }}>
+          <div className="grid lg:grid-cols-2 gap-0">
+            {/* Image Container */}
+            <div className={`relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden ${isReversed ? 'order-1 lg:order-2' : ''}`}>
+              {/* Perfectly calibrated height and top values */}
+              <motion.div style={{ y: backgroundY, height: "125%", top: "-12.5%" }} className="absolute inset-0 w-full">
+                <img 
+                  src={imageSrc} 
+                  alt={imageAlt} 
+                  loading="lazy"
+                  decoding="async"
+                  style={{ contentVisibility: 'auto' }}
+                  className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+              
+              {imageBadges && imageBadges.length > 0 && (
+                <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
+                  <div className="flex items-center gap-1 sm:gap-4">
+                    {imageBadges.map((badge, idx) => (
+                      <div key={idx} className={`bg-black/90 border ${badge.borderClass} px-1.5 py-1 sm:px-6 sm:py-3 flex-1`}>
+                        <div className={`${badge.titleClass} text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none`}>{badge.title}</div>
+                        <div className={`${badge.valueClass} text-[10px] sm:text-2xl font-black leading-tight mt-0.5`}>{badge.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Text Container */}
+            <div className={`p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black ${isReversed ? 'order-2 lg:order-1' : ''}`}>
+              <motion.div style={{ y: textY }}>
+                <div className="mb-3 sm:mb-8">
+                  <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
+                    <div className={`w-0.5 sm:w-2 h-6 sm:h-16 bg-${accentColorClass}`} />
+                    <span className={`text-[9px] sm:text-sm font-black text-${accentColorClass} tracking-wider uppercase`}>{accentText}</span>
+                  </div>
+                  <span className={`inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-${accentColorClass} bg-zinc-900 border sm:border-2 border-${accentColorClass} uppercase tracking-wide`}>
+                    <div className={`w-1 h-1 sm:w-2 sm:h-2 bg-${accentColorClass}`} />
+                    {badgeText}
+                  </span>
+                </div>
+                
+                <h3 className="relative text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
+                  <span className="text-white">
+                    {titleTop}
+                  </span>
+                  <br />
+                  <span className={`text-${accentColorClass}`}>
+                    {titleBottom}
+                  </span>
+                </h3>
+                
+                <p className="relative text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
+                  {descriptionPrefix} <span className={`text-${accentColorClass} font-black`}>{descriptionHighlight}</span>{descriptionSuffix}
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+};
 
 export default function Home() {
   const navigate = useNavigate();
@@ -553,343 +661,122 @@ export default function Home() {
         </section>
 
         {/* Elite Training Experience - Home1.jpg */}
-        <section data-animate data-id="training-experience" id="training-experience" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-300 ${isVisible['training-experience'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['training-experience'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/dashboard')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-lime-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <OptimizedImage 
-                      src={Home1} 
-                      alt="Elite Training Experience" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                    
-                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1 sm:gap-4">
-                        <div className="bg-black/90 border border-lime-500 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-lime-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Equipment</div>
-                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">PRO</div>
-                        </div>
-                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Success</div>
-                          <div className="text-lime-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">98.7%</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="relative mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-lime-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-lime-500 tracking-wider uppercase">Elite Training</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-lime-500 bg-zinc-900 border sm:border-2 border-lime-500 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-500" />
-                        PRO GRADE
-                      </span>
-                    </div>
-                    
-                    <h3 className="relative text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        ELITE TRAINING
-                      </span>
-                      <br />
-                      <span className="text-lime-500">
-                        EXPERIENCE
-                      </span>
-                    </h3>
-                    
-                    <p className="relative text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Experience world-class training with <span className="text-lime-500 font-black">state-of-the-art equipment</span> designed for elite performance.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="training-experience"
+          imageSrc={Home1}
+          imageAlt="Elite Training Experience"
+          accentColorClass="lime-500"
+          accentText="Elite Training"
+          badgeText="PRO GRADE"
+          titleTop="ELITE TRAINING"
+          titleBottom="EXPERIENCE"
+          descriptionPrefix="Experience world-class training with "
+          descriptionHighlight="state-of-the-art equipment"
+          descriptionSuffix=" designed for elite performance."
+          imageBadges={[
+            { title: "Equipment", value: "PRO", titleClass: "text-lime-500", valueClass: "text-white", borderClass: "border-lime-500" },
+            { title: "Success", value: "98.7%", titleClass: "text-white", valueClass: "text-lime-500", borderClass: "border-white" }
+          ]}
+          isReversed={false}
+          onClick={() => navigate('/dashboard')}
+        />
 
         {/* Strength & Power - Home2.jpg */}
-        <section data-animate data-id="strength-power" id="strength-power" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-500 ${isVisible['strength-power'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['strength-power'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/plans')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
-                    <div className="mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-600" />
-                        <span className="text-[9px] sm:text-sm font-black text-red-600 tracking-wider uppercase">Power & Strength</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-600 bg-zinc-900 border sm:border-2 border-red-600 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-600" />
-                        MAX INTENSITY
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        UNLEASH YOUR
-                      </span>
-                      <br />
-                      <span className="text-red-600">
-                        INNER BEAST
-                      </span>
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Push beyond limits with <span className="text-red-600 font-black">intense strength training</span>. Build raw power and determination.
-                    </p>
-                  </div>
-                  
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                    <OptimizedImage 
-                      src={Home2} 
-                      alt="Strength and Power Training" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                    
-                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1 sm:gap-4">
-                        <div className="bg-black/90 border border-red-600 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-red-600 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Power</div>
-                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">MAX</div>
-                        </div>
-                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Intensity</div>
-                          <div className="text-red-600 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">BEAST</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="strength-power"
+          imageSrc={Home2}
+          imageAlt="Strength and Power Training"
+          accentColorClass="red-600"
+          accentText="Power & Strength"
+          badgeText="MAX INTENSITY"
+          titleTop="UNLEASH YOUR"
+          titleBottom="INNER BEAST"
+          descriptionPrefix="Push beyond limits with "
+          descriptionHighlight="intense strength training"
+          descriptionSuffix=". Build raw power and determination."
+          imageBadges={[
+            { title: "Power", value: "MAX", titleClass: "text-red-600", valueClass: "text-white", borderClass: "border-red-600" },
+            { title: "Intensity", value: "BEAST", titleClass: "text-white", valueClass: "text-red-600", borderClass: "border-white" }
+          ]}
+          isReversed={true}
+          onClick={() => navigate('/plans')}
+        />
 
         {/* Workout Tracking - Home3.jpg */}
-        <section data-animate data-id="workout-tracking" id="workout-tracking" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-600 ${isVisible['workout-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-tracking'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/library')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <OptimizedImage 
-                      src={Home3} 
-                      alt="Workout Tracking" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                    
-                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
-                      <div className="flex items-center gap-1 sm:gap-4">
-                        <div className="bg-black/90 border border-red-600 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-red-600 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Track</div>
-                          <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">LIVE</div>
-                        </div>
-                        <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Progress</div>
-                          <div className="text-red-600 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">REAL-TIME</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-600" />
-                        <span className="text-[9px] sm:text-sm font-black text-red-600 tracking-wider uppercase">Workout Tracking</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-600 bg-zinc-900 border sm:border-2 border-red-600 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-600" />
-                        SMART LOGGING
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        LOG EVERY
-                      </span>
-                      <br />
-                      <span className="text-red-600">
-                        REP & SET
-                      </span>
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Track <span className="text-red-600 font-black">every workout detail</span> with precision logging and real-time sync.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="workout-tracking"
+          imageSrc={Home3}
+          imageAlt="Workout Tracking"
+          accentColorClass="red-600"
+          accentText="Workout Tracking"
+          badgeText="SMART LOGGING"
+          titleTop="LOG EVERY"
+          titleBottom="REP & SET"
+          descriptionPrefix="Track "
+          descriptionHighlight="every workout detail"
+          descriptionSuffix=" with precision logging and real-time sync."
+          imageBadges={[
+            { title: "Track", value: "LIVE", titleClass: "text-red-600", valueClass: "text-white", borderClass: "border-red-600" },
+            { title: "Progress", value: "REAL-TIME", titleClass: "text-white", valueClass: "text-red-600", borderClass: "border-white" }
+          ]}
+          isReversed={false}
+          onClick={() => navigate('/library')}
+        />
 
         {/* Analytics & Progress - Home4.jpg */}
-        <section data-animate data-id="analytics-progress" id="analytics-progress" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-700 ${isVisible['analytics-progress'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['analytics-progress'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/analytics')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-800 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
-                    <div className="mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-800" />
-                        <span className="text-[9px] sm:text-sm font-black text-red-800 tracking-wider uppercase">Analytics</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-800 bg-zinc-900 border sm:border-2 border-red-800 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-800" />
-                        DATA DRIVEN
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        VISUALIZE YOUR
-                      </span>
-                      <br />
-                      <span className="text-red-800">
-                        PROGRESS
-                      </span>
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Monitor <span className="text-red-800 font-black">detailed analytics</span> with charts, trends, and performance insights.
-                    </p>
-                  </div>
-                  
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                    <OptimizedImage 
-                      src={Home4} 
-                      alt="Analytics and Progress" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="analytics-progress"
+          imageSrc={Home4}
+          imageAlt="Analytics and Progress"
+          accentColorClass="red-800"
+          accentText="Analytics"
+          badgeText="DATA DRIVEN"
+          titleTop="VISUALIZE YOUR"
+          titleBottom="PROGRESS"
+          descriptionPrefix="Monitor "
+          descriptionHighlight="detailed analytics"
+          descriptionSuffix=" with charts, trends, and performance insights."
+          imageBadges={[]}
+          isReversed={true}
+          onClick={() => navigate('/analytics')}
+        />
 
         {/* Workout Plans & Splits - Home5.jpg */}
-        <section data-animate data-id="workout-plans" id="workout-plans" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-800 ${isVisible['workout-plans'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['workout-plans'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/my-plans')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-red-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
-                    <OptimizedImage 
-                      src={Home5} 
-                      alt="Workout Plans and Splits" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                  </div>
-                  
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
-                    <div className="mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-red-500 tracking-wider uppercase">Custom Plans</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-500 bg-zinc-900 border sm:border-2 border-red-500 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-500" />
-                        PERSONALIZED
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        BUILD YOUR
-                      </span>
-                      <br />
-                      <span className="text-red-500">
-                        PERFECT PLAN
-                      </span>
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Create <span className="text-red-500 font-black">custom workout splits</span> tailored to your goals and schedule.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="workout-plans"
+          imageSrc={Home5}
+          imageAlt="Workout Plans and Splits"
+          accentColorClass="red-500"
+          accentText="Custom Plans"
+          badgeText="PERSONALIZED"
+          titleTop="BUILD YOUR"
+          titleBottom="PERFECT PLAN"
+          descriptionPrefix="Create "
+          descriptionHighlight="custom workout splits"
+          descriptionSuffix=" tailored to your goals and schedule."
+          imageBadges={[]}
+          isReversed={false}
+          onClick={() => navigate('/my-plans')}
+        />
 
         {/* Nutrition Tracking - NutritionHome.jpg */}
-        <section data-animate data-id="nutrition-tracking" id="nutrition-tracking" className="mb-6 sm:mb-20">
-          <div className={`transition-all duration-700 delay-900 ${isVisible['nutrition-tracking'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['nutrition-tracking'] ? 'auto' : 'transform, opacity' }}>
-            <div 
-              className="relative group cursor-pointer"
-              onClick={() => navigate('/nutrition')}
-            >
-              <div className="relative overflow-hidden bg-zinc-900 border border-orange-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
-                    <div className="mb-3 sm:mb-8">
-                      <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-orange-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-orange-500 tracking-wider uppercase">Nutrition</span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-orange-500 bg-zinc-900 border sm:border-2 border-orange-500 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-orange-500" />
-                        FUEL YOUR BODY
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-8 leading-[0.85] uppercase">
-                      <span className="text-white">
-                        TRACK YOUR
-                      </span>
-                      <br />
-                      <span className="text-orange-500">
-                        NUTRITION
-                      </span>
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Monitor <span className="text-orange-500 font-black">meals, calories, and macros</span> to fuel your fitness goals.
-                    </p>
-                  </div>
-                  
-                  <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                    <OptimizedImage 
-                      src={NutritionHome} 
-                      alt="Nutrition Tracking" 
-                      className="w-full h-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParallaxSection
+          id="nutrition-tracking"
+          imageSrc={NutritionHome}
+          imageAlt="Nutrition Tracking"
+          accentColorClass="orange-500"
+          accentText="Nutrition"
+          badgeText="FUEL YOUR BODY"
+          titleTop="TRACK YOUR"
+          titleBottom="NUTRITION"
+          descriptionPrefix="Monitor "
+          descriptionHighlight="meals, calories, and macros"
+          descriptionSuffix=" to fuel your fitness goals."
+          imageBadges={[]}
+          isReversed={true}
+          onClick={() => navigate('/nutrition')}
+        />
+
 
         {/* Body Fat Percentage Section */}
         <section data-animate data-id="body-fat" id="body-fat" className="mb-6 sm:mb-20">

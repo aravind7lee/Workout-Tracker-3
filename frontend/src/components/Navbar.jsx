@@ -1,7 +1,7 @@
 // frontend/src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import {
   User,
   Menu,
@@ -24,6 +24,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,14 +45,20 @@ export default function Navbar() {
     { to: "/profile", label: "Profile" },
   ];
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Handle scroll effect and scroll direction for hiding navbar
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 20);
+    const previous = scrollY.getPrevious();
+    
+    // Hide navbar only when scrolling down and passed the top threshold
+    // Show navbar when scrolling up or at the very top
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+      if (showProfileDropdown) setShowProfileDropdown(false);
+    } else {
+      setHidden(false);
+    }
+  });
 
   // Handle body scroll lock when sidebar is open
   useEffect(() => {
@@ -112,10 +120,14 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`navbar-container fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" },
+      }}
+      initial="visible"
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.35, ease: "easeInOut" }}
+      className={`navbar-container fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         isScrolled ? "navbar-scrolled" : "navbar-default"
       }`}
     >
