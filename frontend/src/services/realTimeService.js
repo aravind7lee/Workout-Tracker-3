@@ -12,7 +12,7 @@ class RealTimeService {
       this.subscribers.set(dataType, new Set());
     }
     this.subscribers.get(dataType).add(callback);
-    
+
     return () => {
       const callbacks = this.subscribers.get(dataType);
       if (callbacks) {
@@ -28,7 +28,7 @@ class RealTimeService {
   notifySubscribers(dataType, data) {
     const callbacks = this.subscribers.get(dataType);
     if (callbacks) {
-      callbacks.forEach(callback => {
+      callbacks.forEach((callback) => {
         try {
           callback(data);
         } catch (error) {
@@ -43,12 +43,12 @@ class RealTimeService {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
-    
+
     this.updateInterval = setInterval(() => {
       const dashboardData = this.getDashboardData();
-      this.notifySubscribers('dashboard', dashboardData);
+      this.notifySubscribers("dashboard", dashboardData);
     }, interval);
-    
+
     return () => {
       if (this.updateInterval) {
         clearInterval(this.updateInterval);
@@ -66,7 +66,7 @@ class RealTimeService {
       xpPoints: this.getLocalXP(),
       currentStreak: this.getLocalStreak(),
       totalPlans: this.getLocalPlanCount(),
-      lastActive: new Date().toISOString()
+      lastActive: new Date().toISOString(),
     };
   }
 
@@ -83,16 +83,18 @@ class RealTimeService {
   }
 
   getAnalytics() {
-    return { 
-      achievements: this.getLocalAchievements(), 
-      stats: this.getLocalStats() 
+    return {
+      achievements: this.getLocalAchievements(),
+      stats: this.getLocalStats(),
     };
   }
 
   // Local storage helpers
   getLocalWorkoutCount() {
     try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      const workouts = JSON.parse(
+        localStorage.getItem("completedWorkouts") || "[]",
+      );
       return workouts.length;
     } catch {
       return 0;
@@ -101,10 +103,13 @@ class RealTimeService {
 
   getLocalWeeklyCount() {
     try {
-      const workouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      const workouts = JSON.parse(
+        localStorage.getItem("completedWorkouts") || "[]",
+      );
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      return workouts.filter(w => new Date(w.completedAt) > oneWeekAgo).length;
+      return workouts.filter((w) => new Date(w.completedAt) > oneWeekAgo)
+        .length;
     } catch {
       return 0;
     }
@@ -112,7 +117,7 @@ class RealTimeService {
 
   getLocalXP() {
     try {
-      return parseInt(localStorage.getItem('userXP') || '0');
+      return parseInt(localStorage.getItem("userXP") || "0");
     } catch {
       return 0;
     }
@@ -120,7 +125,7 @@ class RealTimeService {
 
   getLocalStreak() {
     try {
-      return parseInt(localStorage.getItem('workoutStreak') || '0');
+      return parseInt(localStorage.getItem("workoutStreak") || "0");
     } catch {
       return 0;
     }
@@ -128,7 +133,7 @@ class RealTimeService {
 
   getLocalPlanCount() {
     try {
-      const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      const plans = JSON.parse(localStorage.getItem("workoutPlans") || "[]");
       return plans.length;
     } catch {
       return 0;
@@ -137,7 +142,7 @@ class RealTimeService {
 
   getLocalWorkouts() {
     try {
-      return JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+      return JSON.parse(localStorage.getItem("completedWorkouts") || "[]");
     } catch {
       return [];
     }
@@ -145,7 +150,7 @@ class RealTimeService {
 
   getLocalAchievements() {
     try {
-      return JSON.parse(localStorage.getItem('achievements') || '[]');
+      return JSON.parse(localStorage.getItem("achievements") || "[]");
     } catch {
       return [];
     }
@@ -156,7 +161,7 @@ class RealTimeService {
       workouts: this.getLocalWorkoutCount(),
       plans: this.getLocalPlanCount(),
       xp: this.getLocalXP(),
-      streak: this.getLocalStreak()
+      streak: this.getLocalStreak(),
     };
   }
 
@@ -167,8 +172,12 @@ class RealTimeService {
 
   trackWorkout(workoutData) {
     const workouts = this.getLocalWorkouts();
-    workouts.push({ ...workoutData, id: Date.now(), completedAt: new Date().toISOString() });
-    localStorage.setItem('completedWorkouts', JSON.stringify(workouts));
+    workouts.push({
+      ...workoutData,
+      id: Date.now(),
+      completedAt: new Date().toISOString(),
+    });
+    localStorage.setItem("completedWorkouts", JSON.stringify(workouts));
     return Promise.resolve(workoutData);
   }
 
@@ -182,7 +191,7 @@ class RealTimeService {
 
   getUserData() {
     try {
-      return Promise.resolve(JSON.parse(localStorage.getItem('user') || '{}'));
+      return Promise.resolve(JSON.parse(localStorage.getItem("user") || "{}"));
     } catch {
       return Promise.resolve({});
     }
@@ -195,8 +204,12 @@ class RealTimeService {
         meals: 0,
         xpPoints: this.getLocalXP(),
         streak: this.getLocalStreak(),
-        weeklyGoal: { completed: this.getLocalWeeklyCount(), target: 4, percentage: 0 }
-      }
+        weeklyGoal: {
+          completed: this.getLocalWeeklyCount(),
+          target: 4,
+          percentage: 0,
+        },
+      },
     });
   }
 

@@ -1,5 +1,5 @@
 // frontend/src/services/realDashboardService.js - REAL DATA DASHBOARD
-import { exerciseLibrary } from '../data/exerciseLibrary';
+import { exerciseLibrary } from "../data/exerciseLibrary";
 
 class RealDashboardService {
   constructor() {
@@ -9,9 +9,9 @@ class RealDashboardService {
   // Get real workout plans from localStorage
   getWorkoutPlans() {
     try {
-      return JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+      return JSON.parse(localStorage.getItem("workoutPlans") || "[]");
     } catch (error) {
-      console.error('Error loading workout plans:', error);
+      console.error("Error loading workout plans:", error);
       return [];
     }
   }
@@ -19,9 +19,9 @@ class RealDashboardService {
   // Get real workout history from localStorage
   getWorkoutHistory() {
     try {
-      return JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+      return JSON.parse(localStorage.getItem("workoutHistory") || "[]");
     } catch (error) {
-      console.error('Error loading workout history:', error);
+      console.error("Error loading workout history:", error);
       return [];
     }
   }
@@ -29,11 +29,13 @@ class RealDashboardService {
   // Get real nutrition data from localStorage
   getNutritionData() {
     try {
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
-      const nutritionTotals = JSON.parse(localStorage.getItem('nutritionTotals') || '{}');
+      const meals = JSON.parse(localStorage.getItem("recentMeals") || "[]");
+      const nutritionTotals = JSON.parse(
+        localStorage.getItem("nutritionTotals") || "{}",
+      );
       return { meals, totals: nutritionTotals };
     } catch (error) {
-      console.error('Error loading nutrition data:', error);
+      console.error("Error loading nutrition data:", error);
       return { meals: [], totals: {} };
     }
   }
@@ -43,32 +45,37 @@ class RealDashboardService {
     const plans = this.getWorkoutPlans();
     const history = this.getWorkoutHistory();
     const { meals } = this.getNutritionData();
-    
+
     // Calculate total exercises available
     const totalExercises = Object.values(exerciseLibrary).reduce(
-      (total, group) => total + group.exercises.length, 0
+      (total, group) => total + group.exercises.length,
+      0,
     );
 
     // Calculate workout stats
     const totalWorkouts = history.length;
-    const completedToday = history.filter(w => {
+    const completedToday = history.filter((w) => {
       const today = new Date().toDateString();
       const workoutDate = new Date(w.completedAt || w.date).toDateString();
       return workoutDate === today;
     }).length;
 
     // Calculate streak
-    const sortedHistory = history
-      .sort((a, b) => new Date(b.completedAt || b.date) - new Date(a.completedAt || a.date));
-    
+    const sortedHistory = history.sort(
+      (a, b) =>
+        new Date(b.completedAt || b.date) - new Date(a.completedAt || a.date),
+    );
+
     let currentStreak = 0;
     let lastDate = null;
-    
+
     for (const workout of sortedHistory) {
-      const workoutDate = new Date(workout.completedAt || workout.date).toDateString();
+      const workoutDate = new Date(
+        workout.completedAt || workout.date,
+      ).toDateString();
       const today = new Date().toDateString();
       const yesterday = new Date(Date.now() - 86400000).toDateString();
-      
+
       if (!lastDate) {
         if (workoutDate === today || workoutDate === yesterday) {
           currentStreak = 1;
@@ -77,7 +84,9 @@ class RealDashboardService {
           break;
         }
       } else {
-        const expectedDate = new Date(new Date(lastDate).getTime() - 86400000).toDateString();
+        const expectedDate = new Date(
+          new Date(lastDate).getTime() - 86400000,
+        ).toDateString();
         if (workoutDate === expectedDate) {
           currentStreak++;
           lastDate = workoutDate;
@@ -88,7 +97,8 @@ class RealDashboardService {
     }
 
     // Calculate XP points (100 per workout + bonus for streaks)
-    const xpPoints = totalWorkouts * 100 + (currentStreak > 3 ? currentStreak * 50 : 0);
+    const xpPoints =
+      totalWorkouts * 100 + (currentStreak > 3 ? currentStreak * 50 : 0);
 
     return {
       totalWorkouts,
@@ -98,7 +108,8 @@ class RealDashboardService {
       totalPlans: plans.length,
       totalExercises,
       totalMeals: meals.length,
-      lastActive: history.length > 0 ? history[0].completedAt || history[0].date : null
+      lastActive:
+        history.length > 0 ? history[0].completedAt || history[0].date : null,
     };
   }
 
@@ -106,67 +117,67 @@ class RealDashboardService {
   async getAchievements() {
     const stats = await this.getDashboardStats();
     const plans = this.getWorkoutPlans();
-    
+
     const achievements = [
       {
-        id: 'first-workout',
-        title: 'First Steps',
-        description: 'Complete your first workout',
-        icon: '🎯',
+        id: "first-workout",
+        title: "First Steps",
+        description: "Complete your first workout",
+        icon: "🎯",
         unlocked: stats.totalWorkouts >= 1,
         progress: Math.min(stats.totalWorkouts, 1),
-        target: 1
+        target: 1,
       },
       {
-        id: 'workout-streak-3',
-        title: '3 Day Streak',
-        description: 'Workout for 3 consecutive days',
-        icon: '🔥',
+        id: "workout-streak-3",
+        title: "3 Day Streak",
+        description: "Workout for 3 consecutive days",
+        icon: "🔥",
         unlocked: stats.currentStreak >= 3,
         progress: Math.min(stats.currentStreak, 3),
-        target: 3
+        target: 3,
       },
       {
-        id: 'workout-streak-7',
-        title: 'Week Warrior',
-        description: 'Workout for 7 consecutive days',
-        icon: '⚡',
+        id: "workout-streak-7",
+        title: "Week Warrior",
+        description: "Workout for 7 consecutive days",
+        icon: "⚡",
         unlocked: stats.currentStreak >= 7,
         progress: Math.min(stats.currentStreak, 7),
-        target: 7
+        target: 7,
       },
       {
-        id: 'plan-creator',
-        title: 'Plan Creator',
-        description: 'Create your first workout plan',
-        icon: '📋',
+        id: "plan-creator",
+        title: "Plan Creator",
+        description: "Create your first workout plan",
+        icon: "📋",
         unlocked: plans.length >= 1,
         progress: Math.min(plans.length, 1),
-        target: 1
+        target: 1,
       },
       {
-        id: 'workout-10',
-        title: 'Consistency Builder',
-        description: 'Complete 10 workouts',
-        icon: '💪',
+        id: "workout-10",
+        title: "Consistency Builder",
+        description: "Complete 10 workouts",
+        icon: "💪",
         unlocked: stats.totalWorkouts >= 10,
         progress: Math.min(stats.totalWorkouts, 10),
-        target: 10
+        target: 10,
       },
       {
-        id: 'workout-25',
-        title: 'Fitness Enthusiast',
-        description: 'Complete 25 workouts',
-        icon: '🏆',
+        id: "workout-25",
+        title: "Fitness Enthusiast",
+        description: "Complete 25 workouts",
+        icon: "🏆",
         unlocked: stats.totalWorkouts >= 25,
         progress: Math.min(stats.totalWorkouts, 25),
-        target: 25
-      }
+        target: 25,
+      },
     ];
 
-    return achievements.map(achievement => ({
+    return achievements.map((achievement) => ({
       ...achievement,
-      unlockedAt: achievement.unlocked ? new Date().toISOString() : null
+      unlockedAt: achievement.unlocked ? new Date().toISOString() : null,
     }));
   }
 
@@ -174,30 +185,30 @@ class RealDashboardService {
   async getRecentActivity() {
     const history = this.getWorkoutHistory();
     const { meals } = this.getNutritionData();
-    
+
     const activities = [];
-    
+
     // Add recent workouts
-    history.slice(0, 5).forEach(workout => {
+    history.slice(0, 5).forEach((workout) => {
       activities.push({
         id: `workout-${workout.id}`,
-        type: 'workout',
-        title: `Completed: ${workout.planName || 'Workout'}`,
+        type: "workout",
+        title: `Completed: ${workout.planName || "Workout"}`,
         description: `${workout.exercises?.length || 0} exercises • ${workout.duration || 0} min`,
         timestamp: workout.completedAt || workout.date,
-        icon: '🏋️'
+        icon: "🏋️",
       });
     });
 
     // Add recent meals
-    meals.slice(0, 3).forEach(meal => {
+    meals.slice(0, 3).forEach((meal) => {
       activities.push({
         id: `meal-${meal._id || meal.id}`,
-        type: 'meal',
+        type: "meal",
         title: `Logged: ${meal.parsedName || meal.name}`,
         description: `${Math.round(meal.calories || 0)} cal • ${Math.round(meal.protein || 0)}g protein`,
         timestamp: meal.consumedAt || meal.date,
-        icon: '🍽️'
+        icon: "🍽️",
       });
     });
 
@@ -211,12 +222,12 @@ class RealDashboardService {
   async getMuscleDistribution() {
     const plans = this.getWorkoutPlans();
     const muscleCount = {};
-    
-    plans.forEach(plan => {
-      plan.exercises?.forEach(exercise => {
+
+    plans.forEach((plan) => {
+      plan.exercises?.forEach((exercise) => {
         // Find the muscle group for this exercise
         Object.entries(exerciseLibrary).forEach(([key, group]) => {
-          const found = group.exercises.find(ex => ex.name === exercise.name);
+          const found = group.exercises.find((ex) => ex.name === exercise.name);
           if (found) {
             muscleCount[group.name] = (muscleCount[group.name] || 0) + 1;
           }
@@ -224,12 +235,15 @@ class RealDashboardService {
       });
     });
 
-    const total = Object.values(muscleCount).reduce((sum, count) => sum + count, 0);
-    
+    const total = Object.values(muscleCount).reduce(
+      (sum, count) => sum + count,
+      0,
+    );
+
     return Object.entries(muscleCount).map(([muscle, count]) => ({
       muscle,
       count,
-      percentage: total > 0 ? Math.round((count / total) * 100) : 0
+      percentage: total > 0 ? Math.round((count / total) * 100) : 0,
     }));
   }
 
@@ -239,7 +253,7 @@ class RealDashboardService {
       this.getDashboardStats(),
       this.getAchievements(),
       this.getRecentActivity(),
-      this.getMuscleDistribution()
+      this.getMuscleDistribution(),
     ]);
 
     return {
@@ -247,7 +261,7 @@ class RealDashboardService {
       achievements,
       activity,
       muscles,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   }
 
@@ -258,7 +272,7 @@ class RealDashboardService {
         const data = await this.refreshAllData();
         callback(data);
       } catch (error) {
-        console.error('Error updating real-time data:', error);
+        console.error("Error updating real-time data:", error);
       }
     };
 

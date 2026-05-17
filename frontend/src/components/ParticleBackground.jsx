@@ -1,5 +1,5 @@
 // frontend/src/components/ParticleBackground.jsx
-import React from 'react';
+import React from "react";
 
 export default function ParticleBackground() {
   return (
@@ -14,12 +14,12 @@ export default function ParticleBackground() {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${2 + Math.random() * 3}s`
+              animationDuration: `${2 + Math.random() * 3}s`,
             }}
           />
         ))}
       </div>
-      
+
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10" />
     </div>

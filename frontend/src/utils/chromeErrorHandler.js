@@ -4,7 +4,7 @@ class ChromeErrorHandler {
     this.errorCounts = new Map();
     this.maxErrorsPerType = 3;
     this.resetInterval = 60000; // Reset error counts every minute
-    
+
     // Reset error counts periodically
     setInterval(() => {
       this.errorCounts.clear();
@@ -16,7 +16,7 @@ class ChromeErrorHandler {
     try {
       return fn();
     } catch (error) {
-      this.logError('SafeExecute', error);
+      this.logError("SafeExecute", error);
       return fallback;
     }
   }
@@ -26,7 +26,7 @@ class ChromeErrorHandler {
     try {
       return await fn();
     } catch (error) {
-      this.logError('SafeExecuteAsync', error);
+      this.logError("SafeExecuteAsync", error);
       return fallback;
     }
   }
@@ -35,13 +35,15 @@ class ChromeErrorHandler {
   logError(type, error) {
     const errorKey = `${type}:${error.message}`;
     const currentCount = this.errorCounts.get(errorKey) || 0;
-    
+
     if (currentCount < this.maxErrorsPerType) {
       console.error(`❌ ${type} Error:`, error.message);
       this.errorCounts.set(errorKey, currentCount + 1);
-      
+
       if (currentCount === this.maxErrorsPerType - 1) {
-        console.warn(`⚠️ ${type} error limit reached. Further similar errors will be suppressed.`);
+        console.warn(
+          `⚠️ ${type} error limit reached. Further similar errors will be suppressed.`,
+        );
       }
     }
   }
@@ -50,23 +52,26 @@ class ChromeErrorHandler {
   async safeFetch(url, options = {}) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), options.timeout || 10000);
-      
+      const timeoutId = setTimeout(
+        () => controller.abort(),
+        options.timeout || 10000,
+      );
+
       const response = await fetch(url, {
         ...options,
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return response;
     } catch (error) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timed out');
+      if (error.name === "AbortError") {
+        throw new Error("Request timed out");
       }
       throw error;
     }
@@ -101,12 +106,12 @@ class ChromeErrorHandler {
 
   // Token validation
   hasValidToken() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return false;
-    
+
     try {
       // Basic token format check
-      const parts = token.split('.');
+      const parts = token.split(".");
       return parts.length === 3;
     } catch {
       return false;
@@ -132,13 +137,19 @@ class ChromeErrorHandler {
 const chromeErrorHandler = new ChromeErrorHandler();
 
 // Global error handler to catch unhandled errors
-window.addEventListener('error', (event) => {
-  chromeErrorHandler.logError('Global', event.error || new Error(event.message));
+window.addEventListener("error", (event) => {
+  chromeErrorHandler.logError(
+    "Global",
+    event.error || new Error(event.message),
+  );
 });
 
 // Global unhandled promise rejection handler
-window.addEventListener('unhandledrejection', (event) => {
-  chromeErrorHandler.logError('UnhandledPromise', event.reason || new Error('Unhandled promise rejection'));
+window.addEventListener("unhandledrejection", (event) => {
+  chromeErrorHandler.logError(
+    "UnhandledPromise",
+    event.reason || new Error("Unhandled promise rejection"),
+  );
   event.preventDefault(); // Prevent console spam
 });
 

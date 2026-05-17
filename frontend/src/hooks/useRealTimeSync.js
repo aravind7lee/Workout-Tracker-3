@@ -1,6 +1,6 @@
 // frontend/src/hooks/useRealTimeSync.js
-import { useEffect, useCallback } from 'react';
-import heroStatsService from '../services/heroStatsService';
+import { useEffect, useCallback } from "react";
+import heroStatsService from "../services/heroStatsService";
 
 export const useRealTimeSync = (onStatsUpdate) => {
   // Sync workout completion
@@ -12,7 +12,7 @@ export const useRealTimeSync = (onStatsUpdate) => {
         onStatsUpdate(updatedStats.data || updatedStats);
       }
     } catch (error) {
-      console.error('Failed to sync workout:', error);
+      console.error("Failed to sync workout:", error);
     }
   }, [onStatsUpdate]);
 
@@ -25,7 +25,7 @@ export const useRealTimeSync = (onStatsUpdate) => {
         onStatsUpdate(updatedStats.data || updatedStats);
       }
     } catch (error) {
-      console.error('Failed to sync meal:', error);
+      console.error("Failed to sync meal:", error);
     }
   }, [onStatsUpdate]);
 
@@ -34,12 +34,12 @@ export const useRealTimeSync = (onStatsUpdate) => {
     const handleWorkoutComplete = () => syncWorkout();
     const handleMealLogged = () => syncMeal();
 
-    window.addEventListener('workoutCompleted', handleWorkoutComplete);
-    window.addEventListener('mealLogged', handleMealLogged);
+    window.addEventListener("workoutCompleted", handleWorkoutComplete);
+    window.addEventListener("mealLogged", handleMealLogged);
 
     return () => {
-      window.removeEventListener('workoutCompleted', handleWorkoutComplete);
-      window.removeEventListener('mealLogged', handleMealLogged);
+      window.removeEventListener("workoutCompleted", handleWorkoutComplete);
+      window.removeEventListener("mealLogged", handleMealLogged);
     };
   }, [syncWorkout, syncMeal]);
 

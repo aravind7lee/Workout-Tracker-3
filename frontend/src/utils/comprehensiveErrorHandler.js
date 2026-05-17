@@ -4,30 +4,30 @@ const originalWarn = console.warn;
 
 // Comprehensive list of errors to suppress
 const suppressPatterns = [
-  'The requested module',
-  'does not provide an export named',
-  'workoutCompletionService',
-  'API_BASE_URL',
-  'Failed to resolve module specifier',
-  'Cannot resolve module',
-  'Module not found',
-  'SyntaxError',
-  'Uncaught SyntaxError',
-  'import error',
-  'export error',
-  'workoutCompletionService.js',
-  'useWorkoutCompletion',
-  'WorkoutCompletionContext',
-  'CompletedWorkouts'
+  "The requested module",
+  "does not provide an export named",
+  "workoutCompletionService",
+  "API_BASE_URL",
+  "Failed to resolve module specifier",
+  "Cannot resolve module",
+  "Module not found",
+  "SyntaxError",
+  "Uncaught SyntaxError",
+  "import error",
+  "export error",
+  "workoutCompletionService.js",
+  "useWorkoutCompletion",
+  "WorkoutCompletionContext",
+  "CompletedWorkouts",
 ];
 
 // Global error handler
-window.addEventListener('error', (event) => {
-  const message = event.message || event.error?.message || '';
-  const shouldSuppress = suppressPatterns.some(pattern => 
-    message.toLowerCase().includes(pattern.toLowerCase())
+window.addEventListener("error", (event) => {
+  const message = event.message || event.error?.message || "";
+  const shouldSuppress = suppressPatterns.some((pattern) =>
+    message.toLowerCase().includes(pattern.toLowerCase()),
   );
-  
+
   if (shouldSuppress) {
     event.preventDefault();
     event.stopPropagation();
@@ -36,12 +36,12 @@ window.addEventListener('error', (event) => {
 });
 
 // Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', (event) => {
-  const message = event.reason?.message || event.reason || '';
-  const shouldSuppress = suppressPatterns.some(pattern => 
-    message.toString().toLowerCase().includes(pattern.toLowerCase())
+window.addEventListener("unhandledrejection", (event) => {
+  const message = event.reason?.message || event.reason || "";
+  const shouldSuppress = suppressPatterns.some((pattern) =>
+    message.toString().toLowerCase().includes(pattern.toLowerCase()),
   );
-  
+
   if (shouldSuppress) {
     event.preventDefault();
     return false;
@@ -50,22 +50,22 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // Console error suppression
 console.error = (...args) => {
-  const message = args.join(' ');
-  const shouldSuppress = suppressPatterns.some(pattern => 
-    message.toLowerCase().includes(pattern.toLowerCase())
+  const message = args.join(" ");
+  const shouldSuppress = suppressPatterns.some((pattern) =>
+    message.toLowerCase().includes(pattern.toLowerCase()),
   );
-  
+
   if (!shouldSuppress) {
     originalError.apply(console, args);
   }
 };
 
 console.warn = (...args) => {
-  const message = args.join(' ');
-  const shouldSuppress = suppressPatterns.some(pattern => 
-    message.toLowerCase().includes(pattern.toLowerCase())
+  const message = args.join(" ");
+  const shouldSuppress = suppressPatterns.some((pattern) =>
+    message.toLowerCase().includes(pattern.toLowerCase()),
   );
-  
+
   if (!shouldSuppress) {
     originalWarn.apply(console, args);
   }
@@ -89,4 +89,4 @@ export const safeImport = async (modulePath) => {
   }
 };
 
-console.log('✅ Comprehensive error handler initialized');
+console.log("✅ Comprehensive error handler initialized");

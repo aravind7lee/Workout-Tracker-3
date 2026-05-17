@@ -1,8 +1,8 @@
 // Hook for Real-Time Workout Stats
 // Provides instant updates across all components
 
-import { useState, useEffect } from 'react';
-import { realTimeWorkoutSync } from '../services/realTimeWorkoutSync';
+import { useState, useEffect } from "react";
+import { realTimeWorkoutSync } from "../services/realTimeWorkoutSync";
 
 export const useRealTimeWorkouts = () => {
   const [stats, setStats] = useState({
@@ -12,7 +12,7 @@ export const useRealTimeWorkouts = () => {
     monthlyWorkouts: 0,
     totalCalories: 0,
     totalDuration: 0,
-    lastUpdate: null
+    lastUpdate: null,
   });
   const [loading, setLoading] = useState(true);
 
@@ -62,7 +62,7 @@ export const useRealTimeWorkouts = () => {
     refreshStats,
     forceRefresh,
     getWorkoutHistory,
-    deleteWorkout
+    deleteWorkout,
   };
 };
 

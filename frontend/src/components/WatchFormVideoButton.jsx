@@ -1,22 +1,26 @@
 // Simple Watch Form Video Button Component
-import React from 'react';
-import { getExerciseVideo } from '../data/exerciseVideos';
+import React from "react";
+import { getExerciseVideo } from "../data/exerciseVideos";
 
-export default function WatchFormVideoButton({ exerciseName, className = '', size = 'md' }) {
+export default function WatchFormVideoButton({
+  exerciseName,
+  className = "",
+  size = "md",
+}) {
   const videoUrl = getExerciseVideo(exerciseName);
-  
+
   if (!videoUrl) return null;
-  
+
   const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-2 text-sm',
-    lg: 'px-4 py-2.5 text-base'
+    sm: "px-2 py-1 text-xs",
+    md: "px-3 py-2 text-sm",
+    lg: "px-4 py-2.5 text-base",
   };
-  
+
   const handleClick = () => {
-    window.open(videoUrl, '_blank', 'noopener,noreferrer');
+    window.open(videoUrl, "_blank", "noopener,noreferrer");
   };
-  
+
   return (
     <button
       onClick={handleClick}
@@ -30,15 +34,15 @@ export default function WatchFormVideoButton({ exerciseName, className = '', siz
 }
 
 // Compact version for cards
-export function WatchFormVideoLink({ exerciseName, className = '' }) {
+export function WatchFormVideoLink({ exerciseName, className = "" }) {
   const videoUrl = getExerciseVideo(exerciseName);
-  
+
   if (!videoUrl) return null;
-  
+
   const handleClick = () => {
-    window.open(videoUrl, '_blank', 'noopener,noreferrer');
+    window.open(videoUrl, "_blank", "noopener,noreferrer");
   };
-  
+
   return (
     <button
       onClick={handleClick}

@@ -268,13 +268,13 @@ module.exports = router;
 export const workoutBackendAPI = {
   // Complete a workout
   completeWorkout: async (workoutData) => {
-    const response = await fetch('/api/workouts/complete', {
-      method: 'POST',
+    const response = await fetch("/api/workouts/complete", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(workoutData)
+      body: JSON.stringify(workoutData),
     });
     return response.json();
   },
@@ -282,11 +282,14 @@ export const workoutBackendAPI = {
   // Get completed workouts
   getCompletedWorkouts: async (userId, options = {}) => {
     const params = new URLSearchParams(options);
-    const response = await fetch(`/api/workouts/completed/${userId}?${params}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
+    const response = await fetch(
+      `/api/workouts/completed/${userId}?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+    );
     return response.json();
   },
 
@@ -294,8 +297,8 @@ export const workoutBackendAPI = {
   getWorkoutStats: async (userId) => {
     const response = await fetch(`/api/workouts/stats/${userId}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
     return response.json();
   },
@@ -303,11 +306,11 @@ export const workoutBackendAPI = {
   // Delete a workout
   deleteWorkout: async (workoutId) => {
     const response = await fetch(`/api/workouts/${workoutId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
     return response.json();
-  }
+  },
 };

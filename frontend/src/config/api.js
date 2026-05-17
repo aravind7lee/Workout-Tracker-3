@@ -1,24 +1,26 @@
 // Frontend API Configuration - LOCAL DEVELOPMENT
 export const API_CONFIG = {
   // Local development backend URL
-  BASE_URL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000',
-  
+  BASE_URL:
+    import.meta.env.VITE_API_URL?.replace("/api", "") ||
+    "http://localhost:5000",
+
   // API Endpoints
   ENDPOINTS: {
     // Root API
-    ROOT: '/api',
-    
+    ROOT: "/api",
+
     // Test endpoint
-    TEST: '/api/test',
-    
+    TEST: "/api/test",
+
     // Health check
-    HEALTH: '/api/health',
-    
+    HEALTH: "/api/health",
+
     // Authentication
-    REGISTER: '/api/auth/register',
-    LOGIN: '/api/auth/login',
+    REGISTER: "/api/auth/register",
+    LOGIN: "/api/auth/login",
   },
-  
+
   // Full URLs for direct use (dynamically generated)
   get URLS() {
     return {
@@ -28,21 +30,21 @@ export const API_CONFIG = {
       REGISTER: `${this.BASE_URL}/api/auth/register`,
       LOGIN: `${this.BASE_URL}/api/auth/login`,
     };
-  }
+  },
 };
 
 // API Helper Functions
 export const apiCall = async (endpoint, options = {}) => {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-  
+
   const defaultOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   };
-  
+
   const finalOptions = { ...defaultOptions, ...options };
-  
+
   try {
     const response = await fetch(url, finalOptions);
     const data = await response.json();
@@ -56,25 +58,25 @@ export const apiCall = async (endpoint, options = {}) => {
 export const authAPI = {
   register: async (userData) => {
     return apiCall(API_CONFIG.ENDPOINTS.REGISTER, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(userData),
     });
   },
-  
+
   login: async (credentials) => {
     return apiCall(API_CONFIG.ENDPOINTS.LOGIN, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(credentials),
     });
   },
-  
+
   testConnection: async () => {
     return apiCall(API_CONFIG.ENDPOINTS.TEST);
   },
-  
+
   healthCheck: async () => {
     return apiCall(API_CONFIG.ENDPOINTS.HEALTH);
-  }
+  },
 };
 
 // Legacy export for backward compatibility

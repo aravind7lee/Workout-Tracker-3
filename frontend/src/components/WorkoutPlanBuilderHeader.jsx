@@ -1,27 +1,32 @@
 // frontend/src/components/WorkoutPlanBuilderHeader.jsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import MyPlansHeaderImg from '../assets/Myplansheader.jpg';
-import '../styles/my-plans-hero.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import MyPlansHeaderImg from "../assets/Myplansheader.jpg";
+import "../styles/my-plans-hero.css";
 
 export default function WorkoutPlanBuilderHeader() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   // LQIP for Plan Builder
-  const PLAN_BUILDER_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+  const PLAN_BUILDER_LQIP =
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
     img.src = MyPlansHeaderImg;
-    img.loading = 'eager';
+    img.loading = "eager";
   }, []);
 
   return (
-    <section className="workout-builder-header relative h-screen w-full overflow-hidden" role="banner" aria-label="My Plans Hero Section">
+    <section
+      className="workout-builder-header relative h-screen w-full overflow-hidden"
+      role="banner"
+      aria-label="My Plans Hero Section"
+    >
       {/* Background Image */}
       <div className="absolute inset-0">
         {/* LQIP Placeholder */}
@@ -31,7 +36,7 @@ export default function WorkoutPlanBuilderHeader() {
           className="w-full h-full object-cover blur-sm transition-opacity duration-300"
           style={{ opacity: imageLoaded ? 0 : 1 }}
         />
-        
+
         {/* Main Image */}
         {!imageError && (
           <img
@@ -44,33 +49,57 @@ export default function WorkoutPlanBuilderHeader() {
             style={{ opacity: imageLoaded ? 1 : 0 }}
           />
         )}
-        
+
         {/* Fallback */}
         {imageError && (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 absolute inset-0"></div>
         )}
         {/* Light Gradient Overlay - Preserve Image Clarity */}
-        <div className="gradient-overlay absolute inset-0" 
-             style={{
-               background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)'
-             }}></div>
-        
+        <div
+          className="gradient-overlay absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)",
+          }}
+        ></div>
+
         {/* Professional Particle Background Accent */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-10 left-10 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          <div className="absolute top-20 right-20 w-1 h-1 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
-          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
-          <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
+          <div
+            className="absolute top-20 right-20 w-1 h-1 bg-red-600 rounded-full animate-pulse"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full animate-pulse"
+            style={{ animationDelay: "1.5s" }}
+          ></div>
+          <div
+            className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse"
+            style={{ animationDelay: "2s" }}
+          ></div>
+          <div
+            className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"
+            style={{ animationDelay: "2.5s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 left-1/2 w-1 h-1 bg-red-600 rounded-full animate-pulse"
+            style={{ animationDelay: "3s" }}
+          ></div>
+          <div
+            className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"
+            style={{ animationDelay: "3.5s" }}
+          ></div>
         </div>
       </div>
 
       {/* Content Container - Full Viewport Height Professional Layout */}
       {imageLoaded && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -78,35 +107,37 @@ export default function WorkoutPlanBuilderHeader() {
         >
           <div className="max-w-4xl mx-auto">
             {/* Main Heading - Professional Style */}
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 drop-shadow-2xl"
               style={{
-                color: '#f59e0b',
-                textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6)'
+                color: "#f59e0b",
+                textShadow:
+                  "0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6)",
               }}
             >
               My Workout Plans
             </motion.h1>
-            
+
             {/* Subtitle - Clean and Professional */}
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
               className="text-sm text-white sm:text-base md:text-lg max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed drop-shadow-lg"
               style={{
-                color: 'var(--color-text-secondary, rgba(255,255,255,0.95))',
-                textShadow: '0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)'
+                color: "var(--color-text-secondary, rgba(255,255,255,0.95))",
+                textShadow:
+                  "0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)",
               }}
             >
               Track, customize, and follow your training programs effortlessly.
             </motion.p>
-            
+
             {/* Action Buttons */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.7 }}
@@ -115,14 +146,35 @@ export default function WorkoutPlanBuilderHeader() {
               <motion.button
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => document.getElementById('plans-content')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document
+                    .getElementById("plans-content")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 aria-label="View your workout plans"
                 className="premium-btn-primary btn-primary preserve-color"
               >
                 View My Plans
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M1 6.5h11M7 1l5 5.5-5 5.5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </motion.button>
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <motion.div
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
                 <Link
                   to="/plans"
                   aria-label="Create new workout plan"
@@ -132,16 +184,18 @@ export default function WorkoutPlanBuilderHeader() {
                 </Link>
               </motion.div>
             </motion.div>
-            
+
             {/* Professional Badge */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.9 }}
               className="flex justify-center"
             >
-              <div className="bg-red-600/20 backdrop-blur-md border border-red-500/30 rounded-full px-3 py-1 text-xs"
-                   style={{ color: 'var(--color-text-muted, #999999)' }}>
+              <div
+                className="bg-red-600/20 backdrop-blur-md border border-red-500/30 rounded-full px-3 py-1 text-xs"
+                style={{ color: "var(--color-text-muted, #999999)" }}
+              >
                 <span className="flex items-center gap-1">
                   <span>Professional Gym Tracker</span>
                 </span>
@@ -150,8 +204,6 @@ export default function WorkoutPlanBuilderHeader() {
           </div>
         </motion.div>
       )}
-
-
     </section>
   );
 }

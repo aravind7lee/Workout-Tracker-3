@@ -1,7 +1,7 @@
 // Custom hook for PR tracking across the entire website
-import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import PRService from '../services/prService';
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import PRService from "../services/prService";
 
 export const usePRTracking = () => {
   const { user } = useAuth();
@@ -19,28 +19,28 @@ export const usePRTracking = () => {
   useEffect(() => {
     const handleNewPR = (event) => {
       const { userId, exerciseName, newPRs, updatedPR } = event.detail;
-      
+
       if (userId === user?.id) {
         // Update user PRs
-        setUserPRs(prev => ({
+        setUserPRs((prev) => ({
           ...prev,
-          [exerciseName]: updatedPR
+          [exerciseName]: updatedPR,
         }));
-        
+
         // Add to recent PRs
-        setRecentPRs(prev => [
+        setRecentPRs((prev) => [
           {
             exerciseName,
             newPRs,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
-          ...prev.slice(0, 9) // Keep last 10 PRs
+          ...prev.slice(0, 9), // Keep last 10 PRs
         ]);
       }
     };
 
-    window.addEventListener('newPRRecord', handleNewPR);
-    return () => window.removeEventListener('newPRRecord', handleNewPR);
+    window.addEventListener("newPRRecord", handleNewPR);
+    return () => window.removeEventListener("newPRRecord", handleNewPR);
   }, [user?.id]);
 
   const getPRForExercise = (exerciseName) => {
@@ -50,7 +50,7 @@ export const usePRTracking = () => {
   const checkIfNewPR = (exerciseName, weight, reps, volume) => {
     const currentPR = getPRForExercise(exerciseName);
     if (!currentPR) return true; // First time doing this exercise
-    
+
     return (
       weight > (currentPR.maxWeight || 0) ||
       reps > (currentPR.maxReps || 0) ||
@@ -62,7 +62,7 @@ export const usePRTracking = () => {
     userPRs,
     recentPRs,
     getPRForExercise,
-    checkIfNewPR
+    checkIfNewPR,
   };
 };
 

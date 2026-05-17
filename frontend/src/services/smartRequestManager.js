@@ -1,5 +1,5 @@
 // Smart Request Manager - Handles rate limiting and CORS issues
-import api from '../utils/api';
+import api from "../utils/api";
 
 class SmartRequestManager {
   constructor() {
@@ -14,23 +14,26 @@ class SmartRequestManager {
     try {
       // Add delay to prevent rate limiting
       if (retryCount > 0) {
-        const delay = this.rateLimitDelay * Math.pow(this.backoffMultiplier, retryCount - 1);
+        const delay =
+          this.rateLimitDelay *
+          Math.pow(this.backoffMultiplier, retryCount - 1);
         await this.sleep(delay);
       }
 
       const response = await api(config);
       return response;
-
     } catch (error) {
       // Handle rate limiting (429)
       if (error.response?.status === 429 && retryCount < this.maxRetries) {
-        console.log(`Rate limited, retrying in ${this.rateLimitDelay * Math.pow(this.backoffMultiplier, retryCount)}ms...`);
+        console.log(
+          `Rate limited, retrying in ${this.rateLimitDelay * Math.pow(this.backoffMultiplier, retryCount)}ms...`,
+        );
         return this.makeRequest(config, retryCount + 1);
       }
 
       // Handle CORS errors by switching to offline mode
-      if (error.code === 'ERR_NETWORK' || error.message?.includes('CORS')) {
-        console.log('Network/CORS error, switching to offline mode');
+      if (error.code === "ERR_NETWORK" || error.message?.includes("CORS")) {
+        console.log("Network/CORS error, switching to offline mode");
         throw { ...error, offline: true };
       }
 
@@ -70,41 +73,41 @@ class SmartRequestManager {
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Specific methods for common requests
   async get(url, config = {}) {
     return this.queueRequest({
-      method: 'GET',
+      method: "GET",
       url,
-      ...config
+      ...config,
     });
   }
 
   async post(url, data, config = {}) {
     return this.queueRequest({
-      method: 'POST',
+      method: "POST",
       url,
       data,
-      ...config
+      ...config,
     });
   }
 
   async put(url, data, config = {}) {
     return this.queueRequest({
-      method: 'PUT',
+      method: "PUT",
       url,
       data,
-      ...config
+      ...config,
     });
   }
 
   async delete(url, config = {}) {
     return this.queueRequest({
-      method: 'DELETE',
+      method: "DELETE",
       url,
-      ...config
+      ...config,
     });
   }
 }
@@ -118,26 +121,26 @@ export const safeApiCall = async (requestFn, fallbackData = null) => {
     const result = await requestFn();
     return { success: true, data: result.data, online: true };
   } catch (error) {
-    console.warn('API call failed, using fallback:', error.message);
-    
-    if (error.offline || error.code === 'ERR_NETWORK') {
-      return { 
-        success: false, 
-        data: fallbackData, 
-        online: false, 
-        error: 'Offline mode' 
+    console.warn("API call failed, using fallback:", error.message);
+
+    if (error.offline || error.code === "ERR_NETWORK") {
+      return {
+        success: false,
+        data: fallbackData,
+        online: false,
+        error: "Offline mode",
       };
     }
-    
+
     if (error.response?.status === 429) {
-      return { 
-        success: false, 
-        data: fallbackData, 
-        online: true, 
-        error: 'Rate limited' 
+      return {
+        success: false,
+        data: fallbackData,
+        online: true,
+        error: "Rate limited",
       };
     }
-    
+
     throw error;
   }
 };

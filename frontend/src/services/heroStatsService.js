@@ -1,6 +1,6 @@
 // frontend/src/services/heroStatsService.js
-import api from '../utils/api';
-import { isUserAuthenticated } from '../utils/authCheck';
+import api from "../utils/api";
+import { isUserAuthenticated } from "../utils/authCheck";
 
 class HeroStatsService {
   // Get real-time user stats for Hero section
@@ -15,13 +15,13 @@ class HeroStatsService {
         weeklyGoal: {
           completed: 0,
           target: 4,
-          percentage: 0
-        }
+          percentage: 0,
+        },
       };
     }
-    
+
     try {
-      const response = await api.get('/analytics/hero-stats');
+      const response = await api.get("/analytics/hero-stats");
       return response.data;
     } catch (error) {
       // Return default stats if API fails
@@ -33,8 +33,8 @@ class HeroStatsService {
         weeklyGoal: {
           completed: 0,
           target: 4,
-          percentage: 0
-        }
+          percentage: 0,
+        },
       };
     }
   }
@@ -44,13 +44,13 @@ class HeroStatsService {
     if (!isUserAuthenticated()) {
       return;
     }
-    
+
     try {
-      await api.post('/analytics/track-workout-completion');
+      await api.post("/analytics/track-workout-completion");
     } catch (error) {
       // Silently fail if not authenticated
-      if (!error.message?.includes('authentication')) {
-        console.error('Failed to track workout:', error);
+      if (!error.message?.includes("authentication")) {
+        console.error("Failed to track workout:", error);
       }
     }
   }
@@ -60,13 +60,13 @@ class HeroStatsService {
     if (!isUserAuthenticated()) {
       return;
     }
-    
+
     try {
-      await api.post('/analytics/track-meal-logging');
+      await api.post("/analytics/track-meal-logging");
     } catch (error) {
       // Silently fail if not authenticated
-      if (!error.message?.includes('authentication')) {
-        console.error('Failed to track meal:', error);
+      if (!error.message?.includes("authentication")) {
+        console.error("Failed to track meal:", error);
       }
     }
   }

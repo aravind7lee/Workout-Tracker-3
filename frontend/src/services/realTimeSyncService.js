@@ -1,6 +1,6 @@
 // Real-time Sync Service for Professional Gym App Experience
-import { onlineService } from './onlineService';
-import { offlineStorageService } from './offlineStorageService';
+import { onlineService } from "./onlineService";
+import { offlineStorageService } from "./offlineStorageService";
 
 class RealTimeSyncService {
   constructor() {
@@ -9,21 +9,21 @@ class RealTimeSyncService {
     this.syncInProgress = false;
     this.lastSyncTime = null;
     this.syncCallbacks = [];
-    
+
     // Listen for online/offline events
     this.setupNetworkListeners();
   }
 
   setupNetworkListeners() {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => {
-        console.log('🌐 Network back online - initiating sync...');
+    if (typeof window !== "undefined") {
+      window.addEventListener("online", () => {
+        console.log("🌐 Network back online - initiating sync...");
         this.isOnline = true;
         this.performFullSync();
       });
 
-      window.addEventListener('offline', () => {
-        console.log('📱 Network offline - switching to offline mode...');
+      window.addEventListener("offline", () => {
+        console.log("📱 Network offline - switching to offline mode...");
         this.isOnline = false;
         this.stopAutoSync();
       });
@@ -36,13 +36,18 @@ class RealTimeSyncService {
       clearInterval(this.syncInterval);
     }
 
-    this.syncInterval = setInterval(async () => {
-      if (this.isOnline && !this.syncInProgress) {
-        await this.performIncrementalSync();
-      }
-    }, intervalMinutes * 60 * 1000);
+    this.syncInterval = setInterval(
+      async () => {
+        if (this.isOnline && !this.syncInProgress) {
+          await this.performIncrementalSync();
+        }
+      },
+      intervalMinutes * 60 * 1000,
+    );
 
-    console.log(`🔄 Real-time sync started (every ${intervalMinutes} minute${intervalMinutes > 1 ? 's' : ''})`);
+    console.log(
+      `🔄 Real-time sync started (every ${intervalMinutes} minute${intervalMinutes > 1 ? "s" : ""})`,
+    );
   }
 
   // Stop auto sync
@@ -50,22 +55,22 @@ class RealTimeSyncService {
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
       this.syncInterval = null;
-      console.log('⏹️ Real-time sync stopped');
+      console.log("⏹️ Real-time sync stopped");
     }
   }
 
   // Perform full synchronization
   async performFullSync() {
     if (this.syncInProgress) return;
-    
+
     this.syncInProgress = true;
-    console.log('🔄 Starting full sync...');
+    console.log("🔄 Starting full sync...");
 
     try {
       // Check if backend is online
       const backendOnline = await onlineService.checkBackendStatus();
       if (!backendOnline) {
-        console.log('⚠️ Backend offline, skipping sync');
+        console.log("⚠️ Backend offline, skipping sync");
         return;
       }
 
@@ -76,7 +81,7 @@ class RealTimeSyncService {
       const [userProgress, workoutHistory, exerciseStats] = await Promise.all([
         onlineService.getAnalytics(),
         onlineService.getWorkoutHistory(),
-        onlineService.getUserExerciseStats()
+        onlineService.getUserExerciseStats(),
       ]);
 
       // Cache the fresh data
@@ -93,19 +98,18 @@ class RealTimeSyncService {
       }
 
       this.lastSyncTime = new Date();
-      console.log('✅ Full sync completed successfully');
+      console.log("✅ Full sync completed successfully");
 
       // Notify callbacks
-      this.notifyCallbacks('full_sync_complete', {
+      this.notifyCallbacks("full_sync_complete", {
         userProgress,
         workoutHistory,
         exerciseStats,
-        timestamp: this.lastSyncTime
+        timestamp: this.lastSyncTime,
       });
-
     } catch (error) {
-      console.error('❌ Full sync failed:', error);
-      this.notifyCallbacks('sync_error', { error, type: 'full_sync' });
+      console.error("❌ Full sync failed:", error);
+      this.notifyCallbacks("sync_error", { error, type: "full_sync" });
     } finally {
       this.syncInProgress = false;
     }
@@ -114,7 +118,7 @@ class RealTimeSyncService {
   // Perform incremental synchronization
   async performIncrementalSync() {
     if (this.syncInProgress) return;
-    
+
     this.syncInProgress = true;
 
     try {
@@ -131,17 +135,16 @@ class RealTimeSyncService {
       const userProgress = await onlineService.getAnalytics();
       if (userProgress) {
         offlineStorageService.cacheUserProgress(userProgress);
-        
-        this.notifyCallbacks('incremental_sync_complete', {
+
+        this.notifyCallbacks("incremental_sync_complete", {
           userProgress,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
       this.lastSyncTime = new Date();
-
     } catch (error) {
-      console.error('❌ Incremental sync failed:', error);
+      console.error("❌ Incremental sync failed:", error);
     } finally {
       this.syncInProgress = false;
     }
@@ -150,10 +153,12 @@ class RealTimeSyncService {
   // Sync offline data to backend
   async syncOfflineData() {
     const offlineData = offlineStorageService.getOfflineData();
-    
-    if (offlineData.workouts.length === 0 && 
-        offlineData.meals.length === 0 && 
-        offlineData.exercises.length === 0) {
+
+    if (
+      offlineData.workouts.length === 0 &&
+      offlineData.meals.length === 0 &&
+      offlineData.exercises.length === 0
+    ) {
       return; // Nothing to sync
     }
 
@@ -165,13 +170,15 @@ class RealTimeSyncService {
           workouts: [],
           meals: [],
           exercises: [],
-          lastSync: new Date().toISOString()
+          lastSync: new Date().toISOString(),
         });
-        
-        console.log(`✅ Synced ${offlineData.workouts.length + offlineData.meals.length + offlineData.exercises.length} offline items`);
+
+        console.log(
+          `✅ Synced ${offlineData.workouts.length + offlineData.meals.length + offlineData.exercises.length} offline items`,
+        );
       }
     } catch (error) {
-      console.error('❌ Failed to sync offline data:', error);
+      console.error("❌ Failed to sync offline data:", error);
     }
   }
 
@@ -186,22 +193,21 @@ class RealTimeSyncService {
           const cachedHistory = offlineStorageService.getCachedWorkoutHistory();
           cachedHistory.unshift(savedWorkout);
           offlineStorageService.cacheWorkoutHistory(cachedHistory.slice(0, 50)); // Keep last 50
-          
+
           // Update user progress
           await this.updateUserProgress();
-          
-          console.log('✅ Workout saved to backend');
+
+          console.log("✅ Workout saved to backend");
           return savedWorkout;
         }
       }
-      
+
       // Fallback to offline storage
       offlineStorageService.storeWorkoutOffline(workoutData);
-      console.log('📱 Workout saved offline');
+      console.log("📱 Workout saved offline");
       return { ...workoutData, isOffline: true };
-      
     } catch (error) {
-      console.error('❌ Failed to track workout:', error);
+      console.error("❌ Failed to track workout:", error);
       // Always save offline as fallback
       offlineStorageService.storeWorkoutOffline(workoutData);
       return { ...workoutData, isOffline: true };
@@ -215,34 +221,36 @@ class RealTimeSyncService {
         const savedMeal = await onlineService.saveMeal(mealData);
         if (savedMeal) {
           await this.updateUserProgress();
-          console.log('✅ Meal saved to backend');
+          console.log("✅ Meal saved to backend");
           return savedMeal;
         }
       }
-      
+
       offlineStorageService.storeMealOffline(mealData);
-      console.log('📱 Meal saved offline');
+      console.log("📱 Meal saved offline");
       return { ...mealData, isOffline: true };
-      
     } catch (error) {
-      console.error('❌ Failed to track meal:', error);
+      console.error("❌ Failed to track meal:", error);
       offlineStorageService.storeMealOffline(mealData);
       return { ...mealData, isOffline: true };
     }
   }
 
   // Track exercise interaction
-  async trackExerciseInteraction(exerciseId, action = 'view') {
+  async trackExerciseInteraction(exerciseId, action = "view") {
     try {
       if (this.isOnline) {
         await onlineService.trackExerciseInteraction(exerciseId, action);
         console.log(`✅ Exercise ${action} tracked for ${exerciseId}`);
       } else {
-        offlineStorageService.storeExerciseInteractionOffline(exerciseId, action);
+        offlineStorageService.storeExerciseInteractionOffline(
+          exerciseId,
+          action,
+        );
         console.log(`📱 Exercise ${action} saved offline for ${exerciseId}`);
       }
     } catch (error) {
-      console.error('❌ Failed to track exercise interaction:', error);
+      console.error("❌ Failed to track exercise interaction:", error);
       offlineStorageService.storeExerciseInteractionOffline(exerciseId, action);
     }
   }
@@ -253,10 +261,10 @@ class RealTimeSyncService {
       const progress = await onlineService.getAnalytics();
       if (progress) {
         offlineStorageService.cacheUserProgress(progress);
-        this.notifyCallbacks('progress_updated', progress);
+        this.notifyCallbacks("progress_updated", progress);
       }
     } catch (error) {
-      console.error('❌ Failed to update user progress:', error);
+      console.error("❌ Failed to update user progress:", error);
     }
   }
 
@@ -265,20 +273,23 @@ class RealTimeSyncService {
     try {
       const backendOnline = await onlineService.checkBackendStatus();
       this.isOnline = backendOnline;
-      
+
       if (backendOnline) {
         try {
           return await this.getFreshData();
         } catch (freshDataError) {
-          console.error('❌ Failed to get fresh data, using cached:', freshDataError);
+          console.error(
+            "❌ Failed to get fresh data, using cached:",
+            freshDataError,
+          );
           return this.getCachedData();
         }
       }
-      
+
       // Return cached data
       return this.getCachedData();
     } catch (error) {
-      console.error('❌ Failed to get real-time data:', error);
+      console.error("❌ Failed to get real-time data:", error);
       return this.getCachedData();
     }
   }
@@ -289,21 +300,26 @@ class RealTimeSyncService {
       const results = await Promise.allSettled([
         onlineService.getAnalytics(),
         onlineService.getWorkoutHistory(),
-        onlineService.getUserExerciseStats()
+        onlineService.getUserExerciseStats(),
       ]);
-      
-      const userProgress = results[0].status === 'fulfilled' ? results[0].value : null;
-      const workoutHistory = results[1].status === 'fulfilled' ? results[1].value : [];
-      const exerciseStats = results[2].status === 'fulfilled' ? results[2].value : {};
+
+      const userProgress =
+        results[0].status === "fulfilled" ? results[0].value : null;
+      const workoutHistory =
+        results[1].status === "fulfilled" ? results[1].value : [];
+      const exerciseStats =
+        results[2].status === "fulfilled" ? results[2].value : {};
 
       // Cache the fresh data
       if (userProgress) offlineStorageService.cacheUserProgress(userProgress);
-      if (workoutHistory && Array.isArray(workoutHistory)) offlineStorageService.cacheWorkoutHistory(workoutHistory);
-      if (exerciseStats && typeof exerciseStats === 'object') offlineStorageService.cacheExerciseStats(exerciseStats);
+      if (workoutHistory && Array.isArray(workoutHistory))
+        offlineStorageService.cacheWorkoutHistory(workoutHistory);
+      if (exerciseStats && typeof exerciseStats === "object")
+        offlineStorageService.cacheExerciseStats(exerciseStats);
 
       return { userProgress, workoutHistory, exerciseStats, isLive: true };
     } catch (error) {
-      console.error('❌ Error getting fresh data:', error);
+      console.error("❌ Error getting fresh data:", error);
       throw error;
     }
   }
@@ -315,19 +331,22 @@ class RealTimeSyncService {
       const workoutHistory = offlineStorageService.getCachedWorkoutHistory();
       const exerciseStats = offlineStorageService.getCachedExerciseStats();
 
-      return { 
-        userProgress: userProgress || null, 
-        workoutHistory: (workoutHistory && workoutHistory.workouts) ? workoutHistory.workouts : [], 
-        exerciseStats: exerciseStats || {}, 
-        isLive: false 
+      return {
+        userProgress: userProgress || null,
+        workoutHistory:
+          workoutHistory && workoutHistory.workouts
+            ? workoutHistory.workouts
+            : [],
+        exerciseStats: exerciseStats || {},
+        isLive: false,
       };
     } catch (error) {
-      console.error('❌ Error getting cached data:', error);
+      console.error("❌ Error getting cached data:", error);
       return {
         userProgress: null,
         workoutHistory: [],
         exerciseStats: {},
-        isLive: false
+        isLive: false,
       };
     }
   }
@@ -339,16 +358,16 @@ class RealTimeSyncService {
 
   // Remove sync callback
   offSync(callback) {
-    this.syncCallbacks = this.syncCallbacks.filter(cb => cb !== callback);
+    this.syncCallbacks = this.syncCallbacks.filter((cb) => cb !== callback);
   }
 
   // Notify all callbacks
   notifyCallbacks(event, data) {
-    this.syncCallbacks.forEach(callback => {
+    this.syncCallbacks.forEach((callback) => {
       try {
         callback(event, data);
       } catch (error) {
-        console.error('❌ Sync callback error:', error);
+        console.error("❌ Sync callback error:", error);
       }
     });
   }
@@ -357,24 +376,25 @@ class RealTimeSyncService {
   getSyncStatus() {
     try {
       const storageInfo = offlineStorageService.getStorageInfo();
-      
+
       return {
         isOnline: this.isOnline,
         syncInProgress: this.syncInProgress,
         lastSyncTime: this.lastSyncTime,
-        pendingOfflineItems: (storageInfo?.offlineWorkouts || 0) + 
-                            (storageInfo?.offlineMeals || 0) + 
-                            (storageInfo?.offlineExercises || 0),
-        storageInfo
+        pendingOfflineItems:
+          (storageInfo?.offlineWorkouts || 0) +
+          (storageInfo?.offlineMeals || 0) +
+          (storageInfo?.offlineExercises || 0),
+        storageInfo,
       };
     } catch (error) {
-      console.error('❌ Error getting sync status:', error);
+      console.error("❌ Error getting sync status:", error);
       return {
         isOnline: this.isOnline,
         syncInProgress: this.syncInProgress,
         lastSyncTime: this.lastSyncTime,
         pendingOfflineItems: 0,
-        storageInfo: null
+        storageInfo: null,
       };
     }
   }
@@ -384,7 +404,7 @@ class RealTimeSyncService {
     if (this.isOnline) {
       await this.performFullSync();
     } else {
-      console.log('⚠️ Cannot sync while offline');
+      console.log("⚠️ Cannot sync while offline");
     }
   }
 
@@ -392,10 +412,10 @@ class RealTimeSyncService {
   destroy() {
     this.stopAutoSync();
     this.syncCallbacks = [];
-    
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('online', this.handleOnline);
-      window.removeEventListener('offline', this.handleOffline);
+
+    if (typeof window !== "undefined") {
+      window.removeEventListener("online", this.handleOnline);
+      window.removeEventListener("offline", this.handleOffline);
     }
   }
 }

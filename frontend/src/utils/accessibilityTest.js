@@ -8,16 +8,18 @@ export const testContrastRatio = (foregroundColor, backgroundColor) => {
   // Convert hex to RGB
   const hexToRgb = (hex) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   };
 
   // Calculate relative luminance
   const getLuminance = (r, g, b) => {
-    const [rs, gs, bs] = [r, g, b].map(c => {
+    const [rs, gs, bs] = [r, g, b].map((c) => {
       c = c / 255;
       return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     });
@@ -35,17 +37,17 @@ export const testContrastRatio = (foregroundColor, backgroundColor) => {
 
   const fg = hexToRgb(foregroundColor);
   const bg = hexToRgb(backgroundColor);
-  
+
   if (!fg || !bg) return null;
-  
+
   const ratio = getContrastRatio(fg, bg);
-  
+
   return {
     ratio: ratio.toFixed(2),
     passesAA: ratio >= 4.5,
     passesAAA: ratio >= 7,
     passesLargeAA: ratio >= 3,
-    passesLargeAAA: ratio >= 4.5
+    passesLargeAAA: ratio >= 4.5,
   };
 };
 
@@ -54,28 +56,33 @@ export const testContrastRatio = (foregroundColor, backgroundColor) => {
  */
 export const testKeyboardNavigation = () => {
   const focusableElements = document.querySelectorAll(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   );
-  
+
   const results = {
     totalFocusableElements: focusableElements.length,
     elementsWithVisibleFocus: 0,
     elementsWithAriaLabels: 0,
-    issues: []
+    issues: [],
   };
 
   focusableElements.forEach((element, index) => {
     // Check for visible focus indicators
-    const computedStyle = window.getComputedStyle(element, ':focus');
-    if (computedStyle.outline !== 'none' || computedStyle.boxShadow !== 'none') {
+    const computedStyle = window.getComputedStyle(element, ":focus");
+    if (
+      computedStyle.outline !== "none" ||
+      computedStyle.boxShadow !== "none"
+    ) {
       results.elementsWithVisibleFocus++;
     }
 
     // Check for aria-label or accessible name
-    if (element.getAttribute('aria-label') || 
-        element.getAttribute('aria-labelledby') ||
-        element.textContent.trim() ||
-        element.getAttribute('title')) {
+    if (
+      element.getAttribute("aria-label") ||
+      element.getAttribute("aria-labelledby") ||
+      element.textContent.trim() ||
+      element.getAttribute("title")
+    ) {
       results.elementsWithAriaLabels++;
     } else {
       results.issues.push(`Element ${index + 1} lacks accessible name`);
@@ -91,17 +98,18 @@ export const testKeyboardNavigation = () => {
 export const testScreenReaderCompatibility = () => {
   const results = {
     hasMainLandmark: !!document.querySelector('main, [role="main"]'),
-    hasHeadingStructure: document.querySelectorAll('h1, h2, h3, h4, h5, h6').length > 0,
+    hasHeadingStructure:
+      document.querySelectorAll("h1, h2, h3, h4, h5, h6").length > 0,
     hasSkipLinks: !!document.querySelector('a[href^="#"]'),
     imagesWithAltText: 0,
     imagesWithoutAltText: 0,
-    issues: []
+    issues: [],
   };
 
   // Check images
-  const images = document.querySelectorAll('img');
+  const images = document.querySelectorAll("img");
   images.forEach((img, index) => {
-    if (img.getAttribute('alt') !== null) {
+    if (img.getAttribute("alt") !== null) {
       results.imagesWithAltText++;
     } else {
       results.imagesWithoutAltText++;
@@ -110,7 +118,9 @@ export const testScreenReaderCompatibility = () => {
   });
 
   // Check for proper heading hierarchy
-  const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+  const headings = Array.from(
+    document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+  );
   let previousLevel = 0;
   headings.forEach((heading, index) => {
     const currentLevel = parseInt(heading.tagName.charAt(1));
@@ -132,21 +142,23 @@ export const testResponsiveAccessibility = () => {
     textScalesTo200Percent: true, // Would need actual testing
     noHorizontalScrollAt320px: true, // Would need actual testing
     touchTargetsMinimum44px: true, // Would need actual measurement
-    issues: []
+    issues: [],
   };
 
   // Check viewport meta tag
   const viewportMeta = document.querySelector('meta[name="viewport"]');
   if (viewportMeta) {
-    const content = viewportMeta.getAttribute('content');
-    if (!content.includes('width=device-width')) {
-      results.issues.push('Viewport meta tag should include width=device-width');
+    const content = viewportMeta.getAttribute("content");
+    if (!content.includes("width=device-width")) {
+      results.issues.push(
+        "Viewport meta tag should include width=device-width",
+      );
     }
-    if (content.includes('user-scalable=no')) {
-      results.issues.push('Viewport meta tag should not disable user scaling');
+    if (content.includes("user-scalable=no")) {
+      results.issues.push("Viewport meta tag should not disable user scaling");
     }
   } else {
-    results.issues.push('Missing viewport meta tag');
+    results.issues.push("Missing viewport meta tag");
   }
 
   return results;
@@ -159,25 +171,33 @@ export const testMotionAccessibility = () => {
   const results = {
     respectsReducedMotion: false,
     hasAutoplayingContent: false,
-    issues: []
+    issues: [],
   };
 
   // Check for prefers-reduced-motion support
-  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedMotionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  );
   if (reducedMotionQuery.matches) {
     // Check if animations are disabled
-    const animatedElements = document.querySelectorAll('[style*="animation"], .animate-');
+    const animatedElements = document.querySelectorAll(
+      '[style*="animation"], .animate-',
+    );
     results.respectsReducedMotion = animatedElements.length === 0;
     if (!results.respectsReducedMotion) {
-      results.issues.push('Animations not disabled for users who prefer reduced motion');
+      results.issues.push(
+        "Animations not disabled for users who prefer reduced motion",
+      );
     }
   }
 
   // Check for autoplaying content
-  const autoplayElements = document.querySelectorAll('video[autoplay], audio[autoplay]');
+  const autoplayElements = document.querySelectorAll(
+    "video[autoplay], audio[autoplay]",
+  );
   results.hasAutoplayingContent = autoplayElements.length > 0;
   if (results.hasAutoplayingContent) {
-    results.issues.push('Autoplaying media content detected');
+    results.issues.push("Autoplaying media content detected");
   }
 
   return results;
@@ -191,8 +211,8 @@ export const runAccessibilityAudit = () => {
     timestamp: new Date().toISOString(),
     contrast: {
       // Test common color combinations
-      whiteOnDarkOverlay: testContrastRatio('#ffffff', '#000000'),
-      whiteOnMediumOverlay: testContrastRatio('#ffffff', '#404040'),
+      whiteOnDarkOverlay: testContrastRatio("#ffffff", "#000000"),
+      whiteOnMediumOverlay: testContrastRatio("#ffffff", "#404040"),
     },
     keyboard: testKeyboardNavigation(),
     screenReader: testScreenReaderCompatibility(),
@@ -201,8 +221,8 @@ export const runAccessibilityAudit = () => {
     overall: {
       score: 0,
       issues: [],
-      recommendations: []
-    }
+      recommendations: [],
+    },
   };
 
   // Calculate overall score
@@ -214,7 +234,11 @@ export const runAccessibilityAudit = () => {
   totalTests++;
 
   // Keyboard navigation
-  if (audit.keyboard.elementsWithVisibleFocus === audit.keyboard.totalFocusableElements) passedTests++;
+  if (
+    audit.keyboard.elementsWithVisibleFocus ===
+    audit.keyboard.totalFocusableElements
+  )
+    passedTests++;
   totalTests++;
 
   // Screen reader compatibility
@@ -238,19 +262,19 @@ export const runAccessibilityAudit = () => {
     ...audit.keyboard.issues,
     ...audit.screenReader.issues,
     ...audit.responsive.issues,
-    ...audit.motion.issues
+    ...audit.motion.issues,
   ];
 
   // Generate recommendations
   if (audit.overall.score < 100) {
     audit.overall.recommendations = [
-      'Ensure all interactive elements have visible focus indicators',
-      'Provide alternative text for all images',
-      'Use proper heading hierarchy (h1, h2, h3, etc.)',
-      'Test with screen readers and keyboard-only navigation',
-      'Verify color contrast meets WCAG AA standards (4.5:1)',
-      'Respect user preferences for reduced motion',
-      'Ensure touch targets are at least 44px in size'
+      "Ensure all interactive elements have visible focus indicators",
+      "Provide alternative text for all images",
+      "Use proper heading hierarchy (h1, h2, h3, etc.)",
+      "Test with screen readers and keyboard-only navigation",
+      "Verify color contrast meets WCAG AA standards (4.5:1)",
+      "Respect user preferences for reduced motion",
+      "Ensure touch targets are at least 44px in size",
     ];
   }
 
@@ -264,5 +288,5 @@ export default {
   testScreenReaderCompatibility,
   testResponsiveAccessibility,
   testMotionAccessibility,
-  runAccessibilityAudit
+  runAccessibilityAudit,
 };

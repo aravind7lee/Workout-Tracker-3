@@ -1,5 +1,5 @@
 // Dark Mode Only Theme Context
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from "react";
 
 const ThemeContext = createContext();
 
@@ -8,27 +8,25 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     try {
       const root = document.documentElement;
-      root.classList.remove('light');
-      root.classList.add('dark');
-      
+      root.classList.remove("light");
+      root.classList.add("dark");
+
       // Ensure body has dark theme
-      document.body.classList.add('dark');
-      
+      document.body.classList.add("dark");
+
       // Set data attribute
-      root.setAttribute('data-theme', 'dark');
+      root.setAttribute("data-theme", "dark");
     } catch (error) {
       // Silently handle any DOM errors
     }
   }, []);
 
   const value = {
-    theme: 'dark'
+    theme: "dark",
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
 
@@ -36,7 +34,7 @@ export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
     // Return default theme instead of throwing error
-    return { theme: 'dark' };
+    return { theme: "dark" };
   }
   return context;
 };

@@ -1,9 +1,14 @@
 // frontend/src/pages/ExerciseDetail.jsx
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon, PlayIcon, HeartIcon, ShareIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import ReviewSystem from '../components/ReviewSystem';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  ArrowLeftIcon,
+  PlayIcon,
+  HeartIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
+import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
+import ReviewSystem from "../components/ReviewSystem";
 
 export default function ExerciseDetail() {
   const { id } = useParams();
@@ -15,76 +20,82 @@ export default function ExerciseDetail() {
   const fallbackExercises = {
     1: {
       id: 1,
-      name: 'Push-ups',
-      category: 'Chest',
-      difficulty: 'Beginner',
-      duration: '10-15 minutes',
-      calories: '50-80',
-      equipment: 'None',
-      description: 'A classic bodyweight exercise that targets the chest, shoulders, and triceps.',
+      name: "Push-ups",
+      category: "Chest",
+      difficulty: "Beginner",
+      duration: "10-15 minutes",
+      calories: "50-80",
+      equipment: "None",
+      description:
+        "A classic bodyweight exercise that targets the chest, shoulders, and triceps.",
       instructions: [
-        'Start in a plank position with hands slightly wider than shoulders',
-        'Lower your body until chest nearly touches the floor',
-        'Push back up to starting position',
-        'Keep your core tight throughout the movement'
+        "Start in a plank position with hands slightly wider than shoulders",
+        "Lower your body until chest nearly touches the floor",
+        "Push back up to starting position",
+        "Keep your core tight throughout the movement",
       ],
       tips: [
-        'Keep your body in a straight line',
-        'Don\'t let your hips sag or pike up',
-        'Control the movement - don\'t rush',
-        'Breathe out as you push up'
+        "Keep your body in a straight line",
+        "Don't let your hips sag or pike up",
+        "Control the movement - don't rush",
+        "Breathe out as you push up",
       ],
-      muscles: ['Chest', 'Shoulders', 'Triceps', 'Core'],
-      sets: '3 sets of 10-15 reps'
+      muscles: ["Chest", "Shoulders", "Triceps", "Core"],
+      sets: "3 sets of 10-15 reps",
     },
     16: {
       id: 16,
-      name: 'Bench Press',
-      category: 'Chest',
-      difficulty: 'Intermediate',
-      duration: '15-20 minutes',
-      calories: '80-120',
-      equipment: 'Barbell',
-      description: 'A compound exercise that targets the chest, shoulders, and triceps.',
+      name: "Bench Press",
+      category: "Chest",
+      difficulty: "Intermediate",
+      duration: "15-20 minutes",
+      calories: "80-120",
+      equipment: "Barbell",
+      description:
+        "A compound exercise that targets the chest, shoulders, and triceps.",
       instructions: [
-        'Lie on bench with feet flat on floor',
-        'Grip barbell slightly wider than shoulders',
-        'Lower bar to chest with control',
-        'Press up to full arm extension'
+        "Lie on bench with feet flat on floor",
+        "Grip barbell slightly wider than shoulders",
+        "Lower bar to chest with control",
+        "Press up to full arm extension",
       ],
       tips: [
-        'Keep your back flat on the bench',
-        'Control the weight on the way down',
-        'Focus on squeezing chest muscles',
-        'Use a spotter for heavy weights'
+        "Keep your back flat on the bench",
+        "Control the weight on the way down",
+        "Focus on squeezing chest muscles",
+        "Use a spotter for heavy weights",
       ],
-      muscles: ['Chest', 'Shoulders', 'Triceps'],
-      sets: '3 sets of 8-12 reps'
-    }
+      muscles: ["Chest", "Shoulders", "Triceps"],
+      sets: "3 sets of 8-12 reps",
+    },
   };
 
   const formatExerciseData = (data) => {
     if (!data) return null;
-    
+
     // If it's from the database, format it
-    if (data.instructions && typeof data.instructions === 'string') {
+    if (data.instructions && typeof data.instructions === "string") {
       return {
         ...data,
-        duration: '15-20 minutes',
-        calories: '60-100',
-        equipment: data.category === 'Cardio' ? 'None' : 'Varies',
-        instructions: data.instructions.split('. ').filter(Boolean),
+        duration: "15-20 minutes",
+        calories: "60-100",
+        equipment: data.category === "Cardio" ? "None" : "Varies",
+        instructions: data.instructions.split(". ").filter(Boolean),
         tips: [
-          'Focus on proper form',
-          'Control the movement',
-          'Breathe properly throughout',
-          'Start with lighter weights'
+          "Focus on proper form",
+          "Control the movement",
+          "Breathe properly throughout",
+          "Start with lighter weights",
         ],
-        sets: data.difficulty === 'Beginner' ? '3 sets of 8-12 reps' : 
-              data.difficulty === 'Advanced' ? '4 sets of 6-10 reps' : '3 sets of 10-15 reps'
+        sets:
+          data.difficulty === "Beginner"
+            ? "3 sets of 8-12 reps"
+            : data.difficulty === "Advanced"
+              ? "4 sets of 6-10 reps"
+              : "3 sets of 10-15 reps",
       };
     }
-    
+
     return data;
   };
 
@@ -109,7 +120,7 @@ export default function ExerciseDetail() {
       }
       setLoading(false);
     };
-    
+
     fetchExercise();
   }, [id]);
 
@@ -128,7 +139,7 @@ export default function ExerciseDetail() {
           Exercise not found
         </h2>
         <button
-          onClick={() => navigate('/library')}
+          onClick={() => navigate("/library")}
           className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-blue-700"
         >
           Back to Library
@@ -194,20 +205,36 @@ export default function ExerciseDetail() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-red-700 mb-1">{exercise.duration}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Duration</div>
+            <div className="text-2xl font-bold text-red-700 mb-1">
+              {exercise.duration}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Duration
+            </div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-green-600 mb-1">{exercise.calories}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Calories</div>
+            <div className="text-2xl font-bold text-green-600 mb-1">
+              {exercise.calories}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Calories
+            </div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-red-800 mb-1">{exercise.equipment}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Equipment</div>
+            <div className="text-2xl font-bold text-red-800 mb-1">
+              {exercise.equipment}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Equipment
+            </div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600 mb-1">{exercise.sets}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Recommended</div>
+            <div className="text-2xl font-bold text-orange-600 mb-1">
+              {exercise.sets}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Recommended
+            </div>
           </div>
         </div>
       </div>
@@ -224,7 +251,9 @@ export default function ExerciseDetail() {
                 <span className="flex-shrink-0 w-6 h-6 bg-red-700 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3">
                   {index + 1}
                 </span>
-                <span className="text-gray-600 dark:text-gray-400">{instruction}</span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  {instruction}
+                </span>
               </li>
             ))}
           </ol>
@@ -240,7 +269,9 @@ export default function ExerciseDetail() {
               {exercise.tips.map((tip, index) => (
                 <li key={index} className="flex items-start">
                   <span className="text-red-600 mr-2">•</span>
-                  <span className="text-gray-600 dark:text-gray-400">{tip}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {tip}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -266,8 +297,8 @@ export default function ExerciseDetail() {
       </div>
 
       {/* Review System */}
-      <ReviewSystem 
-        exerciseId={exercise.id || exercise._id || id} 
+      <ReviewSystem
+        exerciseId={exercise.id || exercise._id || id}
         exerciseName={exercise.name}
       />
     </div>

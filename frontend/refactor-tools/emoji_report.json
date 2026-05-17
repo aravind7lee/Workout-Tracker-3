@@ -1,0 +1,1087 @@
+[
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 32,
+    "line": "token ? \"✅ Present\" : \"❌ Missing\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 38,
+    "line": "user ? \"✅ Present\" : \"❌ Missing\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 44,
+    "line": "user?.id || user?._id || \"❌ Missing\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 50,
+    "line": "user?.name || \"❌ Missing\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 56,
+    "line": "user?.email || \"❌ Missing\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/AuthDebugger.jsx",
+    "lineNum": 62,
+    "line": "isAuthenticated() ? \"✅ Yes\" : \"❌ No\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/CompletedWorkouts.jsx",
+    "lineNum": 34,
+    "line": "\"🎯 CompletedWorkouts: Received workout completion event:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/CompletedWorkouts.jsx",
+    "lineNum": 55,
+    "line": "\"🔄 CompletedWorkouts: Real-time sync received:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/CompletedWorkouts.jsx",
+    "lineNum": 83,
+    "line": "\"✅ Loaded real workouts from RealTimeWorkoutSync:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/CompletedWorkouts.jsx",
+    "lineNum": 166,
+    "line": "\"⚠️ MongoDB delete failed, local delete successful:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/ImageUploader-fallback.jsx",
+    "lineNum": 167,
+    "line": "className: `text-sm px-3 py-1 rounded-full ${message.includes(\"✅\") ? \"bg-red-600/20 text-red-500\" : \"bg-red-500/20 text-red-400\"}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/ImageUploader.jsx",
+    "lineNum": 194,
+    "line": "className: `text-sm px-3 py-1 rounded-full ${message.includes(\"✅\") ? \"bg-red-600/20 text-red-500\" : \"bg-red-500/20 text-red-400\"}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionAnalytics.jsx",
+    "lineNum": 752,
+    "line": "analytics.trends.improving ? \"📈\" : \"📊\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionAnalytics.jsx",
+    "lineNum": 773,
+    "line": "analytics.trends.consistent ? \"🎯\" : \"📊\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionAnalytics.jsx",
+    "lineNum": 794,
+    "line": "analytics.trends.balanced ? \"⚖️\" : \"📊\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionInsights.jsx",
+    "lineNum": 578,
+    "line": "analytics.mealTiming.breakfast ? \"✅\" : \"⏳\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionInsights.jsx",
+    "lineNum": 598,
+    "line": "analytics.mealTiming.lunch ? \"✅\" : \"⏳\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionInsights.jsx",
+    "lineNum": 618,
+    "line": "analytics.mealTiming.dinner ? \"✅\" : \"⏳\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/NutritionSocialDashboard.jsx",
+    "lineNum": 138,
+    "line": "text: `🔥 Today's Nutrition Progress:\\n📊 Calories: ${Math.round(totals.calories || 0)}/${currentCalorieTarget} (${calorieProgress}%)\\n💪 Protein: ${Math.round(totals.protein || 0)}g/${targets.protein || 150}g (${proteinProgress}%)\\n🍽️ Meals: ${meals.length}\\n\\n${currentAchievements.length > 0 ? `🏆 Achievements: ${currentAchievements.map((a) => a.title).join(\", \")}` : \"\"}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/OptimizedHeroImage.jsx",
+    "lineNum": 12,
+    "line": "fallbackIcon = \"🏋️\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/ProfilePicture.jsx",
+    "lineNum": 208,
+    "line": "className: `text-sm px-3 py-2 rounded-lg ${message.includes(\"✅\") ? \"bg-green-900/30 text-red-500 border border-red-600/30\" : \"bg-red-900/30 text-red-400 border border-red-500/30\"}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/ProfilePictureAdvanced.jsx",
+    "lineNum": 439,
+    "line": "className: `text-sm px-4 py-2 rounded-full transition-all duration-300 ${message.includes(\"✅\") ? \"bg-red-600/20 text-red-500 border border-red-600/30\" : \"bg-red-500/20 text-red-400 border border-red-500/30\"}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeMealsList.jsx",
+    "lineNum": 48,
+    "line": "<div class=\"text-xl\">✅</div>"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeMealsList.jsx",
+    "lineNum": 74,
+    "line": "<div class=\"text-xl\">❌</div>"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeMealsList.jsx",
+    "lineNum": 286,
+    "line": "isDeleting ? \"⏳\" : \"🗑️\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeMealsList.jsx",
+    "lineNum": 328,
+    "line": "? \"🔥 Live\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeMealsList.jsx",
+    "lineNum": 541,
+    "line": "isDeleting ? \"⏳ Deleting...\" : \"🗑️ Remove\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeNotification.jsx",
+    "lineNum": 25,
+    "line": "return \"🎉\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeNotification.jsx",
+    "lineNum": 27,
+    "line": "return \"💪\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeNotification.jsx",
+    "lineNum": 29,
+    "line": "return \"⭐\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeNotification.jsx",
+    "lineNum": 32,
+    "line": "return \"🔄\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeNotification.jsx",
+    "lineNum": 34,
+    "line": "return \"✅\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStats.jsx",
+    "lineNum": 50,
+    "line": "\"✅ RealTimeStats: Using analytics data for meal count:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStats.jsx",
+    "lineNum": 106,
+    "line": "\"📊 RealTimeStats: Loading meals from:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStats.jsx",
+    "lineNum": 357,
+    "line": "isOnline ? \"🟢\" : \"🟡\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStatus.jsx",
+    "lineNum": 64,
+    "line": "if (!isOnline) return \"🔴\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStatus.jsx",
+    "lineNum": 65,
+    "line": "if (backendStatus === \"connected\") return \"🟢\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeStatus.jsx",
+    "lineNum": 66,
+    "line": "if (backendStatus === \"disconnected\") return \"🟡\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeSyncStatus.jsx",
+    "lineNum": 162,
+    "line": "if (!syncStatus.isOnline) return \"📱\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeSyncStatus.jsx",
+    "lineNum": 163,
+    "line": "if (syncStatus.syncInProgress) return \"🔄\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeSyncStatus.jsx",
+    "lineNum": 164,
+    "line": "if (syncStatus.error) return \"⚠️\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeSyncStatus.jsx",
+    "lineNum": 165,
+    "line": "if (syncStatus.pendingChanges > 0) return \"⏳\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeSyncStatus.jsx",
+    "lineNum": 166,
+    "line": "return \"✅\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeWorkoutSession.jsx",
+    "lineNum": 277,
+    "line": "? \"⏳ Saving...\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeWorkoutSession.jsx",
+    "lineNum": 278,
+    "line": ": \"⚠ Save Error\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeWorkoutSession.jsx",
+    "lineNum": 549,
+    "line": "? \"✅\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeWorkoutSession.jsx",
+    "lineNum": 551,
+    "line": "? \"🔄\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/RealTimeWorkoutSession.jsx",
+    "lineNum": 552,
+    "line": ": \"⏳\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/WorkoutCompletionButton.jsx",
+    "lineNum": 84,
+    "line": "children || \"✅ Complete Workout\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/WorkoutCompletionHandler.jsx",
+    "lineNum": 12,
+    "line": "\"🎯 WorkoutCompletionHandler: Processing workout completion:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/components/WorkoutCompletionHandler.jsx",
+    "lineNum": 22,
+    "line": "\"✅ WorkoutCompletionHandler: Workout added and synced across all pages\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 112,
+    "line": "\"⚠️ User workout data initialization failed on startup:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 123,
+    "line": "\"⚠️ User plan data initialization failed on startup:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 134,
+    "line": "`✅ Migration completed on startup: ${migrationResult.migratedCount} splits migrated`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 138,
+    "line": "\"⚠️ Migration failed on startup:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 147,
+    "line": "\"✅ User-specific workout splits initialized on startup\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 217,
+    "line": "\"⚠️ User workout data initialization failed:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 228,
+    "line": "\"⚠️ User plan data initialization failed:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx",
+    "lineNum": 239,
+    "line": "`✅ Migration completed: ${migrationResult.migratedCount} splits migrated`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/RealTimeContext.jsx",
+    "lineNum": 83,
+    "line": "`📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} user-specific plans`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/RealTimeContext.jsx",
+    "lineNum": 197,
+    "line": "`📊 MongoDB: ${userMongoWorkouts.length} workouts for user ${user.id}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/RealTimeContext.jsx",
+    "lineNum": 415,
+    "line": "\"✅ INSTANT: Workout stats refreshed from WorkoutSync:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/context/RealTimeContext.jsx",
+    "lineNum": 527,
+    "line": "\"✅ REAL-TIME: Workout added via RealTimeWorkoutSync:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Analytics.jsx",
+    "lineNum": 187,
+    "line": "`📊 Analytics: Loading data for authenticated user - ${workouts.length} workouts, ${plans.length} plans`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Analytics.jsx",
+    "lineNum": 426,
+    "line": "\"⚡ Analytics: Dashboard update received - instant plan count update\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Analytics.jsx",
+    "lineNum": 448,
+    "line": "\"✅ Analytics: Plan count updated instantly to\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Analytics.jsx",
+    "lineNum": 653,
+    "line": "isOnline ? \"🔥 LIVE USER DATA\" : \"📱 LOCAL DATA\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Analytics.jsx",
+    "lineNum": 704,
+    "line": "isLoading ? \"⟳\" : \"🔄\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Contact.jsx",
+    "lineNum": 98,
+    "line": "liveSupport ? \"🔴 LIVE SUPPORT ACTIVE\" : \"❌ SUPPORT OFFLINE\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Contact.jsx",
+    "lineNum": 431,
+    "line": ": \"🚀 Send Message\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 521,
+    "line": "✅ \"${splitName}\" saved successfully"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 522,
+    "line": "💪 ${getTotalExercises()} exercises included"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 523,
+    "line": "⚡ Available in Your WorkoutSplits"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 524,
+    "line": "🏋️ Ready for your workout!"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 720,
+    "line": "autoSave ? \"💾 Auto-Save ON\" : \"💾 Auto-Save OFF\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 727,
+    "line": "autoSave ? \"💾 ON\" : \"💾 OFF\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 780,
+    "line": "? \"🔄 EDITING WORKOUT SPLIT 🏋️\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 781,
+    "line": ": \"Custom Workout Split Builder 🏋️\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 863,
+    "line": "? \"🔄 Saving...\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 865,
+    "line": "? \"💾 Update Split\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 866,
+    "line": ": \"💾 Save Custom Split\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 1098,
+    "line": "? \"🎯\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 1100,
+    "line": "? \"😴\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 1102,
+    "line": "? \"💪\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 1103,
+    "line": ": \"⚪\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx",
+    "lineNum": 1137,
+    "line": "weeklyPlan[selectedDay]?.isRestDay ? \"😴\" : \"😴\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 112,
+    "line": "\"⚠️ MongoDB load failed, using local data:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 363,
+    "line": "plansOnline ? \"🚀\" : \"❌\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 395,
+    "line": "? \"🔄\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 397,
+    "line": "? \"✅\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 398,
+    "line": ": \"❌\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 445,
+    "line": "planSyncStatus === \"syncing\" ? \"🔄\" : \"⚡\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 1820,
+    "line": "\"🚀 Starting workout for plan:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 2303,
+    "line": "\"🔄 Repeating workout:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx",
+    "lineNum": 2311,
+    "line": "\"⚠️ Workout ID missing, redirecting to plans\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditPlan.jsx",
+    "lineNum": 187,
+    "line": "`✅ Plan \"${planName}\" updated successfully!\\n\\n📊 Summary:\\n• ${exercises.length} exercises\\n• Category: ${planCategory}\\n• Last updated: ${new Date().toLocaleString()}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 507,
+    "line": "`🚀 SPLIT UPDATED!\\n\\n✅ \"${splitName}\" updated successfully\\n💪 ${getTotalExercises()} exercises included\\n⚡ Changes saved!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 704,
+    "line": "saving ? \"🔄 Updating...\" : \"💾 Update Split\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 814,
+    "line": "? \"😴\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 816,
+    "line": "? \"💪\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 817,
+    "line": ": \"⚪\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 835,
+    "line": "? \"😴 Rest Day Active\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/EditSplit.jsx",
+    "lineNum": 836,
+    "line": ": \"😴 Mark as Rest Day\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Forum.jsx",
+    "lineNum": 1273,
+    "line": "post.liked ? \"❤️\" : \"🤍\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 524,
+    "line": "? `🎉 ${detail.exercise} completed! (Saved offline)`"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 525,
+    "line": ": `🎉 ${detail.exercise} completed!`;"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 594,
+    "line": "`🧹 Cleaned fake workouts for user ${currentUser.id}: ${workouts.length} → ${realUserWorkouts.length} user workouts`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 607,
+    "line": "? `🎉 ${workoutState.exercise} completed! (Saved offline)`"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 608,
+    "line": ": `🎉 ${workoutState.exercise} completed!`;"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Home.jsx",
+    "lineNum": 741,
+    "line": "? \"🔒\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 51,
+    "line": "message += \" ✅ Saved online!\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 53,
+    "line": "message += \" 📱 Saved offline\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 345,
+    "line": "\"👤 User type:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 358,
+    "line": "\"👤 User info:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 549,
+    "line": "? \"🟢 Online Mode - Real-time Progress Tracking\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 550,
+    "line": ": \"🟡 Offline Mode - Limited Features\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 1207,
+    "line": "? \"📊 View Progress\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 1239,
+    "line": "\"💆 Start Workout button clicked for:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 1243,
+    "line": "\"👤 User type:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 1593,
+    "line": "\"💆 Modal Start Workout button clicked for:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Library.jsx",
+    "lineNum": 1597,
+    "line": "\"👤 User type:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/LibrarySimple.jsx",
+    "lineNum": 116,
+    "line": "\"🚀 Exercise Library initialized in\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/LibrarySimple.jsx",
+    "lineNum": 2041,
+    "line": "`✅ ${exercise.name} completed! +${workout.caloriesBurned} calories`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/LibrarySimple.jsx",
+    "lineNum": 2091,
+    "line": "\"🎯 Workout completed from Library:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/LibrarySimple.jsx",
+    "lineNum": 2699,
+    "line": "const icon = categoryIcons[category] || \"💪\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/MyPlans.jsx",
+    "lineNum": 69,
+    "line": "`🧹 Cleaned plans: ${allPlans.length} → ${userPlans.length}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/MyPlans.jsx",
+    "lineNum": 138,
+    "line": "`🗑️ Filtering out plan: \"${plan.name}\" (userId: ${plan.userId}, user: ${user.id})`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/MyPlans.jsx",
+    "lineNum": 150,
+    "line": "`✅ USER-SPECIFIC plans loaded for ${user.id}:`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/MyPlans.jsx",
+    "lineNum": 220,
+    "line": "\"✅ Plan duplicated with REAL-TIME dashboard update:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/MyPlans.jsx",
+    "lineNum": 629,
+    "line": "user ? \"💪\" : \"🔒\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Nutrition.jsx",
+    "lineNum": 68,
+    "line": "\"📊 Quick Add Values - Cal:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Nutrition.jsx",
+    "lineNum": 93,
+    "line": "\"✅ Final Quick Add Item - Cal:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Nutrition.jsx",
+    "lineNum": 170,
+    "line": "<div class=\"text-xl\">🍽️</div>"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Nutrition.jsx",
+    "lineNum": 192,
+    "line": "<div class=\"text-xl\">❌</div>"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 299,
+    "line": "\"✅ Plan created with REAL-TIME dashboard update:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 304,
+    "line": "`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\\n\\n✅ \"${planName}\" saved to MongoDB\\n⚡ Dashboard updated INSTANTLY\\n☁️ Real-time sync active\\n📱 Available on all devices\\n🏋️♂️ Professional gym-level tracking\\n\\n🔥 Check your dashboard - it's already updated!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 308,
+    "line": "`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\\n\\n💾 \"${planName}\" saved locally\\n⚡ Dashboard updated INSTANTLY\\n🔄 Queued for MongoDB sync\\n📱 Will sync automatically when online\\n\\n💪 Your dashboard shows the new plan count!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 318,
+    "line": "`🎉 Plan \"${planName}\" created!\\n\\n💾 Saved locally\\n⚠️ Sync will retry automatically\\n🏋️ Ready to use offline!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 324,
+    "line": "`🎉 Plan \"${planName}\" created!\\n\\n💾 Saved locally\\n🔐 Sign in for cloud sync\\n💪 Ready for your workout!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 545,
+    "line": "autoSave ? \"🔄 Auto-Save ON\" : \"💾 Auto-Save OFF\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder-Fixed.jsx",
+    "lineNum": 667,
+    "line": "saving ? \"🔄 Saving...\" : \"💾 Save Plan\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 369,
+    "line": "\"✅ Plan created with REAL-TIME dashboard update:\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 374,
+    "line": "`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\\n\\n✅ \"${planName}\" saved to MongoDB\\n⚡ Dashboard updated INSTANTLY\\n☁️ Real-time sync active\\n📱 Available on all devices\\n🏋️♂️ Professional gym-level tracking\\n\\n🔥 Check your dashboard - it's already updated!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 378,
+    "line": "`🚀 PLAN CREATED - INSTANT DASHBOARD UPDATE!\\n\\n💾 \"${planName}\" saved locally\\n⚡ Dashboard updated INSTANTLY\\n🔄 Queued for MongoDB sync\\n📱 Will sync automatically when online\\n\\n💪 Your dashboard and Analytics page shows the new plan count!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 388,
+    "line": "`🎉 Plan \"${planName}\" created!\\n\\n💾 Saved locally\\n⚠️ Sync will retry automatically\\n🏋️ Ready to use offline!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 394,
+    "line": "`🎉 Plan \"${planName}\" created!\\n\\n💾 Saved locally\\n🔐 Sign in for cloud sync\\n💪 Ready for your workout!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 1545,
+    "line": "autoSave ? \"🔄\" : \"💾\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx",
+    "lineNum": 1766,
+    "line": "saving ? \"🔄\" : \"💾\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 220,
+    "line": "successMsg.textContent = \"✅ Profile updated successfully!\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 229,
+    "line": "errorMsg.textContent = \"❌ Failed to update profile\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 530,
+    "line": "isOnline ? \"🔥 LIVE SYNC\" : \"⚡ OFFLINE\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 908,
+    "line": "saving ? \"🔄 SAVING...\" : \"💾 SAVE\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1412,
+    "line": "// ✅ Modern gym-themed UI with dynamic backgrounds"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1413,
+    "line": "// ✅ Preserved all MongoDB integration and real-time functionality"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1414,
+    "line": "// ✅ Enhanced visual hierarchy with gradient cards"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1415,
+    "line": "// ✅ Improved typography with gym vibes"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1416,
+    "line": "// ✅ Better responsive design"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1417,
+    "line": "// ✅ Animated elements and hover effects"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1418,
+    "line": "// ✅ Professional gym tracker appearance"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx",
+    "lineNum": 1419,
+    "line": "// ✅ All original functionality maintained"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileAdvanced.jsx",
+    "lineNum": 277,
+    "line": "\"🎉 Profile updated successfully!\\n\\n✅ Saved to MongoDB\\n☁️ Real-time sync active\\n📱 Available on all devices\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileAdvanced.jsx",
+    "lineNum": 688,
+    "line": "saving ? \"Saving...\" : \"💾 Save Changes\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 209,
+    "line": "successMsg.textContent = \"✅ Profile updated successfully!\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 218,
+    "line": "errorMsg.textContent = \"❌ Failed to update profile\";"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 497,
+    "line": "isOnline ? \"🔥 LIVE SYNC ACTIVE\" : \"⚡ OFFLINE MODE\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 508,
+    "line": "loading ? \"🔄 SYNCING...\" : \"🔄 REFRESH\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 822,
+    "line": "saving ? \"🔄 SAVING...\" : \"💾 SAVE CHANGES\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1237,
+    "line": "? \"🔥 On Fire!\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1239,
+    "line": "? \"💪 Keep Going!\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1240,
+    "line": ": \"🎯 Start Today!\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1881,
+    "line": "// ✅ Modern gym-themed UI with dynamic backgrounds"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1882,
+    "line": "// ✅ Preserved all MongoDB integration and real-time functionality"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1883,
+    "line": "// ✅ Enhanced visual hierarchy with gradient cards"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1884,
+    "line": "// ✅ Improved typography with gym vibes"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1885,
+    "line": "// ✅ Better responsive design"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1886,
+    "line": "// ✅ Animated elements and hover effects"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1887,
+    "line": "// ✅ Professional gym tracker appearance"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/ProfileEnhanced.jsx",
+    "lineNum": 1888,
+    "line": "// ✅ All original functionality maintained"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 290,
+    "line": "\"🎉 GLOBAL SETTINGS SAVED SUCCESSFULLY!\\n\\n✅ Saved to MongoDB Database\\n🌐 Global Cloud Synchronization\\n🎯 Fitness Goals Updated Globally\\n🔔 Notifications Configured Worldwide\\n📱 Available on ALL devices\\n🏋️♂️ Professional Gym Experience\\n🔥 Real-Time MongoDB Sync Active\\n\\n✨ Your preferences are LIVE globally!\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 294,
+    "line": "\"⚠️ SETTINGS SAVED LOCALLY\\n\\n💾 Saved to device storage\\n🔄 Will sync to MongoDB when online\\n🌐 Backend connection issue detected\\n💪 Settings are ready to use\\n\\n🔌 Check your internet connection for global sync\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 299,
+    "line": "\"❌ SAVE FAILED\\n\\nPlease check:\\n• Internet connection\\n• Backend server status\\n• Authentication token\\n\\nTry again in a moment.\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 304,
+    "line": "\"❌ CRITICAL ERROR\\n\\nSettings save completely failed.\\nPlease refresh and try again.\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 311,
+    "line": "\"❌ SAVE ERROR\\n\\n\" +"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 739,
+    "line": "? \"🔥\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 741,
+    "line": "? \"📈\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 743,
+    "line": "? \"💪\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 745,
+    "line": "? \"⚡\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 746,
+    "line": ": \"⚖️\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 1191,
+    "line": "enabled ? \"✅\" : \"❌\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 1593,
+    "line": "isOnline ? \"✅ Connected\" : \"❌ Offline\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx",
+    "lineNum": 2064,
+    "line": "isSaving ? \"🔄 SYNCING TO MONGODB...\" : \"💾 SAVE TO CLOUD\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 504,
+    "line": "\"📡 Events dispatched: workoutCompleted, realTimeStatsUpdate, analyticsRefresh\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 600,
+    "line": "isOnline ? \"🔥 LIVE SYNC\" : \"⚡ OFFLINE\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 1097,
+    "line": "isPaused ? \"▶️ Resume Workout\" : \"⏸️ Pause Workout\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 1419,
+    "line": "? \"➡️ Next Exercise\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 1420,
+    "line": ": \"🏆 Finish Workout\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 1498,
+    "line": "isPaused ? \"⏸️ Paused\" : formatTime(restTimer),"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 2017,
+    "line": ": `✅ Finish Set ${workoutData.sets.length + 1}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 2585,
+    "line": "? \"⏸️ Resume to Finish\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 2588,
+    "line": "? `➡️ Next Exercise (${workoutData.sets.length}/${workoutData.targetSets})`"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/StartWorkout.jsx",
+    "lineNum": 2589,
+    "line": ": `✅ Finish Workout (${workoutData.sets.length}/${workoutData.targetSets})`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Workouts.jsx",
+    "lineNum": 53,
+    "line": "? `🎉 ${workoutState.exercise} completed! ${workoutState.sets} sets, ${workoutState.duration}, +${workoutState.calories} calories!`"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Workouts.jsx",
+    "lineNum": 54,
+    "line": ": `🎉 ${workoutState.exercise} completed!`;"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/Workouts.jsx",
+    "lineNum": 73,
+    "line": "message: `🎉 ${workout.exercise || workout.name} completed! +${workout.caloriesBurned || 0} calories burned!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutsComplete.jsx",
+    "lineNum": 85,
+    "line": "? `🎉 ${workoutState.exercise} completed! ${workoutState.sets} sets, ${workoutState.duration}, +${workoutState.calories} calories!`"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutsComplete.jsx",
+    "lineNum": 86,
+    "line": ": `🎉 ${workoutState.exercise} completed!`;"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutsComplete.jsx",
+    "lineNum": 105,
+    "line": "message: `🎉 ${workout.exercise || workout.name} completed! +${workout.caloriesBurned || 0} calories burned!`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutSession.jsx",
+    "lineNum": 101,
+    "line": "// 🚀 REAL-TIME WORKOUT COMPLETION - Updates ALL pages instantly"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutSplits.jsx",
+    "lineNum": 851,
+    "line": "`✅ Loaded ${userSplits.length} user-specific splits for user ${user?.id || user?._id}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/WorkoutSplits.jsx",
+    "lineNum": 1864,
+    "line": "isRestDay ? \"😴 Rest\" : \"💪 Workout\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 346,
+    "line": "`✅ Loaded ${userSplits.length} user-specific custom splits for user ${currentUserId}`,"
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 378,
+    "line": "\"✅ Custom split deleted successfully from user-specific storage\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 410,
+    "line": "\"✅ Custom split duplicated successfully in user-specific storage\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 550,
+    "line": "syncStatus === \"syncing\" ? \"🔄\" : \"🔄\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 1317,
+    "line": "isRestDay ? \"😴 Rest\" : \"💪 Workout\","
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 1512,
+    "line": "? \"😴 Rest\""
+  },
+  {
+    "file": "d:/Workout-Tracker-3/frontend/src/pages/YourWorkoutSplits.jsx",
+    "lineNum": 1513,
+    "line": ": \"💪 Workout\","
+  }
+]

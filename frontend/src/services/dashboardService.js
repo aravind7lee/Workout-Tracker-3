@@ -1,6 +1,6 @@
 // Real-time dashboard service integrated with backend
-import { realTimeService } from './realTimeService.js';
-import api from '../utils/api.js';
+import { realTimeService } from "./realTimeService.js";
+import api from "../utils/api.js";
 
 class DashboardService {
   constructor() {
@@ -11,7 +11,7 @@ class DashboardService {
   // Real-time data fetching methods
   async getAnalyticsStats() {
     try {
-      const response = await api.get('/analytics/stats');
+      const response = await api.get("/analytics/stats");
       return response.data;
     } catch (error) {
       return this.realTimeService.getFallbackDashboard();
@@ -20,41 +20,41 @@ class DashboardService {
 
   async getAchievements() {
     try {
-      const response = await api.get('/analytics/achievements');
+      const response = await api.get("/analytics/achievements");
       return response.data;
     } catch (error) {
-      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      const workouts = JSON.parse(localStorage.getItem("workouts") || "[]");
+      const meals = JSON.parse(localStorage.getItem("recentMeals") || "[]");
       return this.realTimeService.generateAchievements(workouts, meals);
     }
   }
 
   async getCalorieTrends() {
     try {
-      const response = await api.get('/analytics/calories');
+      const response = await api.get("/analytics/calories");
       return response.data;
     } catch (error) {
-      const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+      const meals = JSON.parse(localStorage.getItem("recentMeals") || "[]");
       return this.realTimeService.generateCaloriesData(meals);
     }
   }
 
   async getWorkoutFrequency() {
     try {
-      const response = await api.get('/analytics/frequency');
+      const response = await api.get("/analytics/frequency");
       return response.data;
     } catch (error) {
-      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+      const workouts = JSON.parse(localStorage.getItem("workouts") || "[]");
       return this.realTimeService.generateWeeklyData(workouts);
     }
   }
 
   async getMuscleDistribution() {
     try {
-      const response = await api.get('/analytics/muscles');
+      const response = await api.get("/analytics/muscles");
       return response.data;
     } catch (error) {
-      const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+      const workouts = JSON.parse(localStorage.getItem("workouts") || "[]");
       return this.realTimeService.generateMuscleData(workouts);
     }
   }
@@ -62,8 +62,6 @@ class DashboardService {
   async getDashboardStats() {
     return this.realTimeService.getDashboardData();
   }
-
-
 
   clearCache() {
     this.cache.clear();
@@ -73,13 +71,14 @@ class DashboardService {
   // Real-time data refresh
   async refreshAllData() {
     try {
-      const [stats, achievements, calories, frequency, muscles] = await Promise.all([
-        this.getAnalyticsStats(),
-        this.getAchievements(),
-        this.getCalorieTrends(),
-        this.getWorkoutFrequency(),
-        this.getMuscleDistribution()
-      ]);
+      const [stats, achievements, calories, frequency, muscles] =
+        await Promise.all([
+          this.getAnalyticsStats(),
+          this.getAchievements(),
+          this.getCalorieTrends(),
+          this.getWorkoutFrequency(),
+          this.getMuscleDistribution(),
+        ]);
 
       return {
         stats,
@@ -87,10 +86,10 @@ class DashboardService {
         calories,
         frequency,
         muscles,
-        dashboardStats: stats
+        dashboardStats: stats,
       };
     } catch (error) {
-      console.error('Failed to refresh data:', error);
+      console.error("Failed to refresh data:", error);
       return this.realTimeService.getFallbackDashboard();
     }
   }
@@ -103,13 +102,13 @@ class DashboardService {
         const data = await this.refreshAllData();
         callback(data);
       } catch (error) {
-        console.error('Real-time update failed:', error);
+        console.error("Real-time update failed:", error);
       }
     };
 
     updateData();
     const intervalId = setInterval(updateData, interval);
-    
+
     return () => clearInterval(intervalId);
   }
 }

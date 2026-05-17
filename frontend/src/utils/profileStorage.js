@@ -1,8 +1,8 @@
 // Production-Ready Profile Storage - Zero Errors
 class ProfileStorage {
   constructor() {
-    this.PROFILE_KEY = 'gym_tracker_profiles';
-    this.CURRENT_USER_KEY = 'gym_tracker_current_user';
+    this.PROFILE_KEY = "gym_tracker_profiles";
+    this.CURRENT_USER_KEY = "gym_tracker_current_user";
     this.MAX_IMAGE_SIZE = 400 * 1024; // 400KB limit
   }
 
@@ -10,16 +10,16 @@ class ProfileStorage {
   compressImage(base64String, maxSizeKB = 400) {
     return new Promise((resolve) => {
       try {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         const img = new Image();
-        
+
         img.onload = () => {
           try {
             // Calculate new dimensions (max 300x300)
             let { width, height } = img;
             const maxDim = 300;
-            
+
             if (width > height) {
               if (width > maxDim) {
                 height = (height * maxDim) / width;
@@ -31,28 +31,28 @@ class ProfileStorage {
                 height = maxDim;
               }
             }
-            
+
             canvas.width = width;
             canvas.height = height;
-            
+
             // Draw and compress aggressively
             ctx.drawImage(img, 0, 0, width, height);
-            
+
             // Start with lower quality
             let quality = 0.6;
             let compressedData;
-            
+
             do {
-              compressedData = canvas.toDataURL('image/jpeg', quality);
+              compressedData = canvas.toDataURL("image/jpeg", quality);
               quality -= 0.1;
             } while (compressedData.length > maxSizeKB * 1024 && quality > 0.1);
-            
+
             resolve(compressedData);
           } catch (error) {
             resolve(base64String);
           }
         };
-        
+
         img.onerror = () => resolve(base64String);
         img.src = base64String;
       } catch (error) {
@@ -65,16 +65,16 @@ class ProfileStorage {
   emergencyCleanup() {
     try {
       const keysToRemove = [
-        'workoutHistory',
-        'recentMeals', 
-        'achievements',
-        'progressData',
-        'workoutPlans',
-        'gym_tracker_demo_session',
-        'gym_tracker_demo_data'
+        "workoutHistory",
+        "recentMeals",
+        "achievements",
+        "progressData",
+        "workoutPlans",
+        "gym_tracker_demo_session",
+        "gym_tracker_demo_data",
       ];
-      
-      keysToRemove.forEach(key => {
+
+      keysToRemove.forEach((key) => {
         try {
           localStorage.removeItem(key);
           sessionStorage.removeItem(key);
@@ -87,16 +87,16 @@ class ProfileStorage {
   async saveProfilePhoto(userEmail, photoData) {
     try {
       if (!userEmail || !photoData) return false;
-      
+
       // Emergency cleanup first
       this.emergencyCleanup();
-      
+
       // Compress image aggressively
       const compressedPhoto = await this.compressImage(photoData, 300);
-      
+
       // Try to save with multiple fallbacks
       const photoKey = `profile_photo_${userEmail}`;
-      
+
       try {
         localStorage.setItem(photoKey, compressedPhoto);
       } catch (quotaError) {
@@ -113,7 +113,7 @@ class ProfileStorage {
           }
         }
       }
-      
+
       // Update profiles object safely
       try {
         const profiles = this.getAllProfiles();
@@ -122,21 +122,22 @@ class ProfileStorage {
         }
         profiles[userEmail].profileImage = compressedPhoto;
         profiles[userEmail].lastUpdated = new Date().toISOString();
-        
+
         localStorage.setItem(this.PROFILE_KEY, JSON.stringify(profiles));
       } catch (profileError) {
         // Profiles object update failed, but photo is saved
       }
-      
+
       // Dispatch event safely
       try {
-        window.dispatchEvent(new CustomEvent('profileUpdated', {
-          detail: { email: userEmail, photo: compressedPhoto }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("profileUpdated", {
+            detail: { email: userEmail, photo: compressedPhoto },
+          }),
+        );
       } catch (eventError) {}
-      
+
       return true;
-      
     } catch (error) {
       return false;
     }
@@ -146,27 +147,28 @@ class ProfileStorage {
   getProfilePhoto(userEmail) {
     try {
       if (!userEmail) return null;
-      
+
       // Try direct key first (localStorage)
       try {
         const directPhoto = localStorage.getItem(`profile_photo_${userEmail}`);
         if (directPhoto) return directPhoto;
       } catch (e) {}
-      
+
       // Try sessionStorage
       try {
-        const sessionPhoto = sessionStorage.getItem(`profile_photo_${userEmail}`);
+        const sessionPhoto = sessionStorage.getItem(
+          `profile_photo_${userEmail}`,
+        );
         if (sessionPhoto) return sessionPhoto;
       } catch (e) {}
-      
+
       // Try profiles object
       try {
         const profiles = this.getAllProfiles();
         return profiles[userEmail]?.profileImage || null;
       } catch (e) {}
-      
+
       return null;
-      
     } catch (error) {
       return null;
     }
@@ -186,16 +188,16 @@ class ProfileStorage {
   removeProfilePhoto(userEmail) {
     try {
       if (!userEmail) return false;
-      
+
       // Remove from all possible locations
       try {
         localStorage.removeItem(`profile_photo_${userEmail}`);
       } catch (e) {}
-      
+
       try {
         sessionStorage.removeItem(`profile_photo_${userEmail}`);
       } catch (e) {}
-      
+
       // Remove from profiles object
       try {
         const profiles = this.getAllProfiles();
@@ -205,16 +207,17 @@ class ProfileStorage {
           localStorage.setItem(this.PROFILE_KEY, JSON.stringify(profiles));
         }
       } catch (e) {}
-      
+
       // Dispatch event safely
       try {
-        window.dispatchEvent(new CustomEvent('profileUpdated', {
-          detail: { email: userEmail, photo: null }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("profileUpdated", {
+            detail: { email: userEmail, photo: null },
+          }),
+        );
       } catch (e) {}
-      
+
       return true;
-      
     } catch (error) {
       return false;
     }
@@ -224,17 +227,16 @@ class ProfileStorage {
   saveProfile(userEmail, profileData) {
     try {
       if (!userEmail) return false;
-      
+
       const profiles = this.getAllProfiles();
       profiles[userEmail] = {
         ...profiles[userEmail],
         ...profileData,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
-      
+
       localStorage.setItem(this.PROFILE_KEY, JSON.stringify(profiles));
       return true;
-      
     } catch (error) {
       return false;
     }

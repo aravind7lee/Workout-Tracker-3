@@ -1,6 +1,6 @@
 // Real-time authentication guard for professional gym tracker
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useAuthGuard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,18 +10,18 @@ export const useAuthGuard = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
-      
+      const token = localStorage.getItem("token");
+      const userData = localStorage.getItem("user");
+
       if (token && userData) {
         try {
           const parsedUser = JSON.parse(userData);
           setUser(parsedUser);
           setIsAuthenticated(true);
         } catch (error) {
-          console.error('Invalid user data:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          console.error("Invalid user data:", error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
           setIsAuthenticated(false);
           setUser(null);
         }
@@ -36,12 +36,12 @@ export const useAuthGuard = () => {
 
     // Listen for auth changes
     const handleStorageChange = () => checkAuth();
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const requireAuth = (redirectTo = '/login') => {
+  const requireAuth = (redirectTo = "/login") => {
     if (!loading && !isAuthenticated) {
       navigate(redirectTo);
       return false;
@@ -58,6 +58,6 @@ export const useAuthGuard = () => {
     user,
     loading,
     requireAuth,
-    blockUnauthenticated
+    blockUnauthenticated,
   };
 };

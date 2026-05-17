@@ -20,13 +20,17 @@ export default function Hero() {
 
   const heroRef = useRef(null);
 
-  const [imageLoaded, setImageLoaded]   = useState(false);
-  const [imageError,  setImageError]    = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(() => 
-    typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false,
   );
-  const [isMobile, setIsMobile] = useState(() => 
-    typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 768px)").matches
+      : false,
   );
   const [showContent, setShowContent] = useState(false);
 
@@ -53,7 +57,7 @@ export default function Hero() {
   // ── Preload hero image at highest priority ─────────────────────────────
   useEffect(() => {
     const img = new Image();
-    img.onload  = () => setImageLoaded(true);
+    img.onload = () => setImageLoaded(true);
     img.onerror = () => setImageError(true);
     img.fetchPriority = "high";
     img.src = Heroimg;
@@ -83,15 +87,23 @@ export default function Hero() {
   // ── Spring smoothing for buttery 60fps ────────────────────────────────
   const smooth = useSpring(scrollYProgress, {
     stiffness: reducedMotion ? 1000 : 75,
-    damping:   reducedMotion ? 100  : 20,
+    damping: reducedMotion ? 100 : 20,
     restDelta: 0.001,
   });
 
   // ── Cinematic scroll-driven transforms ────────────────────────────────
-  const bgScale   = useTransform(smooth, [0, 1], [1, (reducedMotion || isMobile) ? 1.05 : 1.32]);
-  const bgBlurVal = useTransform(smooth, [0, 0.75], [0, (reducedMotion || isMobile) ? 0 : 20]);
-  const bgFilter  = useTransform(bgBlurVal, (v) => `blur(${v}px)`);
-  const bgOpacity = useTransform(smooth, [0, 0.8],  [1, isMobile ? 0.3 : 0]);
+  const bgScale = useTransform(
+    smooth,
+    [0, 1],
+    [1, reducedMotion || isMobile ? 1.05 : 1.32],
+  );
+  const bgBlurVal = useTransform(
+    smooth,
+    [0, 0.75],
+    [0, reducedMotion || isMobile ? 0 : 20],
+  );
+  const bgFilter = useTransform(bgBlurVal, (v) => `blur(${v}px)`);
+  const bgOpacity = useTransform(smooth, [0, 0.8], [1, isMobile ? 0.3 : 0]);
 
   // Overlay darkens as you scroll
   const overlayOp = useTransform(smooth, [0, 0.65], [0.2, 0.85]);
@@ -101,7 +113,7 @@ export default function Hero() {
 
   // Content floats up and fades
   const contentOp = useTransform(smooth, [0, 0.42], [1, 0]);
-  const contentY  = useTransform(smooth, [0, 0.42], ["0%", "-10%"]);
+  const contentY = useTransform(smooth, [0, 0.42], ["0%", "-10%"]);
 
   // Scroll cue fades immediately
   const arrowOp = useTransform(smooth, [0, 0.1], [1, 0]);
@@ -112,25 +124,35 @@ export default function Hero() {
 
   // ── Entry animation variants ───────────────────────────────────────────
   const stagger = {
-    hidden:  { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.25 } },
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.14, delayChildren: 0.25 },
+    },
   };
   const rise = {
-    hidden:  { 
-      opacity: 0, 
-      y: isMobile ? 12 : 28, 
-      filter: (reducedMotion || isMobile) ? "none" : "blur(6px)" 
+    hidden: {
+      opacity: 0,
+      y: isMobile ? 12 : 28,
+      filter: reducedMotion || isMobile ? "none" : "blur(6px)",
     },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      filter: (reducedMotion || isMobile) ? "none" : "blur(0px)", 
-      transition: { duration: isMobile ? 0.45 : 0.75, ease: [0.22, 1, 0.36, 1] } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: reducedMotion || isMobile ? "none" : "blur(0px)",
+      transition: {
+        duration: isMobile ? 0.45 : 0.75,
+        ease: [0.22, 1, 0.36, 1],
+      },
     },
   };
   const lineGrow = {
-    hidden:  { scaleX: 0, opacity: 0 },
-    visible: { scaleX: 1, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+    hidden: { scaleX: 0, opacity: 0 },
+    visible: {
+      scaleX: 1,
+      opacity: 1,
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    },
   };
 
   return (
@@ -140,7 +162,6 @@ export default function Hero() {
       style={{ height: "100vh", minHeight: "100svh" }}
       aria-label="GrindX Hero"
     >
-
       {/* ════════════════════════════════════════════════════════════════
           SCROLL-ZOOM BACKGROUND LAYER
       ════════════════════════════════════════════════════════════════ */}
@@ -151,7 +172,9 @@ export default function Hero() {
           ...(isMobile ? {} : { filter: bgFilter }),
           opacity: bgOpacity,
           transformOrigin: "center center",
-          willChange: isMobile ? "opacity, transform" : "transform, filter, opacity",
+          willChange: isMobile
+            ? "opacity, transform"
+            : "transform, filter, opacity",
         }}
       >
         {/* LQIP blurred placeholder - removed after load for performance */}
@@ -174,7 +197,10 @@ export default function Hero() {
             decoding="async"
             loading="eager"
             className="absolute inset-0 w-full h-full object-cover object-center"
-            style={{ opacity: imageLoaded ? 1 : 0, transition: "opacity 0.6s ease" }}
+            style={{
+              opacity: imageLoaded ? 1 : 0,
+              transition: "opacity 0.6s ease",
+            }}
           />
         )}
 
@@ -243,7 +269,8 @@ export default function Hero() {
         style={{
           bottom: "20%",
           height: "1px",
-          background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.5) 40%, rgba(185,28,28,0.5) 60%, transparent 100%)",
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.5) 40%, rgba(185,28,28,0.5) 60%, transparent 100%)",
         }}
       />
 
@@ -263,7 +290,6 @@ export default function Hero() {
               animate="visible"
               style={{ maxWidth: "900px", margin: "0 auto" }}
             >
-
               {/* ── Eyebrow label ──────────────────────────────────── */}
               <motion.div
                 className="flex items-center justify-center gap-3 mb-5 sm:mb-6"
@@ -334,15 +360,21 @@ export default function Hero() {
                         : "0 0 40px rgba(220,38,38,0.6), 0 2px 20px rgba(0,0,0,0.9)",
                     }}
                     animate={
-                      (reducedMotion || isMobile) ? {} : {
-                        textShadow: [
-                          "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
-                          "0 0 50px rgba(220,38,38,0.85), 0 2px 20px rgba(0,0,0,0.9)",
-                          "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
-                        ],
-                      }
+                      reducedMotion || isMobile
+                        ? {}
+                        : {
+                            textShadow: [
+                              "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
+                              "0 0 50px rgba(220,38,38,0.85), 0 2px 20px rgba(0,0,0,0.9)",
+                              "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
+                            ],
+                          }
                     }
-                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 2.8,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   >
                     X
                   </motion.span>
@@ -352,7 +384,8 @@ export default function Hero() {
                 <motion.div
                   style={{
                     height: "3px",
-                    background: "linear-gradient(90deg, transparent, #dc2626 30%, #dc2626 70%, transparent)",
+                    background:
+                      "linear-gradient(90deg, transparent, #dc2626 30%, #dc2626 70%, transparent)",
                     marginTop: "10px",
                     marginBottom: "20px",
                     originX: 0.5,
@@ -375,7 +408,9 @@ export default function Hero() {
                 }}
               >
                 Track workouts, monitor progress, and{" "}
-                <span style={{ color: "#f87171", fontWeight: 700 }}>dominate</span>{" "}
+                <span style={{ color: "#f87171", fontWeight: 700 }}>
+                  dominate
+                </span>{" "}
                 your fitness goals with precision.
               </motion.p>
 
@@ -395,7 +430,8 @@ export default function Hero() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "8px",
-                      background: "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
+                      background:
+                        "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
                       color: "#fff",
                       fontWeight: 800,
                       letterSpacing: "0.12em",
@@ -403,14 +439,27 @@ export default function Hero() {
                       fontSize: "clamp(10px, 1.5vw, 12px)",
                       padding: "13px 30px",
                       border: "1px solid rgba(255,100,100,0.25)",
-                      boxShadow: "0 0 24px rgba(185,28,28,0.45), 0 4px 20px rgba(0,0,0,0.7)",
+                      boxShadow:
+                        "0 0 24px rgba(185,28,28,0.45), 0 4px 20px rgba(0,0,0,0.7)",
                       transition: "all 0.3s ease",
                       textDecoration: "none",
                     }}
                   >
                     {isAuthenticated?.() ? "Go to Dashboard" : "Start Training"}
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                      <path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 13 13"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M1 6.5h11M7 1l5 5.5-5 5.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </Link>
                 </motion.div>
@@ -436,7 +485,9 @@ export default function Hero() {
                       border: "1px solid rgba(255,255,255,0.18)",
                       backdropFilter: isMobile ? "none" : "blur(12px)",
                       WebkitBackdropFilter: isMobile ? "none" : "blur(12px)",
-                      boxShadow: isMobile ? "none" : "0 4px 20px rgba(0,0,0,0.5)",
+                      boxShadow: isMobile
+                        ? "none"
+                        : "0 4px 20px rgba(0,0,0,0.5)",
                       transition: "all 0.3s ease",
                       textDecoration: "none",
                     }}
@@ -486,7 +537,6 @@ export default function Hero() {
                   </span>
                 </motion.div>
               )}
-
             </motion.div>
           </motion.div>
         )}
@@ -525,7 +575,10 @@ export default function Hero() {
           cursor: "pointer",
         }}
         onClick={() =>
-          window.scrollBy({ top: window.innerHeight * 0.88, behavior: "smooth" })
+          window.scrollBy({
+            top: window.innerHeight * 0.88,
+            behavior: "smooth",
+          })
         }
         aria-label="Scroll down"
       >
@@ -550,8 +603,17 @@ export default function Hero() {
               viewBox="0 0 18 11"
               fill="none"
               aria-hidden="true"
-              animate={reducedMotion ? {} : { opacity: [0.15, 0.9, 0.15], y: [0, 5, 0] }}
-              transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+              animate={
+                reducedMotion
+                  ? {}
+                  : { opacity: [0.15, 0.9, 0.15], y: [0, 5, 0] }
+              }
+              transition={{
+                duration: 1.5,
+                delay: i * 0.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
               <path
                 d="M1 1.5l8 7 8-7"
@@ -564,7 +626,6 @@ export default function Hero() {
           ))}
         </div>
       </motion.button>
-
     </section>
   );
 }

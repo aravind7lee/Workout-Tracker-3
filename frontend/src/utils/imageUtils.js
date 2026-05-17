@@ -10,12 +10,16 @@ export const preloadImages = (imageUrls) => {
         img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
         img.src = url;
       });
-    })
+    }),
   );
 };
 
 // Function to generate WebP versions (for future optimization)
-export const getOptimizedImageUrl = (originalUrl, format = 'webp', quality = 80) => {
+export const getOptimizedImageUrl = (
+  originalUrl,
+  format = "webp",
+  quality = 80,
+) => {
   // This would typically be handled by a build tool or CDN
   // For now, return the original URL
   return originalUrl;
@@ -24,9 +28,9 @@ export const getOptimizedImageUrl = (originalUrl, format = 'webp', quality = 80)
 // Function to get responsive image sizes
 export const getResponsiveImageSizes = () => {
   return {
-    mobile: '(max-width: 640px) 100vw',
-    tablet: '(max-width: 1024px) 50vw',
-    desktop: '33vw'
+    mobile: "(max-width: 640px) 100vw",
+    tablet: "(max-width: 1024px) 50vw",
+    desktop: "33vw",
   };
 };
 
@@ -36,17 +40,18 @@ export const validateImageAlt = (title, subtitle) => {
 };
 
 // Function to handle image loading errors gracefully
-export const handleImageError = (event, fallbackIcon = '📊') => {
+export const handleImageError = (event, fallbackIcon = "📊") => {
   const img = event.target;
-  const container = img.closest('.analytics-gallery-card');
-  
+  const container = img.closest(".analytics-gallery-card");
+
   if (container) {
     // Create fallback content
-    const fallback = document.createElement('div');
-    fallback.className = 'flex items-center justify-center h-full bg-slate-700 text-4xl';
+    const fallback = document.createElement("div");
+    fallback.className =
+      "flex items-center justify-center h-full bg-slate-700 text-4xl";
     fallback.textContent = fallbackIcon;
-    fallback.setAttribute('aria-label', 'Image unavailable');
-    
+    fallback.setAttribute("aria-label", "Image unavailable");
+
     // Replace image with fallback
     img.parentNode.replaceChild(fallback, img);
   }
@@ -57,5 +62,5 @@ export default {
   getOptimizedImageUrl,
   getResponsiveImageSizes,
   validateImageAlt,
-  handleImageError
+  handleImageError,
 };

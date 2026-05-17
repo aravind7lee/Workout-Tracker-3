@@ -1,6 +1,6 @@
 // frontend/src/services/analyticsService.js - BACKEND ANALYTICS SERVICE
-import api from '../utils/api';
-import { isUserAuthenticated } from '../utils/authCheck';
+import api from "../utils/api";
+import { isUserAuthenticated } from "../utils/authCheck";
 
 class AnalyticsService {
   // Fetch analytics stats from backend
@@ -8,12 +8,12 @@ class AnalyticsService {
     if (!isUserAuthenticated()) {
       return { workouts: 0, meals: 0, plans: 0, streak: 0 };
     }
-    
+
     try {
-      const response = await api.get('/analytics/stats');
+      const response = await api.get("/analytics/stats");
       return response.data;
     } catch (error) {
-      if (error.message?.includes('authentication')) {
+      if (error.message?.includes("authentication")) {
         return { workouts: 0, meals: 0, plans: 0, streak: 0 };
       }
       throw error;
@@ -25,12 +25,12 @@ class AnalyticsService {
     if (!isUserAuthenticated()) {
       return { totalWorkouts: 0, weeklyWorkouts: 0, monthlyWorkouts: 0 };
     }
-    
+
     try {
-      const response = await api.get('/analytics/workouts');
+      const response = await api.get("/analytics/workouts");
       return response.data;
     } catch (error) {
-      if (error.message?.includes('authentication')) {
+      if (error.message?.includes("authentication")) {
         return { totalWorkouts: 0, weeklyWorkouts: 0, monthlyWorkouts: 0 };
       }
       throw error;
@@ -42,12 +42,12 @@ class AnalyticsService {
     if (!isUserAuthenticated()) {
       return { totalMeals: 0, calories: 0, protein: 0 };
     }
-    
+
     try {
-      const response = await api.get('/analytics/nutrition');
+      const response = await api.get("/analytics/nutrition");
       return response.data;
     } catch (error) {
-      if (error.message?.includes('authentication')) {
+      if (error.message?.includes("authentication")) {
         return { totalMeals: 0, calories: 0, protein: 0 };
       }
       throw error;
@@ -57,7 +57,7 @@ class AnalyticsService {
   // Fetch achievements from backend
   async getAchievements() {
     try {
-      const response = await api.get('/analytics/achievements');
+      const response = await api.get("/analytics/achievements");
       return response.data;
     } catch (error) {
       throw error;
@@ -67,7 +67,7 @@ class AnalyticsService {
   // Sync workout plans to backend
   async syncWorkoutPlans(plans) {
     try {
-      const response = await api.post('/analytics/sync-plans', { plans });
+      const response = await api.post("/analytics/sync-plans", { plans });
       return response.data;
     } catch (error) {
       throw error;
@@ -77,7 +77,7 @@ class AnalyticsService {
   // Sync workout history to backend
   async syncWorkoutHistory(workouts) {
     try {
-      const response = await api.post('/analytics/sync-workouts', { workouts });
+      const response = await api.post("/analytics/sync-workouts", { workouts });
       return response.data;
     } catch (error) {
       throw error;
@@ -87,7 +87,7 @@ class AnalyticsService {
   // Sync nutrition data to backend
   async syncNutritionData(meals) {
     try {
-      const response = await api.post('/analytics/sync-nutrition', { meals });
+      const response = await api.post("/analytics/sync-nutrition", { meals });
       return response.data;
     } catch (error) {
       throw error;
@@ -97,7 +97,7 @@ class AnalyticsService {
   // Track workout completion
   async trackWorkout(workoutData) {
     try {
-      const response = await api.post('/analytics/track-workout', workoutData);
+      const response = await api.post("/analytics/track-workout", workoutData);
       return response.data;
     } catch (error) {
       throw error;
@@ -107,7 +107,7 @@ class AnalyticsService {
   // Track meal logging
   async trackMeal(mealData) {
     try {
-      const response = await api.post('/analytics/track-meal', mealData);
+      const response = await api.post("/analytics/track-meal", mealData);
       return response.data;
     } catch (error) {
       throw error;
@@ -117,7 +117,7 @@ class AnalyticsService {
   // Track plan creation
   async trackPlanCreation(planData) {
     try {
-      const response = await api.post('/analytics/track-plan', planData);
+      const response = await api.post("/analytics/track-plan", planData);
       return response.data;
     } catch (error) {
       throw error;
@@ -131,14 +131,14 @@ class AnalyticsService {
         this.getStats(),
         this.getWorkoutAnalytics(),
         this.getNutritionAnalytics(),
-        this.getAchievements()
+        this.getAchievements(),
       ]);
 
       return {
         stats: stats.data || stats,
         workouts: workouts.data || workouts,
         nutrition: nutrition.data || nutrition,
-        achievements: achievements.data || achievements
+        achievements: achievements.data || achievements,
       };
     } catch (error) {
       throw error;
@@ -152,7 +152,7 @@ class AnalyticsService {
 
       // Sync workout plans
       try {
-        const plans = JSON.parse(localStorage.getItem('workoutPlans') || '[]');
+        const plans = JSON.parse(localStorage.getItem("workoutPlans") || "[]");
         if (plans.length > 0) {
           results.plans = await this.syncWorkoutPlans(plans);
         }
@@ -162,7 +162,9 @@ class AnalyticsService {
 
       // Sync workout history
       try {
-        const workouts = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+        const workouts = JSON.parse(
+          localStorage.getItem("workoutHistory") || "[]",
+        );
         if (workouts.length > 0) {
           results.workouts = await this.syncWorkoutHistory(workouts);
         }
@@ -172,7 +174,7 @@ class AnalyticsService {
 
       // Sync nutrition data
       try {
-        const meals = JSON.parse(localStorage.getItem('recentMeals') || '[]');
+        const meals = JSON.parse(localStorage.getItem("recentMeals") || "[]");
         if (meals.length > 0) {
           results.nutrition = await this.syncNutritionData(meals);
         }
@@ -189,10 +191,10 @@ class AnalyticsService {
   // Real-time event tracking
   async trackEvent(eventType, eventData) {
     try {
-      const response = await api.post('/analytics/track-event', {
+      const response = await api.post("/analytics/track-event", {
         eventType,
         eventData,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return response.data;
     } catch (error) {

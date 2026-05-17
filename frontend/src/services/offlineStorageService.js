@@ -1,33 +1,35 @@
 // Offline Storage Service for Real-time Data Persistence
 class OfflineStorageService {
   constructor() {
-    this.storageKey = 'gymTracker_offlineData';
-    this.userProgressKey = 'gymTracker_userProgress';
-    this.exerciseStatsKey = 'gymTracker_exerciseStats';
-    this.workoutHistoryKey = 'gymTracker_workoutHistory';
+    this.storageKey = "gymTracker_offlineData";
+    this.userProgressKey = "gymTracker_userProgress";
+    this.exerciseStatsKey = "gymTracker_exerciseStats";
+    this.workoutHistoryKey = "gymTracker_workoutHistory";
   }
 
   // Get offline data structure
   getOfflineData() {
     try {
       const data = localStorage.getItem(this.storageKey);
-      return data ? JSON.parse(data) : {
-        workouts: [],
-        meals: [],
-        exercises: [],
-        userProgress: null,
-        exerciseStats: {},
-        lastSync: null
-      };
+      return data
+        ? JSON.parse(data)
+        : {
+            workouts: [],
+            meals: [],
+            exercises: [],
+            userProgress: null,
+            exerciseStats: {},
+            lastSync: null,
+          };
     } catch (error) {
-      console.error('Failed to get offline data:', error);
+      console.error("Failed to get offline data:", error);
       return {
         workouts: [],
         meals: [],
         exercises: [],
         userProgress: null,
         exerciseStats: {},
-        lastSync: null
+        lastSync: null,
       };
     }
   }
@@ -39,12 +41,12 @@ class OfflineStorageService {
       const updatedData = {
         ...existingData,
         ...data,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
       localStorage.setItem(this.storageKey, JSON.stringify(updatedData));
       return true;
     } catch (error) {
-      console.error('Failed to save offline data:', error);
+      console.error("Failed to save offline data:", error);
       return false;
     }
   }
@@ -56,7 +58,7 @@ class OfflineStorageService {
       ...workoutData,
       id: `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString(),
-      isOffline: true
+      isOffline: true,
     });
     return this.saveOfflineData(offlineData);
   }
@@ -68,7 +70,7 @@ class OfflineStorageService {
       ...mealData,
       id: `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString(),
-      isOffline: true
+      isOffline: true,
     });
     return this.saveOfflineData(offlineData);
   }
@@ -81,7 +83,7 @@ class OfflineStorageService {
       action,
       timestamp: new Date().toISOString(),
       id: `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      isOffline: true
+      isOffline: true,
     });
     return this.saveOfflineData(offlineData);
   }
@@ -92,7 +94,7 @@ class OfflineStorageService {
     offlineData.userProgress = {
       ...offlineData.userProgress,
       ...progressData,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
     return this.saveOfflineData(offlineData);
   }
@@ -106,7 +108,7 @@ class OfflineStorageService {
     offlineData.exerciseStats[exerciseName] = {
       ...offlineData.exerciseStats[exerciseName],
       ...stats,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
     return this.saveOfflineData(offlineData);
   }
@@ -117,7 +119,7 @@ class OfflineStorageService {
       const data = localStorage.getItem(this.userProgressKey);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error('Failed to get cached user progress:', error);
+      console.error("Failed to get cached user progress:", error);
       return null;
     }
   }
@@ -127,12 +129,15 @@ class OfflineStorageService {
     try {
       const dataWithTimestamp = {
         ...progressData,
-        cachedAt: new Date().toISOString()
+        cachedAt: new Date().toISOString(),
       };
-      localStorage.setItem(this.userProgressKey, JSON.stringify(dataWithTimestamp));
+      localStorage.setItem(
+        this.userProgressKey,
+        JSON.stringify(dataWithTimestamp),
+      );
       return true;
     } catch (error) {
-      console.error('Failed to cache user progress:', error);
+      console.error("Failed to cache user progress:", error);
       return false;
     }
   }
@@ -143,7 +148,7 @@ class OfflineStorageService {
       const data = localStorage.getItem(this.exerciseStatsKey);
       return data ? JSON.parse(data) : {};
     } catch (error) {
-      console.error('Failed to get cached exercise stats:', error);
+      console.error("Failed to get cached exercise stats:", error);
       return {};
     }
   }
@@ -153,12 +158,15 @@ class OfflineStorageService {
     try {
       const dataWithTimestamp = {
         ...statsData,
-        cachedAt: new Date().toISOString()
+        cachedAt: new Date().toISOString(),
       };
-      localStorage.setItem(this.exerciseStatsKey, JSON.stringify(dataWithTimestamp));
+      localStorage.setItem(
+        this.exerciseStatsKey,
+        JSON.stringify(dataWithTimestamp),
+      );
       return true;
     } catch (error) {
-      console.error('Failed to cache exercise stats:', error);
+      console.error("Failed to cache exercise stats:", error);
       return false;
     }
   }
@@ -169,7 +177,7 @@ class OfflineStorageService {
       const data = localStorage.getItem(this.workoutHistoryKey);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error('Failed to get cached workout history:', error);
+      console.error("Failed to get cached workout history:", error);
       return [];
     }
   }
@@ -179,12 +187,15 @@ class OfflineStorageService {
     try {
       const dataWithTimestamp = {
         workouts,
-        cachedAt: new Date().toISOString()
+        cachedAt: new Date().toISOString(),
       };
-      localStorage.setItem(this.workoutHistoryKey, JSON.stringify(dataWithTimestamp));
+      localStorage.setItem(
+        this.workoutHistoryKey,
+        JSON.stringify(dataWithTimestamp),
+      );
       return true;
     } catch (error) {
-      console.error('Failed to cache workout history:', error);
+      console.error("Failed to cache workout history:", error);
       return false;
     }
   }
@@ -198,7 +209,7 @@ class OfflineStorageService {
       localStorage.removeItem(this.workoutHistoryKey);
       return true;
     } catch (error) {
-      console.error('Failed to clear offline data:', error);
+      console.error("Failed to clear offline data:", error);
       return false;
     }
   }
@@ -219,10 +230,10 @@ class OfflineStorageService {
         exerciseStatsCount: Object.keys(exerciseStats).length,
         workoutHistoryCount: workoutHistory.length,
         lastSync: offlineData.lastSync,
-        totalSize: this.calculateStorageSize()
+        totalSize: this.calculateStorageSize(),
       };
     } catch (error) {
-      console.error('Failed to get storage info:', error);
+      console.error("Failed to get storage info:", error);
       return null;
     }
   }
@@ -235,10 +246,10 @@ class OfflineStorageService {
         this.storageKey,
         this.userProgressKey,
         this.exerciseStatsKey,
-        this.workoutHistoryKey
+        this.workoutHistoryKey,
       ];
 
-      keys.forEach(key => {
+      keys.forEach((key) => {
         const data = localStorage.getItem(key);
         if (data) {
           totalSize += new Blob([data]).size;
@@ -247,7 +258,7 @@ class OfflineStorageService {
 
       return totalSize;
     } catch (error) {
-      console.error('Failed to calculate storage size:', error);
+      console.error("Failed to calculate storage size:", error);
       return 0;
     }
   }
@@ -255,18 +266,18 @@ class OfflineStorageService {
   // Check if data is stale (older than specified minutes)
   isDataStale(cachedData, maxAgeMinutes = 5) {
     if (!cachedData || !cachedData.cachedAt) return true;
-    
+
     const cacheTime = new Date(cachedData.cachedAt);
     const now = new Date();
     const ageMinutes = (now - cacheTime) / (1000 * 60);
-    
+
     return ageMinutes > maxAgeMinutes;
   }
 
   // Simulate real-time updates for offline mode
-  simulateRealTimeUpdate(exerciseName, action = 'view') {
+  simulateRealTimeUpdate(exerciseName, action = "view") {
     const stats = this.getCachedExerciseStats();
-    
+
     if (!stats[exerciseName]) {
       stats[exerciseName] = {
         totalSessions: 0,
@@ -274,12 +285,12 @@ class OfflineStorageService {
         totalReps: 0,
         maxWeight: 0,
         lastPerformed: null,
-        personalBest: 0
+        personalBest: 0,
       };
     }
 
     // Simulate interaction
-    if (action === 'workout_start') {
+    if (action === "workout_start") {
       stats[exerciseName].totalSessions++;
       stats[exerciseName].lastPerformed = new Date().toISOString();
     }

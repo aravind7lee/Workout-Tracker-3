@@ -1,6 +1,6 @@
 // Real-time profile hook
-import { useState, useEffect, useCallback } from 'react';
-import { profileServiceReal } from '../services/profileServiceReal';
+import { useState, useEffect, useCallback } from "react";
+import { profileServiceReal } from "../services/profileServiceReal";
 
 export function useRealTimeProfile() {
   const [profile, setProfile] = useState(null);
@@ -14,14 +14,15 @@ export function useRealTimeProfile() {
     try {
       setLoading(true);
       setError(null);
-      
-      const [profileData, statsData, activityData, achievementsData] = await Promise.all([
-        profileServiceReal.getUserProfile(),
-        profileServiceReal.getProfileStats(),
-        profileServiceReal.getUserActivity(),
-        profileServiceReal.getUserAchievements()
-      ]);
-      
+
+      const [profileData, statsData, activityData, achievementsData] =
+        await Promise.all([
+          profileServiceReal.getUserProfile(),
+          profileServiceReal.getProfileStats(),
+          profileServiceReal.getUserActivity(),
+          profileServiceReal.getUserAchievements(),
+        ]);
+
       setProfile(profileData);
       setStats(statsData);
       setActivity(activityData);
@@ -35,7 +36,8 @@ export function useRealTimeProfile() {
 
   const updateProfile = async (profileData) => {
     try {
-      const updatedProfile = await profileServiceReal.updateProfile(profileData);
+      const updatedProfile =
+        await profileServiceReal.updateProfile(profileData);
       setProfile(updatedProfile);
       return updatedProfile;
     } catch (error) {
@@ -45,7 +47,8 @@ export function useRealTimeProfile() {
 
   const uploadProfilePicture = async (imageFile) => {
     try {
-      const updatedProfile = await profileServiceReal.uploadProfilePicture(imageFile);
+      const updatedProfile =
+        await profileServiceReal.uploadProfilePicture(imageFile);
       setProfile(updatedProfile);
       return updatedProfile;
     } catch (error) {
@@ -63,7 +66,7 @@ export function useRealTimeProfile() {
 
   useEffect(() => {
     loadProfile();
-    
+
     // Subscribe to real-time updates
     const unsubscribe = profileServiceReal.subscribeToUpdates((data) => {
       if (data.profile) setProfile(data.profile);
@@ -86,6 +89,6 @@ export function useRealTimeProfile() {
     uploadProfilePicture,
     changePassword,
     deleteAccount,
-    refresh: loadProfile
+    refresh: loadProfile,
   };
 }

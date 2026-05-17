@@ -1,108 +1,356 @@
 // Simple Hero Component - Fallback Version (No External Dependencies)
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Star } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+
 
 export default function HeroSimple() {
-  return (
-    <section className="relative rounded-2xl overflow-hidden mb-6 sm:mb-8 min-h-[500px] md:min-h-[600px]">
-      {/* Simple Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-black"></div>
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="w-full px-6 sm:px-8 lg:px-12 py-12 sm:py-16 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
-            {/* Text Content */}
-            <div className="text-center lg:text-left space-y-6">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight text-white">
-                  <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
-                    GymTracker
-                  </span>
-                  <br />
-                  <span className="text-gray-100">Your Fitness Journey</span>
-                </h1>
-                <p className="text-lg sm:text-xl lg:text-2xl text-gray-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                  Transform your workouts with intelligent tracking, personalized plans, and real-time progress monitoring. 
-                  <span className="text-blue-300 font-semibold"> Achieve your fitness goals faster than ever.</span>
-                </p>
-              </div>
-
-              {/* Features */}
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                <div className="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-                  <span className="text-red-500">✓</span>
-                  <span className="text-gray-200 text-sm font-medium">Smart Workout Plans</span>
-                </div>
-                <div className="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-                  <span className="text-red-500">✓</span>
-                  <span className="text-gray-200 text-sm font-medium">Progress Analytics</span>
-                </div>
-                <div className="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-                  <span className="text-red-500">✓</span>
-                  <span className="text-gray-200 text-sm font-medium">Nutrition Tracking</span>
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link 
-                  to="/dashboard" 
-                  className="premium-btn-primary btn-primary preserve-color"
-                >
-                  Start Your Journey
-                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5h11M7 1l5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </Link>
-                <Link 
-                  to="/library" 
-                  className="premium-btn-secondary btn-secondary preserve-color"
-                >
-                  Explore Exercises
-                </Link>
-              </div>
-            </div>
-
-            {/* Simple Stats Card */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 shadow-2xl max-w-sm w-full border border-white border-opacity-20">
-                <div className="text-center space-y-6">
-                  <div>
-                    <h3 className="text-gray-200 font-bold text-xl mb-4">Live Progress</h3>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-red-500">0</div>
-                      <div className="text-xs text-gray-300">Workouts</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-red-500">0</div>
-                      <div className="text-xs text-gray-300">Meals</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-red-600">0</div>
-                      <div className="text-xs text-gray-300">XP Points</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-orange-400">0🔥</div>
-                      <div className="text-xs text-gray-300">Streak</div>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t border-white border-opacity-20">
-                    <div className="text-sm text-gray-300">Weekly Goal</div>
-                    <div className="mt-2 bg-gray-600 bg-opacity-50 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-red-600 to-red-700 h-2 rounded-full w-0 transition-all duration-500"></div>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1">0 of 4 workouts completed</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+  return /*#__PURE__*/ React.createElement(
+    "section",
+    {
+      className:
+        "relative rounded-2xl overflow-hidden mb-6 sm:mb-8 min-h-[500px] md:min-h-[600px]",
+    },
+    /*#__PURE__*/ React.createElement("div", {
+      className:
+        "absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-black",
+    }),
+    /*#__PURE__*/ React.createElement("div", {
+      className: "absolute inset-0 bg-black bg-opacity-40",
+    }),
+    /*#__PURE__*/ React.createElement(
+      "div",
+      {
+        className: "relative z-10 h-full flex items-center",
+      },
+      /*#__PURE__*/ React.createElement(
+        "div",
+        {
+          className: "w-full px-6 sm:px-8 lg:px-12 py-12 sm:py-16 lg:py-20",
+        },
+        /*#__PURE__*/ React.createElement(
+          "div",
+          {
+            className:
+              "grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto",
+          },
+          /*#__PURE__*/ React.createElement(
+            "div",
+            {
+              className: "text-center lg:text-left space-y-6",
+            },
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className: "space-y-4",
+              },
+              /*#__PURE__*/ React.createElement(
+                "h1",
+                {
+                  className:
+                    "text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight text-white",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className:
+                      "bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent",
+                  },
+                  "GymTracker",
+                ),
+                /*#__PURE__*/ React.createElement("br", null),
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-gray-100",
+                  },
+                  "Your Fitness Journey",
+                ),
+              ),
+              /*#__PURE__*/ React.createElement(
+                "p",
+                {
+                  className:
+                    "text-lg sm:text-xl lg:text-2xl text-gray-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed",
+                },
+                "Transform your workouts with intelligent tracking, personalized plans, and real-time progress monitoring.",
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-blue-300 font-semibold",
+                  },
+                  " Achieve your fitness goals faster than ever.",
+                ),
+              ),
+            ),
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className:
+                  "flex flex-wrap gap-4 justify-center lg:justify-start",
+              },
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className:
+                    "flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-red-500",
+                  },
+                  "\u2713",
+                ),
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-gray-200 text-sm font-medium",
+                  },
+                  "Smart Workout Plans",
+                ),
+              ),
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className:
+                    "flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-red-500",
+                  },
+                  "\u2713",
+                ),
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-gray-200 text-sm font-medium",
+                  },
+                  "Progress Analytics",
+                ),
+              ),
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className:
+                    "flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-red-500",
+                  },
+                  "\u2713",
+                ),
+                /*#__PURE__*/ React.createElement(
+                  "span",
+                  {
+                    className: "text-gray-200 text-sm font-medium",
+                  },
+                  "Nutrition Tracking",
+                ),
+              ),
+            ),
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className:
+                  "flex flex-col sm:flex-row gap-4 justify-center lg:justify-start",
+              },
+              /*#__PURE__*/ React.createElement(
+                Link,
+                {
+                  to: "/dashboard",
+                  className: "premium-btn-primary btn-primary preserve-color",
+                },
+                "Start Your Journey",
+                /*#__PURE__*/ React.createElement(
+                  "svg",
+                  {
+                    width: "13",
+                    height: "13",
+                    viewBox: "0 0 13 13",
+                    fill: "none",
+                    "aria-hidden": "true",
+                  },
+                  /*#__PURE__*/ React.createElement("path", {
+                    d: "M1 6.5h11M7 1l5 5.5-5 5.5",
+                    stroke: "currentColor",
+                    strokeWidth: "2",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                  }),
+                ),
+              ),
+              /*#__PURE__*/ React.createElement(
+                Link,
+                {
+                  to: "/library",
+                  className:
+                    "premium-btn-secondary btn-secondary preserve-color",
+                },
+                "Explore Exercises",
+              ),
+            ),
+          ),
+          /*#__PURE__*/ React.createElement(
+            "div",
+            {
+              className: "flex justify-center lg:justify-end",
+            },
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className:
+                  "bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 shadow-2xl max-w-sm w-full border border-white border-opacity-20",
+              },
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className: "text-center space-y-6",
+                },
+                /*#__PURE__*/ React.createElement(
+                  "div",
+                  null,
+                  /*#__PURE__*/ React.createElement(
+                    "h3",
+                    {
+                      className: "text-gray-200 font-bold text-xl mb-4",
+                    },
+                    "Live Progress",
+                  ),
+                ),
+                /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "grid grid-cols-2 gap-4",
+                  },
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-center",
+                    },
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className:
+                          "text-2xl sm:text-3xl font-bold text-red-500",
+                      },
+                      "0",
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "text-xs text-gray-300",
+                      },
+                      "Workouts",
+                    ),
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-center",
+                    },
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className:
+                          "text-2xl sm:text-3xl font-bold text-red-500",
+                      },
+                      "0",
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "text-xs text-gray-300",
+                      },
+                      "Meals",
+                    ),
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-center",
+                    },
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className:
+                          "text-2xl sm:text-3xl font-bold text-red-600",
+                      },
+                      "0",
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "text-xs text-gray-300",
+                      },
+                      "XP Points",
+                    ),
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-center",
+                    },
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className:
+                          "text-2xl sm:text-3xl font-bold text-orange-400",
+                      },
+                      "0",
+                      /*#__PURE__*/ React.createElement(Star, {
+                        className: "w-[1em] h-[1em] inline-block",
+                      }),
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "text-xs text-gray-300",
+                      },
+                      "Streak",
+                    ),
+                  ),
+                ),
+                /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "pt-4 border-t border-white border-opacity-20",
+                  },
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-sm text-gray-300",
+                    },
+                    "Weekly Goal",
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "mt-2 bg-gray-600 bg-opacity-50 rounded-full h-2",
+                    },
+                    /*#__PURE__*/ React.createElement("div", {
+                      className:
+                        "bg-gradient-to-r from-red-600 to-red-700 h-2 rounded-full w-0 transition-all duration-500",
+                    }),
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className: "text-xs text-gray-400 mt-1",
+                    },
+                    "0 of 4 workouts completed",
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 }

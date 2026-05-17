@@ -1,31 +1,27 @@
 // Enhanced Skeleton Loader Component
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
-const SkeletonLoader = ({ 
-  className = '', 
-  variant = 'default',
-  count = 1 
-}) => {
+const SkeletonLoader = ({ className = "", variant = "default", count = 1 }) => {
   const shimmerVariants = {
-    initial: { x: '-100%' },
+    initial: { x: "-100%" },
     animate: {
-      x: '100%',
+      x: "100%",
       transition: {
         duration: 1.5,
         repeat: Infinity,
-        ease: 'linear'
-      }
-    }
+        ease: "linear",
+      },
+    },
   };
 
-  if (variant === 'page') {
+  if (variant === "page") {
     return (
       <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
         <div className="text-center space-y-4">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 border-4 border-red-600/30 border-t-red-600 rounded-full mx-auto"
           />
           <div className="space-y-2">
@@ -37,7 +33,7 @@ const SkeletonLoader = ({
     );
   }
 
-  if (variant === 'card') {
+  if (variant === "card") {
     return (
       <div className="bg-black/50 rounded-2xl overflow-hidden border border-neutral-800/50">
         {/* Image skeleton */}
@@ -49,7 +45,7 @@ const SkeletonLoader = ({
             className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-700/20 to-transparent"
           />
         </div>
-        
+
         {/* Content skeleton */}
         <div className="p-6 space-y-4">
           <div className="space-y-2">

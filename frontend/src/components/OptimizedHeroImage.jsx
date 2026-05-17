@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 // Universal LQIP placeholder
-const UNIVERSAL_LQIP = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
+const UNIVERSAL_LQIP =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
-export default function OptimizedHeroImage({ 
-  src, 
-  alt, 
-  className = '', 
-  fallbackIcon = '🏋️',
-  fallbackGradient = 'from-neutral-900 to-black',
+export default function OptimizedHeroImage({
+  src,
+  alt,
+  className = "",
+  fallbackIcon = "🏋️",
+  fallbackGradient = "from-neutral-900 to-black",
   onLoad,
-  children 
+  children,
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -29,8 +30,8 @@ export default function OptimizedHeroImage({
       onLoad?.(false);
     };
     img.src = src;
-    img.loading = 'eager';
-    img.fetchPriority = 'high';
+    img.loading = "eager";
+    img.fetchPriority = "high";
   }, [src, onLoad]);
 
   return (
@@ -42,7 +43,7 @@ export default function OptimizedHeroImage({
         className="w-full h-full object-cover blur-sm transition-opacity duration-300"
         style={{ opacity: imageLoaded ? 0 : 1 }}
       />
-      
+
       {/* Main Image */}
       {src && !imageError && (
         <motion.img
@@ -57,10 +58,10 @@ export default function OptimizedHeroImage({
           fetchPriority="high"
         />
       )}
-      
+
       {/* Fallback */}
       {imageError && (
-        <motion.div 
+        <motion.div
           className={`w-full h-full bg-gradient-to-br ${fallbackGradient} flex items-center justify-center absolute inset-0`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -72,12 +73,10 @@ export default function OptimizedHeroImage({
           </div>
         </motion.div>
       )}
-      
+
       {/* Content Overlay */}
       {!imageError && children && (
-        <div className="absolute inset-0">
-          {children}
-        </div>
+        <div className="absolute inset-0">{children}</div>
       )}
     </div>
   );

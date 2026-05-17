@@ -1,0 +1,22 @@
+{
+  "name": "refactor-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/generator": "^7.29.1",
+    "@babel/parser": "^7.29.3",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/traverse": "^7.29.0",
+    "emoji-regex": "^10.6.0",
+    "prettier": "^3.8.3"
+  }
+}

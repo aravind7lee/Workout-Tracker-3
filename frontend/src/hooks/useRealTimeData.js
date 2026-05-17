@@ -1,6 +1,6 @@
 // Real-time data hook for all components - FIXED VERSION
-import { useState, useEffect, useCallback } from 'react';
-import { realTimeService } from '../services/realTimeService';
+import { useState, useEffect, useCallback } from "react";
+import { realTimeService } from "../services/realTimeService";
 
 export function useRealTimeData(dataType, options = {}) {
   const [data, setData] = useState(null);
@@ -12,28 +12,28 @@ export function useRealTimeData(dataType, options = {}) {
     try {
       setLoading(true);
       setError(null);
-      
+
       let result;
       switch (dataType) {
-        case 'dashboard':
+        case "dashboard":
           result = await realTimeService.getDashboardData();
           break;
-        case 'workouts':
+        case "workouts":
           result = await realTimeService.getWorkouts();
           break;
-        case 'exercises':
+        case "exercises":
           result = await realTimeService.getExercises();
           break;
-        case 'nutrition':
+        case "nutrition":
           result = await realTimeService.getNutritionData();
           break;
-        case 'analytics':
+        case "analytics":
           result = await realTimeService.getAnalytics();
           break;
         default:
           result = null;
       }
-      
+
       setData(result);
     } catch (err) {
       setError(err.message);
@@ -45,7 +45,7 @@ export function useRealTimeData(dataType, options = {}) {
 
   useEffect(() => {
     fetchData();
-    
+
     // Subscribe to real-time updates if service supports it
     let unsubscribe = () => {};
     try {
@@ -57,7 +57,7 @@ export function useRealTimeData(dataType, options = {}) {
         });
       }
     } catch (error) {
-      console.error('Error subscribing to real-time updates:', error);
+      console.error("Error subscribing to real-time updates:", error);
     }
 
     // Auto-refresh if enabled
@@ -70,7 +70,7 @@ export function useRealTimeData(dataType, options = {}) {
       try {
         unsubscribe();
       } catch (error) {
-        console.error('Error unsubscribing:', error);
+        console.error("Error unsubscribing:", error);
       }
       if (intervalId) {
         clearInterval(intervalId);
@@ -82,27 +82,27 @@ export function useRealTimeData(dataType, options = {}) {
     data,
     loading,
     error,
-    refresh: fetchData
+    refresh: fetchData,
   };
 }
 
 // Specialized hooks for different data types
 export function useRealTimeDashboard() {
-  return useRealTimeData('dashboard');
+  return useRealTimeData("dashboard");
 }
 
 export function useRealTimeWorkouts() {
-  return useRealTimeData('workouts');
+  return useRealTimeData("workouts");
 }
 
 export function useRealTimeExercises() {
-  return useRealTimeData('exercises');
+  return useRealTimeData("exercises");
 }
 
 export function useRealTimeNutrition() {
-  return useRealTimeData('nutrition');
+  return useRealTimeData("nutrition");
 }
 
 export function useRealTimeAnalytics() {
-  return useRealTimeData('analytics');
+  return useRealTimeData("analytics");
 }

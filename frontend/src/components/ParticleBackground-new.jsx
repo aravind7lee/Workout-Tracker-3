@@ -1,7 +1,7 @@
 // Updated ParticleBackground using new @tsparticles/react (optional)
-import React, { useCallback } from 'react';
-import Particles from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
+import React, { useCallback } from "react";
+import Particles from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
 
 export default function ParticleBackgroundNew() {
   const particlesInit = useCallback(async (engine) => {

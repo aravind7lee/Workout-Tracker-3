@@ -1,18 +1,14 @@
 // frontend/src/components/Navbar.jsx
+import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Wifi, WifiOff } from 'lucide-react';
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import {
-  User,
-  Menu,
-  X,
-  Settings,
-  LogOut,
-  UserCircle,
-  Zap,
-  Wifi,
-  WifiOff,
-} from "lucide-react";
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+
 import { useAuth } from "../context/AuthContext";
 import SearchBar from "./SearchBar";
 
@@ -49,7 +45,7 @@ export default function Navbar() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 20);
     const previous = scrollY.getPrevious();
-    
+
     // Hide navbar only when scrolling down and passed the top threshold
     // Show navbar when scrolling up or at the very top
     if (latest > previous && latest > 150) {

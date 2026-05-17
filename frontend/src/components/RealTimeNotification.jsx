@@ -1,8 +1,13 @@
 // Real-time notification component for instant feedback
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function RealTimeNotification({ message, type = 'success', onClose, duration = 4000 }) {
+export default function RealTimeNotification({
+  message,
+  type = "success",
+  onClose,
+  duration = 4000,
+}) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -16,23 +21,33 @@ export default function RealTimeNotification({ message, type = 'success', onClos
 
   const getIcon = () => {
     switch (type) {
-      case 'success': return '🎉';
-      case 'workout': return '💪';
-      case 'xp': return '⭐';
+      case "success":
+        return "🎉";
+      case "workout":
+        return "💪";
+      case "xp":
+        return "⭐";
 
-      case 'sync': return '🔄';
-      default: return '✅';
+      case "sync":
+        return "🔄";
+      default:
+        return "✅";
     }
   };
 
   const getColors = () => {
     switch (type) {
-      case 'success': return 'from-red-600/20 to-red-600/20 border-red-600/30';
-      case 'workout': return 'from-red-600/20 to-red-600/20 border-red-600/30';
-      case 'xp': return 'from-yellow-500/20 to-orange-500/20 border-yellow-500/30';
+      case "success":
+        return "from-red-600/20 to-red-600/20 border-red-600/30";
+      case "workout":
+        return "from-red-600/20 to-red-600/20 border-red-600/30";
+      case "xp":
+        return "from-yellow-500/20 to-orange-500/20 border-yellow-500/30";
 
-      case 'sync': return 'from-red-700/20 to-red-700/20 border-red-700/30';
-      default: return 'from-gray-500/20 to-neutral-500/20 border-gray-500/30';
+      case "sync":
+        return "from-red-700/20 to-red-700/20 border-red-700/30";
+      default:
+        return "from-gray-500/20 to-neutral-500/20 border-gray-500/30";
     }
   };
 
@@ -69,7 +84,7 @@ export default function RealTimeNotification({ message, type = 'success', onClos
               ×
             </button>
           </div>
-          
+
           {/* Progress bar */}
           <motion.div
             initial={{ width: "100%" }}
