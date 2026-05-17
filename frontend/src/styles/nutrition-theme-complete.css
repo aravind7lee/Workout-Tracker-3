@@ -78,8 +78,8 @@
 .dark .card:hover,
 .dark .nutrition-card:hover {
   background: rgba(30, 41, 59, 0.9) !important;
-  border-color: #00d4ff !important;
-  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 8px 30px rgba(255, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   transform: translateY(-2px) !important;
 }
 
@@ -96,8 +96,8 @@
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #00d4ff !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 15px rgba(0, 212, 255, 0.3) !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2), 0 0 15px rgba(255, 0, 0, 0.3) !important;
   background: rgba(15, 23, 42, 0.95) !important;
 }
 
@@ -111,15 +111,15 @@
 .dark .btn-primary,
 .dark .bg-blue-600,
 .dark .bg-blue-500 {
-  background: linear-gradient(135deg, #00d4ff, #0ea5e9) !important;
+  background: linear-gradient(135deg, #FF0000, #E60000) !important;
   border: none !important;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4), 0 0 20px rgba(255, 0, 0, 0.2) !important;
 }
 
 .dark .btn-primary:hover,
 .dark .bg-blue-600:hover,
 .dark .bg-blue-500:hover {
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.4) !important;
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.4) !important;
   transform: translateY(-2px) !important;
 }
 
@@ -133,8 +133,8 @@
 
 .dark button:hover {
   background: rgba(51, 65, 85, 0.9) !important;
-  border-color: #00d4ff !important;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3) !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== CHIP PILLS & BADGES ===== */
@@ -142,9 +142,9 @@
 .dark .badge,
 .dark .pill,
 .dark .rounded-full {
-  background: rgba(0, 212, 255, 0.1) !important;
-  border: 1px solid rgba(0, 212, 255, 0.3) !important;
-  color: #00d4ff !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+  color: #FF0000 !important;
   backdrop-filter: blur(8px) !important;
 }
 
@@ -152,8 +152,8 @@
 .dark .badge:hover,
 .dark .pill:hover,
 .dark .rounded-full:hover {
-  background: rgba(0, 212, 255, 0.2) !important;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3) !important;
+  background: rgba(255, 0, 0, 0.2) !important;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== SKELETON LOADERS ===== */
@@ -177,8 +177,8 @@
 .dark .bg-red-500,
 .dark .bg-yellow-500,
 .dark .bg-purple-500 {
-  background: linear-gradient(90deg, #00d4ff, #0ea5e9, #8b5cf6) !important;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+  background: linear-gradient(90deg, #FF0000, #E60000, #8B0000) !important;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
 }
 
 /* ===== BORDERS & DIVIDERS ===== */
@@ -189,8 +189,8 @@
 
 .dark .border-blue-500,
 .dark .border-blue-600 {
-  border-color: #00d4ff !important;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== TOOLTIPS & MODALS ===== */
@@ -205,7 +205,7 @@
 .dark .modal {
   background: rgba(30, 41, 59, 0.95) !important;
   border: 1px solid rgba(71, 85, 105, 0.4) !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 212, 255, 0.1) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 0, 0.1) !important;
   backdrop-filter: blur(20px) !important;
 }
 
@@ -221,26 +221,26 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.3);
+  background: rgba(255, 0, 0, 0.3);
   border-radius: 4px;
-  border: 1px solid rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.1);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.5);
-  box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+  background: rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
 }
 
 /* ===== FOCUS STATES ===== */
 .dark *:focus-visible {
-  outline: 2px solid #00d4ff !important;
+  outline: 2px solid #FF0000 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* ===== SELECTION ===== */
 .dark ::selection {
-  background: rgba(0, 212, 255, 0.3) !important;
+  background: rgba(255, 0, 0, 0.3) !important;
   color: rgb(248, 250, 252) !important;
 }
 
@@ -248,7 +248,7 @@
 /* Ensure maximum contrast in light mode */
 .light-theme,
 [data-theme="light"] {
-  --text-contrast: #0f172a;
+  --text-contrast: #000000;
   --heading-contrast: #020617;
   --muted-contrast: #475569;
 }
@@ -316,8 +316,8 @@
 }
 
 .dark .food-category-btn.active {
-  background: linear-gradient(135deg, #00d4ff, #0ea5e9) !important;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4) !important;
+  background: linear-gradient(135deg, #FF0000, #E60000) !important;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4) !important;
 }
 
 /* Food item cards */
@@ -329,8 +329,8 @@
 
 .dark .food-item-card:hover {
   background: rgba(30, 41, 59, 0.9) !important;
-  border-color: rgba(0, 212, 255, 0.5) !important;
-  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2) !important;
+  border-color: rgba(255, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* Meal entries */
@@ -352,14 +352,14 @@
 
 /* Quick add pills */
 .dark .quick-add-pill {
-  background: rgba(0, 212, 255, 0.1) !important;
-  border: 1px solid rgba(0, 212, 255, 0.2) !important;
-  color: #00d4ff !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.2) !important;
+  color: #FF0000 !important;
 }
 
 .dark .quick-add-pill:hover {
-  background: rgba(0, 212, 255, 0.2) !important;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+  background: rgba(255, 0, 0, 0.2) !important;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* ===== THEME TOGGLE INSTANT UPDATE ===== */

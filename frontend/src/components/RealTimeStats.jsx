@@ -257,9 +257,9 @@ export default function RealTimeStats() {
         Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="card">
             <div className="animate-pulse">
-              <div className="h-8 bg-slate-700 rounded mb-2"></div>
-              <div className="h-4 bg-slate-700 rounded mb-1"></div>
-              <div className="h-3 bg-slate-700 rounded"></div>
+              <div className="h-8 bg-neutral-800 rounded mb-2"></div>
+              <div className="h-4 bg-neutral-800 rounded mb-1"></div>
+              <div className="h-3 bg-neutral-800 rounded"></div>
             </div>
           </div>
         ))
@@ -268,14 +268,14 @@ export default function RealTimeStats() {
           { 
             label: 'Total Workouts', 
             value: formatNumber(stats.totalWorkouts), 
-            color: 'text-blue-400',
+            color: 'text-red-500',
             icon: '💪',
             path: '/workouts'
           },
           { 
             label: 'Workout Plans', 
             value: formatNumber(stats.totalPlans), 
-            color: 'text-green-400',
+            color: 'text-red-500',
             icon: '📋',
             path: '/my-plans'
           },
@@ -295,7 +295,7 @@ export default function RealTimeStats() {
             <div className="absolute top-2 right-2 text-xs">
               <span className={`px-1 py-0.5 rounded-full text-xs ${
                 isOnline 
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                  ? 'bg-red-600/20 text-red-500 border border-red-600/30' 
                   : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
               }`}>
                 {isOnline ? '🟢' : '🟡'}
@@ -306,14 +306,14 @@ export default function RealTimeStats() {
               <div className={`text-3xl font-bold ${stat.color} mb-1`}>
                 {stat.value}
               </div>
-              <div className="text-sm text-slate-400 mb-1">
+              <div className="text-sm text-neutral-400 mb-1">
                 {stat.label}
               </div>
               <div className={`text-xs ${
                 (stat.label === 'Total Workouts' && stats.totalWorkouts > 0) ||
                 (stat.label === 'Workout Plans' && stats.totalPlans > 0) ||
                 (stat.label === 'Total Meals' && stats.totalMeals > 0)
-                  ? 'text-green-400' 
+                  ? 'text-red-500' 
                   : 'text-gray-400'
               }`}>
                 {getStatMessage(stat.label, 

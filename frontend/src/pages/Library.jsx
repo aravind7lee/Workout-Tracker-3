@@ -379,11 +379,11 @@ export default function Library() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-black">
       {/* Premium Exercise Library Hero Section */}
       <div className="relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden">
         {imageError ? (
-          <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center">
             <div className="text-center text-white px-4">
               <div className="text-6xl mb-4">🏋️</div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl">
@@ -420,19 +420,19 @@ export default function Library() {
       </div>
 
       {/* Main Content Area */}
-      <div className="relative bg-slate-900 pt-8 pb-12">
+      <div className="relative bg-black pt-8 pb-12">
         {/* Stats Panel - Now properly positioned below the header */}
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="card p-6 mb-8 relative z-10 transform -translate-y-8">
             <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'}`}></div>
+                <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-red-500 animate-pulse' : 'bg-yellow-400'}`}></div>
                 <span className="text-white font-medium text-sm sm:text-base">
                   {isOnline ? '🟢 Online Mode - Real-time Progress Tracking' : '🟡 Offline Mode - Limited Features'}
                 </span>
               </div>
               {lastSync && (
-                <div className="text-xs text-slate-400 flex items-center gap-2">
+                <div className="text-xs text-neutral-400 flex items-center gap-2">
                   <span>Last sync: {lastSync.toLocaleTimeString()}</span>
                   {(() => {
                     try {
@@ -452,28 +452,28 @@ export default function Library() {
             
             {user && userProgress ? (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
-                  <div className="text-xl sm:text-2xl font-bold text-blue-400">{userProgress.workouts || 0}</div>
-                  <div className="text-xs sm:text-sm text-slate-400">Total Workouts</div>
+                <div className="text-center p-3 bg-neutral-900/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-red-500">{userProgress.workouts || 0}</div>
+                  <div className="text-xs sm:text-sm text-neutral-400">Total Workouts</div>
                 </div>
-                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
-                  <div className="text-xl sm:text-2xl font-bold text-green-400">{userProgress.streak || 0}</div>
-                  <div className="text-xs sm:text-sm text-slate-400">Day Streak</div>
+                <div className="text-center p-3 bg-neutral-900/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-red-500">{userProgress.streak || 0}</div>
+                  <div className="text-xs sm:text-sm text-neutral-400">Day Streak</div>
                 </div>
-                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
-                  <div className="text-xl sm:text-2xl font-bold text-purple-400">{userProgress.xpPoints || 0}</div>
-                  <div className="text-xs sm:text-sm text-slate-400">XP Points</div>
+                <div className="text-center p-3 bg-neutral-900/50 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-red-600">{userProgress.xpPoints || 0}</div>
+                  <div className="text-xs sm:text-sm text-neutral-400">XP Points</div>
                 </div>
-                <div className="text-center p-3 bg-slate-800/50 rounded-lg">
+                <div className="text-center p-3 bg-neutral-900/50 rounded-lg">
                   <div className="text-xl sm:text-2xl font-bold text-orange-400">
                     {userProgress.weeklyGoal?.completed || 0}/{userProgress.weeklyGoal?.target || 4}
                   </div>
-                  <div className="text-xs sm:text-sm text-slate-400">Weekly Goal</div>
+                  <div className="text-xs sm:text-sm text-neutral-400">Weekly Goal</div>
                 </div>
               </div>
             ) : (
               <div className="text-center py-4">
-                <div className="text-slate-400 text-sm">
+                <div className="text-neutral-400 text-sm">
                   {user ? 'Loading your progress...' : 'Sign in to track your progress'}
                 </div>
               </div>
@@ -488,10 +488,10 @@ export default function Library() {
                 <input 
                   value={searchQuery} 
                   onChange={e => setSearchQuery(e.target.value)} 
-                  className="w-full p-4 pl-12 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                  className="w-full p-4 pl-12 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white placeholder-neutral-400 text-base focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
                   placeholder="Search exercises by name, type, or muscle group..." 
                 />
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400 text-lg">
                   🔍
                 </div>
               </div>
@@ -500,7 +500,7 @@ export default function Library() {
                 <select 
                   value={filters.category} 
                   onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 >
                   <option value="">All Categories</option>
                   {categories.map(cat => (
@@ -511,7 +511,7 @@ export default function Library() {
                 <select 
                   value={filters.difficulty} 
                   onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
-                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 >
                   <option value="">All Difficulties</option>
                   {difficulties.map(diff => (
@@ -522,7 +522,7 @@ export default function Library() {
                 <select 
                   value={filters.muscle} 
                   onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
-                  className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 >
                   <option value="">All Muscles</option>
                   {muscles.map(muscle => (
@@ -535,29 +535,29 @@ export default function Library() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="card text-center py-4 bg-blue-900/20 border border-blue-800/30">
-                <div className="text-2xl font-bold text-blue-400">{allExercises.length}</div>
-                <div className="text-sm text-slate-400">Total Exercises</div>
+                <div className="text-2xl font-bold text-red-500">{allExercises.length}</div>
+                <div className="text-sm text-neutral-400">Total Exercises</div>
               </div>
               <div className="card text-center py-4 bg-green-900/20 border border-green-800/30">
-                <div className="text-2xl font-bold text-green-400">{categories.length}</div>
-                <div className="text-sm text-slate-400">Muscle Groups</div>
+                <div className="text-2xl font-bold text-red-500">{categories.length}</div>
+                <div className="text-sm text-neutral-400">Muscle Groups</div>
               </div>
               <div className="card text-center py-4 bg-purple-900/20 border border-purple-800/30">
-                <div className="text-2xl font-bold text-purple-400">{filteredExercises.length}</div>
-                <div className="text-sm text-slate-400">Filtered Results</div>
+                <div className="text-2xl font-bold text-red-600">{filteredExercises.length}</div>
+                <div className="text-sm text-neutral-400">Filtered Results</div>
               </div>
               <div className="card text-center py-4 bg-orange-900/20 border border-orange-800/30">
                 <div className="text-2xl font-bold text-orange-400">
                   {allExercises.filter(ex => ex.hasProgress).length}
                 </div>
-                <div className="text-sm text-slate-400">Exercises Done</div>
+                <div className="text-sm text-neutral-400">Exercises Done</div>
               </div>
             </div>
           </div>
 
           {/* Results Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <div className="text-slate-400 text-base">
+            <div className="text-neutral-400 text-base">
               Showing {filteredExercises.length} of {allExercises.length} exercises
             </div>
             <button
@@ -577,13 +577,13 @@ export default function Library() {
               <div className="col-span-full text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
                 <div className="text-xl font-semibold text-white mb-2">No exercises found</div>
-                <div className="text-slate-400 mb-6">Try adjusting your search or filters</div>
+                <div className="text-neutral-400 mb-6">Try adjusting your search or filters</div>
                 <button
                   onClick={() => {
                     setSearchQuery('');
                     setFilters({ category: '', difficulty: '', muscle: '' });
                   }}
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+                  className="btn bg-red-700 hover:bg-blue-700 text-white px-6 py-3"
                 >
                   Clear All Filters
                 </button>
@@ -591,22 +591,22 @@ export default function Library() {
             ) : (
               filteredExercises.slice(0, visibleCards).map(exercise => (
                 <div key={exercise.id} className={`card transition-transform hover:scale-[1.02] will-change-transform plan-card ${
-                  exercise.hasProgress ? 'ring-2 ring-green-500/30' : 'hover:ring-2 hover:ring-blue-500/30'
+                  exercise.hasProgress ? 'ring-2 ring-red-600/30' : 'hover:ring-2 hover:ring-red-600/30'
                 }`} style={{ contain: 'layout style paint' }}>
                   <div className="flex items-start gap-3 mb-4">
                     <div className={`w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0 relative`}>
                       <span className="text-2xl">{exercise.icon}</span>
                       {exercise.hasProgress && (
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center">
                           <span className="text-xs text-white">✓</span>
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-white text-base mb-1 truncate">{exercise.name}</div>
-                      <div className="text-sm text-slate-400">{exercise.category}</div>
+                      <div className="text-sm text-neutral-400">{exercise.category}</div>
                       {exercise.hasProgress && (
-                        <div className="text-xs text-green-400 mt-1">
+                        <div className="text-xs text-red-500 mt-1">
                           {exercise.totalSessions} sessions • Best: {exercise.personalBest}kg
                         </div>
                       )}
@@ -615,12 +615,12 @@ export default function Library() {
                   
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-300">Sets/Reps:</span>
+                      <span className="text-sm text-neutral-300">Sets/Reps:</span>
                       <span className="text-sm font-medium text-white">{exercise.sets}</span>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-300">Type:</span>
+                      <span className="text-sm text-neutral-300">Type:</span>
                       <span className={`text-xs px-2 py-1 rounded ${
                         exercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
                         exercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
@@ -631,7 +631,7 @@ export default function Library() {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-300">Difficulty:</span>
+                      <span className="text-sm text-neutral-300">Difficulty:</span>
                       <span className={`text-xs px-2 py-1 rounded ${
                         exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
                         exercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
@@ -642,18 +642,18 @@ export default function Library() {
                     </div>
                     
                     {exercise.hasProgress && (
-                      <div className="bg-slate-800/50 rounded p-2 space-y-1">
+                      <div className="bg-neutral-900/50 rounded p-2 space-y-1">
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-400">Last performed:</span>
-                          <span className="text-green-400">
+                          <span className="text-neutral-400">Last performed:</span>
+                          <span className="text-red-500">
                             {exercise.lastPerformed ? 
                               new Date(exercise.lastPerformed).toLocaleDateString() : 'Never'
                             }
                           </span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-400">Total sets:</span>
-                          <span className="text-blue-400">{exercise.userStats.totalSets || 0}</span>
+                          <span className="text-neutral-400">Total sets:</span>
+                          <span className="text-red-500">{exercise.userStats.totalSets || 0}</span>
                         </div>
                       </div>
                     )}
@@ -669,7 +669,7 @@ export default function Library() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleQuickPlan(exercise)}
-                        className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 text-sm"
+                        className="btn bg-red-700 hover:bg-blue-700 text-white flex-1 text-sm"
                       >
                         + New Plan
                       </button>
@@ -686,7 +686,7 @@ export default function Library() {
                         console.log('👤 User type:', user ? (user.isDemo ? 'Demo User' : 'Real User') : 'Not logged in');
                         handleStartWorkout(exercise);
                       }}
-                      className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full text-sm`}
+                      className={`btn ${isOnline ? 'bg-red-800 hover:bg-purple-700' : 'bg-neutral-700 hover:bg-neutral-800'} text-white w-full text-sm`}
                     >
                       🎯 {isOnline ? 'Start Workout' : 'Start Workout (Offline)'}
                     </button>
@@ -696,7 +696,7 @@ export default function Library() {
             )}
             {visibleCards < filteredExercises.length && (
               <div ref={loadMoreRef} className="col-span-full text-center py-8">
-                <div className="text-slate-400">Loading more exercises...</div>
+                <div className="text-neutral-400">Loading more exercises...</div>
               </div>
             )}
           </div>
@@ -710,18 +710,18 @@ export default function Library() {
           onClick={() => setSelectedExercise(null)}
         >
           <div 
-            className="bg-gradient-to-br from-slate-900 to-black rounded-2xl sm:rounded-3xl max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-slate-700/50 shadow-2xl"
+            className="bg-gradient-to-br from-black to-black rounded-2xl sm:rounded-3xl max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-neutral-800/50 shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4 sm:mb-6">
                 <div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">{selectedExercise.name}</h2>
-                  <p className="text-slate-300 text-sm sm:text-base">{selectedExercise.category}</p>
+                  <p className="text-neutral-300 text-sm sm:text-base">{selectedExercise.category}</p>
                 </div>
                 <button
                   onClick={() => setSelectedExercise(null)}
-                  className="text-slate-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
+                  className="text-neutral-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
                   aria-label="Close"
                 >
                   ✕
@@ -733,16 +733,16 @@ export default function Library() {
                   <div className={`w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center relative`}>
                     <span className="text-2xl">{selectedExercise.icon}</span>
                     {selectedExercise.hasProgress && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center">
                         <span className="text-xs text-white">✓</span>
                       </div>
                     )}
                   </div>
                   <div>
                     <div className="font-medium text-white">{selectedExercise.category}</div>
-                    <div className="text-sm text-slate-400">{selectedExercise.sets}</div>
+                    <div className="text-sm text-neutral-400">{selectedExercise.sets}</div>
                     {selectedExercise.hasProgress && (
-                      <div className="text-xs text-green-400 mt-1">
+                      <div className="text-xs text-red-500 mt-1">
                         {selectedExercise.totalSessions} sessions completed
                       </div>
                     )}
@@ -750,27 +750,27 @@ export default function Library() {
                 </div>
                 
                 {selectedExercise.hasProgress && (
-                  <div className="bg-slate-800/50 rounded-lg p-3 space-y-2">
+                  <div className="bg-neutral-900/50 rounded-lg p-3 space-y-2">
                     <div className="text-sm font-medium text-white mb-2">📊 Your Progress</div>
                     <div className="grid grid-cols-2 gap-3 text-xs">
                       <div>
-                        <div className="text-slate-400">Total Sessions</div>
-                        <div className="text-blue-400 font-medium">{selectedExercise.userStats.totalSessions}</div>
+                        <div className="text-neutral-400">Total Sessions</div>
+                        <div className="text-red-500 font-medium">{selectedExercise.userStats.totalSessions}</div>
                       </div>
                       <div>
-                        <div className="text-slate-400">Total Sets</div>
-                        <div className="text-green-400 font-medium">{selectedExercise.userStats.totalSets}</div>
+                        <div className="text-neutral-400">Total Sets</div>
+                        <div className="text-red-500 font-medium">{selectedExercise.userStats.totalSets}</div>
                       </div>
                       <div>
-                        <div className="text-slate-400">Total Reps</div>
-                        <div className="text-purple-400 font-medium">{selectedExercise.userStats.totalReps}</div>
+                        <div className="text-neutral-400">Total Reps</div>
+                        <div className="text-red-600 font-medium">{selectedExercise.userStats.totalReps}</div>
                       </div>
                       <div>
-                        <div className="text-slate-400">Max Weight</div>
+                        <div className="text-neutral-400">Max Weight</div>
                         <div className="text-orange-400 font-medium">{selectedExercise.userStats.maxWeight}kg</div>
                       </div>
                     </div>
-                    <div className="text-xs text-slate-400 mt-2">
+                    <div className="text-xs text-neutral-400 mt-2">
                       Last performed: {selectedExercise.lastPerformed ? 
                         new Date(selectedExercise.lastPerformed).toLocaleDateString() : 'Never'
                       }
@@ -780,7 +780,7 @@ export default function Library() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm text-slate-400 mb-1">Type</div>
+                    <div className="text-sm text-neutral-400 mb-1">Type</div>
                     <div className={`text-xs px-2 py-1 rounded inline-block ${
                       selectedExercise.type === 'compound' ? 'bg-blue-900/30 text-blue-300' :
                       selectedExercise.type === 'isolation' ? 'bg-purple-900/30 text-purple-300' :
@@ -790,7 +790,7 @@ export default function Library() {
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-slate-400 mb-1">Difficulty</div>
+                    <div className="text-sm text-neutral-400 mb-1">Difficulty</div>
                     <div className={`text-xs px-2 py-1 rounded inline-block ${
                       selectedExercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
                       selectedExercise.difficulty === 'intermediate' ? 'bg-yellow-900/30 text-yellow-300' :
@@ -801,14 +801,14 @@ export default function Library() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 pt-4 border-t border-slate-700/50">
+                <div className="space-y-2 pt-4 border-t border-neutral-800/50">
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
                         setSelectedExercise(null);
                         handleQuickPlan(selectedExercise);
                       }}
-                      className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                      className="btn bg-red-700 hover:bg-blue-700 text-white flex-1"
                     >
                       New Plan
                     </button>
@@ -831,7 +831,7 @@ export default function Library() {
                       setSelectedExercise(null);
                       handleStartWorkout(exerciseToStart);
                     }}
-                    className={`btn ${isOnline ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-600 hover:bg-slate-700'} text-white w-full`}
+                    className={`btn ${isOnline ? 'bg-red-800 hover:bg-purple-700' : 'bg-neutral-700 hover:bg-neutral-800'} text-white w-full`}
                   >
                     🎯 {isOnline ? 'Start Workout Session' : 'Start Workout (Offline)'}
                   </button>
@@ -873,7 +873,7 @@ export default function Library() {
         try {
           const syncStatus = realTimeSyncService.getSyncStatus();
           return syncStatus && syncStatus.syncInProgress && (
-            <div className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-40">
+            <div className="fixed bottom-4 right-4 bg-red-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-40">
               <span className="text-sm">Syncing...</span>
             </div>
           );

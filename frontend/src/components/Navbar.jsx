@@ -153,7 +153,7 @@ export default function Navbar() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center ${
                     isActiveRoute(link.to)
                       ? "text-white bg-[#238636]/20 border border-[#238636]/30"
-                      : "text-slate-300 hover:text-white hover:bg-slate-700/30"
+                      : "text-neutral-300 hover:text-white hover:bg-neutral-800/30"
                   }`}
                 >
                   <span className="font-body">{link.label}</span>
@@ -175,7 +175,7 @@ export default function Navbar() {
           {/* Right Section */}
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
             {/* Connection Status Indicator */}
-            <div className="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-800/50 backdrop-blur-sm">
+            <div className="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-neutral-900/50 backdrop-blur-sm">
               {connectionStatus.fullyOnline ? (
                 <Wifi size={14} className="text-[#238636]" />
               ) : (
@@ -200,7 +200,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center space-x-2 p-2 rounded-xl hover:bg-slate-700/50 transition-all duration-200"
+                  className="flex items-center space-x-2 p-2 rounded-xl hover:bg-neutral-800/50 transition-all duration-200"
                 >
                   {user?.profileImage ? (
                     <img
@@ -340,12 +340,12 @@ export default function Navbar() {
                 {isOpen ? (
                   <X
                     size={22}
-                    className="text-slate-400 group-hover:text-white transition-colors duration-200"
+                    className="text-neutral-400 group-hover:text-white transition-colors duration-200"
                   />
                 ) : (
                   <Menu
                     size={22}
-                    className="text-slate-400 group-hover:text-white transition-colors duration-200"
+                    className="text-neutral-400 group-hover:text-white transition-colors duration-200"
                   />
                 )}
               </motion.div>

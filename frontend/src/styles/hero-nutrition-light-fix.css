@@ -53,7 +53,7 @@
 
 .light-theme .hero-accent,
 [data-theme="light"] .hero-accent {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Hero feature badges */
@@ -161,7 +161,7 @@
 
 /* Modal background */
 .nutrition-modal-bg {
-  background: #1e293b;
+  background: #0D0D0D;
 }
 
 .light-theme .nutrition-modal-bg,
@@ -315,7 +315,7 @@
 }
 
 .nutrition-modal-confirm:hover {
-  background: #1d4ed8;
+  background: #FF0000;
 }
 
 .light-theme .nutrition-modal-confirm,
@@ -326,5 +326,5 @@
 
 .light-theme .nutrition-modal-confirm:hover,
 [data-theme="light"] .nutrition-modal-confirm:hover {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
 }

@@ -129,7 +129,7 @@
 }
 
 .hero-button-primary:hover {
-  background: #1d4ed8 !important; /* Fallback for older browsers */
+  background: #FF0000 !important; /* Fallback for older browsers */
   background: color-mix(in srgb, var(--color-button-primary-bg) 85%, black) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4) !important;
@@ -195,7 +195,7 @@
 /* Target Hero accent text specifically */
 .light-theme .hero-accent-text,
 [data-theme="light"] .hero-accent-text {
-  color: #0891b2 !important;
+  color: #8B0000 !important;
   font-weight: 900 !important;
   font-size: 1.1em !important;
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.7) !important;
@@ -266,9 +266,9 @@
 
 /* ===== BUILD NEW PLAN BUTTON STYLING ===== */
 .my-plans-button-secondary {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  background: linear-gradient(135deg, #8B0000, #7c3aed) !important;
   color: #ffffff !important;
-  border: 2px solid #8b5cf6 !important;
+  border: 2px solid #8B0000 !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 

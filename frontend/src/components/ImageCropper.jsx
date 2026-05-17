@@ -329,14 +329,14 @@ const ImageCropper = ({ imageUrl, onCropComplete, onCancel }) => {
 
   return (
     <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900 rounded-2xl p-4 w-full max-w-md mx-auto">
+      <div className="bg-black rounded-2xl p-4 w-full max-w-md mx-auto">
         <div className="text-center mb-3">
           <h3 className="text-lg font-bold text-white">Crop Photo</h3>
         </div>
 
         <div 
           ref={containerRef}
-          className="relative mx-auto mb-3 bg-slate-800 rounded-lg overflow-hidden select-none"
+          className="relative mx-auto mb-3 bg-neutral-900 rounded-lg overflow-hidden select-none"
           style={{ 
             width: `${containerSize}px`, 
             height: `${containerSize}px` 
@@ -385,25 +385,25 @@ const ImageCropper = ({ imageUrl, onCropComplete, onCancel }) => {
             >
               {/* Corner handles */}
               <div
-                className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full cursor-nw-resize pointer-events-auto"
+                className="absolute w-4 h-4 bg-white border-2 border-red-600 rounded-full cursor-nw-resize pointer-events-auto"
                 style={{ top: -8, left: -8 }}
                 onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
                 onTouchStart={(e) => handleTouchStart(e, 'resize', 'nw')}
               />
               <div
-                className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full cursor-ne-resize pointer-events-auto"
+                className="absolute w-4 h-4 bg-white border-2 border-red-600 rounded-full cursor-ne-resize pointer-events-auto"
                 style={{ top: -8, right: -8 }}
                 onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
                 onTouchStart={(e) => handleTouchStart(e, 'resize', 'ne')}
               />
               <div
-                className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full cursor-sw-resize pointer-events-auto"
+                className="absolute w-4 h-4 bg-white border-2 border-red-600 rounded-full cursor-sw-resize pointer-events-auto"
                 style={{ bottom: -8, left: -8 }}
                 onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
                 onTouchStart={(e) => handleTouchStart(e, 'resize', 'sw')}
               />
               <div
-                className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full cursor-se-resize pointer-events-auto"
+                className="absolute w-4 h-4 bg-white border-2 border-red-600 rounded-full cursor-se-resize pointer-events-auto"
                 style={{ bottom: -8, right: -8 }}
                 onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
                 onTouchStart={(e) => handleTouchStart(e, 'resize', 'se')}
@@ -424,7 +424,7 @@ const ImageCropper = ({ imageUrl, onCropComplete, onCancel }) => {
         <div className="flex items-center justify-between gap-4 mb-4 px-2">
           <button
             onClick={onCancel}
-            className="text-white hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors flex-shrink-0"
+            className="text-white hover:bg-neutral-800 px-4 py-2 rounded-lg transition-colors flex-shrink-0"
           >
             Cancel
           </button>
@@ -439,7 +439,7 @@ const ImageCropper = ({ imageUrl, onCropComplete, onCancel }) => {
                 });
               }
             }}
-            className="p-3 bg-slate-700 hover:bg-slate-600 rounded-full transition-colors flex-shrink-0"
+            className="p-3 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-colors flex-shrink-0"
             title="Reset zoom and position"
           >
             <RotateCw className="w-5 h-5 text-white" />
@@ -483,9 +483,9 @@ const ImageCropper = ({ imageUrl, onCropComplete, onCancel }) => {
                 });
               }
             }}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+            className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-slate-400 mt-1">
+          <div className="flex justify-between text-xs text-neutral-400 mt-1">
             <span>50%</span>
             <span className="text-white font-medium">{Math.round(scale * 100)}%</span>
             <span>300%</span>

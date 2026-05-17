@@ -144,11 +144,11 @@ export default function NutritionPreviewModal({
                     <div className="nutrition-modal-muted">calories</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-blue-400 font-medium preserve-color">{Math.round((displayItem.protein || 0) * 10) / 10}g</div>
+                    <div className="text-red-500 font-medium preserve-color">{Math.round((displayItem.protein || 0) * 10) / 10}g</div>
                     <div className="nutrition-modal-muted">protein</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-green-400 font-medium preserve-color">{Math.round((displayItem.carbs || 0) * 10) / 10}g</div>
+                    <div className="text-red-500 font-medium preserve-color">{Math.round((displayItem.carbs || 0) * 10) / 10}g</div>
                     <div className="nutrition-modal-muted">carbs</div>
                   </div>
                   <div className="text-center">

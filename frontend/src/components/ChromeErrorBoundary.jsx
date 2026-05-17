@@ -62,19 +62,19 @@ class ChromeErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError && !this.isChromeExtensionError()) {
       return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 max-w-md w-full">
+        <div className="min-h-screen bg-black flex items-center justify-center p-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6 max-w-md w-full">
             <div className="text-center">
               <div className="text-4xl mb-4">⚠️</div>
               <h2 className="text-xl font-semibold text-white mb-2">
                 Something went wrong
               </h2>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-neutral-400 text-sm mb-4">
                 The application encountered an error. Please refresh the page.
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-red-700 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 Refresh Page
               </button>

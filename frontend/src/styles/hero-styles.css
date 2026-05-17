@@ -24,7 +24,7 @@
 }
 
 .hero-accent {
-  color: #06b6d4;
+  color: #FF0000;
 }
 
 .hero-feature-badge {
@@ -43,8 +43,8 @@
 }
 
 .hero-secondary-btn:hover {
-  background: #06b6d4;
-  border-color: #06b6d4;
+  background: #FF0000;
+  border-color: #FF0000;
   color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -98,13 +98,13 @@
 
 .light-theme .hero-title,
 [data-theme="light"] .hero-title {
-  color: #1e293b;
+  color: #0D0D0D;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .light-theme .hero-subtitle,
 [data-theme="light"] .hero-subtitle {
-  color: #334155;
+  color: #1A1A1A;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
@@ -127,14 +127,14 @@
 
 .light-theme .hero-feature-text,
 [data-theme="light"] .hero-feature-text {
-  color: #334155;
+  color: #1A1A1A;
 }
 
 .light-theme .hero-secondary-btn,
 [data-theme="light"] .hero-secondary-btn {
   background: rgba(255, 255, 255, 0.8);
   border: 2px solid rgba(203, 213, 225, 0.5);
-  color: #334155;
+  color: #1A1A1A;
 }
 
 .light-theme .hero-secondary-btn:hover,
@@ -154,7 +154,7 @@
 
 .light-theme .hero-stats-title,
 [data-theme="light"] .hero-stats-title {
-  color: #1e293b;
+  color: #0D0D0D;
 }
 
 .light-theme .hero-stats-label,
@@ -264,7 +264,7 @@ img[src*="Heroimg.jpg"] {
 /* Enhanced text contrast for light mode */
 .light-theme .hero-text-white,
 [data-theme="light"] .hero-text-white {
-  color: #1e293b !important;
+  color: #0D0D0D !important;
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
 }
 
@@ -321,7 +321,7 @@ img[src*="Heroimg.jpg"] {
 .light-theme .hero-text-contrast,
 [data-theme="light"] .hero-text-contrast {
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-  color: #1e293b;
+  color: #0D0D0D;
 }
 
 /* Performance optimizations */

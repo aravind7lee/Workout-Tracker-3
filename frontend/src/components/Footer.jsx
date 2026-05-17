@@ -40,12 +40,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative mt-12 sm:mt-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-700/50">
+    <footer className="relative mt-12 sm:mt-16 bg-gradient-to-br from-black via-neutral-900 to-black border-t border-neutral-800/50">
       {/* Enhanced Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-cyan-500/3 rounded-full blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-red-600/5 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-red-700/5 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-red-600/3 rounded-full blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
       <div className="relative backdrop-blur-xl">
@@ -58,15 +58,15 @@ export default function Footer() {
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="relative">
                   <img src={logo} alt="GymTracker" className="h-8 sm:h-12 md:h-14 w-auto object-contain drop-shadow-lg" />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 opacity-20 blur-md"></div>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-600 via-red-800 to-pink-500 opacity-20 blur-md"></div>
                 </div>
                 <div className="ml-3 sm:ml-6">
                   <h3 className="text-sm sm:text-xl md:text-2xl font-heading text-white">GYMTRACKER</h3>
-                  <p className="text-[10px] sm:text-sm text-slate-400 font-body">Fitness Tracking App</p>
+                  <p className="text-[10px] sm:text-sm text-neutral-400 font-body">Fitness Tracking App</p>
                 </div>
               </div>
               
-              <p className="text-slate-300 mb-3 sm:mb-4 md:mb-6 font-body text-[10px] sm:text-sm leading-relaxed">
+              <p className="text-neutral-300 mb-3 sm:mb-4 md:mb-6 font-body text-[10px] sm:text-sm leading-relaxed">
                 Professional fitness tracking for elite athletes worldwide. Transform your fitness journey with real-time analytics.
               </p>
 
@@ -79,14 +79,14 @@ export default function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="flex-1 px-2.5 py-2 sm:px-3 sm:py-2.5 bg-slate-800/60 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 font-body text-[10px] sm:text-sm transition-all duration-300"
+                    className="flex-1 px-2.5 py-2 sm:px-3 sm:py-2.5 bg-neutral-900/60 border border-neutral-700/50 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-600/50 focus:ring-1 focus:ring-red-600/20 font-body text-[10px] sm:text-sm transition-all duration-300"
                     required
                   />
                   <motion.button
                     type="submit"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-300 font-body text-[10px] sm:text-sm shadow-lg hover:shadow-cyan-500/25"
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-red-700 to-red-700 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-300 font-body text-[10px] sm:text-sm shadow-lg hover:shadow-red-600/25"
                   >
                     {subscribed ? '✓ Subscribed' : 'Join GRIND-X'}
                   </motion.button>
@@ -104,7 +104,7 @@ export default function Footer() {
                     <li key={index}>
                       <button
                         onClick={() => handleLinkClick(link.path)}
-                        className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-slate-400 hover:text-cyan-400 transition-all duration-300 font-body group w-full text-left"
+                        className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-neutral-400 hover:text-red-500 transition-all duration-300 font-body group w-full text-left"
                       >
                         <span className="group-hover:scale-110 transition-transform text-[10px] sm:text-xs">{link.icon}</span>
                         <span className="group-hover:translate-x-1 transition-transform duration-300 truncate">{link.name}</span>
@@ -123,7 +123,7 @@ export default function Footer() {
                       {link.path !== '#' ? (
                         <Link
                           to={link.path}
-                          className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-slate-400 hover:text-cyan-400 transition-all duration-300 font-body group"
+                          className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-neutral-400 hover:text-red-500 transition-all duration-300 font-body group"
                         >
                           <span className="group-hover:scale-110 transition-transform text-[10px] sm:text-xs">{link.icon}</span>
                           <span className="group-hover:translate-x-1 transition-transform duration-300 truncate">{link.name}</span>
@@ -131,7 +131,7 @@ export default function Footer() {
                       ) : (
                         <button
                           onClick={() => handleLinkClick(link.path)}
-                          className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-slate-400 hover:text-cyan-400 transition-all duration-300 font-body group w-full text-left"
+                          className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-neutral-400 hover:text-red-500 transition-all duration-300 font-body group w-full text-left"
                         >
                           <span className="group-hover:scale-110 transition-transform text-[10px] sm:text-xs">{link.icon}</span>
                           <span className="group-hover:translate-x-1 transition-transform duration-300 truncate">{link.name}</span>
@@ -150,7 +150,7 @@ export default function Footer() {
                     <li key={index}>
                       <button
                         onClick={() => handleLinkClick(link.path)}
-                        className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-slate-400 hover:text-cyan-400 transition-all duration-300 font-body group w-full text-left"
+                        className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm text-neutral-400 hover:text-red-500 transition-all duration-300 font-body group w-full text-left"
                       >
                         <span className="group-hover:scale-110 transition-transform text-[10px] sm:text-xs">{link.icon}</span>
                         <span className="group-hover:translate-x-1 transition-transform duration-300 truncate">{link.name}</span>
@@ -164,24 +164,24 @@ export default function Footer() {
         </div>
 
         {/* Enhanced Footer Bottom */}
-        <div className="border-t border-slate-700/50 bg-slate-900/80 backdrop-blur-sm">
+        <div className="border-t border-neutral-800/50 bg-black/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-2.5 sm:py-3 md:py-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-2">
               <div className="text-center sm:text-left">
-                <p className="text-[9px] sm:text-xs text-slate-400 font-body">
+                <p className="text-[9px] sm:text-xs text-neutral-400 font-body">
                   © 2026 GRIND-X. 
                 </p>
-                <p className="text-[9px] sm:text-xs text-slate-500 font-body mt-0.5 sm:mt-1">
+                <p className="text-[9px] sm:text-xs text-neutral-500 font-body mt-0.5 sm:mt-1">
                   Empowering fitness transformations globally
                 </p>
               </div>
               <div className="flex items-center justify-center sm:justify-end gap-2 sm:gap-4">
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="text-[9px] sm:text-xs text-slate-500 font-body">v2.1.0</span>
-                  <div className="w-0.5 h-3 sm:w-1 sm:h-4 bg-slate-600 rounded-full"></div>
+                  <span className="text-[9px] sm:text-xs text-neutral-500 font-body">v2.1.0</span>
+                  <div className="w-0.5 h-3 sm:w-1 sm:h-4 bg-neutral-700 rounded-full"></div>
                   <div className="flex items-center gap-1">
-                    <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] sm:text-xs text-green-400 font-body font-medium">System Online</span>
+                    <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-[9px] sm:text-xs text-red-500 font-body font-medium">System Online</span>
                   </div>
                 </div>
               </div>

@@ -61,7 +61,7 @@ const DashboardHero = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0 bg-slate-900"
+      className="dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0 bg-black"
       role="banner"
       aria-label="Dashboard header section"
     >
@@ -90,7 +90,7 @@ const DashboardHero = () => {
 
       {/* Fallback Background */}
       {imageError && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-slate-900"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-black"></div>
       )}
 
       {/* Light Background Overlay */}

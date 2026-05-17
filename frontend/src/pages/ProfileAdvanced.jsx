@@ -316,12 +316,12 @@ const ProfileAdvanced = () => {
   // Get sync status display
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
-      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
-      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-blue-400' };
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-red-500' };
+      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-red-500' };
       case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
       case 'offline': return { icon: '📱', text: 'Offline', color: 'text-orange-400' };
       case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
-      default: return { icon: '⚡', text: 'Ready', color: 'text-slate-400' };
+      default: return { icon: '⚡', text: 'Ready', color: 'text-neutral-400' };
     }
   };
 
@@ -331,9 +331,9 @@ const ProfileAdvanced = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-slate-400">Loading real-time profile...</p>
-          <p className="mt-2 text-xs text-slate-500">Connecting to MongoDB...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-neutral-400">Loading real-time profile...</p>
+          <p className="mt-2 text-xs text-neutral-500">Connecting to MongoDB...</p>
         </div>
       </div>
     );
@@ -344,7 +344,7 @@ const ProfileAdvanced = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Real-Time Status Bar */}
-      <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+      <div className="bg-neutral-900/60 border border-neutral-800 rounded-lg p-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className={`${statusDisplay.color} text-sm font-medium`}>
@@ -361,7 +361,7 @@ const ProfileAdvanced = () => {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-neutral-400">
             {lastSyncTime && (
               <span>Last sync: {new Date(lastSyncTime).toLocaleTimeString()}</span>
             )}
@@ -384,9 +384,9 @@ const ProfileAdvanced = () => {
               <span>My Profile</span>
               <span className="text-lg">🏋️</span>
             </h1>
-            <p className="text-slate-400 mt-1">Professional Gym Tracker • Real-time MongoDB Integration</p>
+            <p className="text-neutral-400 mt-1">Professional Gym Tracker • Real-time MongoDB Integration</p>
             {currentUser && (
-              <div className="text-xs text-green-400 mt-1">
+              <div className="text-xs text-red-500 mt-1">
                 Logged in as: {currentUser.name} ({currentUser.email})
               </div>
             )}
@@ -420,7 +420,7 @@ const ProfileAdvanced = () => {
               {!editing && (
                 <button
                   onClick={() => setEditing(true)}
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white"
+                  className="btn bg-red-700 hover:bg-blue-700 text-white"
                 >
                   ✏️ Edit
                 </button>
@@ -430,7 +430,7 @@ const ProfileAdvanced = () => {
             {editing ? (
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block text-sm font-medium text-neutral-300 mb-2">
                     Full Name
                   </label>
                   <input
@@ -444,7 +444,7 @@ const ProfileAdvanced = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block text-sm font-medium text-neutral-300 mb-2">
                     Email Address
                   </label>
                   <input
@@ -483,21 +483,21 @@ const ProfileAdvanced = () => {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-neutral-400 mb-1">
                     Full Name
                   </label>
                   <div className="text-white text-lg">{currentUser?.name || 'Not provided'}</div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-neutral-400 mb-1">
                     Email Address
                   </label>
                   <div className="text-white text-lg">{currentUser?.email || 'Not provided'}</div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-neutral-400 mb-1">
                     Member Since
                   </label>
                   <div className="text-white">
@@ -506,7 +506,7 @@ const ProfileAdvanced = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-neutral-400 mb-1">
                     Last Active
                   </label>
                   <div className="text-white">Just now</div>
@@ -539,23 +539,23 @@ const ProfileAdvanced = () => {
                 className={`p-4 rounded-lg border ${
                   achievement.unlocked 
                     ? 'bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 border-yellow-700/30' 
-                    : 'bg-slate-700/30 border-slate-600/30'
+                    : 'bg-neutral-800/30 border-neutral-700/30'
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">{achievement.icon}</span>
                   <div className="flex-1">
                     <div className={`font-medium ${
-                      achievement.unlocked ? 'text-yellow-300' : 'text-slate-400'
+                      achievement.unlocked ? 'text-yellow-300' : 'text-neutral-400'
                     }`}>
                       {achievement.title}
                     </div>
                   </div>
                   {achievement.unlocked && (
-                    <span className="text-green-400 text-sm">✓</span>
+                    <span className="text-red-500 text-sm">✓</span>
                   )}
                 </div>
-                <div className="text-sm text-slate-400">{achievement.description}</div>
+                <div className="text-sm text-neutral-400">{achievement.description}</div>
                 {achievement.unlocked && achievement.unlockedAt && (
                   <div className="text-xs text-yellow-400 mt-2">
                     Unlocked: {new Date(achievement.unlockedAt).toLocaleDateString()}

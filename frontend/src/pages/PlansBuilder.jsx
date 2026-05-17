@@ -419,14 +419,14 @@ export default function PlansBuilder() {
 
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
-      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
-      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-blue-400' };
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-red-500' };
+      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-red-500' };
       case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
       case 'offline': return { icon: '📱', text: 'Offline', color: 'text-orange-400' };
       case 'sync-failed': return { icon: '⚠️', text: 'Sync Failed', color: 'text-red-400' };
-      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-purple-400' };
+      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-red-600' };
       case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
-      default: return { icon: '⚡', text: 'Ready', color: 'text-slate-400' };
+      default: return { icon: '⚡', text: 'Ready', color: 'text-neutral-400' };
     }
   };
 
@@ -577,7 +577,7 @@ export default function PlansBuilder() {
                 >
                   <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-xs">
                     <span className="flex items-center gap-2 text-white/90">
-                      <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
                       <span>Professional Tracker</span>
                       <span className="text-yellow-400">✨</span>
                     </span>
@@ -596,7 +596,7 @@ export default function PlansBuilder() {
       </div>
       
       {/* Plan Builder Features Showcase - 2x2 Grid */}
-      <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-20">
+      <div className="bg-gradient-to-b from-black via-neutral-900 to-black py-20">
         <div className="container mx-auto px-4 max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -610,7 +610,7 @@ export default function PlansBuilder() {
                 Professional Plan Builder
               </span>
             </h2>
-            <p className="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed">
+            <p className="text-neutral-300 text-xl max-w-3xl mx-auto leading-relaxed">
               Experience gym-quality workout planning with advanced tools and real-time synchronization
             </p>
           </motion.div>
@@ -625,7 +625,7 @@ export default function PlansBuilder() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-orange-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-neutral-900 to-black border border-neutral-800 hover:border-orange-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
                 {/* Skeleton Loader */}
                 <AnimatePresence>
                   {!featuresImagesLoaded.image1 && (
@@ -633,7 +633,7 @@ export default function PlansBuilder() {
                       initial={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                      className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 animate-pulse"
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </motion.div>
@@ -670,7 +670,7 @@ export default function PlansBuilder() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-neutral-900 to-black border border-neutral-800 hover:border-red-600/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-600/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
                 {/* Skeleton Loader */}
                 <AnimatePresence>
                   {!featuresImagesLoaded.image2 && (
@@ -678,7 +678,7 @@ export default function PlansBuilder() {
                       initial={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                      className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 animate-pulse"
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </motion.div>
@@ -715,7 +715,7 @@ export default function PlansBuilder() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-green-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-neutral-900 to-black border border-neutral-800 hover:border-red-600/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-600/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
                 {/* Skeleton Loader */}
                 <AnimatePresence>
                   {!featuresImagesLoaded.image3 && (
@@ -723,7 +723,7 @@ export default function PlansBuilder() {
                       initial={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                      className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 animate-pulse"
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </motion.div>
@@ -760,7 +760,7 @@ export default function PlansBuilder() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-purple-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
+              <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-neutral-900 to-black border border-neutral-800 hover:border-red-700/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-700/20 h-64 sm:h-80 md:h-96 lg:h-[400px]">
                 {/* Skeleton Loader */}
                 <AnimatePresence>
                   {!featuresImagesLoaded.image4 && (
@@ -768,7 +768,7 @@ export default function PlansBuilder() {
                       initial={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse"
+                      className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 animate-pulse"
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </motion.div>
@@ -806,7 +806,7 @@ export default function PlansBuilder() {
             viewport={{ once: true }}
             className="text-center mt-8 sm:mt-12 lg:mt-16 px-3 sm:px-4"
           >
-            <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto shadow-2xl">
+            <div className="bg-gradient-to-r from-neutral-900/80 to-black/80 backdrop-blur-sm border border-neutral-800 rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto shadow-2xl">
               {/* Mobile-First Heading */}
               <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
                 <span className="block">Ready to Build Your</span>
@@ -814,7 +814,7 @@ export default function PlansBuilder() {
               </h3>
               
               {/* Mobile-Optimized Description */}
-              <p className="text-slate-300 text-xs sm:text-sm lg:text-base mb-4 sm:mb-6 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-neutral-300 text-xs sm:text-sm lg:text-base mb-4 sm:mb-6 leading-relaxed max-w-2xl mx-auto">
                 Join thousands using our professional plan builder with
                 <span className="font-semibold text-blue-300"> real-time sync</span> and
                 <span className="font-semibold text-green-300"> advanced analytics</span>
@@ -833,16 +833,16 @@ export default function PlansBuilder() {
               
               {/* Mobile-Friendly Features List */}
               <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-3 text-[10px] sm:text-xs">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
-                  <span className="text-green-400 text-sm sm:text-base">✅</span>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-neutral-400 bg-neutral-900/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-neutral-800/50">
+                  <span className="text-red-500 text-sm sm:text-base">✅</span>
                   <span className="text-center sm:text-left">Real-time Sync</span>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
-                  <span className="text-blue-400 text-sm sm:text-base">📊</span>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-neutral-400 bg-neutral-900/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-neutral-800/50">
+                  <span className="text-red-500 text-sm sm:text-base">📊</span>
                   <span className="text-center sm:text-left">Advanced Analytics</span>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-400 bg-slate-800/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-slate-700/50">
-                  <span className="text-purple-400 text-sm sm:text-base">🏋️</span>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-neutral-400 bg-neutral-900/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-neutral-800/50">
+                  <span className="text-red-600 text-sm sm:text-base">🏋️</span>
                   <span className="text-center sm:text-left">Professional Grade</span>
                 </div>
               </div>
@@ -852,10 +852,10 @@ export default function PlansBuilder() {
       </div>
       
       {/* Main Content */}
-      <div id="plan-builder" className="container mx-auto px-4 py-8 bg-slate-900 min-h-screen">
+      <div id="plan-builder" className="container mx-auto px-4 py-8 bg-black min-h-screen">
         
         {/* Mobile-Responsive Status Bar */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {/* Status Section */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -877,7 +877,7 @@ export default function PlansBuilder() {
                 className={`text-xs px-3 py-2 rounded-full transition-all duration-200 ${
                   autoSave 
                     ? 'bg-blue-900/30 text-blue-300 border border-blue-700 hover:bg-blue-800/40' 
-                    : 'bg-slate-700/50 text-slate-400 border border-slate-600 hover:bg-slate-600/50'
+                    : 'bg-neutral-800/50 text-neutral-400 border border-neutral-700 hover:bg-neutral-700/50'
                 }`}
               >
                 <span className="flex items-center justify-center gap-1">
@@ -901,7 +901,7 @@ export default function PlansBuilder() {
 
 
         {/* Mobile-Responsive Form Controls */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-white flex items-center gap-2">
               <span className="text-2xl">🏋️</span>
@@ -926,7 +926,7 @@ export default function PlansBuilder() {
           <div className="space-y-4">
             {/* Plan Name Input - Full Width on Mobile */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2 sm:hidden">
+              <label className="block text-sm font-medium text-neutral-300 mb-2 sm:hidden">
                 Plan Name
               </label>
               <input
@@ -934,20 +934,20 @@ export default function PlansBuilder() {
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
                 placeholder="Enter plan name..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all duration-200"
               />
             </div>
             
             {/* Category and Save Button - Mobile Stack */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-slate-300 mb-2 sm:hidden">
+                <label className="block text-sm font-medium text-neutral-300 mb-2 sm:hidden">
                   Category
                 </label>
                 <select
                   value={planCategory}
                   onChange={(e) => setPlanCategory(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all duration-200"
                 >
                   <option value="General">🏋️ General</option>
                   <option value="Strength">💪 Strength</option>
@@ -960,7 +960,7 @@ export default function PlansBuilder() {
               <button
                 onClick={savePlan}
                 disabled={saving || !planName.trim() || plan.length === 0}
-                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
               >
                 <span className="text-lg">{saving ? '🔄' : '💾'}</span>
                 <span>{saving ? 'Saving...' : 'Save Plan'}</span>
@@ -969,18 +969,18 @@ export default function PlansBuilder() {
             
             {/* Mobile Plan Progress Indicator */}
             {plan.length > 0 && (
-              <div className="sm:hidden bg-slate-700/50 border border-slate-600 rounded-lg p-3">
+              <div className="sm:hidden bg-neutral-800/50 border border-neutral-700 rounded-lg p-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-300">Plan Progress</span>
+                  <span className="text-neutral-300">Plan Progress</span>
                   <span className="text-blue-300 font-medium">{plan.length} exercises</span>
                 </div>
-                <div className="mt-2 bg-slate-600 rounded-full h-2">
+                <div className="mt-2 bg-neutral-700 rounded-full h-2">
                   <div 
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-red-600 to-red-700 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${Math.min((plan.length / 8) * 100, 100)}%` }}
                   ></div>
                 </div>
-                <div className="mt-1 text-xs text-slate-400 text-center">
+                <div className="mt-1 text-xs text-neutral-400 text-center">
                   {Math.min(Math.round((plan.length / 8) * 100), 100)}% Complete
                 </div>
               </div>
@@ -996,12 +996,12 @@ export default function PlansBuilder() {
               <span className="text-2xl sm:text-3xl animate-bounce">{currentMuscleGroup.icon}</span>
               <div className="flex-1">
                 <h4 className="text-base sm:text-lg font-semibold text-white">{currentMuscleGroup.name} Workout Tips</h4>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-neutral-400">
                   {exercises.length} exercises • Real-time guidance
                 </div>
               </div>
             </div>
-            <div className="text-sm text-slate-300 space-y-1">
+            <div className="text-sm text-neutral-300 space-y-1">
               {selectedMuscleGroup === 'chest' && (
                 <>
                   <p>• Start with compound movements (Bench Press, Dips)</p>
@@ -1050,7 +1050,7 @@ export default function PlansBuilder() {
                 <div className="text-green-300 text-sm animate-pulse flex items-center gap-2">
                   <span className="animate-bounce">🎯</span>
                   <span>Dragging: <strong>{draggedItem.item.name}</strong></span>
-                  <span className="text-green-400">→ Drop in plan area!</span>
+                  <span className="text-red-500">→ Drop in plan area!</span>
                 </div>
               </div>
             )}
@@ -1061,9 +1061,9 @@ export default function PlansBuilder() {
                 <div className="text-blue-300 text-sm flex items-center gap-2">
                   <span>📊</span>
                   <span>Plan Progress: {plan.length} exercises added</span>
-                  <div className="flex-1 bg-slate-700 rounded-full h-2 ml-2">
+                  <div className="flex-1 bg-neutral-800 rounded-full h-2 ml-2">
                     <div 
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-red-600 to-red-700 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${Math.min((plan.length / 8) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -1075,20 +1075,20 @@ export default function PlansBuilder() {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center sm:justify-end">
             <button
               onClick={() => navigate('/my-plans')}
-              className="w-full sm:w-auto px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-white rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+              className="w-full sm:w-auto px-3 py-2 bg-neutral-800/50 hover:bg-neutral-700/50 text-white rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
             >
               <span>📋</span>
               <span>View My Plans</span>
               {realTimeStats.totalPlans > 0 && (
-                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                <span className="bg-red-700 text-white text-xs px-2 py-1 rounded-full">
                   {realTimeStats.totalPlans}
                 </span>
               )}
             </button>
             
             {isOnline && (
-              <div className="text-xs text-green-400 flex items-center justify-center sm:justify-start gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <div className="text-xs text-red-500 flex items-center justify-center sm:justify-start gap-1">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                 <span>Real-time sync active</span>
               </div>
             )}
@@ -1099,8 +1099,8 @@ export default function PlansBuilder() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         {/* Exercise Library */}
         <div 
-          className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] transition-all duration-200 ${
-            dragOverArea === 'library' ? 'bg-slate-700/50 border-slate-500 shadow-lg' : ''
+          className={`bg-neutral-900/60 border border-neutral-800 rounded-lg p-3 sm:p-4 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] transition-all duration-200 ${
+            dragOverArea === 'library' ? 'bg-neutral-800/50 border-neutral-500 shadow-lg' : ''
           }`}
           onDragOver={handleDragOver}
           onDragEnter={(e) => handleDragEnter(e, 'library')}
@@ -1115,7 +1115,7 @@ export default function PlansBuilder() {
                 <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white truncate">
                   Exercise Library
                 </h3>
-                <span className="text-[10px] sm:text-xs text-slate-400">({exercises.length})</span>
+                <span className="text-[10px] sm:text-xs text-neutral-400">({exercises.length})</span>
               </div>
             </div>
             <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -1139,7 +1139,7 @@ export default function PlansBuilder() {
                 className={`p-1.5 sm:p-2 md:p-3 rounded-md sm:rounded-lg text-xs font-medium transition-all ${
                   selectedMuscleGroup === key
                     ? `${group.color} text-white shadow-md`
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+                    : 'bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700/50'
                 }`}
               >
                 <div className="text-lg sm:text-xl mb-0.5 sm:mb-1">{group.icon}</div>
@@ -1161,7 +1161,7 @@ export default function PlansBuilder() {
                   className={`p-2 sm:p-3 rounded-md sm:rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-200 select-none ${
                     isInPlan 
                       ? 'bg-green-900/30 border-green-700' 
-                      : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60'
+                      : 'bg-neutral-900/60 border-neutral-800 hover:bg-neutral-800/60'
                   }`}
                   data-exercise-id={exercise.id}
                 >
@@ -1172,12 +1172,12 @@ export default function PlansBuilder() {
                           {exercise.name}
                         </div>
                         {isInPlan && (
-                          <span className="text-green-400 text-[10px] bg-green-900/30 px-1.5 py-0.5 rounded-full border border-green-700 flex-shrink-0">
+                          <span className="text-red-500 text-[10px] bg-green-900/30 px-1.5 py-0.5 rounded-full border border-green-700 flex-shrink-0">
                             ✓
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-slate-400">
+                      <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-neutral-400">
                         <span className="flex items-center gap-0.5">
                           <span>🏋️</span>
                           <span className="truncate">{exercise.sets}</span>
@@ -1197,13 +1197,13 @@ export default function PlansBuilder() {
                         disabled={isInPlan}
                         className={`text-base font-bold w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-md transition-all ${
                           isInPlan 
-                            ? 'text-green-400 bg-green-900/30 border border-green-700' 
-                            : 'text-blue-400 hover:bg-blue-900/20 border border-transparent'
+                            ? 'text-red-500 bg-green-900/30 border border-green-700' 
+                            : 'text-red-500 hover:bg-blue-900/20 border border-transparent'
                         }`}
                       >
                         {isInPlan ? '✓' : '+'}
                       </button>
-                      <div className="text-slate-500 text-sm cursor-grab hidden sm:block">
+                      <div className="text-neutral-500 text-sm cursor-grab hidden sm:block">
                         ⋮⋮
                       </div>
                     </div>
@@ -1216,10 +1216,10 @@ export default function PlansBuilder() {
 
         {/* 🎯 Your Workout Plan - Mobile-First Responsive */}
         <div 
-          className={`bg-slate-800/60 border border-slate-700 rounded-xl p-4 sm:p-5 md:p-6 min-h-[350px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px] transition-all duration-300 ${
+          className={`bg-neutral-900/60 border border-neutral-800 rounded-xl p-4 sm:p-5 md:p-6 min-h-[350px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px] transition-all duration-300 ${
             dragOverArea === 'plan' 
-              ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50 scale-[1.02]' 
-              : 'hover:bg-slate-800/80 hover:border-slate-600'
+              ? 'bg-green-900/30 border-red-500 shadow-xl ring-2 ring-red-500/50 scale-[1.02]' 
+              : 'hover:bg-neutral-900/80 hover:border-neutral-700'
           }`}
           onDragOver={handleDragOver}
           onDragEnter={(e) => handleDragEnter(e, 'plan')}
@@ -1239,8 +1239,8 @@ export default function PlansBuilder() {
                 </h3>
               </div>
               {plan.length > 0 && (
-                <span className="text-[10px] sm:text-xs text-green-400 font-medium flex items-center gap-1 flex-shrink-0">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                <span className="text-[10px] sm:text-xs text-red-500 font-medium flex items-center gap-1 flex-shrink-0">
+                  <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
                   <span className="hidden sm:inline">Ready!</span>
                 </span>
               )}
@@ -1248,8 +1248,8 @@ export default function PlansBuilder() {
             
             {/* Mobile-Friendly Status Badges */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/60 px-2 py-1 rounded-full border border-slate-600">
-                <span className="text-blue-400">📊</span>{plan.length}
+              <span className="text-[10px] sm:text-xs font-medium text-neutral-300 bg-neutral-800/60 px-2 py-1 rounded-full border border-neutral-700">
+                <span className="text-red-500">📊</span>{plan.length}
               </span>
               {plan.length > 0 && (
                 <span className="text-[10px] sm:text-xs bg-gradient-to-r from-blue-900/40 to-purple-900/40 text-blue-300 px-2 py-1 rounded-full border border-blue-700/50">
@@ -1266,20 +1266,20 @@ export default function PlansBuilder() {
           
           {/* Mobile-Optimized Empty State */}
           {plan.length === 0 ? (
-            <div className="flex items-center justify-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px] border-2 border-dashed border-slate-600 rounded-xl transition-all duration-300 hover:border-slate-500 hover:bg-slate-800/30 mx-1">
+            <div className="flex items-center justify-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px] border-2 border-dashed border-neutral-700 rounded-xl transition-all duration-300 hover:border-neutral-500 hover:bg-neutral-900/30 mx-1">
               <div className="text-center px-6 py-8">
                 <div className="text-4xl sm:text-5xl md:text-6xl mb-4 animate-bounce">🎯</div>
-                <h4 className="text-slate-300 text-base sm:text-lg md:text-xl font-semibold mb-2">
+                <h4 className="text-neutral-300 text-base sm:text-lg md:text-xl font-semibold mb-2">
                   Start Building Your Plan
                 </h4>
-                <p className="text-slate-400 text-sm sm:text-base mb-3 max-w-xs mx-auto leading-relaxed">
+                <p className="text-neutral-400 text-sm sm:text-base mb-3 max-w-xs mx-auto leading-relaxed">
                   Drag exercises here or tap the + button to add them
                 </p>
                 <div className="space-y-2">
-                  <p className="text-slate-500 text-xs sm:text-sm">
+                  <p className="text-neutral-500 text-xs sm:text-sm">
                     Build your custom workout plan
                   </p>
-                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-500">
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-neutral-500">
                     <span className="text-base">💪</span>
                     <span className="font-medium">Professional gym-level planning</span>
                     <span className="text-base">💪</span>
@@ -1288,14 +1288,14 @@ export default function PlansBuilder() {
                 
                 {/* Mobile Hint */}
                 <div className="mt-4 sm:hidden">
-                  <p className="text-xs text-slate-600 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700">
+                  <p className="text-xs text-neutral-700 bg-neutral-900/50 px-3 py-2 rounded-lg border border-neutral-800">
                     💡 Tap + buttons to add exercises on mobile
                   </p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="space-y-3 sm:space-y-4 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
+            <div className="space-y-3 sm:space-y-4 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-neutral-900">
               {plan.map((exercise, index) => (
                 <div 
                   key={exercise.planId}
@@ -1311,7 +1311,7 @@ export default function PlansBuilder() {
                     {/* Exercise Number & Info */}
                     <div className="flex items-center gap-3 flex-1">
                       <div className="flex-shrink-0">
-                        <span className="text-green-400 font-bold text-base sm:text-lg bg-gradient-to-r from-green-900/60 to-blue-900/60 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border border-green-700/50 shadow-lg group-hover:shadow-green-500/20 transition-all duration-300">
+                        <span className="text-red-500 font-bold text-base sm:text-lg bg-gradient-to-r from-green-900/60 to-blue-900/60 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border border-green-700/50 shadow-lg group-hover:shadow-red-600/20 transition-all duration-300">
                           {index + 1}
                         </span>
                       </div>
@@ -1328,12 +1328,12 @@ export default function PlansBuilder() {
                         </div>
                         
                         {/* Exercise Details - Mobile Optimized */}
-                        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-400">
-                          <span className="flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded-md border border-slate-700">
+                        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-neutral-400">
+                          <span className="flex items-center gap-1 bg-neutral-900/50 px-2 py-1 rounded-md border border-neutral-800">
                             <span className="text-sm">🏅</span>
                             <span className="font-medium">{exercise.category}</span>
                           </span>
-                          <span className="flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded-md border border-slate-700">
+                          <span className="flex items-center gap-1 bg-neutral-900/50 px-2 py-1 rounded-md border border-neutral-800">
                             <span className="text-sm">🏋️</span>
                             <span className="font-medium">{exercise.sets}</span>
                           </span>
@@ -1351,12 +1351,12 @@ export default function PlansBuilder() {
                     </div>
                     
                     {/* Mobile-Optimized Action Buttons */}
-                    <div className="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-slate-700/50 sm:border-t-0">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-neutral-800/50 sm:border-t-0">
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => moveUp(index)}
                           disabled={index === 0}
-                          className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600 active:scale-95"
+                          className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-neutral-800/50 transition-all duration-200 border border-transparent hover:border-neutral-700 active:scale-95"
                           title="Move up"
                         >
                           <span className="text-sm font-bold">↑</span>
@@ -1364,7 +1364,7 @@ export default function PlansBuilder() {
                         <button
                           onClick={() => moveDown(index)}
                           disabled={index === plan.length - 1}
-                          className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-transparent hover:border-slate-600 active:scale-95"
+                          className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-base w-9 h-9 flex items-center justify-center rounded-lg hover:bg-neutral-800/50 transition-all duration-200 border border-transparent hover:border-neutral-700 active:scale-95"
                           title="Move down"
                         >
                           <span className="text-sm font-bold">↓</span>
@@ -1379,7 +1379,7 @@ export default function PlansBuilder() {
                         >
                           ×
                         </button>
-                        <div className="text-slate-500 text-xl cursor-grab hidden sm:block">
+                        <div className="text-neutral-500 text-xl cursor-grab hidden sm:block">
                           ⋮⋮
                         </div>
                       </div>
@@ -1401,38 +1401,38 @@ export default function PlansBuilder() {
                         </h4>
                       </div>
                       <div className="flex items-center gap-1 bg-green-900/30 px-2 py-0.5 rounded-full border border-green-700/50">
-                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
                         <span className="text-[10px] font-medium text-green-300">Live</span>
                       </div>
                     </div>
                     
                     {/* Stats Grid - Mobile Responsive */}
                     <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-3">
-                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                      <div className="bg-neutral-900/50 p-2 rounded-md border border-neutral-800/50 text-center">
                         <div className="text-base sm:text-lg mb-0.5">🏋️</div>
                         <div className="text-xs sm:text-sm font-semibold text-white">{plan.length}</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400">ex</div>
+                        <div className="text-[9px] sm:text-[10px] text-neutral-400">ex</div>
                       </div>
-                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                      <div className="bg-neutral-900/50 p-2 rounded-md border border-neutral-800/50 text-center">
                         <div className="text-base sm:text-lg mb-0.5">🔥</div>
                         <div className="text-xs sm:text-sm font-semibold text-white truncate">{planCategory.slice(0,3)}</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400">cat</div>
+                        <div className="text-[9px] sm:text-[10px] text-neutral-400">cat</div>
                       </div>
-                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                      <div className="bg-neutral-900/50 p-2 rounded-md border border-neutral-800/50 text-center">
                         <div className="text-base sm:text-lg mb-0.5">⏱️</div>
                         <div className="text-xs sm:text-sm font-semibold text-white">{plan.length * 3}m</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400">time</div>
+                        <div className="text-[9px] sm:text-[10px] text-neutral-400">time</div>
                       </div>
-                      <div className="bg-slate-800/50 p-2 rounded-md border border-slate-700/50 text-center">
+                      <div className="bg-neutral-900/50 p-2 rounded-md border border-neutral-800/50 text-center">
                         <div className="text-base sm:text-lg mb-0.5">💪</div>
                         <div className="text-xs sm:text-sm font-semibold text-white">Pro</div>
-                        <div className="text-[9px] sm:text-[10px] text-slate-400">lvl</div>
+                        <div className="text-[9px] sm:text-[10px] text-neutral-400">lvl</div>
                       </div>
                     </div>
                     
                     {/* Mobile-Friendly Info */}
-                    <div className="bg-slate-800/30 p-2 sm:p-3 rounded-md border border-slate-700/30">
-                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-300">
+                    <div className="bg-neutral-900/30 p-2 sm:p-3 rounded-md border border-neutral-800/30">
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-neutral-300">
                         <span className="text-sm flex-shrink-0">💡</span>
                         <div className="leading-relaxed">
                           <span className="font-medium">Cloud Sync:</span> Auto-syncs to MongoDB across all devices
@@ -1445,16 +1445,16 @@ export default function PlansBuilder() {
               
               {/* Mobile-Optimized Real-time Sync Indicator */}
               {plan.length > 0 && (
-                <div className="mt-3 p-2.5 sm:p-3 bg-slate-800/50 border border-slate-600/50 rounded-lg">
+                <div className="mt-3 p-2.5 sm:p-3 bg-neutral-900/50 border border-neutral-700/50 rounded-lg">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 text-slate-300 min-w-0">
+                    <div className="flex items-center gap-2 text-neutral-300 min-w-0">
                       <span className="text-base sm:text-lg flex-shrink-0">☁️</span>
                       <span className="text-xs sm:text-sm font-medium truncate">MongoDB Sync</span>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-md border border-slate-600/50 flex-shrink-0">
+                    <div className="flex items-center gap-1.5 bg-neutral-800/50 px-2 py-1 rounded-md border border-neutral-700/50 flex-shrink-0">
                       {isOnline ? (
                         <>
-                          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                           <span className="text-green-300 text-[10px] sm:text-xs font-medium">Connected</span>
                         </>
                       ) : (

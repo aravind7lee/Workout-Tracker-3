@@ -137,8 +137,8 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
   }, [analytics]);
 
   const getScoreColor = (score) => {
-    if (score >= 90) return 'text-green-600 dark:text-green-400';
-    if (score >= 75) return 'text-blue-600 dark:text-blue-400';
+    if (score >= 90) return 'text-green-600 dark:text-red-500';
+    if (score >= 75) return 'text-red-700 dark:text-red-500';
     if (score >= 50) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-red-600 dark:text-red-400';
   };
@@ -156,7 +156,7 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
       <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-indigo-200 dark:border-indigo-800 shadow-lg">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-red-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
               <span className="text-white text-base sm:text-lg md:text-xl">📈</span>
             </div>
             <div>
@@ -250,25 +250,25 @@ const NutritionAnalytics = ({ totals, targets, meals, customCalorieTarget }) => 
         </h4>
         
         <div className="grid grid-cols-2 xs:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
-          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-neutral-900/50 rounded-lg shadow-md">
             <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.protein)} leading-none`}>
               {analytics.macroBalance.protein}%
             </div>
-            <div className="text-[9px] sm:text-[10px] md:text-xs text-blue-600 dark:text-blue-400 font-black mt-1 uppercase tracking-wider">Protein</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-red-700 dark:text-red-500 font-black mt-1 uppercase tracking-wider">Protein</div>
           </div>
-          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-neutral-900/50 rounded-lg shadow-md">
             <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.calories)} leading-none`}>
               {analytics.macroBalance.calories}%
             </div>
-            <div className="text-[9px] sm:text-[10px] md:text-xs text-green-600 dark:text-green-400 font-black mt-1 uppercase tracking-wider">Calories</div>
+            <div className="text-[9px] sm:text-[10px] md:text-xs text-green-600 dark:text-red-500 font-black mt-1 uppercase tracking-wider">Calories</div>
           </div>
-          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-neutral-900/50 rounded-lg shadow-md">
             <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.carbs)} leading-none`}>
               {analytics.macroBalance.carbs}%
             </div>
             <div className="text-[9px] sm:text-[10px] md:text-xs text-yellow-600 dark:text-yellow-400 font-black mt-1 uppercase tracking-wider">Carbs</div>
           </div>
-          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-md">
+          <div className="text-center p-2 sm:p-2.5 md:p-3 bg-white/50 dark:bg-neutral-900/50 rounded-lg shadow-md">
             <div className={`text-xl sm:text-2xl md:text-3xl font-black ${getScoreColor(analytics.macroBalance.fat)} leading-none`}>
               {analytics.macroBalance.fat}%
             </div>

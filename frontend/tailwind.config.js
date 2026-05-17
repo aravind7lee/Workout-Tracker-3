@@ -13,8 +13,8 @@ export default {
         'sans': ['Inter', 'sans-serif'],
       },
       colors: {
-        neon: '#00e6a1',
-        accent: '#7c5cff',
+        neon: '#FF0000',
+        accent: '#FF0000',
         // Deep Slate Dark Mode Palette
         'slate': {
           'primary': '#0f172a',
@@ -34,19 +34,16 @@ export default {
           'tertiary': '#475569'
         },
         'neon': {
-          'cyan': '#06b6d4',
-          'blue': '#0891b2',
-          'purple': '#0e7490',
-          'green': '#10b981',
-          'pink': '#ef4444',
-          'orange': '#f59e0b'
+          'red': '#FF0000',
+          'dark-red': '#8B0000',
+          'black': '#000000'
         },
         // Dark mode color palette
         'dark-bg': {
-          primary: '#0f172a',
-          secondary: '#1e293b',
-          tertiary: '#334155',
-          soft: '#1e293b'
+          primary: '#000000',
+          secondary: '#0D0D0D',
+          tertiary: '#1A1A1A',
+          soft: '#0D0D0D'
         },
         'dark-text': {
           primary: '#f8fafc',
@@ -54,8 +51,8 @@ export default {
           muted: '#94a3b8'
         },
         'dark-accent': {
-          DEFAULT: '#06b6d4',
-          hover: '#0891b2'
+          DEFAULT: '#FF0000',
+          hover: '#E60000'
         },
         'dark-border': '#475569',
         // Light mode enhanced colors
@@ -112,9 +109,8 @@ export default {
     'premium-card',
     'card-premium', 
     'glass-effect',
-    'glow-cyan',
-    'glow-purple',
-    'glow-green',
+    'glow-red',
+    'text-glow-red',
     'heading-premium',
     'text-premium',
     'text-accent-glow',

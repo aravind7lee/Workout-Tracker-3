@@ -23,19 +23,19 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
       bg: 'bg-lime-500/10'
     },
     green: {
-      border: 'border-green-500',
-      text: 'text-green-500',
-      bg: 'bg-green-500/10'
+      border: 'border-red-600',
+      text: 'text-red-600',
+      bg: 'bg-red-600/10'
     },
     blue: {
-      border: 'border-blue-500',
-      text: 'text-blue-500',
-      bg: 'bg-blue-500/10'
+      border: 'border-red-600',
+      text: 'text-red-600',
+      bg: 'bg-red-600/10'
     },
     purple: {
-      border: 'border-purple-500',
-      text: 'text-purple-500',
-      bg: 'bg-purple-500/10'
+      border: 'border-red-700',
+      text: 'text-red-700',
+      bg: 'bg-red-700/10'
     }
   };
 
@@ -43,7 +43,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
 
   return (
     <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
-      <div className={`relative bg-zinc-900 border-2 ${colors.border} shadow-2xl overflow-hidden group-hover:border-cyan-500 transition-all duration-300`}>
+      <div className={`relative bg-zinc-900 border-2 ${colors.border} shadow-2xl overflow-hidden group-hover:border-red-600 transition-all duration-300`}>
         <div className="relative h-[280px] sm:h-[350px] overflow-hidden bg-black">
           <OptimizedImage 
             src={bf.img} 
@@ -67,7 +67,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
         </div>
 
         <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-          <h3 className="text-sm sm:text-base font-black text-white uppercase leading-tight group-hover:text-cyan-500 transition-colors duration-300">
+          <h3 className="text-sm sm:text-base font-black text-white uppercase leading-tight group-hover:text-red-600 transition-colors duration-300">
             {bf.title}
           </h3>
           

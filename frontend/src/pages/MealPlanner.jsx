@@ -25,19 +25,19 @@ export default function MealPlanner() {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="card p-4">
           <form onSubmit={addMeal} className="space-y-2">
-            <select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full p-2 rounded bg-slate-900/60">
+            <select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full p-2 rounded bg-black/60">
               <option value="breakfast">Breakfast</option>
               <option value="lunch">Lunch</option>
               <option value="dinner">Dinner</option>
               <option value="snack">Snack</option>
             </select>
-            <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Item name" className="w-full p-2 rounded bg-slate-900/60" />
+            <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Item name" className="w-full p-2 rounded bg-black/60" />
             <div className="grid grid-cols-3 gap-2">
-              <input type="number" value={form.calories} onChange={e=>setForm({...form,calories:e.target.value})} placeholder="kcal" className="p-2 rounded bg-slate-900/60" />
-              <input type="number" value={form.protein} onChange={e=>setForm({...form,protein:e.target.value})} placeholder="protein" className="p-2 rounded bg-slate-900/60" />
-              <input type="number" value={form.carbs} onChange={e=>setForm({...form,carbs:e.target.value})} placeholder="carbs" className="p-2 rounded bg-slate-900/60" />
+              <input type="number" value={form.calories} onChange={e=>setForm({...form,calories:e.target.value})} placeholder="kcal" className="p-2 rounded bg-black/60" />
+              <input type="number" value={form.protein} onChange={e=>setForm({...form,protein:e.target.value})} placeholder="protein" className="p-2 rounded bg-black/60" />
+              <input type="number" value={form.carbs} onChange={e=>setForm({...form,carbs:e.target.value})} placeholder="carbs" className="p-2 rounded bg-black/60" />
             </div>
-            <input type="number" value={form.fat} onChange={e=>setForm({...form,fat:e.target.value})} placeholder="fat" className="w-full p-2 rounded bg-slate-900/60" />
+            <input type="number" value={form.fat} onChange={e=>setForm({...form,fat:e.target.value})} placeholder="fat" className="w-full p-2 rounded bg-black/60" />
             <button className="px-4 py-2 rounded bg-accent text-black font-semibold">Add Meal</button>
           </form>
         </div>
@@ -54,7 +54,7 @@ export default function MealPlanner() {
             <h4 className="font-semibold">Meals</h4>
             <ul className="mt-2 space-y-2">
               {meals.map(m => (
-                <li key={m.id} className="p-2 rounded bg-slate-900/30">{m.type} - {m.name} - {m.calories} kcal</li>
+                <li key={m.id} className="p-2 rounded bg-black/30">{m.type} - {m.name} - {m.calories} kcal</li>
               ))}
             </ul>
           </div>

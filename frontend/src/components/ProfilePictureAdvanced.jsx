@@ -215,7 +215,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
         onDragLeave={handleDragLeave}
       >
         <div className={`relative w-32 h-32 rounded-full overflow-hidden cursor-pointer border-4 transition-all duration-300 ${
-          dragOver ? 'border-blue-400 scale-105' : 'border-slate-600 hover:border-blue-500'
+          dragOver ? 'border-red-500 scale-105' : 'border-neutral-700 hover:border-red-600'
         }`}>
           {displayImage ? (
             <img 
@@ -225,16 +225,16 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
               onError={() => setDisplayImage(null)}
             />
           ) : (
-            <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
+            <div className="w-full h-full bg-neutral-800 flex items-center justify-center group-hover:bg-neutral-700 transition-colors duration-300">
               <div className="text-center">
-                <div className="text-3xl text-slate-400 mb-1">👤</div>
-                <div className="text-xs text-slate-400">Click to upload</div>
+                <div className="text-3xl text-neutral-400 mb-1">👤</div>
+                <div className="text-xs text-neutral-400">Click to upload</div>
               </div>
             </div>
           )}
 
           {dragOver && (
-            <div className="absolute inset-0 bg-blue-500 bg-opacity-80 flex items-center justify-center">
+            <div className="absolute inset-0 bg-red-600 bg-opacity-80 flex items-center justify-center">
               <div className="text-white text-center">
                 <div className="text-2xl mb-1">📤</div>
                 <div className="text-xs">Drop to upload</div>
@@ -250,14 +250,14 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
                     <div className="relative w-12 h-12 mx-auto mb-2">
                       <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
                         <path
-                          className="text-slate-600"
+                          className="text-neutral-700"
                           stroke="currentColor"
                           strokeWidth="3"
                           fill="none"
                           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path
-                          className="text-blue-400"
+                          className="text-red-500"
                           stroke="currentColor"
                           strokeWidth="3"
                           strokeDasharray={`${progress}, 100`}
@@ -288,7 +288,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
                 {isMobile && (
                   <button
                     onClick={() => cameraInputRef.current?.click()}
-                    className="p-2 bg-green-500 hover:bg-green-600 rounded-full text-white transition-colors"
+                    className="p-2 bg-red-600 hover:bg-green-600 rounded-full text-white transition-colors"
                     title="Take Photo"
                     style={{display: 'none'}}
                   >
@@ -338,7 +338,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
       {message && (
         <div className={`text-sm px-4 py-2 rounded-full transition-all duration-300 ${
           message.includes('✅') 
-            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+            ? 'bg-red-600/20 text-red-500 border border-red-600/30' 
             : 'bg-red-500/20 text-red-400 border border-red-500/30'
         }`}>
           {message}
@@ -348,7 +348,7 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
       <div className="flex space-x-2">
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="btn bg-blue-600 hover:bg-blue-700 text-white text-sm"
+          className="btn bg-red-700 hover:bg-blue-700 text-white text-sm"
           disabled={uploading}
         >
           📤 Upload Photo
@@ -364,14 +364,14 @@ const ProfilePictureAdvanced = ({ currentImage, onImageUpdate }) => {
         )}
       </div>
 
-      <div className="text-center text-xs text-slate-500">
+      <div className="text-center text-xs text-neutral-500">
         <p>Supports all image formats • Maximum size: 5MB</p>
         <p>Photos are automatically compressed and saved permanently</p>
       </div>
 
       <div className="text-center">
         <h3 className="text-lg font-semibold text-white">{user?.name || 'User'}</h3>
-        <p className="text-sm text-slate-400">{user?.email || 'user@example.com'}</p>
+        <p className="text-sm text-neutral-400">{user?.email || 'user@example.com'}</p>
       </div>
     </div>
   );

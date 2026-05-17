@@ -5,14 +5,14 @@
 body.light-theme,
 html[data-theme="light"] body {
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== UNIVERSAL TEXT COLOR ENFORCEMENT ===== */
 /* Apply to ALL elements except those that should preserve their colors */
 .light-theme *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color):not(svg):not(path):not([class*="gradient"]):not(.bg-gradient-to-r),
 [data-theme="light"] *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color):not(svg):not(path):not([class*="gradient"]):not(.bg-gradient-to-r) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== HEADINGS - ABSOLUTE MAXIMUM CONTRAST ===== */
@@ -25,31 +25,31 @@ html[data-theme="light"] body {
 /* ===== PARAGRAPH AND SPAN ELEMENTS ===== */
 .light-theme p:not(.preserve-color), .light-theme span:not(.preserve-color), .light-theme div:not(.preserve-color):not([class*="gradient"]),
 [data-theme="light"] p:not(.preserve-color), [data-theme="light"] span:not(.preserve-color), [data-theme="light"] div:not(.preserve-color):not([class*="gradient"]) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== LINKS ===== */
 .light-theme a:not(.preserve-color),
 [data-theme="light"] a:not(.preserve-color) {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* ===== BUTTON TEXT ===== */
 .light-theme button:not(.btn-primary):not(.preserve-color),
 [data-theme="light"] button:not(.btn-primary):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .btn-primary,
 [data-theme="light"] .btn-primary {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
   color: #ffffff !important;
 }
 
 .light-theme .btn-secondary,
 [data-theme="light"] .btn-secondary {
-  color: #1d4ed8 !important;
-  border-color: #1d4ed8 !important;
+  color: #FF0000 !important;
+  border-color: #FF0000 !important;
 }
 
 /* ===== OVERRIDE ALL PROBLEMATIC TAILWIND CLASSES ===== */
@@ -75,13 +75,13 @@ html[data-theme="light"] body {
 [data-theme="light"] .text-gray-300:not(.preserve-color), 
 [data-theme="light"] .text-gray-400:not(.preserve-color), 
 [data-theme="light"] .text-gray-500:not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== PRESERVE COLORED STATS WITH STRONG COLORS ===== */
 .light-theme .text-blue-400, .light-theme .text-blue-500,
 [data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .text-green-400, .light-theme .text-green-500,
@@ -141,7 +141,7 @@ html[data-theme="light"] body {
 .light-theme input, .light-theme textarea, .light-theme select,
 [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #000000 !important;
   border: 1px solid rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -152,7 +152,7 @@ html[data-theme="light"] body {
 
 .light-theme label,
 [data-theme="light"] label {
-  color: #0f172a !important;
+  color: #000000 !important;
   font-weight: 600 !important;
 }
 
@@ -174,39 +174,39 @@ html[data-theme="light"] body {
 /* Navigation Links */
 .light-theme .nav-link:not(.preserve-color),
 [data-theme="light"] .nav-link:not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .nav-link:hover,
 [data-theme="light"] .nav-link:hover {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
   background: rgba(29, 78, 216, 0.1) !important;
 }
 
 .light-theme .nav-link.active,
 [data-theme="light"] .nav-link.active {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
   background: rgba(29, 78, 216, 0.15) !important;
 }
 
 /* Lists */
 .light-theme li:not(.preserve-color), .light-theme ul *:not(.preserve-color), .light-theme ol *:not(.preserve-color),
 [data-theme="light"] li:not(.preserve-color), [data-theme="light"] ul *:not(.preserve-color), [data-theme="light"] ol *:not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Tables */
 .light-theme table, .light-theme td, .light-theme th,
 [data-theme="light"] table, [data-theme="light"] td, [data-theme="light"] th {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Badges */
 .light-theme .badge,
 [data-theme="light"] .badge {
   background: rgba(29, 78, 216, 0.1) !important;
-  color: #1d4ed8 !important;
-  border: 1px solid #1d4ed8 !important;
+  color: #FF0000 !important;
+  border: 1px solid #FF0000 !important;
 }
 
 /* Muted Text */
@@ -218,7 +218,7 @@ html[data-theme="light"] body {
 /* ===== FINAL CATCH-ALL FOR ANY MISSED ELEMENTS ===== */
 .light-theme *[class*="text-"]:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color),
 [data-theme="light"] *[class*="text-"]:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== ENSURE MINIMUM HEIGHT ELEMENTS HAVE PROPER BACKGROUND ===== */
@@ -230,17 +230,17 @@ html[data-theme="light"] body {
 /* ===== CONTAINER ELEMENTS ===== */
 .light-theme .container,
 [data-theme="light"] .container {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== GRID ELEMENTS ===== */
 .light-theme .grid *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400),
 [data-theme="light"] .grid *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== FLEX ELEMENTS ===== */
 .light-theme .flex *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400),
 [data-theme="light"] .flex *:not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }

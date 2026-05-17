@@ -59,7 +59,7 @@ const analyticsItems = [
 // Skeleton loader component with improved accessibility
 const ImageSkeleton = ({ className }) => (
   <div 
-    className={`animate-pulse bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 bg-[length:200%_100%] ${className}`}
+    className={`animate-pulse bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 bg-[length:200%_100%] ${className}`}
     role="img"
     aria-label="Loading image"
   >
@@ -143,7 +143,7 @@ const AnalyticsCard = ({ item, index }) => {
       }}
       className={`analytics-gallery-card group backdrop-blur-sm shadow-2xl ${
         theme === 'dark' 
-          ? 'bg-slate-800/50 border border-slate-700/50' 
+          ? 'bg-neutral-900/50 border border-neutral-800/50' 
           : 'bg-white/10 border border-white/20'
       }`}
       tabIndex={0}
@@ -176,10 +176,10 @@ const AnalyticsCard = ({ item, index }) => {
         {/* Error Fallback */}
         {imageError && (
           <div className={`absolute inset-0 flex items-center justify-center ${
-            theme === 'dark' ? 'bg-slate-700' : 'bg-slate-300'
+            theme === 'dark' ? 'bg-neutral-800' : 'bg-neutral-300'
           }`}>
             <div className="text-center">
-              <div className="text-sm text-slate-400">Image unavailable</div>
+              <div className="text-sm text-neutral-400">Image unavailable</div>
             </div>
           </div>
         )}
@@ -207,7 +207,7 @@ const AnalyticsCard = ({ item, index }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 + 0.4, duration: 0.5 }}
-          className="analytics-gallery-title font-bold text-white group-hover:text-blue-400 transition-colors duration-300"
+          className="analytics-gallery-title font-bold text-white group-hover:text-red-500 transition-colors duration-300"
         >
           {item.title}
         </motion.h3>
@@ -228,7 +228,7 @@ const AnalyticsCard = ({ item, index }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 + 0.6, duration: 0.5 }}
           className={`analytics-gallery-description leading-relaxed ${
-            theme === 'dark' ? 'text-slate-300' : 'text-slate-200'
+            theme === 'dark' ? 'text-neutral-300' : 'text-slate-200'
           }`}
         >
           {item.description}
@@ -241,9 +241,9 @@ const AnalyticsCard = ({ item, index }) => {
           transition={{ delay: index * 0.1 + 0.7, duration: 0.4 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`mt-4 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 ${
+          className={`mt-4 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-neutral-900 ${
             theme === 'dark'
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white'
+              ? 'bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white'
               : 'bg-gradient-to-r from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-white'
           } shadow-lg hover:shadow-xl`}
           aria-label={`Learn more about ${item.title}`}
@@ -310,7 +310,7 @@ const AnalyticsGallery = () => {
         <motion.p
           variants={titleVariants}
           className={`text-lg max-w-3xl mx-auto ${
-            theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+            theme === 'dark' ? 'text-neutral-300' : 'text-neutral-700'
           }`}
         >
           Discover powerful insights and track your fitness journey with our comprehensive analytics suite
@@ -332,9 +332,9 @@ const AnalyticsGallery = () => {
         <motion.button
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
-          className={`px-8 py-4 rounded-xl font-semibold text-white shadow-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${
+          className={`px-8 py-4 rounded-xl font-semibold text-white shadow-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-black ${
             theme === 'dark'
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+              ? 'bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700'
               : 'bg-gradient-to-r from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800'
           }`}
           style={{

@@ -40,7 +40,7 @@
 
 .exercise-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #475569 #1e293b;
+  scrollbar-color: #475569 #0D0D0D;
 }
 
 .exercise-scroll::-webkit-scrollbar {
@@ -48,7 +48,7 @@
 }
 
 .exercise-scroll::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: #0D0D0D;
   border-radius: 3px;
 }
 

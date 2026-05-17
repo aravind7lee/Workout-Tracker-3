@@ -121,11 +121,11 @@ const ImageStrip = ({ images, name, isHovered }) => {
 
   if (!allImagesLoaded) {
     return (
-      <div className="relative h-48 bg-slate-800/50 rounded-t-2xl overflow-hidden">
+      <div className="relative h-48 bg-neutral-900/50 rounded-t-2xl overflow-hidden">
         <div className="grid grid-cols-3 h-full gap-1">
           {[0, 1, 2].map((index) => (
-            <div key={index} className="relative bg-slate-700/50 animate-pulse">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-600/30 to-slate-700/30" />
+            <div key={index} className="relative bg-neutral-800/50 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-br from-neutral-700/30 to-neutral-800/30" />
             </div>
           ))}
         </div>
@@ -138,7 +138,7 @@ const ImageStrip = ({ images, name, isHovered }) => {
 
   return (
     <div
-      className="relative h-64 sm:h-80 md:h-96 lg:h-[30rem] xl:h-[34rem] w-full overflow-hidden rounded-t-2xl bg-slate-900/50 group"
+      className="relative h-64 sm:h-80 md:h-96 lg:h-[30rem] xl:h-[34rem] w-full overflow-hidden rounded-t-2xl bg-black/50 group"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
       onTouchStart={handleTouchStart}

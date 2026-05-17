@@ -204,7 +204,7 @@ export default function LibrarySimple() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
+    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
       {/* Premium Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
@@ -220,13 +220,13 @@ export default function LibrarySimple() {
       >
         {!imageLoaded && !imageError ? (
           // Optimized skeleton
-          <div className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden">
+          <div className="w-full h-full bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
           </div>
         ) : imageError ? (
           // Fallback content if image fails to load
           <motion.div 
-            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+            className="w-full h-full bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -365,7 +365,7 @@ export default function LibrarySimple() {
       </motion.div>
 
       {/* Exercise Categories Gallery Section - OPTIMIZED */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-neutral-900 to-black">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12 sm:mb-16">
@@ -373,7 +373,7 @@ export default function LibrarySimple() {
               Exercise Categories
             </h2>
             
-            <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed px-4">
+            <p className="text-sm sm:text-base md:text-lg text-neutral-300 max-w-3xl mx-auto leading-relaxed px-4">
               Discover powerful features designed to transform your fitness journey with precision tracking, 
               smart insights, and personalized recommendations.
             </p>
@@ -416,7 +416,7 @@ export default function LibrarySimple() {
                   }, 500);
                 }
               }}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
+              className="px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-600/50"
             >
               Start Your Exercise Journey
             </button>
@@ -429,8 +429,8 @@ export default function LibrarySimple() {
         <div className="container mx-auto px-4 max-w-7xl space-y-8 sm:space-y-12">
           {/* Floating Gym Elements */}
           <div className="absolute top-20 left-10 w-20 h-20 bg-orange-500/10 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-purple-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-40 right-20 w-32 h-32 bg-red-600/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-red-700/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
 
       
       {/* Enhanced Search and Filters Section */}
@@ -447,7 +447,7 @@ export default function LibrarySimple() {
             <input 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
-              className="w-full p-3 sm:p-4 md:p-5 pl-12 sm:pl-14 md:pl-16 pr-10 sm:pr-12 rounded-xl sm:rounded-2xl bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-2 border-slate-600/50 text-white placeholder-slate-300 text-sm sm:text-base md:text-lg font-medium focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 shadow-2xl backdrop-blur-sm group-hover:shadow-orange-500/10" 
+              className="w-full p-3 sm:p-4 md:p-5 pl-12 sm:pl-14 md:pl-16 pr-10 sm:pr-12 rounded-xl sm:rounded-2xl bg-gradient-to-r from-neutral-900/80 to-neutral-800/80 border-2 border-neutral-700/50 text-white placeholder-neutral-300 text-sm sm:text-base md:text-lg font-medium focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 shadow-2xl backdrop-blur-sm group-hover:shadow-orange-500/10" 
               placeholder="Search exercises by name, type, or muscle group..." 
             />
             <div className="absolute left-3 sm:left-4 md:left-6 top-1/2 transform -translate-y-1/2 text-orange-400 text-lg sm:text-xl">
@@ -467,17 +467,17 @@ export default function LibrarySimple() {
             <select 
               value={filters.category} 
               onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
-              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-sm sm:text-base font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-blue-500/10"
+              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-neutral-900/90 to-neutral-800/90 border-2 border-neutral-700/50 text-white text-sm sm:text-base font-medium focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-red-600/10"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
-            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-sm sm:text-lg pointer-events-none">
+            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-red-500 text-sm sm:text-lg pointer-events-none">
               🏷️
             </div>
-            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs sm:text-sm">
+            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-neutral-400 pointer-events-none text-xs sm:text-sm">
               ▼
             </div>
           </div>
@@ -486,17 +486,17 @@ export default function LibrarySimple() {
             <select 
               value={filters.difficulty} 
               onChange={e => setFilters(prev => ({ ...prev, difficulty: e.target.value }))}
-              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-sm sm:text-base font-medium focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-purple-500/10"
+              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-neutral-900/90 to-neutral-800/90 border-2 border-neutral-700/50 text-white text-sm sm:text-base font-medium focus:border-red-700 focus:ring-2 focus:ring-red-700/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-red-700/10"
             >
               <option value="">All Difficulties</option>
               {difficulties.map(diff => (
                 <option key={diff} value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
               ))}
             </select>
-            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-purple-400 text-sm sm:text-lg pointer-events-none">
+            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-red-600 text-sm sm:text-lg pointer-events-none">
               ⚡
             </div>
-            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs sm:text-sm">
+            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-neutral-400 pointer-events-none text-xs sm:text-sm">
               ▼
             </div>
           </div>
@@ -505,17 +505,17 @@ export default function LibrarySimple() {
             <select 
               value={filters.muscle} 
               onChange={e => setFilters(prev => ({ ...prev, muscle: e.target.value }))}
-              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-slate-800/90 to-slate-700/90 border-2 border-slate-600/50 text-white text-sm sm:text-base font-medium focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-green-500/10"
+              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-neutral-900/90 to-neutral-800/90 border-2 border-neutral-700/50 text-white text-sm sm:text-base font-medium focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all duration-300 shadow-lg appearance-none cursor-pointer hover:shadow-red-600/10"
             >
               <option value="">All Muscles</option>
               {muscles.map(muscle => (
                 <option key={muscle} value={muscle}>{muscle}</option>
               ))}
             </select>
-            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-green-400 text-sm sm:text-lg pointer-events-none">
+            <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-red-500 text-sm sm:text-lg pointer-events-none">
               💪
             </div>
-            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs sm:text-sm">
+            <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-neutral-400 pointer-events-none text-xs sm:text-sm">
               ▼
             </div>
           </div>
@@ -527,13 +527,13 @@ export default function LibrarySimple() {
         className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2 sm:px-0"
       >
         <div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-blue-500/20"
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-700/20 to-blue-800/20 border border-red-600/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-red-600/20"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="text-xl sm:text-2xl md:text-3xl font-black text-blue-400 mb-1">{allExercises.length}</div>
-            <div className="text-xs sm:text-sm font-semibold text-slate-300">Total Exercises</div>
-            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-red-500 mb-1">{allExercises.length}</div>
+            <div className="text-xs sm:text-sm font-semibold text-neutral-300">Total Exercises</div>
+            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
             <div className="mt-1 sm:mt-2 text-xs text-blue-300 font-medium">
               <span className="hidden sm:inline">💪 READY TO TRAIN</span>
               <span className="sm:hidden">💪 READY</span>
@@ -542,13 +542,13 @@ export default function LibrarySimple() {
         </div>
         
         <div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-green-500/20"
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-red-600/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-red-600/20"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="text-xl sm:text-2xl md:text-3xl font-black text-green-400 mb-1">{categories.length}</div>
-            <div className="text-xs sm:text-sm font-semibold text-slate-300">Muscle Groups</div>
-            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-red-500 mb-1">{categories.length}</div>
+            <div className="text-xs sm:text-sm font-semibold text-neutral-300">Muscle Groups</div>
+            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
             <div className="mt-1 sm:mt-2 text-xs text-green-300 font-medium">
               <span className="hidden sm:inline">🎯 TARGET ZONES</span>
               <span className="sm:hidden">🎯 ZONES</span>
@@ -557,13 +557,13 @@ export default function LibrarySimple() {
         </div>
         
         <div 
-          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-500/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-purple-500/20"
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-800/20 to-purple-800/20 border border-red-700/30 backdrop-blur-sm p-3 sm:p-4 md:p-6 text-center group hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-red-700/20"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-red-700/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
-            <div className="text-xl sm:text-2xl md:text-3xl font-black text-purple-400 mb-1">{filteredExercises.length}</div>
-            <div className="text-xs sm:text-sm font-semibold text-slate-300">Filtered Results</div>
-            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="text-xl sm:text-2xl md:text-3xl font-black text-red-600 mb-1">{filteredExercises.length}</div>
+            <div className="text-xs sm:text-sm font-semibold text-neutral-300">Filtered Results</div>
+            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
             <div className="mt-1 sm:mt-2 text-xs text-purple-300 font-medium">
               <span className="hidden sm:inline">🔥 ACTIVE FILTER</span>
               <span className="sm:hidden">🔥 FILTER</span>
@@ -577,8 +577,8 @@ export default function LibrarySimple() {
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
             <div className="text-xl sm:text-2xl md:text-3xl font-black text-orange-400 mb-1">{difficulties.length}</div>
-            <div className="text-xs sm:text-sm font-semibold text-slate-300">Difficulty Levels</div>
-            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <div className="text-xs sm:text-sm font-semibold text-neutral-300">Difficulty Levels</div>
+            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
             <div className="mt-1 sm:mt-2 text-xs text-orange-300 font-medium">
               <span className="hidden sm:inline">⚡ CHALLENGE MODES</span>
               <span className="sm:hidden">⚡ MODES</span>
@@ -589,10 +589,10 @@ export default function LibrarySimple() {
       
       {/* Premium Results Header - Optimized */}
       <div 
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-slate-800/60 to-slate-700/60 border border-slate-600/50 backdrop-blur-sm mx-2 sm:mx-0"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-neutral-900/60 to-neutral-800/60 border border-neutral-700/50 backdrop-blur-sm mx-2 sm:mx-0"
       >
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-red-600 to-red-600 rounded-lg sm:rounded-xl flex items-center justify-center">
             <span className="text-white font-bold text-sm sm:text-lg">📊</span>
           </div>
           <div>
@@ -601,11 +601,11 @@ export default function LibrarySimple() {
               <span className="sm:hidden">{filteredExercises.length} of {allExercises.length}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
-              <span className="text-green-400 font-medium">LIVE RESULTS</span>
-              <span className="text-slate-400">•</span>
-              <span className="text-slate-300 hidden sm:inline">Real-time filtering</span>
-              <span className="text-slate-300 sm:hidden">Live</span>
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
+              <span className="text-red-500 font-medium">LIVE RESULTS</span>
+              <span className="text-neutral-400">•</span>
+              <span className="text-neutral-300 hidden sm:inline">Real-time filtering</span>
+              <span className="text-neutral-300 sm:hidden">Live</span>
             </div>
           </div>
         </div>
@@ -635,9 +635,9 @@ export default function LibrarySimple() {
                 🔍
               </div>
               
-              <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-8 border border-slate-600/50 backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-neutral-900/80 to-neutral-800/80 rounded-2xl p-8 border border-neutral-700/50 backdrop-blur-sm">
                 <h3 className="text-2xl font-bold text-white mb-3">No exercises found</h3>
-                <p className="text-slate-300 mb-6 leading-relaxed">
+                <p className="text-neutral-300 mb-6 leading-relaxed">
                   We couldn't find any exercises matching your criteria. 
                   Try adjusting your search terms or filters to discover more workouts.
                 </p>
@@ -648,12 +648,12 @@ export default function LibrarySimple() {
                       setSearchQuery('');
                       setFilters({ category: '', difficulty: '', muscle: '' });
                     }}
-                    className="w-full p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20"
+                    className="w-full p-4 bg-gradient-to-r from-red-700 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600/30 shadow-lg hover:shadow-red-600/20"
                   >
                     🗑️ Clear All Filters
                   </button>
                   
-                  <div className="text-sm text-slate-400">
+                  <div className="text-sm text-neutral-400">
                     Or try searching for: <span className="text-blue-300 font-medium">"push ups"</span>, <span className="text-green-300 font-medium">"chest"</span>, <span className="text-purple-300 font-medium">"beginner"</span>
                   </div>
                 </div>
@@ -664,10 +664,10 @@ export default function LibrarySimple() {
           filteredExercises.map(exercise => (
             <div 
               key={exercise.id} 
-              className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-700/90 border border-slate-600/50 hover:border-orange-500/50 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-1"
+              className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-neutral-900/90 to-neutral-800/90 border border-neutral-700/50 hover:border-orange-500/50 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
               {/* Subtle Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-150"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-150"></div>
               
               <div className="relative z-10 p-4 sm:p-6">
                 <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -677,43 +677,43 @@ export default function LibrarySimple() {
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-white text-base sm:text-lg mb-1 group-hover:text-orange-300 transition-colors duration-150 leading-tight">{exercise.name}</div>
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="text-xs sm:text-sm font-medium text-slate-300">{exercise.category}</span>
-                      <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
-                      <span className="text-xs text-slate-400 uppercase tracking-wide">Exercise</span>
+                      <span className="text-xs sm:text-sm font-medium text-neutral-300">{exercise.category}</span>
+                      <div className="w-1 h-1 bg-neutral-500 rounded-full"></div>
+                      <span className="text-xs text-neutral-400 uppercase tracking-wide">Exercise</span>
                     </div>
                   </div>
                 </div>
               
                 <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-                  <div className="flex items-center justify-between p-2 sm:p-3 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                  <div className="flex items-center justify-between p-2 sm:p-3 bg-neutral-800/30 rounded-lg sm:rounded-xl border border-neutral-700/30">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <span className="text-orange-400 text-xs sm:text-sm">🎯</span>
-                      <span className="text-xs sm:text-sm font-medium text-slate-300">Sets/Reps:</span>
+                      <span className="text-xs sm:text-sm font-medium text-neutral-300">Sets/Reps:</span>
                     </div>
                     <span className="text-xs sm:text-sm font-bold text-white bg-orange-500/20 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg">{exercise.sets}</span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-2 sm:p-3 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                  <div className="flex items-center justify-between p-2 sm:p-3 bg-neutral-800/30 rounded-lg sm:rounded-xl border border-neutral-700/30">
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="text-blue-400 text-xs sm:text-sm">⚡</span>
-                      <span className="text-xs sm:text-sm font-medium text-slate-300">Type:</span>
+                      <span className="text-red-500 text-xs sm:text-sm">⚡</span>
+                      <span className="text-xs sm:text-sm font-medium text-neutral-300">Type:</span>
                     </div>
                     <span className={`text-xs px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg font-semibold uppercase tracking-wide ${
-                      exercise.type === 'compound' ? 'bg-blue-600/30 text-blue-300 border border-blue-500/30' :
-                      exercise.type === 'isolation' ? 'bg-purple-600/30 text-purple-300 border border-purple-500/30' :
-                      'bg-green-600/30 text-green-300 border border-green-500/30'
+                      exercise.type === 'compound' ? 'bg-red-700/30 text-blue-300 border border-red-600/30' :
+                      exercise.type === 'isolation' ? 'bg-red-800/30 text-purple-300 border border-red-700/30' :
+                      'bg-green-600/30 text-green-300 border border-red-600/30'
                     }`}>
                       {exercise.type}
                     </span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-2 sm:p-3 bg-slate-700/30 rounded-lg sm:rounded-xl border border-slate-600/30">
+                  <div className="flex items-center justify-between p-2 sm:p-3 bg-neutral-800/30 rounded-lg sm:rounded-xl border border-neutral-700/30">
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="text-purple-400 text-xs sm:text-sm">🔥</span>
-                      <span className="text-xs sm:text-sm font-medium text-slate-300">Difficulty:</span>
+                      <span className="text-red-600 text-xs sm:text-sm">🔥</span>
+                      <span className="text-xs sm:text-sm font-medium text-neutral-300">Difficulty:</span>
                     </div>
                     <span className={`text-xs px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg font-semibold uppercase tracking-wide ${
-                      exercise.difficulty === 'beginner' ? 'bg-green-600/30 text-green-300 border border-green-500/30' :
+                      exercise.difficulty === 'beginner' ? 'bg-green-600/30 text-green-300 border border-red-600/30' :
                       exercise.difficulty === 'intermediate' ? 'bg-yellow-600/30 text-yellow-300 border border-yellow-500/30' :
                       'bg-red-600/30 text-red-300 border border-red-500/30'
                     }`}>
@@ -729,7 +729,7 @@ export default function LibrarySimple() {
                       ...prev,
                       [exercise.id]: !prev[exercise.id]
                     }))}
-                    className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 rounded-lg border border-blue-500/30 transition-colors duration-150"
+                    className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-red-700/20 to-red-800/20 hover:from-red-700/30 hover:to-red-800/30 rounded-lg border border-red-600/30 transition-colors duration-150"
                   >
                     <span className="text-xs sm:text-sm font-semibold text-blue-300 flex items-center gap-2">
                       <span className="text-base">📋</span>
@@ -747,7 +747,7 @@ export default function LibrarySimple() {
                 
                 {expandedFormTips[exercise.id] && (
                   <div 
-                    className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50 space-y-3 animate-fadeIn"
+                    className="mt-2 p-3 bg-neutral-900/50 rounded-lg border border-neutral-700/50 space-y-3 animate-fadeIn"
                   >
                     {(() => {
                       const tips = getFormTips(exercise.name);
@@ -759,8 +759,8 @@ export default function LibrarySimple() {
                             </h4>
                             <ul className="space-y-1">
                               {tips.formTips.slice(0, 3).map((tip, index) => (
-                                <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
-                                  <span className="text-green-400 mt-0.5">•</span>
+                                <li key={index} className="text-xs text-neutral-300 flex items-start gap-2">
+                                  <span className="text-red-500 mt-0.5">•</span>
                                   <span>{tip}</span>
                                 </li>
                               ))}
@@ -773,7 +773,7 @@ export default function LibrarySimple() {
                             </h4>
                             <ul className="space-y-1">
                               {tips.commonMistakes.slice(0, 2).map((mistake, index) => (
-                                <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                                <li key={index} className="text-xs text-neutral-300 flex items-start gap-2">
                                   <span className="text-red-400 mt-0.5">•</span>
                                   <span>{mistake}</span>
                                 </li>
@@ -781,7 +781,7 @@ export default function LibrarySimple() {
                             </ul>
                           </div>
                           
-                          <div className="pt-2 border-t border-slate-600/50">
+                          <div className="pt-2 border-t border-neutral-700/50">
                             <p className="text-xs text-blue-300 font-medium flex items-center gap-1">
                               💨 {tips.breathingTip}
                             </p>
@@ -808,7 +808,7 @@ export default function LibrarySimple() {
                   
                   <button
                     onClick={() => setSelectedExercise(exercise)}
-                    className="w-full p-2 sm:p-3 bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold rounded-lg border border-slate-500/30 transition-colors duration-150 text-sm sm:text-base"
+                    className="w-full p-2 sm:p-3 bg-gradient-to-r from-neutral-800/50 to-neutral-700/50 hover:from-neutral-700/60 hover:to-neutral-500/60 text-white font-semibold rounded-lg border border-neutral-500/30 transition-colors duration-150 text-sm sm:text-base"
                   >
                     <span className="hidden sm:inline">👁️ View Details</span>
                     <span className="sm:hidden">👁️ Details</span>
@@ -817,7 +817,7 @@ export default function LibrarySimple() {
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => handleQuickPlan(exercise)}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
+                      className="p-2 sm:p-3 bg-gradient-to-r from-red-700 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">➕ New Plan</span>
                       <span className="sm:hidden">➕ Plan</span>
@@ -834,7 +834,7 @@ export default function LibrarySimple() {
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => trackExerciseView(exercise)}
-                      className="p-2 sm:p-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
+                      className="p-2 sm:p-3 bg-gradient-to-r from-red-800 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-lg transition-colors duration-150 shadow-lg text-xs sm:text-sm"
                     >
                       <span className="hidden sm:inline">🎯 Start Workout</span>
                       <span className="sm:hidden">🎯 Start</span>
@@ -920,18 +920,18 @@ export default function LibrarySimple() {
           onClick={() => setSelectedExercise(null)}
         >
           <div 
-            className="bg-gradient-to-br from-slate-900 to-black rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-slate-700/50 shadow-2xl" 
+            className="bg-gradient-to-br from-black to-black rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-neutral-800/50 shadow-2xl" 
             onClick={e => e.stopPropagation()}
           >
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4 sm:mb-6">
                 <div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">{selectedExercise.name}</h2>
-                  <p className="text-slate-300 text-sm sm:text-base">{selectedExercise.category}</p>
+                  <p className="text-neutral-300 text-sm sm:text-base">{selectedExercise.category}</p>
                 </div>
                 <button
                   onClick={() => setSelectedExercise(null)}
-                  className="text-slate-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
+                  className="text-neutral-400 hover:text-white transition-colors text-lg sm:text-xl p-1"
                   aria-label="Close"
                 >
                   ✕
@@ -941,15 +941,15 @@ export default function LibrarySimple() {
               <div className="space-y-4 sm:space-y-6">
                 {/* Exercise Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                  <div className="bg-slate-700/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-600/30">
+                  <div className="bg-neutral-800/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-neutral-700/30">
                     <div className="text-orange-400 text-xs sm:text-sm font-semibold mb-1 flex items-center gap-1 sm:gap-2">
                       <span>🎯</span> Sets/Reps
                     </div>
                     <div className="text-white font-bold text-base sm:text-lg">{selectedExercise.sets}</div>
                   </div>
                   
-                  <div className="bg-slate-700/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-600/30">
-                    <div className="text-blue-400 text-xs sm:text-sm font-semibold mb-1 flex items-center gap-1 sm:gap-2">
+                  <div className="bg-neutral-800/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-neutral-700/30">
+                    <div className="text-red-500 text-xs sm:text-sm font-semibold mb-1 flex items-center gap-1 sm:gap-2">
                       <span>⚡</span> Type
                     </div>
                     <div className={`text-xs sm:text-sm font-bold uppercase tracking-wide ${
@@ -961,8 +961,8 @@ export default function LibrarySimple() {
                     </div>
                   </div>
                   
-                  <div className="bg-slate-700/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-600/30">
-                    <div className="text-purple-400 text-xs sm:text-sm font-semibold mb-1 flex items-center gap-1 sm:gap-2">
+                  <div className="bg-neutral-800/30 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-neutral-700/30">
+                    <div className="text-red-600 text-xs sm:text-sm font-semibold mb-1 flex items-center gap-1 sm:gap-2">
                       <span>🔥</span> Difficulty
                     </div>
                     <div className={`text-xs sm:text-sm font-bold uppercase tracking-wide ${
@@ -976,7 +976,7 @@ export default function LibrarySimple() {
                 </div>
               
                 {/* Premium Detailed Form Tips */}
-                <div className="bg-gradient-to-br from-slate-800/60 to-slate-700/60 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-600/50">
+                <div className="bg-gradient-to-br from-neutral-900/60 to-neutral-800/60 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-neutral-700/50">
                   <h4 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
                     <span className="text-lg sm:text-2xl">📋</span>
                     <span className="hidden sm:inline">Complete Form Guide</span>
@@ -992,8 +992,8 @@ export default function LibrarySimple() {
                         </h5>
                         <ul className="space-y-1">
                           {tips.formTips.map((tip, index) => (
-                            <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
-                              <span className="text-green-400 mt-0.5">•</span>
+                            <li key={index} className="text-xs text-neutral-300 flex items-start gap-2">
+                              <span className="text-red-500 mt-0.5">•</span>
                               <span>{tip}</span>
                             </li>
                           ))}
@@ -1006,7 +1006,7 @@ export default function LibrarySimple() {
                         </h5>
                         <ul className="space-y-1">
                           {tips.commonMistakes.map((mistake, index) => (
-                            <li key={index} className="text-xs text-slate-300 flex items-start gap-2">
+                            <li key={index} className="text-xs text-neutral-300 flex items-start gap-2">
                               <span className="text-red-400 mt-0.5">•</span>
                               <span>{mistake}</span>
                             </li>
@@ -1014,8 +1014,8 @@ export default function LibrarySimple() {
                         </ul>
                       </div>
                       
-                      <div className="grid grid-cols-1 gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-slate-600/50">
-                        <div className="bg-blue-600/10 border border-blue-500/20 rounded-md sm:rounded-lg p-2 sm:p-3">
+                      <div className="grid grid-cols-1 gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-neutral-700/50">
+                        <div className="bg-red-700/10 border border-red-600/20 rounded-md sm:rounded-lg p-2 sm:p-3">
                           <p className="text-xs text-blue-300 font-medium flex items-start gap-1">
                             💨 <span className="font-semibold">Breathing:</span> {tips.breathingTip}
                           </p>
@@ -1053,7 +1053,7 @@ export default function LibrarySimple() {
                         setSelectedExercise(null);
                         handleQuickPlan(selectedExercise);
                       }}
-                      className="p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-blue-500/20 text-sm sm:text-base"
+                      className="p-3 sm:p-4 bg-gradient-to-r from-red-700 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600/30 shadow-lg hover:shadow-red-600/20 text-sm sm:text-base"
                     >
                       <span className="hidden sm:inline">➕ New Plan</span>
                       <span className="sm:hidden">➕ Plan</span>
@@ -1064,7 +1064,7 @@ export default function LibrarySimple() {
                         setSelectedExercise(null);
                         handleAddToExisting(exerciseToAdd);
                       }}
-                      className="p-3 sm:p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-green-500/20 text-sm sm:text-base"
+                      className="p-3 sm:p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600/30 shadow-lg hover:shadow-red-600/20 text-sm sm:text-base"
                     >
                       <span className="hidden sm:inline">📝 Add to Plan</span>
                       <span className="sm:hidden">📝 Add</span>
@@ -1076,7 +1076,7 @@ export default function LibrarySimple() {
                       trackExerciseView(selectedExercise);
                       setSelectedExercise(null);
                     }}
-                    className="w-full p-3 sm:p-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/30 shadow-lg hover:shadow-purple-500/20 text-sm sm:text-base md:text-lg"
+                    className="w-full p-3 sm:p-4 bg-gradient-to-r from-red-800 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-700/30 shadow-lg hover:shadow-red-700/20 text-sm sm:text-base md:text-lg"
                   >
                     <span className="hidden sm:inline">🎯 Start Workout Session</span>
                     <span className="sm:hidden">🎯 Start Workout</span>
@@ -1084,7 +1084,7 @@ export default function LibrarySimple() {
                   
                   <button
                     onClick={() => setSelectedExercise(null)}
-                    className="w-full p-2 sm:p-3 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-500/30 text-sm sm:text-base"
+                    className="w-full p-2 sm:p-3 bg-neutral-800/50 hover:bg-neutral-700/60 text-neutral-300 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-neutral-500/30 text-sm sm:text-base"
                   >
                     Close
                   </button>
@@ -1148,10 +1148,10 @@ const ExerciseCard = React.memo(({ image, title, subtitle, description, category
   }, [image]);
 
   const categoryColors = {
-    strength: 'from-red-500 to-orange-500', muscle: 'from-blue-500 to-cyan-500',
-    functional: 'from-green-500 to-emerald-500', flexibility: 'from-purple-500 to-pink-500',
-    lifting: 'from-yellow-500 to-orange-500', bodyweight: 'from-indigo-500 to-blue-500',
-    sports: 'from-teal-500 to-green-500', power: 'from-violet-500 to-purple-500'
+    strength: 'from-red-500 to-orange-500', muscle: 'from-red-600 to-red-600',
+    functional: 'from-red-600 to-red-600', flexibility: 'from-red-700 to-pink-500',
+    lifting: 'from-yellow-500 to-orange-500', bodyweight: 'from-indigo-500 to-red-600',
+    sports: 'from-teal-500 to-red-600', power: 'from-violet-500 to-red-700'
   };
   
   const categoryIcons = {
@@ -1159,12 +1159,12 @@ const ExerciseCard = React.memo(({ image, title, subtitle, description, category
     lifting: '🏋️', bodyweight: '🤸', sports: '🏆', power: '💥'
   };
   
-  const gradientClass = categoryColors[category] || 'from-blue-500 to-cyan-500';
+  const gradientClass = categoryColors[category] || 'from-red-600 to-red-600';
   const icon = categoryIcons[category] || '💪';
   
   return (
     <div
-      className="exercise-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 backdrop-blur-sm hover:-translate-y-2"
+      className="exercise-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 backdrop-blur-sm hover:-translate-y-2"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <div className="relative h-64 sm:h-72 lg:h-80 overflow-hidden">
@@ -1214,7 +1214,7 @@ const ExerciseCard = React.memo(({ image, title, subtitle, description, category
           </p>
         </div>
         
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-red-700/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
     </div>
   );

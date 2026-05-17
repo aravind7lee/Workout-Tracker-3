@@ -281,22 +281,22 @@ const Profile = () => {
       >
         <div className="text-6xl mb-6">⚠️</div>
         <h2 className="text-2xl font-bold text-white mb-4">Connection Issue</h2>
-        <p className="text-slate-400 mb-4">{error}</p>
+        <p className="text-neutral-400 mb-4">{error}</p>
         <div className="flex gap-3 justify-center">
           <button 
             onClick={fetchProfileData}
-            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+            className="btn bg-red-700 hover:bg-blue-700 text-white"
           >
             🔄 Retry
           </button>
           <button 
             onClick={() => navigate('/login')}
-            className="btn bg-slate-600 hover:bg-slate-700 text-white"
+            className="btn bg-neutral-700 hover:bg-neutral-800 text-white"
           >
             🚪 Re-login
           </button>
         </div>
-        <p className="text-slate-500 text-sm mt-4">
+        <p className="text-neutral-500 text-sm mt-4">
           {isOnline ? 'Check your internet connection' : 'You are currently offline'}
         </p>
       </motion.div>
@@ -314,10 +314,10 @@ const Profile = () => {
       >
         <div className="text-6xl mb-6">👤</div>
         <h2 className="text-2xl font-bold text-white mb-4">Profile Not Found</h2>
-        <p className="text-slate-400 mb-4">Please log in to view your profile</p>
+        <p className="text-neutral-400 mb-4">Please log in to view your profile</p>
         <button 
           onClick={() => navigate('/login')}
-          className="btn bg-blue-600 hover:bg-blue-700 text-white"
+          className="btn bg-red-700 hover:bg-blue-700 text-white"
         >
           🔑 Go to Login
         </button>
@@ -331,7 +331,7 @@ const Profile = () => {
       <div className="relative min-h-screen overflow-hidden">
         {/* Dynamic Background with Gym Vibes */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-neutral-900/90 to-black/95 z-10"></div>
           <motion.div 
             className="absolute inset-0 opacity-20"
             initial={{ scale: 1.1 }}
@@ -358,7 +358,7 @@ const Profile = () => {
             transition={{ duration: 0.8 }}
           >
             <motion.h1 
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 lg:mb-6 bg-gradient-to-r from-red-500 via-orange-500 to-cyan-400 bg-clip-text text-transparent leading-tight px-2"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 lg:mb-6 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 bg-clip-text text-transparent leading-tight px-2"
               style={{ fontFamily: 'var(--font-heading)' }}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -374,7 +374,7 @@ const Profile = () => {
             >
               <div className={`px-3 sm:px-4 py-2 rounded-full border-2 backdrop-blur-sm text-center w-full sm:w-auto ${
                 isOnline 
-                  ? 'bg-green-500/20 text-green-300 border-green-400 shadow-lg shadow-green-500/25' 
+                  ? 'bg-red-600/20 text-green-300 border-red-500 shadow-lg shadow-red-600/25' 
                   : 'bg-yellow-500/20 text-yellow-300 border-yellow-400 shadow-lg shadow-yellow-500/25'
               }`}>
                 <span className="font-bold text-sm sm:text-base">
@@ -384,7 +384,7 @@ const Profile = () => {
               <div className="flex gap-2 w-full sm:w-auto">
                 <button
                   onClick={fetchProfileData}
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all duration-300 text-sm"
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-full shadow-lg shadow-red-600/25 transition-all duration-300 text-sm"
                 >
                   🔄 REFRESH
                 </button>
@@ -398,7 +398,7 @@ const Profile = () => {
             </motion.div>
             {lastSync && (
               <motion.p 
-                className="text-slate-400 text-xs max-w-2xl mx-auto px-3"
+                className="text-neutral-400 text-xs max-w-2xl mx-auto px-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
@@ -417,7 +417,7 @@ const Profile = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl shadow-black/50">
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50">
                 {/* Card Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                   <img src={ArnoldBg} alt="" className="w-full h-full object-cover" />
@@ -430,7 +430,7 @@ const Profile = () => {
                         🖼️ PROFILE PICTURE
                       </h2>
                     </div>
-                    <div className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
+                    <div className="px-2 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
                       CLOUDINARY
                     </div>
                   </div>
@@ -475,13 +475,13 @@ const Profile = () => {
                     }}
                     className="hidden"
                   />
-                  <div className="mt-3 sm:mt-4 p-3 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg sm:rounded-xl border border-slate-600/30">
-                    <div className="flex items-center gap-2 text-green-400 text-xs mb-2">
-                      <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="mt-3 sm:mt-4 p-3 bg-gradient-to-r from-neutral-900/50 to-neutral-800/50 rounded-lg sm:rounded-xl border border-neutral-700/30">
+                    <div className="flex items-center gap-2 text-red-500 text-xs mb-2">
+                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
                       <span>Cross-device sync enabled</span>
                     </div>
-                    <div className="flex items-center gap-2 text-cyan-400 text-xs">
-                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                    <div className="flex items-center gap-2 text-red-500 text-xs">
+                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                       <span>Stored securely in cloud</span>
                     </div>
                   </div>
@@ -496,7 +496,7 @@ const Profile = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl shadow-black/50">
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50">
                 {/* Card Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                   <img src={ChrisBg} alt="" className="w-full h-full object-cover" />
@@ -519,7 +519,7 @@ const Profile = () => {
                     {!editing && (
                       <button
                         onClick={() => setEditing(true)}
-                        className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm"
+                        className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm"
                       >
                         ✏️ EDIT
                       </button>
@@ -529,7 +529,7 @@ const Profile = () => {
                   {editing ? (
                     <form onSubmit={handleSaveProfile} className="space-y-6">
                       <div>
-                        <label className="block text-sm font-bold text-slate-300 mb-3 uppercase tracking-wider">
+                        <label className="block text-sm font-bold text-neutral-300 mb-3 uppercase tracking-wider">
                           Full Name
                         </label>
                         <input
@@ -537,13 +537,13 @@ const Profile = () => {
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                          className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-700/50 rounded-xl text-white placeholder-neutral-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300"
                           required
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-bold text-slate-300 mb-3 uppercase tracking-wider">
+                        <label className="block text-sm font-bold text-neutral-300 mb-3 uppercase tracking-wider">
                           Email Address
                         </label>
                         <input
@@ -551,7 +551,7 @@ const Profile = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                          className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-700/50 rounded-xl text-white placeholder-neutral-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300"
                           required
                         />
                       </div>
@@ -560,7 +560,7 @@ const Profile = () => {
                         <button
                           type="submit"
                           disabled={saving}
-                          className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-full shadow-lg transition-all duration-300 disabled:opacity-50 text-sm sm:text-base"
+                          className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-red-600 hover:to-red-600 text-white font-bold rounded-full shadow-lg transition-all duration-300 disabled:opacity-50 text-sm sm:text-base"
                         >
                           {saving ? '🔄 SAVING...' : '💾 SAVE'}
                         </button>
@@ -573,7 +573,7 @@ const Profile = () => {
                               email: user?.email || ''
                             });
                           }}
-                          className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm sm:text-base"
+                          className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 bg-gradient-to-r from-neutral-700 to-neutral-800 hover:from-neutral-500 hover:to-neutral-700 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm sm:text-base"
                         >
                           CANCEL
                         </button>
@@ -582,14 +582,14 @@ const Profile = () => {
                   ) : (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                        <label className="block text-xs font-bold text-neutral-400 mb-1 uppercase tracking-wider">
                           Full Name
                         </label>
                         <div className="text-white text-base sm:text-lg font-semibold break-words">{user?.name || 'Not set'}</div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                        <label className="block text-xs font-bold text-neutral-400 mb-1 uppercase tracking-wider">
                           Email Address
                         </label>
                         <div className="text-white text-sm sm:text-base font-semibold break-all">{user?.email || 'Not set'}</div>
@@ -597,7 +597,7 @@ const Profile = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                          <label className="block text-xs font-bold text-neutral-400 mb-1 uppercase tracking-wider">
                             Member Since
                           </label>
                           <div className="text-white text-sm font-semibold">
@@ -606,18 +606,18 @@ const Profile = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                          <label className="block text-xs font-bold text-neutral-400 mb-1 uppercase tracking-wider">
                             Account Status
                           </label>
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                            <span className="text-green-400 font-bold text-xs sm:text-sm">Active • Real-time Sync</span>
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                            <span className="text-red-500 font-bold text-xs sm:text-sm">Active • Real-time Sync</span>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                        <label className="block text-xs font-bold text-neutral-400 mb-1 uppercase tracking-wider">
                           Data Storage
                         </label>
                         <div className="text-white font-semibold text-xs leading-relaxed">
@@ -643,16 +643,16 @@ const Profile = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
             >
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl shadow-black/50">
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50">
                 <div className="relative z-10 p-4 sm:p-6 lg:p-8">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-600 rounded-full animate-pulse"></div>
                       <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                         📈 RECENT ACTIVITY
                       </h2>
                     </div>
-                    <div className="px-2 sm:px-3 lg:px-4 py-1 sm:py-2 bg-blue-500/20 text-blue-400 text-xs sm:text-sm font-bold rounded-full border border-blue-500/30">
+                    <div className="px-2 sm:px-3 lg:px-4 py-1 sm:py-2 bg-red-600/20 text-red-500 text-xs sm:text-sm font-bold rounded-full border border-red-600/30">
                       {activity.length} ITEMS
                     </div>
                   </div>
@@ -660,7 +660,7 @@ const Profile = () => {
                     {activity.slice(0, 8).map((item, index) => (
                       <motion.div 
                         key={item.id}
-                        className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-slate-800/50 rounded-lg sm:rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-colors"
+                        className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-neutral-900/50 rounded-lg sm:rounded-xl border border-neutral-800/50 hover:bg-neutral-900/70 transition-colors"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
@@ -668,14 +668,14 @@ const Profile = () => {
                         <div className="text-xl sm:text-2xl lg:text-3xl flex-shrink-0">{item.icon}</div>
                         <div className="flex-1 min-w-0">
                           <div className="text-white font-bold text-sm sm:text-base lg:text-lg truncate">{item.title}</div>
-                          <div className="text-slate-400 text-xs sm:text-sm truncate">{item.description}</div>
+                          <div className="text-neutral-400 text-xs sm:text-sm truncate">{item.description}</div>
                           {item.details && (
-                            <div className="text-xs text-slate-500 mt-1 truncate">
+                            <div className="text-xs text-neutral-500 mt-1 truncate">
                               {Object.values(item.details).filter(Boolean).join(' • ')}
                             </div>
                           )}
                         </div>
-                        <div className="text-xs text-slate-500 font-semibold flex-shrink-0">
+                        <div className="text-xs text-neutral-500 font-semibold flex-shrink-0">
                           {new Date(item.timestamp).toLocaleDateString()}
                         </div>
                       </motion.div>
@@ -693,8 +693,8 @@ const Profile = () => {
       {/* Photo Upload Loading Overlay */}
       {uploadingPhoto && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
-          <div className="bg-slate-800 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-2xl border border-slate-600">
-            <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="bg-neutral-900 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-2xl border border-neutral-700">
+            <div className="w-8 h-8 border-3 border-red-600 border-t-transparent rounded-full animate-spin"></div>
             <div className="text-white font-bold text-sm">Updating Photo...</div>
           </div>
         </div>
@@ -775,7 +775,7 @@ const Profile = () => {
                       }, 100);
                     }
                   }}
-                  className="bg-blue-600 text-white px-4 py-3 rounded-full text-sm font-bold flex items-center gap-2 min-h-[44px] select-none"
+                  className="bg-red-700 text-white px-4 py-3 rounded-full text-sm font-bold flex items-center gap-2 min-h-[44px] select-none"
                   style={{ touchAction: 'manipulation' }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

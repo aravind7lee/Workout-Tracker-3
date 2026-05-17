@@ -131,7 +131,7 @@ export default function Search() {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -210,7 +210,7 @@ export default function Search() {
                         e.stopPropagation();
                         handleItemClick();
                       }}
-                      className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0"
+                      className="ml-4 px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0"
                     >
                       View Details
                     </button>

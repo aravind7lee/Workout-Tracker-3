@@ -5,7 +5,7 @@
 .light-theme,
 [data-theme="light"] {
   /* Ensure all text is dark and readable */
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Workout Plan Builder Header - Preserve white text on image */
@@ -30,7 +30,7 @@
 [data-theme="light"] .plan-card {
   background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .plan-card h3,
@@ -40,7 +40,7 @@
 
 .light-theme .plan-card .exercise-name,
 [data-theme="light"] .plan-card .exercise-name {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Search Input Light Mode */
@@ -50,7 +50,7 @@
 [data-theme="light"] input[type="search"] {
   background: white !important;
   border: 1px solid #d1d5db !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme input::placeholder,
@@ -62,13 +62,13 @@
 .light-theme .btn-secondary,
 [data-theme="light"] .btn-secondary {
   background: transparent !important;
-  border: 2px solid #1d4ed8 !important;
-  color: #1d4ed8 !important;
+  border: 2px solid #FF0000 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .btn-secondary:hover,
 [data-theme="light"] .btn-secondary:hover {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
   color: white !important;
 }
 
@@ -85,7 +85,7 @@
 
 .light-theme .status-syncing,
 [data-theme="light"] .status-syncing {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Sync Status Badges Light Mode */
@@ -106,12 +106,12 @@
 /* Exercise List Light Mode */
 .light-theme .exercise-list-item,
 [data-theme="light"] .exercise-list-item {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .exercise-number,
 [data-theme="light"] .exercise-number {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .exercise-sets,
@@ -132,7 +132,7 @@
 [data-theme="light"] .modal {
   background: white !important;
   border: 1px solid #e5e7eb !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .modal h1,
@@ -153,14 +153,14 @@
 
 .light-theme .features-box h4,
 [data-theme="light"] .features-box h4 {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .features-box ul,
 .light-theme .features-box li,
 [data-theme="light"] .features-box ul,
 [data-theme="light"] .features-box li {
-  color: #1e40af !important;
+  color: #E60000 !important;
 }
 
 /* Loading States Light Mode */
@@ -188,7 +188,7 @@
 
 .light-theme .action-button-duplicate,
 [data-theme="light"] .action-button-duplicate {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Hover States Light Mode */

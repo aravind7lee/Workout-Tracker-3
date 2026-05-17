@@ -186,13 +186,13 @@ export default function CompletedWorkouts() {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-slate-800/50 rounded-xl p-6 animate-pulse">
-            <div className="h-4 bg-slate-700 rounded w-1/4 mb-2"></div>
-            <div className="h-3 bg-slate-700 rounded w-1/2 mb-4"></div>
+          <div key={i} className="bg-neutral-900/50 rounded-xl p-6 animate-pulse">
+            <div className="h-4 bg-neutral-800 rounded w-1/4 mb-2"></div>
+            <div className="h-3 bg-neutral-800 rounded w-1/2 mb-4"></div>
             <div className="flex gap-4">
-              <div className="h-8 bg-slate-700 rounded w-16"></div>
-              <div className="h-8 bg-slate-700 rounded w-16"></div>
-              <div className="h-8 bg-slate-700 rounded w-16"></div>
+              <div className="h-8 bg-neutral-800 rounded w-16"></div>
+              <div className="h-8 bg-neutral-800 rounded w-16"></div>
+              <div className="h-8 bg-neutral-800 rounded w-16"></div>
             </div>
           </div>
         ))}
@@ -211,8 +211,8 @@ export default function CompletedWorkouts() {
               onClick={() => setFilter(filterOption)}
               className={`px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-sm font-medium transition-all duration-200 flex-1 sm:flex-none ${
                 filter === filterOption
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
+                  ? 'bg-red-700 text-white'
+                  : 'bg-neutral-900/50 text-neutral-300 hover:bg-neutral-800/50'
               }`}
             >
               {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)}
@@ -223,7 +223,7 @@ export default function CompletedWorkouts() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-slate-800/50 border border-slate-600/30 rounded-lg text-white text-[10px] sm:text-sm w-full sm:w-auto"
+          className="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-neutral-900/50 border border-neutral-700/30 rounded-lg text-white text-[10px] sm:text-sm w-full sm:w-auto"
         >
           <option value="recent">Most Recent</option>
           <option value="duration">Longest Duration</option>
@@ -238,7 +238,7 @@ export default function CompletedWorkouts() {
           <h3 className="text-base sm:text-xl font-bold text-white mb-2">
             {filter === 'all' ? 'No workouts yet' : `No workouts ${filter === 'today' ? 'today' : `this ${filter}`}`}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-400 mb-4 sm:mb-6 px-4">
+          <p className="text-xs sm:text-sm text-neutral-400 mb-4 sm:mb-6 px-4">
             {filter === 'all' 
               ? 'Complete your first workout to see it here!' 
               : `Try a different filter or complete a workout!`
@@ -247,14 +247,14 @@ export default function CompletedWorkouts() {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center px-4">
             <button
               onClick={() => window.location.href = '/library'}
-              className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium"
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium"
             >
               🏋️ Browse Exercises
             </button>
             {filter !== 'all' && (
               <button
                 onClick={() => setFilter('all')}
-                className="px-4 py-2 sm:px-6 sm:py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors text-xs sm:text-sm font-medium"
+                className="px-4 py-2 sm:px-6 sm:py-3 bg-neutral-700 text-white rounded-lg hover:bg-neutral-800 transition-colors text-xs sm:text-sm font-medium"
               >
                 📊 View All Workouts
               </button>
@@ -266,14 +266,14 @@ export default function CompletedWorkouts() {
           {sortedWorkouts.map((workout, index) => (
             <div
               key={workout.id || index}
-              className="group bg-gradient-to-br from-slate-800/60 via-slate-700/40 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-xl p-3 sm:p-6 hover:border-blue-400/40 transition-all duration-300 hover:scale-[1.02]"
+              className="group bg-gradient-to-br from-neutral-900/60 via-neutral-800/40 to-neutral-900/60 backdrop-blur-sm border border-neutral-700/30 rounded-xl p-3 sm:p-6 hover:border-red-500/40 transition-all duration-300 hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between mb-3 sm:mb-4">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm sm:text-xl font-bold text-white mb-1 truncate">
                     {workout.exercise || workout.name || 'Workout'}
                   </h3>
-                  <p className="text-slate-400 text-[10px] sm:text-sm truncate">
+                  <p className="text-neutral-400 text-[10px] sm:text-sm truncate">
                     {formatDate(workout.completedAt)} • {workout.category || 'General'}
                   </p>
                 </div>
@@ -282,45 +282,45 @@ export default function CompletedWorkouts() {
                     workout.savedOffline 
                       ? 'bg-yellow-400' 
                       : isOnline 
-                        ? 'bg-green-400 animate-pulse' 
-                        : 'bg-blue-400'
+                        ? 'bg-red-500 animate-pulse' 
+                        : 'bg-red-500'
                   }`}></div>
-                  <span className="text-[9px] sm:text-xs text-slate-400">
+                  <span className="text-[9px] sm:text-xs text-neutral-400">
                     {workout.savedOffline ? 'Offline' : isOnline ? 'Live' : 'Local'}
                   </span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-4">
-                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
-                  <div className="text-sm sm:text-lg font-bold text-blue-400">
+                <div className="bg-black/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-red-500">
                     {formatDuration(workout.duration)}
                   </div>
-                  <div className="text-[9px] sm:text-xs text-slate-400">Duration</div>
+                  <div className="text-[9px] sm:text-xs text-neutral-400">Duration</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
-                  <div className="text-sm sm:text-lg font-bold text-green-400">
+                <div className="bg-black/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-red-500">
                     {workout.caloriesBurned || 0}
                   </div>
-                  <div className="text-[9px] sm:text-xs text-slate-400">Calories</div>
+                  <div className="text-[9px] sm:text-xs text-neutral-400">Calories</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
-                  <div className="text-sm sm:text-lg font-bold text-purple-400">
+                <div className="bg-black/50 rounded-lg p-2 sm:p-3 text-center">
+                  <div className="text-sm sm:text-lg font-bold text-red-600">
                     {workout.sets || 0}
                   </div>
-                  <div className="text-[9px] sm:text-xs text-slate-400">Sets</div>
+                  <div className="text-[9px] sm:text-xs text-neutral-400">Sets</div>
                 </div>
-                <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center">
+                <div className="bg-black/50 rounded-lg p-2 sm:p-3 text-center">
                   <div className="text-sm sm:text-lg font-bold text-orange-400">
                     {workout.reps || 0}
                   </div>
-                  <div className="text-[9px] sm:text-xs text-slate-400">Reps</div>
+                  <div className="text-[9px] sm:text-xs text-neutral-400">Reps</div>
                 </div>
               </div>
 
               {workout.notes && (
-                <div className="bg-slate-900/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
-                  <p className="text-slate-300 text-[10px] sm:text-sm italic line-clamp-2">"{workout.notes}"</p>
+                <div className="bg-black/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
+                  <p className="text-neutral-300 text-[10px] sm:text-sm italic line-clamp-2">"{workout.notes}"</p>
                 </div>
               )}
 
@@ -335,14 +335,14 @@ export default function CompletedWorkouts() {
                       {workout.difficulty}
                     </span>
                   )}
-                  <span className="text-[9px] sm:text-xs text-slate-500 hidden sm:inline">
+                  <span className="text-[9px] sm:text-xs text-neutral-500 hidden sm:inline">
                     ID: {workout.id?.toString().slice(-6) || 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button 
                     onClick={() => navigate(`/workout-details/${workout.id}`)}
-                    className="flex-1 sm:flex-none text-blue-400 hover:text-blue-300 text-[10px] sm:text-sm px-3 py-1.5 bg-blue-900/20 sm:bg-transparent rounded-lg sm:rounded-none border border-blue-500/30 sm:border-0"
+                    className="flex-1 sm:flex-none text-red-500 hover:text-blue-300 text-[10px] sm:text-sm px-3 py-1.5 bg-blue-900/20 sm:bg-transparent rounded-lg sm:rounded-none border border-red-600/30 sm:border-0"
                   >
                     View Details →
                   </button>
@@ -362,9 +362,9 @@ export default function CompletedWorkouts() {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
+          <div className="bg-neutral-900 rounded-xl p-6 max-w-md w-full">
             <h3 className="text-xl font-bold text-white mb-4">Delete Workout?</h3>
-            <p className="text-slate-300 mb-6">
+            <p className="text-neutral-300 mb-6">
               Are you sure you want to delete this workout? This action cannot be undone.
             </p>
             <div className="flex gap-3">
@@ -387,30 +387,30 @@ export default function CompletedWorkouts() {
 
       {/* Summary Stats */}
       {sortedWorkouts.length > 0 && (
-        <div className="bg-gradient-to-r from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-xl p-3 sm:p-6 mt-6 sm:mt-8">
+        <div className="bg-gradient-to-r from-neutral-900/50 via-neutral-800/30 to-neutral-900/50 backdrop-blur-sm border border-neutral-700/30 rounded-xl p-3 sm:p-6 mt-6 sm:mt-8">
           <h3 className="text-sm sm:text-lg font-bold text-white mb-3 sm:mb-4">Summary</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
             <div className="text-center">
-              <div className="text-lg sm:text-2xl font-bold text-blue-400">{sortedWorkouts.length}</div>
-              <div className="text-[9px] sm:text-xs text-slate-400">Total Workouts</div>
+              <div className="text-lg sm:text-2xl font-bold text-red-500">{sortedWorkouts.length}</div>
+              <div className="text-[9px] sm:text-xs text-neutral-400">Total Workouts</div>
             </div>
             <div className="text-center">
-              <div className="text-lg sm:text-2xl font-bold text-green-400">
+              <div className="text-lg sm:text-2xl font-bold text-red-500">
                 {Math.round(sortedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0) / 60)}m
               </div>
-              <div className="text-[9px] sm:text-xs text-slate-400">Total Time</div>
+              <div className="text-[9px] sm:text-xs text-neutral-400">Total Time</div>
             </div>
             <div className="text-center">
-              <div className="text-lg sm:text-2xl font-bold text-purple-400">
+              <div className="text-lg sm:text-2xl font-bold text-red-600">
                 {sortedWorkouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0)}
               </div>
-              <div className="text-[9px] sm:text-xs text-slate-400">Total Calories</div>
+              <div className="text-[9px] sm:text-xs text-neutral-400">Total Calories</div>
             </div>
             <div className="text-center">
               <div className="text-lg sm:text-2xl font-bold text-orange-400">
                 {Math.round(sortedWorkouts.reduce((sum, w) => sum + (w.duration || 0), 0) / sortedWorkouts.length / 60) || 0}m
               </div>
-              <div className="text-[9px] sm:text-xs text-slate-400">Avg Duration</div>
+              <div className="text-[9px] sm:text-xs text-neutral-400">Avg Duration</div>
             </div>
           </div>
         </div>

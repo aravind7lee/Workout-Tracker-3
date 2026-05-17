@@ -63,8 +63,8 @@ const EditSplit = () => {
   const muscleGroupMapping = {
     'Chest': { icon: '💪', color: 'bg-red-600', key: 'chest' },
     'Shoulders': { icon: '🔥', color: 'bg-orange-600', key: 'shoulders' },
-    'Back': { icon: '🎯', color: 'bg-blue-600', key: 'back' },
-    'Arms': { icon: '💥', color: 'bg-purple-600', key: 'arms' },
+    'Back': { icon: '🎯', color: 'bg-red-700', key: 'back' },
+    'Arms': { icon: '💥', color: 'bg-red-800', key: 'arms' },
     'Legs': { icon: '🦵', color: 'bg-green-600', key: 'legs' },
     'Core': { icon: '⚡', color: 'bg-yellow-600', key: 'abs' }
   };
@@ -413,7 +413,7 @@ const EditSplit = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-8 h-8 border-4 border-red-700 border-t-transparent rounded-full mx-auto mb-4"></div>
           <div>Loading Split...</div>
         </div>
       </div>
@@ -445,9 +445,9 @@ const EditSplit = () => {
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Form Controls */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-3 sm:p-6 mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-2xl font-semibold mb-3 sm:mb-4 text-white">🔄 EDITING WORKOUT SPLIT 🏋️</h2>
-          <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+          <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-900/30 border border-red-600/50 rounded-lg">
             <p className="text-blue-300 text-xs sm:text-sm">✅ Edit mode active - You are editing an existing split</p>
           </div>
           
@@ -458,7 +458,7 @@ const EditSplit = () => {
                 value={splitName}
                 onChange={(e) => setSplitName(e.target.value)}
                 placeholder="Enter split name..."
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 text-sm sm:text-base"
               />
             </div>
             <div>
@@ -467,7 +467,7 @@ const EditSplit = () => {
                 onChange={(e) => setSplitDescription(e.target.value)}
                 placeholder="Describe your custom split (optional)..."
                 rows={2}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 resize-none text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 resize-none text-sm sm:text-base"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
@@ -481,7 +481,7 @@ const EditSplit = () => {
               <button
                 onClick={updateSplit}
                 disabled={saving || !splitName.trim() || getTotalExercises() === 0}
-                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white disabled:opacity-50 rounded-lg font-medium text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-800 to-red-700 hover:from-purple-700 hover:to-blue-700 text-white disabled:opacity-50 rounded-lg font-medium text-sm sm:text-base"
               >
                 {saving ? '🔄 Updating...' : '💾 Update Split'}
               </button>
@@ -492,8 +492,8 @@ const EditSplit = () => {
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-6">
           {/* Exercise Library */}
           <div 
-            className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[500px] transition-all duration-200 ${
-              dragOverArea === 'library' ? 'bg-slate-700/50 border-slate-500 shadow-lg' : ''
+            className={`bg-neutral-900/60 border border-neutral-800 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[500px] transition-all duration-200 ${
+              dragOverArea === 'library' ? 'bg-neutral-800/50 border-neutral-500 shadow-lg' : ''
             }`}
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'library')}
@@ -504,7 +504,7 @@ const EditSplit = () => {
               <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                 <span className="animate-pulse">📚</span> 
                 <span>Exercise Library</span>
-                <span className="text-xs sm:text-sm text-slate-400">({exercises.length})</span>
+                <span className="text-xs sm:text-sm text-neutral-400">({exercises.length})</span>
               </h3>
               <div className="flex items-center gap-2">
                 <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${currentMuscleGroup.color} shadow-lg`}>
@@ -527,8 +527,8 @@ const EditSplit = () => {
                         : weeklyPlan[day]?.isRestDay
                         ? 'bg-gray-600 text-gray-300'
                         : (weeklyPlan[day]?.exercises?.length || 0) > 0
-                        ? 'bg-green-600/30 text-green-300 border border-green-500/50'
-                        : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+                        ? 'bg-green-600/30 text-green-300 border border-red-600/50'
+                        : 'bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700/50'
                     }`}
                   >
                     <div className="truncate text-xs">{day.slice(0, 3)}</div>
@@ -547,7 +547,7 @@ const EditSplit = () => {
                 className={`w-full p-2 sm:p-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   weeklyPlan[selectedDay]?.isRestDay
                     ? 'bg-gray-600 text-white border border-gray-500'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-gray-600/50 border border-slate-600'
+                    : 'bg-neutral-800/50 text-neutral-300 hover:bg-gray-600/50 border border-neutral-700'
                 }`}
               >
                 {weeklyPlan[selectedDay]?.isRestDay ? '😴 Rest Day Active' : '😴 Mark as Rest Day'}
@@ -564,7 +564,7 @@ const EditSplit = () => {
                     className={`p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                       selectedMuscleGroup === key
                         ? `${group.color} text-white shadow-lg`
-                        : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+                        : 'bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700/50'
                     }`}
                   >
                     <div className="text-lg sm:text-xl mb-1">{group.icon}</div>
@@ -588,7 +588,7 @@ const EditSplit = () => {
                       className={`p-3 sm:p-4 rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-200 select-none transform hover:scale-[1.01] sm:hover:scale-[1.02] ${
                         isInSplit 
                           ? 'bg-green-900/30 border-green-700 shadow-green-900/20 shadow-lg' 
-                          : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60 hover:border-slate-600 hover:shadow-md'
+                          : 'bg-neutral-900/60 border-neutral-800 hover:bg-neutral-800/60 hover:border-neutral-700 hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -596,12 +596,12 @@ const EditSplit = () => {
                           <div className="flex items-center gap-2">
                             <div className="font-medium text-white text-sm sm:text-base truncate">{exercise.name}</div>
                             {isInSplit && (
-                              <span className="text-green-400 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700 flex-shrink-0">
+                              <span className="text-red-500 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700 flex-shrink-0">
                                 ✓ Added
                               </span>
                             )}
                           </div>
-                          <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-1 sm:gap-2 mt-1 flex-wrap">
+                          <div className="text-xs sm:text-sm text-neutral-400 flex items-center gap-1 sm:gap-2 mt-1 flex-wrap">
                             <span className="flex items-center gap-1">
                               <span>🏋️</span>
                               <span>{exercise.sets}</span>
@@ -620,8 +620,8 @@ const EditSplit = () => {
                           disabled={isInSplit}
                           className={`text-base sm:text-lg font-bold w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0 ${
                             isInSplit 
-                              ? 'text-green-400 bg-green-900/30 border border-green-700 cursor-not-allowed' 
-                              : 'text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 border border-transparent hover:border-blue-700'
+                              ? 'text-red-500 bg-green-900/30 border border-green-700 cursor-not-allowed' 
+                              : 'text-red-500 hover:text-blue-300 hover:bg-blue-900/20 border border-transparent hover:border-blue-700'
                           }`}
                         >
                           {isInSplit ? '✓' : '+'}
@@ -644,10 +644,10 @@ const EditSplit = () => {
 
           {/* Split Plan */}
           <div 
-            className={`bg-slate-800/60 border border-slate-700 rounded-xl p-6 min-h-[500px] transition-all duration-300 ${
+            className={`bg-neutral-900/60 border border-neutral-800 rounded-xl p-6 min-h-[500px] transition-all duration-300 ${
               dragOverArea === 'split' 
-                ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50 scale-[1.02]' 
-                : 'hover:bg-slate-800/80 hover:border-slate-600'
+                ? 'bg-green-900/30 border-red-500 shadow-xl ring-2 ring-red-500/50 scale-[1.02]' 
+                : 'hover:bg-neutral-900/80 hover:border-neutral-700'
             }`}
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'split')}
@@ -657,35 +657,35 @@ const EditSplit = () => {
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-2xl font-bold text-white flex items-center gap-3">
                 <span className="text-3xl animate-pulse">🎯</span> 
-                <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent">
                   Editing Your Split
                 </span>
               </h3>
-              <span className="text-sm font-medium text-slate-300 bg-slate-700/60 px-3 py-2 rounded-full border border-slate-600 shadow-sm">
-                <span className="text-blue-400 mr-1">📊</span>
+              <span className="text-sm font-medium text-neutral-300 bg-neutral-800/60 px-3 py-2 rounded-full border border-neutral-700 shadow-sm">
+                <span className="text-red-500 mr-1">📊</span>
                 {getCurrentDayExercises().length} {getCurrentDayExercises().length === 1 ? 'exercise' : 'exercises'} today
               </span>
             </div>
             
             {getCurrentDayExercises().length === 0 ? (
-              <div className="flex items-center justify-center min-h-[300px] border-2 border-dashed border-slate-600 rounded-xl">
+              <div className="flex items-center justify-center min-h-[300px] border-2 border-dashed border-neutral-700 rounded-xl">
                 <div className="text-center px-6 py-8">
                   <div className="text-6xl mb-4 animate-bounce">🎯</div>
-                  <h4 className="text-slate-300 text-xl font-semibold mb-2">
+                  <h4 className="text-neutral-300 text-xl font-semibold mb-2">
                     {weeklyPlan[selectedDay]?.isRestDay ? `${selectedDay} - Rest Day` : `Plan ${selectedDay} Workout`}
                   </h4>
-                  <p className="text-slate-400 text-base mb-3">
+                  <p className="text-neutral-400 text-base mb-3">
                     {weeklyPlan[selectedDay]?.isRestDay ? 'This is a rest day - no exercises planned' : 'Drag exercises here or tap the + button to add them'}
                   </p>
                   <div className="space-y-3">
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-neutral-500 text-sm">
                       Edit Your Custom Workout Split
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-sm mx-auto">
                       {Object.entries(muscleGroupMapping).map(([name, config]) => (
-                        <div key={name} className="text-center p-2 bg-slate-800/30 rounded-lg border border-slate-700">
+                        <div key={name} className="text-center p-2 bg-neutral-900/30 rounded-lg border border-neutral-800">
                           <div className="text-base sm:text-lg mb-1">{config.icon}</div>
-                          <div className="text-xs text-slate-400">{name}</div>
+                          <div className="text-xs text-neutral-400">{name}</div>
                         </div>
                       ))}
                     </div>
@@ -701,14 +701,14 @@ const EditSplit = () => {
                     if (!config || exercises.length === 0) return null;
                     
                     return (
-                      <div key={muscleGroup} className="bg-slate-800/40 rounded-xl border border-slate-700/50 overflow-hidden">
-                        <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 sm:px-4 py-2 sm:py-3`}>
+                      <div key={muscleGroup} className="bg-neutral-900/40 rounded-xl border border-neutral-800/50 overflow-hidden">
+                        <div className={`${config.color} bg-opacity-20 border-b border-neutral-800/50 px-3 sm:px-4 py-2 sm:py-3`}>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 sm:gap-3">
                               <span className="text-xl sm:text-2xl">{config.icon}</span>
                               <div>
                                 <h4 className="text-white font-semibold text-base sm:text-lg">{muscleGroup}</h4>
-                                <p className="text-slate-400 text-xs sm:text-sm">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                <p className="text-neutral-400 text-xs sm:text-sm">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
                               </div>
                             </div>
                             <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${config.color} bg-opacity-80`}>
@@ -724,11 +724,11 @@ const EditSplit = () => {
                             return (
                               <div 
                                 key={exercise.planId}
-                                className="group p-3 sm:p-4 rounded-lg bg-gradient-to-r from-slate-800/60 via-slate-700/40 to-slate-800/60 border border-slate-600/50 transition-all duration-300 hover:shadow-lg select-none"
+                                className="group p-3 sm:p-4 rounded-lg bg-gradient-to-r from-neutral-900/60 via-neutral-800/40 to-neutral-900/60 border border-neutral-700/50 transition-all duration-300 hover:shadow-lg select-none"
                               >
                                 <div className="flex items-center gap-2 sm:gap-4">
                                   <div className="flex-shrink-0">
-                                    <span className={`text-white font-bold text-xs sm:text-sm ${config.color} bg-opacity-80 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border border-slate-600`}>
+                                    <span className={`text-white font-bold text-xs sm:text-sm ${config.color} bg-opacity-80 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border border-neutral-700`}>
                                       {exerciseIndex + 1}
                                     </span>
                                   </div>
@@ -738,13 +738,13 @@ const EditSplit = () => {
                                       <h5 className="font-medium text-white text-sm sm:text-base truncate">
                                         {exercise.name}
                                       </h5>
-                                      <span className="text-xs bg-slate-700/60 text-slate-300 px-2 py-1 rounded-md border border-slate-600 flex-shrink-0">
+                                      <span className="text-xs bg-neutral-800/60 text-neutral-300 px-2 py-1 rounded-md border border-neutral-700 flex-shrink-0">
                                         ✓ In Split
                                       </span>
                                     </div>
                                     
-                                    <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-400">
-                                      <span className="flex items-center gap-1 bg-slate-700/40 px-1 sm:px-2 py-1 rounded border border-slate-600">
+                                    <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-400">
+                                      <span className="flex items-center gap-1 bg-neutral-800/40 px-1 sm:px-2 py-1 rounded border border-neutral-700">
                                         <span>🏋️</span>
                                         <span>{exercise.sets}</span>
                                       </span>
@@ -764,14 +764,14 @@ const EditSplit = () => {
                                     <button
                                       onClick={() => moveUp(globalIndex)}
                                       disabled={globalIndex === 0}
-                                      className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-slate-600/50 transition-all"
+                                      className="text-neutral-400 hover:text-white disabled:opacity-30 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-neutral-700/50 transition-all"
                                     >
                                       <ChevronUp className="w-3 h-3" />
                                     </button>
                                     <button
                                       onClick={() => moveDown(globalIndex)}
                                       disabled={globalIndex === getCurrentDayExercises().length - 1}
-                                      className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-slate-600/50 transition-all"
+                                      className="text-neutral-400 hover:text-white disabled:opacity-30 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-neutral-700/50 transition-all"
                                     >
                                       <ChevronDown className="w-3 h-3" />
                                     </button>

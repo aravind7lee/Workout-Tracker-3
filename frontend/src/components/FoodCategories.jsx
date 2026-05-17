@@ -198,14 +198,14 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
 
   return (
     <motion.div 
-      className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 backdrop-blur-md border-2 border-slate-600/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
+      className="bg-gradient-to-br from-neutral-900/90 to-neutral-800/90 backdrop-blur-md border-2 border-neutral-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
       whileHover={{ scale: 1.01 }}
     >
       {/* Premium Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-green-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-red-600/10 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
       
       <div className="relative z-10">
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -214,7 +214,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
           </div>
           <div>
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">Quick Add Foods</h3>
-            <p className="text-slate-300 font-medium text-sm sm:text-base">Pre-loaded nutrition database</p>
+            <p className="text-neutral-300 font-medium text-sm sm:text-base">Pre-loaded nutrition database</p>
           </div>
         </div>
       
@@ -223,7 +223,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
           {categoriesLoading ? (
             <div className="flex gap-2 sm:gap-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="animate-pulse bg-slate-700/50 h-10 sm:h-12 w-20 sm:w-28 rounded-lg sm:rounded-xl" />
+                <div key={i} className="animate-pulse bg-neutral-800/50 h-10 sm:h-12 w-20 sm:w-28 rounded-lg sm:rounded-xl" />
               ))}
             </div>
           ) : (
@@ -234,7 +234,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
               className={`px-3 sm:px-4 md:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1 sm:gap-2 ${
                 activeCategory === key
                   ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg hover:shadow-orange-500/20 scale-105'
-                  : 'bg-slate-700/60 hover:bg-slate-600/80 text-slate-300 hover:text-white border border-slate-500/30 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105'
+                  : 'bg-neutral-800/60 hover:bg-neutral-700/80 text-neutral-300 hover:text-white border border-neutral-500/30 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105'
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -252,7 +252,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
           {categoriesLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {[...Array(12)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-slate-700/50 h-20 sm:h-24 rounded-lg sm:rounded-xl" />
+                <div key={i} className="animate-pulse bg-neutral-800/50 h-20 sm:h-24 rounded-lg sm:rounded-xl" />
               ))}
             </div>
           ) : (
@@ -273,8 +273,8 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 disabled={isLoading}
                 className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left transition-all duration-300 border-2 relative group overflow-hidden ${
                   isLoading
-                    ? 'bg-slate-700/30 text-slate-500 cursor-not-allowed border-slate-600/30'
-                    : 'bg-gradient-to-br from-slate-700/80 to-slate-600/80 hover:from-orange-600/20 hover:to-red-600/20 text-white border-slate-500/50 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 shadow-lg hover:shadow-orange-500/20'
+                    ? 'bg-neutral-800/30 text-neutral-500 cursor-not-allowed border-neutral-700/30'
+                    : 'bg-gradient-to-br from-neutral-800/80 to-neutral-700/80 hover:from-orange-600/20 hover:to-red-600/20 text-white border-neutral-500/50 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 shadow-lg hover:shadow-orange-500/20'
                 }`}
                 whileHover={!isLoading ? { scale: 1.05, y: -2 } : {}}
                 whileTap={!isLoading ? { scale: 0.95 } : {}}
@@ -287,7 +287,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 
                 <div className="relative z-10">
                   <div className="font-bold text-xs sm:text-sm text-white mb-1 group-hover:text-orange-200 transition-colors duration-300 leading-tight">{food.name}</div>
-                  <div className="text-xs text-slate-300 mb-1 sm:mb-2 font-medium">{food.serving}</div>
+                  <div className="text-xs text-neutral-300 mb-1 sm:mb-2 font-medium">{food.serving}</div>
                   {/* Enhanced nutrition display */}
                   {activeCategory === 'supplements' ? (
                     <div className="text-xs font-semibold">
@@ -319,7 +319,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                   ) : food.calories ? (
                     <div className="text-xs font-semibold">
                       <span className="text-orange-300">{food.calories} cal</span>
-                      <span className="text-slate-400 hidden sm:inline"> • </span>
+                      <span className="text-neutral-400 hidden sm:inline"> • </span>
                       <span className="text-blue-300 hidden sm:inline">{food.protein}g protein</span>
                     </div>
                   ) : null}
@@ -329,7 +329,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                     <motion.div
                       initial={{ opacity: 0, y: 10, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      className="absolute z-20 bottom-full left-0 mb-3 p-4 bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-2 border-orange-500/30 rounded-2xl shadow-2xl backdrop-blur-md text-xs whitespace-nowrap"
+                      className="absolute z-20 bottom-full left-0 mb-3 p-4 bg-gradient-to-br from-neutral-900/95 to-neutral-800/95 border-2 border-orange-500/30 rounded-2xl shadow-2xl backdrop-blur-md text-xs whitespace-nowrap"
                     >
                       <div className="text-white font-bold mb-2 flex items-center gap-2">
                         <span className="text-orange-400">📊</span>
@@ -341,18 +341,18 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                             {food.description && (
                               <div className="text-purple-300 font-medium mb-2 text-xs">{food.description}</div>
                             )}
-                            {food.calories > 0 && <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-slate-300">cal</span></div>}
-                            {food.protein > 0 && <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-slate-300">protein</span></div>}
-                            {food.carbs > 0 && <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-slate-300">carbs</span></div>}
-                            {food.fat > 0 && <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-slate-300">fat</span></div>}
+                            {food.calories > 0 && <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-neutral-300">cal</span></div>}
+                            {food.protein > 0 && <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-neutral-300">protein</span></div>}
+                            {food.carbs > 0 && <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-neutral-300">carbs</span></div>}
+                            {food.fat > 0 && <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-neutral-300">fat</span></div>}
                           </>
                         ) : (
                           <>
-                            <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-slate-300">cal</span></div>
-                            <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-slate-300">protein</span></div>
-                            <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-slate-300">carbs</span></div>
-                            <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-slate-300">fat</span></div>
-                            {food.fiber > 0 && <div><span className="text-purple-300 font-semibold">{food.fiber}g</span> <span className="text-slate-300">fiber</span></div>}
+                            <div><span className="text-orange-300 font-semibold">{food.calories}</span> <span className="text-neutral-300">cal</span></div>
+                            <div><span className="text-blue-300 font-semibold">{food.protein}g</span> <span className="text-neutral-300">protein</span></div>
+                            <div><span className="text-green-300 font-semibold">{food.carbs}g</span> <span className="text-neutral-300">carbs</span></div>
+                            <div><span className="text-yellow-300 font-semibold">{food.fat}g</span> <span className="text-neutral-300">fat</span></div>
+                            {food.fiber > 0 && <div><span className="text-purple-300 font-semibold">{food.fiber}g</span> <span className="text-neutral-300">fiber</span></div>}
                           </>
                         )}
                       </div>
@@ -367,17 +367,17 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
 
         <div className="mt-4 sm:mt-6 text-center">
           {categoriesLoading ? (
-            <div className="animate-pulse bg-slate-700/50 h-3 sm:h-4 w-60 sm:w-80 mx-auto rounded-lg" />
+            <div className="animate-pulse bg-neutral-800/50 h-3 sm:h-4 w-60 sm:w-80 mx-auto rounded-lg" />
           ) : (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-300 font-medium">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-300 font-medium">
               <div className="flex items-center gap-2">
                 <span className="text-orange-400">🔥</span>
                 <span>Real-time nutrition data</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500 hidden sm:inline">•</span>
+                <span className="text-neutral-500 hidden sm:inline">•</span>
                 <span className="hidden sm:inline">Hover for details</span>
-                <span className="text-slate-500 hidden sm:inline">•</span>
+                <span className="text-neutral-500 hidden sm:inline">•</span>
                 <span className="hidden sm:inline">Click to add to your meal tracker</span>
                 <span className="sm:hidden">Tap to add foods</span>
               </div>

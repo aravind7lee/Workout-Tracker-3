@@ -150,10 +150,10 @@ export default function RealTimeSyncStatus() {
 
   const getSyncStatusColor = () => {
     if (!syncStatus.isOnline) return 'text-red-400';
-    if (syncStatus.syncInProgress) return 'text-blue-400';
+    if (syncStatus.syncInProgress) return 'text-red-500';
     if (syncStatus.error) return 'text-red-400';
     if (syncStatus.pendingChanges > 0) return 'text-yellow-400';
-    return 'text-green-400';
+    return 'text-red-500';
   };
 
   const getSyncStatusIcon = () => {
@@ -174,7 +174,7 @@ export default function RealTimeSyncStatus() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2 text-xs text-slate-400">
+      <div className="flex items-center gap-2 text-xs text-neutral-400">
         <span>🔒</span>
         <span>Login to enable real-time sync</span>
       </div>
@@ -191,7 +191,7 @@ export default function RealTimeSyncStatus() {
 
       {/* Last Sync Time */}
       {syncStatus.lastSync && (
-        <span className="text-slate-500">
+        <span className="text-neutral-500">
           • {formatLastSync(syncStatus.lastSync)}
         </span>
       )}
@@ -200,7 +200,7 @@ export default function RealTimeSyncStatus() {
       {syncStatus.isOnline && !syncStatus.syncInProgress && (
         <button
           onClick={performSync}
-          className="text-blue-400 hover:text-blue-300 transition-colors"
+          className="text-red-500 hover:text-blue-300 transition-colors"
           title="Force sync now"
         >
           🔄
@@ -216,7 +216,7 @@ export default function RealTimeSyncStatus() {
 
       {/* Sync Progress Indicator */}
       {syncStatus.syncInProgress && (
-        <div className="animate-spin w-3 h-3 border border-blue-400 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-3 h-3 border border-red-500 border-t-transparent rounded-full"></div>
       )}
     </div>
   );

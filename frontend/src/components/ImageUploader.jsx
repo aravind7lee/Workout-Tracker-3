@@ -104,7 +104,7 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
   return (
     <>
       <div className="flex flex-col items-center space-y-3">
-        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-slate-600 hover:border-blue-500 transition-all duration-300">
+        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-neutral-700 hover:border-red-600 transition-all duration-300">
           {/* Base image - always visible */}
           {currentImage ? (
             <img 
@@ -115,12 +115,12 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
             />
           ) : (
             <div 
-              className="w-full h-full bg-slate-700 flex items-center justify-center cursor-pointer"
+              className="w-full h-full bg-neutral-800 flex items-center justify-center cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
               <div className="text-center">
-                <div className="text-3xl text-slate-400 mb-1">👤</div>
-                <div className="text-xs text-slate-400">Click to upload</div>
+                <div className="text-3xl text-neutral-400 mb-1">👤</div>
+                <div className="text-xs text-neutral-400">Click to upload</div>
               </div>
             </div>
           )}
@@ -140,7 +140,7 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
         {currentImage && (
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg flex items-center gap-2"
+            className="px-4 py-2 bg-red-700 hover:bg-blue-700 text-white text-sm rounded-lg flex items-center gap-2"
           >
             📷 Change Photo
           </button>
@@ -157,7 +157,7 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
         {message && (
           <div className={`text-sm px-3 py-1 rounded-full ${
             message.includes('✅') 
-              ? 'bg-green-500/20 text-green-400' 
+              ? 'bg-red-600/20 text-red-500' 
               : 'bg-red-500/20 text-red-400'
           }`}>
             {message}

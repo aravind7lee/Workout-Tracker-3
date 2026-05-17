@@ -25,9 +25,9 @@ export default function WorkoutsFixed() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <div>Loading...</div>
         </div>
       </div>
@@ -35,10 +35,10 @@ export default function WorkoutsFixed() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-black">
       {/* Simple Hero Section */}
       <motion.div 
-        className="relative w-full h-screen min-h-screen overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+        className="relative w-full h-screen min-h-screen overflow-hidden bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -71,7 +71,7 @@ export default function WorkoutsFixed() {
           >
             <motion.button
               onClick={() => navigate('/library')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all duration-200"
+              className="bg-red-700 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -79,7 +79,7 @@ export default function WorkoutsFixed() {
             </motion.button>
             <motion.button
               onClick={() => window.location.reload()}
-              className="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
+              className="bg-neutral-700 hover:bg-neutral-800 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -95,7 +95,7 @@ export default function WorkoutsFixed() {
             transition={{ duration: 0.6, delay: 0.8 }}
           >
             <div className="flex items-center gap-2 bg-black/30 px-3 py-2 rounded-full backdrop-blur-sm">
-              <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+              <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-red-500 animate-pulse' : 'bg-red-400'}`}></div>
               <span className="text-sm font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
             </div>
             <div className="text-sm text-white/80 font-mono bg-black/30 px-3 py-2 rounded-full backdrop-blur-sm">
@@ -111,24 +111,24 @@ export default function WorkoutsFixed() {
             transition={{ duration: 0.6, delay: 1.0 }}
           >
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 relative">
-              <div className="text-2xl font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
+              <div className="text-2xl font-black text-red-500">{stats?.todayWorkouts || 0}</div>
               <div className="text-sm text-white/80">Today</div>
-              <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             </div>
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 relative">
-              <div className="text-2xl font-black text-green-400">{stats?.totalWorkouts || 0}</div>
+              <div className="text-2xl font-black text-red-500">{stats?.totalWorkouts || 0}</div>
               <div className="text-sm text-white/80">Total</div>
-              <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             </div>
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 relative">
-              <div className="text-2xl font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
+              <div className="text-2xl font-black text-red-600">{stats?.weeklyWorkouts || 0}</div>
               <div className="text-sm text-white/80">Week</div>
-              <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             </div>
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 relative">
               <div className="text-2xl font-black text-orange-400">{stats?.totalCalories || 0}</div>
               <div className="text-sm text-white/80">Calories</div>
-              <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             </div>
           </motion.div>
         </div>
@@ -141,19 +141,19 @@ export default function WorkoutsFixed() {
           <h3 className="text-xl font-bold text-white mb-2">
             Workout tracking is working!
           </h3>
-          <p className="text-slate-400 mb-6">
+          <p className="text-neutral-400 mb-6">
             This is a simplified version of the workouts page that should work without errors.
           </p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => navigate('/library')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               🏋️ Browse Exercises
             </button>
             <button
               onClick={() => navigate('/workouts-original')}
-              className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+              className="px-6 py-3 bg-neutral-700 text-white rounded-lg hover:bg-neutral-800 transition-colors"
             >
               📊 Try Original Page
             </button>

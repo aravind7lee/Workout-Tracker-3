@@ -168,7 +168,7 @@ const ReviewSystem = ({ exerciseId, exerciseName }) => {
           </p>
           <button
             onClick={() => setShowReviewForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
             Write a Review
           </button>
@@ -197,7 +197,7 @@ const ReviewSystem = ({ exerciseId, exerciseName }) => {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Share your thoughts about this exercise..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 dark:bg-gray-800 dark:text-white"
               rows={3}
               maxLength={500}
             />
@@ -208,7 +208,7 @@ const ReviewSystem = ({ exerciseId, exerciseName }) => {
             <button
               onClick={handleSubmitReview}
               disabled={rating === 0 || loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Submitting...' : userReview ? 'Update Review' : 'Submit Review'}
             </button>
@@ -251,7 +251,7 @@ const ReviewSystem = ({ exerciseId, exerciseName }) => {
                 setRating(userReview.rating);
                 setComment(userReview.comment);
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              className="text-red-700 hover:text-blue-800 text-sm"
             >
               Edit
             </button>

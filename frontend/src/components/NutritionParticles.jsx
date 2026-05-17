@@ -46,7 +46,7 @@ export default function NutritionParticles() {
       {Array.from({ length: 8 }, (_, i) => (
         <motion.div
           key={`dot-${i}`}
-          className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20"
+          className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-red-500/20 to-red-500/20"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,

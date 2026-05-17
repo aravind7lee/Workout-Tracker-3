@@ -60,7 +60,7 @@ export default function RealTimeStatus() {
 
   const getStatusColor = () => {
     if (!isOnline) return 'text-red-400';
-    if (backendStatus === 'connected') return 'text-green-400';
+    if (backendStatus === 'connected') return 'text-red-500';
     if (backendStatus === 'disconnected') return 'text-yellow-400';
     return 'text-gray-400';
   };
@@ -97,8 +97,8 @@ export default function RealTimeStatus() {
       
       {pendingSync > 0 && (
         <div className="flex items-center gap-1">
-          <span className="text-blue-400">⏳</span>
-          <span className="text-blue-400">{pendingSync} pending</span>
+          <span className="text-red-500">⏳</span>
+          <span className="text-red-500">{pendingSync} pending</span>
         </div>
       )}
       
@@ -111,7 +111,7 @@ export default function RealTimeStatus() {
       {backendStatus === 'connected' && (
         <button
           onClick={handleForceSync}
-          className="text-blue-400 hover:text-blue-300 underline"
+          className="text-red-500 hover:text-blue-300 underline"
           title="Force sync now"
         >
           Sync

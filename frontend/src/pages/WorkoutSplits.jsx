@@ -42,8 +42,8 @@ const WorkoutSplits = () => {
   const muscleGroupMapping = {
     'Chest': { icon: '💪', color: 'bg-red-600', key: 'chest' },
     'Shoulders': { icon: '🔥', color: 'bg-orange-600', key: 'shoulders' },
-    'Back': { icon: '🎯', color: 'bg-blue-600', key: 'back' },
-    'Arms': { icon: '💥', color: 'bg-purple-600', key: 'arms' },
+    'Back': { icon: '🎯', color: 'bg-red-700', key: 'back' },
+    'Arms': { icon: '💥', color: 'bg-red-800', key: 'arms' },
     'Legs': { icon: '🦵', color: 'bg-green-600', key: 'legs' },
     'Core': { icon: '⚡', color: 'bg-yellow-600', key: 'abs' }
   };
@@ -828,7 +828,7 @@ const WorkoutSplits = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate('/custom-split-builder')}
-                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white font-semibold px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none"
+                  className="group relative overflow-hidden bg-gradient-to-r from-red-800 via-red-700 to-red-600 hover:from-purple-700 hover:via-blue-700 hover:to-red-700 text-white font-semibold px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none"
                 >
                   <div className="relative flex items-center justify-center space-x-2">
                     <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -868,12 +868,12 @@ const WorkoutSplits = () => {
               <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
               <span className="font-semibold text-white text-xs sm:text-sm md:text-base tracking-wide">13 DIFFERENT SPLITS</span>
             </div>
-            <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-green-500/40 hover:border-green-400/60 transition-all duration-300">
-              <Target className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-green-400 group-hover:text-green-300 transition-colors" />
+            <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-red-600/20 to-red-600/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-red-600/40 hover:border-red-500/60 transition-all duration-300">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-500 group-hover:text-green-300 transition-colors" />
               <span className="font-semibold text-white text-xs sm:text-sm md:text-base tracking-wide">ALL FITNESS GOALS</span>
             </div>
-            <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-purple-500/40 hover:border-purple-400/60 transition-all duration-300">
-              <Clock className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+            <div className="group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-red-700/20 to-red-600/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-red-700/40 hover:border-red-600/60 transition-all duration-300">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-600 group-hover:text-purple-300 transition-colors" />
               <span className="font-semibold text-white text-xs sm:text-sm md:text-base tracking-wide">FLEXIBLE SCHEDULES</span>
             </div>
           </motion.div>
@@ -972,7 +972,7 @@ const WorkoutSplits = () => {
                           <span className="sm:hidden">{split.isCustom ? 'CUSTOM' : 'SPLIT'}</span>
                         </span>
                         {split.isCustom && (
-                          <span className="text-xs bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-300 px-1 sm:px-2 py-1 rounded-full border border-purple-500/30">
+                          <span className="text-xs bg-gradient-to-r from-red-700/20 to-red-600/20 text-purple-300 px-1 sm:px-2 py-1 rounded-full border border-red-700/30">
                             <span className="hidden sm:inline">⚡ YOUR CREATION</span>
                             <span className="sm:hidden">⚡</span>
                           </span>
@@ -1005,24 +1005,24 @@ const WorkoutSplits = () => {
                   <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-4 sm:mb-6">
                     <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700/30">
                       <div className="flex items-center space-x-1 sm:space-x-2">
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
                         <span className="text-gray-400 text-xs sm:text-sm font-medium">Frequency</span>
                       </div>
-                      <span className="text-blue-400 font-semibold text-xs sm:text-sm">{split.frequency}</span>
+                      <span className="text-red-500 font-semibold text-xs sm:text-sm">{split.frequency}</span>
                     </div>
                     <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700/30">
                       <div className="flex items-center space-x-1 sm:space-x-2">
-                        <Target className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
+                        <Target className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
                         <span className="text-gray-400 text-xs sm:text-sm font-medium">Difficulty</span>
                       </div>
-                      <span className="text-green-400 font-semibold text-xs sm:text-sm">{split.difficulty}</span>
+                      <span className="text-red-500 font-semibold text-xs sm:text-sm">{split.difficulty}</span>
                     </div>
                     <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700/30">
                       <div className="flex items-center space-x-1 sm:space-x-2">
-                        <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400" />
+                        <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
                         <span className="text-gray-400 text-xs sm:text-sm font-medium">Duration</span>
                       </div>
-                      <span className="text-purple-400 font-semibold text-xs sm:text-sm">{split.duration}</span>
+                      <span className="text-red-600 font-semibold text-xs sm:text-sm">{split.duration}</span>
                     </div>
                   </div>
 
@@ -1102,17 +1102,17 @@ const WorkoutSplits = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="bg-gray-800/50 rounded-lg p-3 sm:p-4 text-center">
-                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 mx-auto mb-1 sm:mb-2" />
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mx-auto mb-1 sm:mb-2" />
                     <div className="text-xs sm:text-sm text-gray-400">Frequency</div>
                     <div className="text-white font-medium text-sm sm:text-base">{selectedSplit.frequency}</div>
                   </div>
                   <div className="bg-gray-800/50 rounded-lg p-3 sm:p-4 text-center">
-                    <Target className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-1 sm:mb-2" />
+                    <Target className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mx-auto mb-1 sm:mb-2" />
                     <div className="text-xs sm:text-sm text-gray-400">Difficulty</div>
                     <div className="text-white font-medium text-sm sm:text-base">{selectedSplit.difficulty}</div>
                   </div>
                   <div className="bg-gray-800/50 rounded-lg p-3 sm:p-4 text-center">
-                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400 mx-auto mb-1 sm:mb-2" />
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 mx-auto mb-1 sm:mb-2" />
                     <div className="text-xs sm:text-sm text-gray-400">Duration</div>
                     <div className="text-white font-medium text-sm sm:text-base">{selectedSplit.duration}</div>
                   </div>
@@ -1130,14 +1130,14 @@ const WorkoutSplits = () => {
                           <div key={day} className={`rounded-lg border overflow-hidden ${
                             isRestDay 
                               ? 'bg-gray-700/20 border-gray-600/30' 
-                              : 'bg-blue-500/10 border-blue-500/20'
+                              : 'bg-red-600/10 border-red-600/20'
                           }`}>
                             <div className="flex items-center justify-between p-3 border-b border-gray-600/30">
-                              <div className="font-medium text-blue-400 text-lg">{day}</div>
+                              <div className="font-medium text-red-500 text-lg">{day}</div>
                               <div className={`text-xs px-2 py-1 rounded-full ${
                                 isRestDay 
                                   ? 'bg-gray-600 text-gray-300' 
-                                  : 'bg-blue-500/20 text-blue-300'
+                                  : 'bg-red-600/20 text-blue-300'
                               }`}>
                                 {isRestDay ? '😴 Rest' : '💪 Workout'}
                               </div>
@@ -1157,13 +1157,13 @@ const WorkoutSplits = () => {
                                   if (!config || exercises.length === 0) return null;
                                   
                                   return (
-                                    <div key={muscleGroup} className="bg-slate-800/40 rounded-lg border border-slate-700/50 overflow-hidden">
-                                      <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 py-2`}>
+                                    <div key={muscleGroup} className="bg-neutral-900/40 rounded-lg border border-neutral-800/50 overflow-hidden">
+                                      <div className={`${config.color} bg-opacity-20 border-b border-neutral-800/50 px-3 py-2`}>
                                         <div className="flex items-center gap-2">
                                           <span className="text-lg">{config.icon}</span>
                                           <div>
                                             <h4 className="text-white font-semibold text-sm">{muscleGroup}</h4>
-                                            <p className="text-slate-400 text-xs">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                            <p className="text-neutral-400 text-xs">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
                                           </div>
                                         </div>
                                       </div>
@@ -1203,7 +1203,7 @@ const WorkoutSplits = () => {
                         return (
                           <div key={day} className="bg-gray-700/30 rounded-lg border border-gray-600/30 overflow-hidden">
                             <div className="bg-gray-800/50 px-3 py-2 border-b border-gray-600/30">
-                              <div className="font-medium text-green-400">{day}</div>
+                              <div className="font-medium text-red-500">{day}</div>
                             </div>
                             
                             {Object.keys(groupedMuscles).length > 0 ? (
@@ -1239,7 +1239,7 @@ const WorkoutSplits = () => {
                     <ul className="space-y-2">
                       {selectedSplit.benefits.map((benefit, index) => (
                         <li key={index} className="flex items-center space-x-2 text-gray-300">
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                           <span>{benefit}</span>
                         </li>
                       ))}

@@ -57,14 +57,14 @@ export default function WorkoutPlanBuilderHeader() {
         
         {/* Professional Particle Background Accent */}
         <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-          <div className="absolute top-20 right-20 w-1 h-1 bg-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute top-10 left-10 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+          <div className="absolute top-20 right-20 w-1 h-1 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
           <div className="absolute bottom-32 right-32 w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
           <div className="absolute top-1/3 left-1/4 w-1 h-1 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
+          <div className="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
           <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-indigo-400 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
-          <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
+          <div className="absolute top-16 right-1/4 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
         </div>
       </div>
 
@@ -148,7 +148,7 @@ export default function WorkoutPlanBuilderHeader() {
               transition={{ duration: 0.8, delay: 0.9 }}
               className="flex justify-center"
             >
-              <div className="bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-full px-3 py-1 text-xs"
+              <div className="bg-red-600/20 backdrop-blur-md border border-red-500/30 rounded-full px-3 py-1 text-xs"
                    style={{ color: 'var(--color-text-muted, #999999)' }}>
                 <span className="flex items-center gap-1">
                   <span>Professional Gym Tracker</span>

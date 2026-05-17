@@ -4,7 +4,7 @@
 /* Global light mode text enforcement - highest priority */
 .light-theme *:not(svg):not(path):not(.preserve-color):not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500),
 [data-theme="light"] *:not(svg):not(path):not(.preserve-color):not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Headings - Maximum contrast */
@@ -28,24 +28,24 @@
 
 .light-theme .link-text,
 [data-theme="light"] .link-text {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Override problematic Tailwind classes */
 .light-theme .text-white, .light-theme .text-slate-100, .light-theme .text-slate-200, .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
 [data-theme="light"] .text-white, [data-theme="light"] .text-slate-100, [data-theme="light"] .text-slate-200, [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .text-gray-100, .light-theme .text-gray-200, .light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
 [data-theme="light"] .text-gray-100, [data-theme="light"] .text-gray-200, [data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Preserve colored elements with proper light mode colors */
 .light-theme .text-blue-400, .light-theme .text-blue-500,
 [data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .text-green-400, .light-theme .text-green-500,
@@ -76,7 +76,7 @@
 /* Button text overrides */
 .light-theme .btn-primary,
 [data-theme="light"] .btn-primary {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
   color: white !important;
   border: none !important;
 }
@@ -84,13 +84,13 @@
 .light-theme .btn-secondary,
 [data-theme="light"] .btn-secondary {
   background: transparent !important;
-  color: #1d4ed8 !important;
-  border: 2px solid #1d4ed8 !important;
+  color: #FF0000 !important;
+  border: 2px solid #FF0000 !important;
 }
 
 .light-theme .btn-secondary:hover,
 [data-theme="light"] .btn-secondary:hover {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
   color: white !important;
 }
 
@@ -99,7 +99,7 @@
 [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
   background: white !important;
   border: 1px solid #d1d5db !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme input::placeholder, .light-theme textarea::placeholder,
@@ -110,7 +110,7 @@
 /* Labels */
 .light-theme label,
 [data-theme="light"] label {
-  color: #0f172a !important;
+  color: #000000 !important;
   font-weight: 600 !important;
 }
 
@@ -119,13 +119,13 @@
 [data-theme="light"] .card {
   background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Navigation */
 .light-theme nav *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] nav *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme nav h1, .light-theme nav h2, .light-theme nav h3,
@@ -136,19 +136,19 @@
 /* Links */
 .light-theme a:not(.btn):not(.btn-primary):not(.btn-secondary),
 [data-theme="light"] a:not(.btn):not(.btn-primary):not(.btn-secondary) {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme a:not(.btn):not(.btn-primary):not(.btn-secondary):hover,
 [data-theme="light"] a:not(.btn):not(.btn-primary):not(.btn-secondary):hover {
-  color: #1e40af !important;
+  color: #E60000 !important;
   text-decoration: underline !important;
 }
 
 /* Modal and overlay text */
 .light-theme .modal *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] .modal *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .modal h1, .light-theme .modal h2, .light-theme .modal h3,
@@ -159,7 +159,7 @@
 /* Footer */
 .light-theme footer *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] footer *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme footer h3, .light-theme footer h4,
@@ -170,17 +170,17 @@
 /* Specific component overrides */
 .light-theme .workout-card *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] .workout-card *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .exercise-card *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] .exercise-card *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .plan-card *:not(svg):not(path):not(.preserve-color),
 [data-theme="light"] .plan-card *:not(svg):not(path):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Status indicators */
@@ -196,7 +196,7 @@
 
 .light-theme .status-syncing,
 [data-theme="light"] .status-syncing {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Loading states */
@@ -234,7 +234,7 @@
 .light-theme .tooltip,
 [data-theme="light"] .tooltip {
   background: white !important;
-  color: #0f172a !important;
+  color: #000000 !important;
   border: 1px solid #e5e7eb !important;
 }
 
@@ -243,24 +243,24 @@
 [data-theme="light"] .dropdown-menu {
   background: white !important;
   border: 1px solid #e5e7eb !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .dropdown-item,
 [data-theme="light"] .dropdown-item {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .dropdown-item:hover,
 [data-theme="light"] .dropdown-item:hover {
   background: #f3f4f6 !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Table elements */
 .light-theme table, .light-theme th, .light-theme td,
 [data-theme="light"] table, [data-theme="light"] th, [data-theme="light"] td {
-  color: #0f172a !important;
+  color: #000000 !important;
   border-color: #e5e7eb !important;
 }
 
@@ -274,7 +274,7 @@
 /* List elements */
 .light-theme ul, .light-theme ol, .light-theme li,
 [data-theme="light"] ul, [data-theme="light"] ol, [data-theme="light"] li {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* Code elements */
@@ -300,15 +300,15 @@
 
 .light-theme .progress-fill,
 [data-theme="light"] .progress-fill {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
 }
 
 /* Tabs */
 .light-theme .tab-active,
 [data-theme="light"] .tab-active {
   background: white !important;
-  color: #1d4ed8 !important;
-  border-bottom: 2px solid #1d4ed8 !important;
+  color: #FF0000 !important;
+  border-bottom: 2px solid #FF0000 !important;
 }
 
 .light-theme .tab-inactive,
@@ -318,7 +318,7 @@
 
 .light-theme .tab-inactive:hover,
 [data-theme="light"] .tab-inactive:hover {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 /* Accordion */
@@ -332,7 +332,7 @@
 .light-theme .accordion-content,
 [data-theme="light"] .accordion-content {
   background: white !important;
-  color: #0f172a !important;
+  color: #000000 !important;
   border: 1px solid #e5e7eb !important;
 }
 
@@ -340,7 +340,7 @@
 .light-theme .alert-info,
 [data-theme="light"] .alert-info {
   background: #dbeafe !important;
-  color: #1e40af !important;
+  color: #E60000 !important;
   border: 1px solid #93c5fd !important;
 }
 

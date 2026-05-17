@@ -326,8 +326,8 @@ const CustomSplitBuilder = () => {
   const muscleGroupMapping = {
     'Chest': { icon: '💪', color: 'bg-red-600', key: 'chest' },
     'Shoulders': { icon: '🔥', color: 'bg-orange-600', key: 'shoulders' },
-    'Back': { icon: '🎯', color: 'bg-blue-600', key: 'back' },
-    'Arms': { icon: '💥', color: 'bg-purple-600', key: 'arms' },
+    'Back': { icon: '🎯', color: 'bg-red-700', key: 'back' },
+    'Arms': { icon: '💥', color: 'bg-red-800', key: 'arms' },
     'Legs': { icon: '🦵', color: 'bg-green-600', key: 'legs' },
     'Core': { icon: '⚡', color: 'bg-yellow-600', key: 'abs' }
   };
@@ -472,11 +472,11 @@ Check Your WorkoutSplits page to see your custom split!`);
 
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
-      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-red-500' };
       case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
-      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-purple-400' };
+      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-red-600' };
       case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
-      default: return { icon: '🌐', text: 'Live', color: 'text-blue-400' };
+      default: return { icon: '🌐', text: 'Live', color: 'text-red-500' };
     }
   };
 
@@ -517,7 +517,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                   className={`text-xs px-2 sm:px-3 py-1 rounded-full ${
                     autoSave 
                       ? 'bg-blue-900/30 text-blue-300 border border-blue-700' 
-                      : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+                      : 'bg-neutral-800/50 text-neutral-400 border border-neutral-700'
                   }`}
                 >
                   <span className="hidden sm:inline">{autoSave ? '💾 Auto-Save ON' : '💾 Auto-Save OFF'}</span>
@@ -538,12 +538,12 @@ Check Your WorkoutSplits page to see your custom split!`);
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Form Controls */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-3 sm:p-6 mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-2xl font-semibold mb-3 sm:mb-4 text-white">
             {editMode ? '🔄 EDITING WORKOUT SPLIT 🏋️' : 'Custom Workout Split Builder 🏋️'}
           </h2>
           {editMode && (
-            <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+            <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-900/30 border border-red-600/50 rounded-lg">
               <p className="text-blue-300 text-xs sm:text-sm">
                 ✅ Edit mode active - You are editing an existing split
               </p>
@@ -557,7 +557,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                 value={splitName}
                 onChange={(e) => setSplitName(e.target.value)}
                 placeholder="Enter split name..."
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 text-sm sm:text-base"
               />
             </div>
             <div>
@@ -566,7 +566,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                 onChange={(e) => setSplitDescription(e.target.value)}
                 placeholder="Describe your custom split (optional)..."
                 rows={2}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 resize-none text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 resize-none text-sm sm:text-base"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
@@ -580,7 +580,7 @@ Check Your WorkoutSplits page to see your custom split!`);
               <button
                 onClick={saveSplit}
                 disabled={saving || !splitName.trim() || getTotalExercises() === 0}
-                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white disabled:opacity-50 rounded-lg font-medium text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-800 to-red-700 hover:from-purple-700 hover:to-blue-700 text-white disabled:opacity-50 rounded-lg font-medium text-sm sm:text-base"
               >
                 {saving ? '🔄 Saving...' : editMode ? '💾 Update Split' : '💾 Save Custom Split'}
               </button>
@@ -596,7 +596,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                 <span className="text-3xl animate-bounce">{currentMuscleGroup.icon}</span>
                 <div className="flex-1">
                   <h4 className="text-lg font-semibold text-white">{currentMuscleGroup.name} Workout Tips</h4>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-neutral-400">
                     {exercises.length} exercises • Real-time guidance
                   </div>
                 </div>
@@ -607,9 +607,9 @@ Check Your WorkoutSplits page to see your custom split!`);
                   <div className="text-blue-300 text-sm flex items-center gap-2">
                     <span>📊</span>
                     <span>Split Progress: {getTotalExercises()} exercises added</span>
-                    <div className="flex-1 bg-slate-700 rounded-full h-2 ml-2">
+                    <div className="flex-1 bg-neutral-800 rounded-full h-2 ml-2">
                       <div 
-                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-red-700 to-red-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${Math.min((getTotalExercises() / 10) * 100, 100)}%` }}
                       ></div>
                     </div>
@@ -624,8 +624,8 @@ Check Your WorkoutSplits page to see your custom split!`);
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Exercise Library */}
           <div 
-            className={`bg-slate-800/60 border border-slate-700 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[500px] transition-all duration-200 ${
-              dragOverArea === 'library' ? 'bg-slate-700/50 border-slate-500 shadow-lg' : ''
+            className={`bg-neutral-900/60 border border-neutral-800 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[500px] transition-all duration-200 ${
+              dragOverArea === 'library' ? 'bg-neutral-800/50 border-neutral-500 shadow-lg' : ''
             }`}
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'library')}
@@ -636,7 +636,7 @@ Check Your WorkoutSplits page to see your custom split!`);
               <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                 <span className="animate-pulse">📚</span> 
                 <span>Exercise Library</span>
-                <span className="text-xs sm:text-sm text-slate-400">({exercises.length})</span>
+                <span className="text-xs sm:text-sm text-neutral-400">({exercises.length})</span>
               </h3>
               <div className="flex items-center gap-2">
                 <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${currentMuscleGroup.color} shadow-lg`}>
@@ -669,15 +669,15 @@ Check Your WorkoutSplits page to see your custom split!`);
                         : weeklyPlan[day]?.isRestDay
                         ? 'bg-gray-600 text-gray-300 border-gray-500/50'
                         : (weeklyPlan[day]?.exercises?.length || 0) > 0
-                        ? 'bg-green-600/30 text-green-300 border-green-500/50'
-                        : 'bg-slate-700/50 text-slate-300 border-slate-600/50'
+                        ? 'bg-green-600/30 text-green-300 border-red-600/50'
+                        : 'bg-neutral-800/50 text-neutral-300 border-neutral-700/50'
                     }`}
                   >
                     <div className="text-xs font-semibold mb-1">{day.slice(0, 3)}</div>
                     <div className="text-sm mb-1">
                       {selectedDay === day ? '🎯' : weeklyPlan[day]?.isRestDay ? '😴' : (weeklyPlan[day]?.exercises?.length || 0) > 0 ? '💪' : '⚪'}
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-neutral-400">
                       {(weeklyPlan[day]?.exercises?.length || 0)}
                     </div>
                   </button>
@@ -692,7 +692,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                 className={`w-full p-3 sm:p-4 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base border ${
                   weeklyPlan[selectedDay]?.isRestDay
                     ? 'bg-gray-600 text-white border-gray-500/50 shadow-lg'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-gray-600/50 border-slate-600/50 hover:border-gray-500/50'
+                    : 'bg-neutral-800/50 text-neutral-300 hover:bg-gray-600/50 border-neutral-700/50 hover:border-gray-500/50'
                 }`}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -717,12 +717,12 @@ Check Your WorkoutSplits page to see your custom split!`);
                       className={`p-3 sm:p-4 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 border ${
                         selectedMuscleGroup === key
                           ? `${group.color} text-white shadow-lg border-white/20 scale-105`
-                          : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 border-slate-600/50 hover:border-slate-500/50 hover:scale-102'
+                          : 'bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700/50 border-neutral-700/50 hover:border-neutral-500/50 hover:scale-102'
                       }`}
                     >
                       <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{group.icon}</div>
                       <div className="text-xs sm:text-sm font-semibold truncate">{group.name}</div>
-                      <div className="text-xs text-slate-400 mt-1">
+                      <div className="text-xs text-neutral-400 mt-1">
                         {group.exercises?.length || 0} exercises
                       </div>
                     </button>
@@ -745,7 +745,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                     className={`p-3 sm:p-4 rounded-xl border cursor-grab active:cursor-grabbing transition-all duration-300 select-none transform hover:scale-[1.01] sm:hover:scale-[1.02] ${
                       isInSplit 
                         ? 'bg-green-900/30 border-green-700/50 shadow-green-900/20 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-700/50 hover:bg-slate-700/60 hover:border-slate-600/50 hover:shadow-md'
+                        : 'bg-neutral-900/60 border-neutral-800/50 hover:bg-neutral-800/60 hover:border-neutral-700/50 hover:shadow-md'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
@@ -755,13 +755,13 @@ Check Your WorkoutSplits page to see your custom split!`);
                             {exercise.name}
                           </div>
                           {isInSplit && (
-                            <span className="text-green-400 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700/50 flex-shrink-0 self-start sm:self-auto">
+                            <span className="text-red-500 text-xs bg-green-900/30 px-2 py-1 rounded-full border border-green-700/50 flex-shrink-0 self-start sm:self-auto">
                               ✓ Added
                             </span>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-400">
-                          <span className="flex items-center gap-1 bg-slate-700/40 px-2 py-1 rounded border border-slate-600/50">
+                        <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-400">
+                          <span className="flex items-center gap-1 bg-neutral-800/40 px-2 py-1 rounded border border-neutral-700/50">
                             <span>🏋️</span>
                             <span className="font-medium">{exercise.sets}</span>
                           </span>
@@ -772,7 +772,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                           }`}>
                             {exercise.difficulty}
                           </span>
-                          <span className="text-slate-500 flex items-center gap-1 bg-slate-700/30 px-2 py-1 rounded border border-slate-600/50">
+                          <span className="text-neutral-500 flex items-center gap-1 bg-neutral-800/30 px-2 py-1 rounded border border-neutral-700/50">
                             <span>🏅</span>
                             <span className="truncate text-xs">{exercise.type}</span>
                           </span>
@@ -784,13 +784,13 @@ Check Your WorkoutSplits page to see your custom split!`);
                           disabled={isInSplit}
                           className={`text-base sm:text-lg font-bold w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-all duration-300 border ${
                             isInSplit 
-                              ? 'text-green-400 bg-green-900/30 border-green-700/50 cursor-not-allowed' 
-                              : 'text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 border-blue-700/50 hover:border-blue-600/50 hover:scale-105'
+                              ? 'text-red-500 bg-green-900/30 border-green-700/50 cursor-not-allowed' 
+                              : 'text-red-500 hover:text-blue-300 hover:bg-blue-900/20 border-blue-700/50 hover:border-red-700/50 hover:scale-105'
                           }`}
                         >
                           {isInSplit ? '✓' : '+'}
                         </button>
-                        <div className="text-slate-500 text-base sm:text-lg cursor-grab hidden sm:block">
+                        <div className="text-neutral-500 text-base sm:text-lg cursor-grab hidden sm:block">
                           ⋮⋮
                         </div>
                       </div>
@@ -812,10 +812,10 @@ Check Your WorkoutSplits page to see your custom split!`);
 
           {/* Your Custom Split - Mobile Optimized */}
           <div 
-            className={`bg-slate-800/60 border border-slate-700 rounded-xl p-3 sm:p-4 lg:p-6 min-h-[400px] sm:min-h-[500px] transition-all duration-300 ${
+            className={`bg-neutral-900/60 border border-neutral-800 rounded-xl p-3 sm:p-4 lg:p-6 min-h-[400px] sm:min-h-[500px] transition-all duration-300 ${
               dragOverArea === 'split' 
-                ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50 scale-[1.01] sm:scale-[1.02]' 
-                : 'hover:bg-slate-800/80 hover:border-slate-600'
+                ? 'bg-green-900/30 border-red-500 shadow-xl ring-2 ring-red-500/50 scale-[1.01] sm:scale-[1.02]' 
+                : 'hover:bg-neutral-900/80 hover:border-neutral-700'
             }`}
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'split')}
@@ -826,14 +826,14 @@ Check Your WorkoutSplits page to see your custom split!`);
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
                   <span className="text-2xl sm:text-3xl animate-pulse">🎯</span> 
-                  <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent">
                     <span className="hidden sm:inline">{editMode ? 'Editing Your Split' : 'Your Custom Split'}</span>
                     <span className="sm:hidden">{editMode ? 'Edit Split' : 'Custom Split'}</span>
                   </span>
                 </h3>
                 {getTotalExercises() > 0 && (
-                  <span className="text-xs sm:text-sm text-green-400 font-medium flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="text-xs sm:text-sm text-red-500 font-medium flex items-center gap-1">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                     <span className="hidden sm:inline">Ready to save!</span>
                     <span className="sm:hidden">Ready!</span>
                   </span>
@@ -841,8 +841,8 @@ Check Your WorkoutSplits page to see your custom split!`);
               </div>
               
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-medium text-slate-300 bg-slate-700/60 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border border-slate-600 shadow-sm">
-                  <span className="text-blue-400 mr-1">📊</span>
+                <span className="text-xs sm:text-sm font-medium text-neutral-300 bg-neutral-800/60 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border border-neutral-700 shadow-sm">
+                  <span className="text-red-500 mr-1">📊</span>
                   <span className="hidden sm:inline">{getCurrentDayExercises().length} {getCurrentDayExercises().length === 1 ? 'exercise' : 'exercises'} today</span>
                   <span className="sm:hidden">{getCurrentDayExercises().length} exercises</span>
                 </span>
@@ -850,35 +850,35 @@ Check Your WorkoutSplits page to see your custom split!`);
             </div>
             
             {getCurrentDayExercises().length === 0 ? (
-              <div className="flex items-center justify-center min-h-[300px] sm:min-h-[400px] border-2 border-dashed border-slate-600 rounded-xl transition-all duration-300 hover:border-slate-500 hover:bg-slate-800/30 mx-1">
+              <div className="flex items-center justify-center min-h-[300px] sm:min-h-[400px] border-2 border-dashed border-neutral-700 rounded-xl transition-all duration-300 hover:border-neutral-500 hover:bg-neutral-900/30 mx-1">
                 <div className="text-center px-4 sm:px-6 py-6 sm:py-8">
                   <div className="text-4xl sm:text-6xl mb-3 sm:mb-4 animate-bounce">🎯</div>
-                  <h4 className="text-slate-300 text-lg sm:text-xl font-semibold mb-2">
+                  <h4 className="text-neutral-300 text-lg sm:text-xl font-semibold mb-2">
                     {weeklyPlan[selectedDay]?.isRestDay ? `${selectedDay} - Rest Day` : `Plan ${selectedDay} Workout`}
                   </h4>
-                  <p className="text-slate-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs mx-auto leading-relaxed">
+                  <p className="text-neutral-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs mx-auto leading-relaxed">
                     {weeklyPlan[selectedDay]?.isRestDay ? 'This is a rest day - no exercises planned' : 'Drag exercises here or tap the + button to add them'}
                   </p>
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg p-3 sm:p-4 border border-purple-500/20">
+                    <div className="bg-gradient-to-r from-red-700/10 to-red-600/10 rounded-lg p-3 sm:p-4 border border-red-700/20">
                       <p className="text-purple-300 text-sm sm:text-base font-semibold mb-2">
                         Build your Own Custom Workout Split
                       </p>
-                      <p className="text-slate-400 text-xs sm:text-sm">
+                      <p className="text-neutral-400 text-xs sm:text-sm">
                         Select muscle groups and add exercises to create your perfect workout
                       </p>
                     </div>
                     
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 max-w-sm mx-auto">
                       {Object.entries(muscleGroupMapping).map(([name, config]) => (
-                        <div key={name} className="text-center p-2 sm:p-3 bg-slate-800/40 rounded-lg border border-slate-700/50 hover:border-slate-600/50 transition-all duration-300">
+                        <div key={name} className="text-center p-2 sm:p-3 bg-neutral-900/40 rounded-lg border border-neutral-800/50 hover:border-neutral-700/50 transition-all duration-300">
                           <div className="text-lg sm:text-xl mb-1">{config.icon}</div>
-                          <div className="text-xs sm:text-sm text-slate-300 font-medium">{name}</div>
+                          <div className="text-xs sm:text-sm text-neutral-300 font-medium">{name}</div>
                         </div>
                       ))}
                     </div>
                     
-                    <div className="flex items-center justify-center gap-2 text-sm text-slate-500 bg-slate-800/30 rounded-full px-4 py-2 border border-slate-700/50">
+                    <div className="flex items-center justify-center gap-2 text-sm text-neutral-500 bg-neutral-900/30 rounded-full px-4 py-2 border border-neutral-800/50">
                       <span className="text-base">💪</span>
                       <span className="font-medium">Professional Level</span>
                       <span className="text-base">💪</span>
@@ -895,14 +895,14 @@ Check Your WorkoutSplits page to see your custom split!`);
                     if (!config || exercises.length === 0) return null;
                     
                     return (
-                      <div key={muscleGroup} className="bg-slate-800/40 rounded-xl border border-slate-700/50 overflow-hidden">
-                        <div className={`${config.color} bg-opacity-20 border-b border-slate-700/50 px-3 sm:px-4 py-2 sm:py-3`}>
+                      <div key={muscleGroup} className="bg-neutral-900/40 rounded-xl border border-neutral-800/50 overflow-hidden">
+                        <div className={`${config.color} bg-opacity-20 border-b border-neutral-800/50 px-3 sm:px-4 py-2 sm:py-3`}>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 sm:gap-3">
                               <span className="text-lg sm:text-xl lg:text-2xl">{config.icon}</span>
                               <div>
                                 <h4 className="text-white font-semibold text-sm sm:text-base lg:text-lg">{muscleGroup}</h4>
-                                <p className="text-slate-400 text-xs sm:text-sm">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
+                                <p className="text-neutral-400 text-xs sm:text-sm">{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</p>
                               </div>
                             </div>
                             <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium text-white ${config.color} bg-opacity-80`}>
@@ -921,11 +921,11 @@ Check Your WorkoutSplits page to see your custom split!`);
                                 draggable={true}
                                 onDragStart={(e) => handleDragStart(e, exercise, 'split')}
                                 onDragEnd={handleDragEnd}
-                                className="group p-3 sm:p-4 rounded-lg bg-gradient-to-r from-slate-800/60 via-slate-700/40 to-slate-800/60 border border-slate-600/50 cursor-grab active:cursor-grabbing transition-all duration-300 hover:from-slate-700/70 hover:via-slate-600/50 hover:to-slate-700/70 hover:border-slate-500/70 hover:shadow-lg select-none transform hover:scale-[1.005] sm:hover:scale-[1.01] active:scale-[0.995] sm:active:scale-[0.99]"
+                                className="group p-3 sm:p-4 rounded-lg bg-gradient-to-r from-neutral-900/60 via-neutral-800/40 to-neutral-900/60 border border-neutral-700/50 cursor-grab active:cursor-grabbing transition-all duration-300 hover:from-neutral-800/70 hover:via-neutral-700/50 hover:to-neutral-800/70 hover:border-neutral-500/70 hover:shadow-lg select-none transform hover:scale-[1.005] sm:hover:scale-[1.01] active:scale-[0.995] sm:active:scale-[0.99]"
                               >
                                 <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
                                   <div className="flex-shrink-0">
-                                    <span className={`text-white font-bold text-xs sm:text-sm ${config.color} bg-opacity-80 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center border border-slate-600 shadow-sm group-hover:shadow-md transition-all duration-300`}>
+                                    <span className={`text-white font-bold text-xs sm:text-sm ${config.color} bg-opacity-80 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center border border-neutral-700 shadow-sm group-hover:shadow-md transition-all duration-300`}>
                                       {exerciseIndex + 1}
                                     </span>
                                   </div>
@@ -935,13 +935,13 @@ Check Your WorkoutSplits page to see your custom split!`);
                                       <h5 className="font-medium text-white text-sm sm:text-base truncate">
                                         {exercise.name}
                                       </h5>
-                                      <span className="text-xs bg-slate-700/60 text-slate-300 px-2 py-1 rounded-md border border-slate-600 self-start sm:self-auto">
+                                      <span className="text-xs bg-neutral-800/60 text-neutral-300 px-2 py-1 rounded-md border border-neutral-700 self-start sm:self-auto">
                                         ✓ In Split
                                       </span>
                                     </div>
                                     
-                                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-400">
-                                      <span className="flex items-center gap-1 bg-slate-700/40 px-2 py-1 rounded border border-slate-600">
+                                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-400">
+                                      <span className="flex items-center gap-1 bg-neutral-800/40 px-2 py-1 rounded border border-neutral-700">
                                         <span>🏋️</span>
                                         <span className="font-medium">{exercise.sets}</span>
                                       </span>
@@ -962,14 +962,14 @@ Check Your WorkoutSplits page to see your custom split!`);
                                       <button
                                         onClick={() => moveUp(globalIndex)}
                                         disabled={globalIndex === 0}
-                                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-slate-600/50 transition-all duration-200 active:scale-95"
+                                        className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-neutral-700/50 transition-all duration-200 active:scale-95"
                                       >
                                         <ChevronUp className="w-3 h-3" />
                                       </button>
                                       <button
                                         onClick={() => moveDown(globalIndex)}
                                         disabled={globalIndex === getCurrentDayExercises().length - 1}
-                                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-slate-600/50 transition-all duration-200 active:scale-95"
+                                        className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded hover:bg-neutral-700/50 transition-all duration-200 active:scale-95"
                                       >
                                         <ChevronDown className="w-3 h-3" />
                                       </button>
@@ -981,7 +981,7 @@ Check Your WorkoutSplits page to see your custom split!`);
                                     >
                                       ×
                                     </button>
-                                    <div className="text-slate-500 text-base sm:text-lg cursor-grab hidden sm:block">
+                                    <div className="text-neutral-500 text-base sm:text-lg cursor-grab hidden sm:block">
                                       ⋮⋮
                                     </div>
                                   </div>

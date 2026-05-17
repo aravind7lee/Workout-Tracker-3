@@ -164,10 +164,10 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'timing': return 'text-purple-600 dark:text-purple-400';
-      case 'macro': return 'text-blue-600 dark:text-blue-400';
-      case 'calories': return 'text-green-600 dark:text-green-400';
-      case 'hydration': return 'text-cyan-600 dark:text-cyan-400';
+      case 'timing': return 'text-red-800 dark:text-red-600';
+      case 'macro': return 'text-red-700 dark:text-red-500';
+      case 'calories': return 'text-green-600 dark:text-red-500';
+      case 'hydration': return 'text-red-700 dark:text-red-500';
       case 'goal': return 'text-orange-600 dark:text-orange-400';
       default: return 'text-gray-600 dark:text-gray-400';
     }
@@ -179,7 +179,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-indigo-600 rounded-xl flex items-center justify-center">
               <span className="text-white text-lg">🧠</span>
             </div>
             <div>
@@ -193,7 +193,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
           </div>
           <button
             onClick={() => setShowRecommendations(!showRecommendations)}
-            className="px-3 py-1.5 text-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-500/20 transition-all"
+            className="px-3 py-1.5 text-sm bg-red-600/10 text-red-700 dark:text-red-500 rounded-lg hover:bg-red-600/20 transition-all"
           >
             {showRecommendations ? 'Hide' : 'Show'} Tips
           </button>
@@ -209,19 +209,19 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
           <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Calories Left</div>
         </div>
         <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-          <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-lg font-bold text-red-700 dark:text-red-500">
             {Math.round(analytics.proteinDeficit)}g
           </div>
           <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Protein Needed</div>
         </div>
         <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-          <div className="text-lg font-bold text-cyan-600 dark:text-cyan-400">
+          <div className="text-lg font-bold text-red-700 dark:text-red-500">
             {Math.round((analytics.estimatedHydration / analytics.hydrationGoal) * 100)}%
           </div>
           <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Hydration</div>
         </div>
         <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg">
-          <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
+          <div className="text-lg font-bold text-red-800 dark:text-red-600">
             {analytics.hoursSinceLastMeal > 24 ? '24+' : analytics.hoursSinceLastMeal}h
           </div>
           <div className="text-xs text-light-text-muted dark:text-dark-text-muted">Since Last Meal</div>
@@ -273,7 +273,7 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
             
             {recommendations.length > 3 && (
               <div className="text-center">
-                <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                <button className="text-sm text-red-700 dark:text-red-500 hover:underline">
                   View {recommendations.length - 3} more recommendations
                 </button>
               </div>

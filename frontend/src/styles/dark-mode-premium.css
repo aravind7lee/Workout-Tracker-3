@@ -3,14 +3,14 @@
 
 /* ===== DEEP SLATE DARK MODE VARIABLES ===== */
 .dark {
-  --dark-bg-primary: #0f172a !important;
-  --dark-bg-secondary: #1e293b !important;
-  --dark-bg-tertiary: #334155 !important;
+  --dark-bg-primary: #000000 !important;
+  --dark-bg-secondary: #0D0D0D !important;
+  --dark-bg-tertiary: #1A1A1A !important;
   --dark-text-primary: #f8fafc !important;
   --dark-text-secondary: #cbd5e1 !important;
   --dark-text-muted: #94a3b8 !important;
-  --dark-accent: #06b6d4 !important;
-  --dark-accent-glow: rgba(6, 182, 212, 0.3) !important;
+  --dark-accent: #FF0000 !important;
+  --dark-accent-glow: rgba(255, 0, 0, 0.3) !important;
   --dark-border: #475569 !important;
   --dark-shadow: rgba(0, 0, 0, 0.5) !important;
 }
@@ -20,13 +20,13 @@
 .dark .bg-white,
 .dark .bg-gray-50,
 .dark .bg-gray-100 {
-  background: #1e293b !important;
+  background: #0D0D0D !important;
   border: 1px solid #475569 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .dark .bg-gray-200 {
-  background: #334155 !important;
+  background: #1A1A1A !important;
 }
 
 /* ===== ENHANCED TEXT CONTRAST ===== */
@@ -49,7 +49,7 @@
 /* ===== PREMIUM BUTTONS ===== */
 .dark .btn,
 .dark button {
-  background: #334155 !important;
+  background: #1A1A1A !important;
   border: 1px solid #475569 !important;
   color: #cbd5e1 !important;
   transition: all 0.2s ease !important;
@@ -57,8 +57,8 @@
 
 .dark .btn:hover,
 .dark button:hover {
-  background: #06b6d4 !important;
-  border-color: #06b6d4 !important;
+  background: #FF0000 !important;
+  border-color: #FF0000 !important;
   color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   transform: translateY(-1px) !important;
@@ -67,7 +67,7 @@
 .dark .btn-primary,
 .dark .bg-blue-600,
 .dark .bg-blue-500 {
-  background: #06b6d4 !important;
+  background: #FF0000 !important;
   border: none !important;
   color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
@@ -76,7 +76,7 @@
 .dark .btn-primary:hover,
 .dark .bg-blue-600:hover,
 .dark .bg-blue-500:hover {
-  background: #0891b2 !important;
+  background: #8B0000 !important;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -84,7 +84,7 @@
 .dark input,
 .dark textarea,
 .dark select {
-  background: #334155 !important;
+  background: #1A1A1A !important;
   border: 1px solid #475569 !important;
   color: #cbd5e1 !important;
 }
@@ -92,9 +92,9 @@
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #06b6d4 !important;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
-  background: #1e293b !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2) !important;
+  background: #0D0D0D !important;
 }
 
 .dark input::placeholder,
@@ -111,7 +111,7 @@
 
 .dark .border-blue-500,
 .dark .border-blue-600 {
-  border-color: #06b6d4 !important;
+  border-color: #FF0000 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -145,15 +145,15 @@
 .dark .chip,
 .dark .badge,
 .dark .pill {
-  background: rgba(6, 182, 212, 0.1) !important;
-  border: 1px solid rgba(6, 182, 212, 0.3) !important;
-  color: #06b6d4 !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+  color: #FF0000 !important;
 }
 
 .dark .chip:hover,
 .dark .badge:hover,
 .dark .pill:hover {
-  background: rgba(6, 182, 212, 0.2) !important;
+  background: rgba(255, 0, 0, 0.2) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -166,14 +166,14 @@
 
 .dark .modal,
 .dark .dialog {
-  background: #1e293b !important;
+  background: #0D0D0D !important;
   border: 1px solid #475569 !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* ===== TOOLTIPS ===== */
 .dark .tooltip {
-  background: #334155 !important;
+  background: #1A1A1A !important;
   border: 1px solid #475569 !important;
   color: #f8fafc !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
@@ -184,7 +184,7 @@
 .dark .bg-green-500,
 .dark .bg-blue-500,
 .dark .bg-purple-500 {
-  background: #06b6d4 !important;
+  background: #FF0000 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -200,30 +200,30 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #06b6d4;
+  background: #FF0000;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #0891b2;
+  background: #8B0000;
 }
 
 /* ===== SELECTION ===== */
 .dark ::selection {
-  background: rgba(6, 182, 212, 0.3) !important;
+  background: rgba(255, 0, 0, 0.3) !important;
   color: #f8fafc !important;
 }
 
 /* ===== FOCUS STATES ===== */
 .dark *:focus-visible {
-  outline: 2px solid #06b6d4 !important;
+  outline: 2px solid #FF0000 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* ===== HOVER EFFECTS ===== */
 .dark .hover-glow:hover {
-  box-shadow: 0 0 20px var(--dark-accent-glow), 0 0 40px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 20px var(--dark-accent-glow), 0 0 40px rgba(255, 0, 0, 0.2) !important;
 }
 
 .dark .hover-lift:hover {
@@ -233,7 +233,7 @@
 
 /* ===== PARTICLE EFFECTS ===== */
 .dark .particle-bg::before {
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
   animation: pulse-glow 3s ease-in-out infinite alternate;
 }
 
@@ -248,7 +248,7 @@
 }
 
 .dark .brand-text {
-  background: linear-gradient(135deg, var(--dark-accent), #8b5cf6);
+  background: linear-gradient(135deg, var(--dark-accent), #8B0000);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

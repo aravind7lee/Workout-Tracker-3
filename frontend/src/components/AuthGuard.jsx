@@ -16,8 +16,8 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">Checking authentication...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-neutral-400">Checking authentication...</p>
         </motion.div>
       </div>
     );
@@ -45,24 +45,24 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
             Login Required for Real-Time Tracking
           </h2>
           
-          <p className="text-slate-400 mb-6 leading-relaxed">
+          <p className="text-neutral-400 mb-6 leading-relaxed">
             To track your workouts, meals, and progress in real-time across all devices, 
             please log in to your GymTracker account.
           </p>
           
-          <div className="bg-slate-800/50 rounded-lg p-4 mb-6">
+          <div className="bg-neutral-900/50 rounded-lg p-4 mb-6">
             <h3 className="text-white font-semibold mb-3">🏋️ Professional Features Available After Login:</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-neutral-300">
               <div className="flex items-center gap-2">
-                <span className="text-blue-400">📊</span>
+                <span className="text-red-500">📊</span>
                 Real-time progress tracking
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-green-400">🍽️</span>
+                <span className="text-red-500">🍽️</span>
                 Nutrition logging & analytics
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-purple-400">📋</span>
+                <span className="text-red-600">📋</span>
                 Custom workout plans
               </div>
               <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
                 Achievement system
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-cyan-400">☁️</span>
+                <span className="text-red-500">☁️</span>
                 Cross-device synchronization
               </div>
               <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
                 console.log('Navigating to login...');
                 navigate('/login', { replace: true });
               }}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+              className="btn bg-red-700 hover:bg-blue-700 text-white px-6 py-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -106,30 +106,30 @@ const AuthGuard = ({ children, showLoginPrompt = true }) => {
             </motion.button>
           </div>
           
-          <p className="text-xs text-slate-500 mt-4">
+          <p className="text-xs text-neutral-500 mt-4">
             Your data will be securely stored and synced across all your devices
           </p>
           
-          <div className="mt-6 pt-4 border-t border-slate-700">
-            <p className="text-sm text-slate-400 mb-3">Or continue browsing:</p>
+          <div className="mt-6 pt-4 border-t border-neutral-800">
+            <p className="text-sm text-neutral-400 mb-3">Or continue browsing:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               <button
                 onClick={() => navigate('/', { replace: true })}
-                className="text-blue-400 hover:text-blue-300 text-sm underline"
+                className="text-red-500 hover:text-blue-300 text-sm underline"
               >
                 Home
               </button>
-              <span className="text-slate-600">•</span>
+              <span className="text-neutral-700">•</span>
               <button
                 onClick={() => navigate('/library', { replace: true })}
-                className="text-blue-400 hover:text-blue-300 text-sm underline"
+                className="text-red-500 hover:text-blue-300 text-sm underline"
               >
                 Exercise Library
               </button>
-              <span className="text-slate-600">•</span>
+              <span className="text-neutral-700">•</span>
               <button
                 onClick={() => navigate('/dashboard', { replace: true })}
-                className="text-blue-400 hover:text-blue-300 text-sm underline"
+                className="text-red-500 hover:text-blue-300 text-sm underline"
               >
                 Dashboard
               </button>

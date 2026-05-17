@@ -134,9 +134,9 @@ export default function WorkoutsComplete() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <div>Loading...</div>
         </div>
       </div>
@@ -144,7 +144,7 @@ export default function WorkoutsComplete() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-black">
       {/* Premium Hero Section */}
       <motion.div 
         className="relative w-full h-screen min-h-screen overflow-hidden"
@@ -157,7 +157,7 @@ export default function WorkoutsComplete() {
         {!imageLoaded && !imageError ? (
           // Skeleton loader
           <motion.div 
-            className="w-full h-full bg-gradient-to-br from-slate-800/50 to-slate-700/50 relative overflow-hidden"
+            className="w-full h-full bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 relative overflow-hidden"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
@@ -167,7 +167,7 @@ export default function WorkoutsComplete() {
         ) : imageError || !YourWorkoutsImg ? (
           // Fallback content if image fails or not available
           <motion.div 
-            className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+            className="w-full h-full bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -188,7 +188,7 @@ export default function WorkoutsComplete() {
             <motion.img
               src={YourWorkoutsImg}
               alt="Your Workouts - Professional gym training background"
-              className="w-full h-full object-cover sm:object-contain bg-slate-900"
+              className="w-full h-full object-cover sm:object-contain bg-black"
               style={{
                 objectPosition: window.innerWidth <= 640 ? '65% center' : 'center center'
               }}
@@ -247,7 +247,7 @@ export default function WorkoutsComplete() {
                 >
                   <motion.button
                     onClick={() => navigate('/library')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg transition-all duration-200"
+                    className="bg-red-700 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -255,7 +255,7 @@ export default function WorkoutsComplete() {
                   </motion.button>
                   <motion.button
                     onClick={() => window.location.reload()}
-                    className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-sm shadow-lg transition-all duration-200"
+                    className="bg-neutral-700 hover:bg-neutral-800 text-white px-3 py-2 rounded-lg text-sm shadow-lg transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -271,7 +271,7 @@ export default function WorkoutsComplete() {
                   transition={{ duration: 0.6, delay: 0.7 }}
                 >
                   <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
-                    <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-red-500 animate-pulse' : 'bg-red-400'}`}></div>
                     <span className="text-xs font-bold text-white">{isOnline ? 'LIVE' : 'OFFLINE'}</span>
                   </div>
                   <div className="text-xs text-white/80 font-mono bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
@@ -287,24 +287,24 @@ export default function WorkoutsComplete() {
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-blue-400">{stats?.todayWorkouts || 0}</div>
+                    <div className="text-lg font-black text-red-500">{stats?.todayWorkouts || 0}</div>
                     <div className="text-xs text-white/80">Today</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-green-400">{stats?.totalWorkouts || 0}</div>
+                    <div className="text-lg font-black text-red-500">{stats?.totalWorkouts || 0}</div>
                     <div className="text-xs text-white/80">Total</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
-                    <div className="text-lg font-black text-purple-400">{stats?.weeklyWorkouts || 0}</div>
+                    <div className="text-lg font-black text-red-600">{stats?.weeklyWorkouts || 0}</div>
                     <div className="text-xs text-white/80">Week</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
                   </div>
                   <div className="bg-black/30 backdrop-blur-sm rounded-lg p-2 relative">
                     <div className="text-lg font-black text-orange-400">{stats?.totalCalories || 0}</div>
                     <div className="text-xs text-white/80">Calories</div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="absolute top-1 right-1 w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
                   </div>
                 </motion.div>
               </motion.div>

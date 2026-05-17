@@ -77,7 +77,7 @@ export default function NutritionHero() {
         />
         
         {imageError && (
-          <div className="w-full h-full bg-gradient-to-br from-green-600 via-blue-600 to-purple-600 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-green-600 via-red-700 to-red-800 flex items-center justify-center">
             <div className="text-white text-6xl">🥗</div>
           </div>
         )}

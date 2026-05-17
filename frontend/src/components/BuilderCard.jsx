@@ -24,8 +24,8 @@ const BuilderCard = ({ builder, index }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-200 ${
-          isClassicLegend ? 'border-yellow-500/20' : 'border-blue-500/20'
+      <div className={`relative bg-gradient-to-br from-black/90 to-neutral-900/90 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-200 ${
+          isClassicLegend ? 'border-yellow-500/20' : 'border-red-600/20'
         }`}>
         {/* Image Strip */}
         <div className="relative">
@@ -53,12 +53,12 @@ const BuilderCard = ({ builder, index }) => {
             <div className={`relative p-4 rounded-xl ${
               isClassicLegend 
                 ? 'bg-yellow-500/10 border border-yellow-500/20' 
-                : 'bg-blue-500/10 border border-blue-500/20'
+                : 'bg-red-600/10 border border-red-600/20'
             }`}>
               <Quote 
                 size={16} 
                 className={`absolute top-2 left-2 ${
-                  isClassicLegend ? 'text-yellow-400' : 'text-blue-400'
+                  isClassicLegend ? 'text-yellow-400' : 'text-red-500'
                 }`} 
               />
               <blockquote className={`text-sm font-medium leading-relaxed pl-6 ${

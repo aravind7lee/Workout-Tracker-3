@@ -242,7 +242,7 @@ export default function MyPlans() {
       
       <div id="plans-content" className="px-2.5 xs:px-3 sm:px-4 md:px-6 lg:px-8 py-3 xs:py-4 sm:py-5 md:py-6 space-y-2.5 xs:space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
         {/* Compact Mobile Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700/50 rounded-lg p-2.5 xs:p-3 sm:p-4 md:p-5 lg:p-6 relative overflow-hidden group">
+        <div className="bg-gradient-to-r from-black via-neutral-900 to-black border border-neutral-800/50 rounded-lg p-2.5 xs:p-3 sm:p-4 md:p-5 lg:p-6 relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
           <div className="space-y-3">
@@ -257,36 +257,36 @@ export default function MyPlans() {
                   <h2 className="text-[11px] xs:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-white uppercase tracking-wide leading-none">
                     My Workout Plans
                   </h2>
-                  <p className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-slate-400 font-medium uppercase tracking-wider mt-0.5">Professional Gym Tracking</p>
+                  <p className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-neutral-400 font-medium uppercase tracking-wider mt-0.5">Professional Gym Tracking</p>
                 </div>
               </div>
               
               <button
                 onClick={syncPlansWithBackend}
                 disabled={syncStatus === 'syncing'}
-                className="p-1.5 xs:p-2 sm:p-2.5 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white rounded-md text-[10px] xs:text-xs sm:text-sm transition-all duration-200 active:scale-95 border border-slate-600/30 shadow-lg"
+                className="p-1.5 xs:p-2 sm:p-2.5 bg-neutral-800/50 hover:bg-neutral-700/60 text-neutral-300 hover:text-white rounded-md text-[10px] xs:text-xs sm:text-sm transition-all duration-200 active:scale-95 border border-neutral-700/30 shadow-lg"
               >
                 🔄
               </button>
             </div>
             
             {/* Compact Status Bar */}
-            <div className="flex items-center justify-between bg-slate-800/50 rounded-lg p-2 xs:p-2.5 sm:p-3 border border-slate-600/50 relative z-10 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="flex items-center justify-between bg-neutral-900/50 rounded-lg p-2 xs:p-2.5 sm:p-3 border border-neutral-700/50 relative z-10 overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600/5 via-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 relative z-10">
                 <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
                   <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-black text-green-300 uppercase tracking-wider">REAL-TIME</span>
                 </div>
                 
                 <div className="flex items-center gap-2 xs:gap-3 sm:gap-4">
                   <div className="text-center">
                     <div className="text-[11px] xs:text-xs sm:text-sm md:text-base lg:text-lg font-black text-white leading-none">{realTimeStats.totalPlans}</div>
-                    <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-slate-400 font-medium uppercase tracking-wide mt-0.5">Total<span className="hidden xs:inline"> Plans</span></div>
+                    <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-neutral-400 font-medium uppercase tracking-wide mt-0.5">Total<span className="hidden xs:inline"> Plans</span></div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[11px] xs:text-xs sm:text-sm md:text-base lg:text-lg font-black text-green-400 leading-none">{realTimeStats.syncedPlans || 0}</div>
-                    <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-slate-400 font-medium uppercase tracking-wide mt-0.5">Synced</div>
+                    <div className="text-[11px] xs:text-xs sm:text-sm md:text-base lg:text-lg font-black text-red-500 leading-none">{realTimeStats.syncedPlans || 0}</div>
+                    <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-neutral-400 font-medium uppercase tracking-wide mt-0.5">Synced</div>
                   </div>
                 </div>
               </div>
@@ -318,16 +318,16 @@ export default function MyPlans() {
               <input 
                 value={searchQuery} 
                 onChange={e => setSearchQuery(e.target.value)} 
-                className="w-full p-2 xs:p-2.5 sm:p-3 pl-7 xs:pl-8 sm:pl-9 pr-7 xs:pr-8 sm:pr-9 rounded-lg bg-slate-800/60 border border-slate-600/50 hover:border-orange-500/30 focus:border-orange-500/50 text-white placeholder-slate-400 text-[10px] xs:text-xs sm:text-sm md:text-base transition-all duration-200 shadow-lg focus:shadow-orange-500/20 focus:outline-none" 
+                className="w-full p-2 xs:p-2.5 sm:p-3 pl-7 xs:pl-8 sm:pl-9 pr-7 xs:pr-8 sm:pr-9 rounded-lg bg-neutral-900/60 border border-neutral-700/50 hover:border-orange-500/30 focus:border-orange-500/50 text-white placeholder-neutral-400 text-[10px] xs:text-xs sm:text-sm md:text-base transition-all duration-200 shadow-lg focus:shadow-orange-500/20 focus:outline-none" 
                 placeholder="Search your plans..." 
               />
-              <div className="absolute left-2 xs:left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-orange-400 transition-colors duration-200">
+              <div className="absolute left-2 xs:left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 group-hover:text-orange-400 transition-colors duration-200">
                 <span className="text-xs xs:text-sm sm:text-base">🔍</span>
               </div>
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 xs:right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-red-400 text-[10px] xs:text-xs sm:text-sm p-1 transition-all duration-200 active:scale-90 font-bold"
+                  className="absolute right-2 xs:right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-red-400 text-[10px] xs:text-xs sm:text-sm p-1 transition-all duration-200 active:scale-90 font-bold"
                 >
                   ✕
                 </button>
@@ -337,19 +337,19 @@ export default function MyPlans() {
         )}
 
         {searchQuery && filteredPlans.length === 0 && savedPlans.length > 0 ? (
-          <div className="bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 border border-slate-700/50 rounded-2xl p-6 xs:p-8 sm:p-10 md:p-12 text-center shadow-2xl backdrop-blur-sm relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-neutral-900/60 via-neutral-900/40 to-black/60 border border-neutral-800/50 rounded-2xl p-6 xs:p-8 sm:p-10 md:p-12 text-center shadow-2xl backdrop-blur-sm relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 xs:mb-5 sm:mb-6 shadow-lg shadow-orange-500/30 relative z-10">
               <span className="text-3xl xs:text-4xl sm:text-5xl">🔍</span>
             </div>
             <h3 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 xs:mb-3 uppercase tracking-wide leading-none relative z-10">No Plans Found</h3>
-            <p className="text-slate-400 mb-6 xs:mb-8 max-w-md mx-auto text-[10px] xs:text-xs sm:text-sm md:text-base font-medium relative z-10">
+            <p className="text-neutral-400 mb-6 xs:mb-8 max-w-md mx-auto text-[10px] xs:text-xs sm:text-sm md:text-base font-medium relative z-10">
               No plans match "{searchQuery}". Try a different search term or create a new plan.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 xs:gap-3 justify-center relative z-10">
               <button
                 onClick={() => setSearchQuery('')}
-                className="px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-slate-700/50 hover:bg-slate-600/60 border border-slate-600/50 text-slate-300 hover:text-white rounded-xl font-black text-[10px] xs:text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 xs:gap-2 uppercase tracking-wide active:scale-95 shadow-lg"
+                className="px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-neutral-800/50 hover:bg-neutral-700/60 border border-neutral-700/50 text-neutral-300 hover:text-white rounded-xl font-black text-[10px] xs:text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 xs:gap-2 uppercase tracking-wide active:scale-95 shadow-lg"
               >
                 <span>✕</span>
                 <span>Clear Search</span>
@@ -365,7 +365,7 @@ export default function MyPlans() {
             </div>
           </div>
         ) : savedPlans.length === 0 ? (
-          <div className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-4 xs:p-5 sm:p-6 text-center relative overflow-hidden group">
+          <div className="bg-neutral-900/60 border border-neutral-800/50 rounded-lg p-4 xs:p-5 sm:p-6 text-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-3 xs:mb-4 shadow-lg shadow-orange-500/30 relative z-10">
               <span className="text-xl xs:text-2xl sm:text-3xl">{user ? '💪' : '🔒'}</span>
@@ -373,7 +373,7 @@ export default function MyPlans() {
             <h3 className="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white mb-2 uppercase tracking-wide leading-none relative z-10">
               {user ? 'Ready to Start Training?' : 'Login Required'}
             </h3>
-            <p className="text-slate-400 mb-3 xs:mb-4 text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-medium relative z-10">
+            <p className="text-neutral-400 mb-3 xs:mb-4 text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-medium relative z-10">
               {user 
                 ? 'Create your first professional workout plan and start your fitness journey.' 
                 : 'Please login to access your personal workout plans.'
@@ -391,7 +391,7 @@ export default function MyPlans() {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 xs:gap-2 px-3 xs:px-4 sm:px-5 py-1.5 xs:py-2 sm:py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-black text-[9px] xs:text-[10px] sm:text-xs md:text-sm uppercase tracking-wide transition-all duration-200 active:scale-95 shadow-lg relative z-10"
+                className="inline-flex items-center gap-1.5 xs:gap-2 px-3 xs:px-4 sm:px-5 py-1.5 xs:py-2 sm:py-2.5 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-purple-700 text-white rounded-lg font-black text-[9px] xs:text-[10px] sm:text-xs md:text-sm uppercase tracking-wide transition-all duration-200 active:scale-95 shadow-lg relative z-10"
               >
                 <span className="relative z-10">🔑</span>
                 <span className="relative z-10">Login to View Plans</span>
@@ -401,7 +401,7 @@ export default function MyPlans() {
         ) : (
           <div className="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 xs:gap-3 sm:gap-3.5 md:gap-4">
             {filteredPlans.map((plan) => (
-              <div key={plan.id} className="bg-slate-800/60 border border-slate-700/50 hover:border-orange-500/50 rounded-lg p-2.5 xs:p-3 sm:p-3.5 md:p-4 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 relative overflow-hidden group">
+              <div key={plan.id} className="bg-neutral-900/60 border border-neutral-800/50 hover:border-orange-500/50 rounded-lg p-2.5 xs:p-3 sm:p-3.5 md:p-4 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 {/* Compact Status Badge */}
                 <div className="flex items-center justify-between mb-2 xs:mb-2.5 relative z-10">
@@ -414,13 +414,13 @@ export default function MyPlans() {
                   <div className="flex items-center gap-0.5 xs:gap-1">
                     <button
                       onClick={() => duplicatePlan(plan)}
-                      className="p-1 xs:p-1.5 text-slate-400 hover:text-blue-300 rounded transition-all duration-200 active:scale-90 hover:bg-blue-500/10"
+                      className="p-1 xs:p-1.5 text-neutral-400 hover:text-blue-300 rounded transition-all duration-200 active:scale-90 hover:bg-red-600/10"
                     >
                       <span className="text-xs xs:text-sm sm:text-base">📋</span>
                     </button>
                     <button
                       onClick={() => deletePlan(plan.id)}
-                      className="p-1 xs:p-1.5 text-slate-400 hover:text-red-300 rounded transition-all duration-200 active:scale-90 hover:bg-red-500/10"
+                      className="p-1 xs:p-1.5 text-neutral-400 hover:text-red-300 rounded transition-all duration-200 active:scale-90 hover:bg-red-500/10"
                     >
                       <span className="text-xs xs:text-sm sm:text-base">🗑️</span>
                     </button>
@@ -433,33 +433,33 @@ export default function MyPlans() {
                     {plan.name}
                   </h3>
                   <div className="flex items-center gap-1.5 xs:gap-2 text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-medium">
-                    <span className="text-slate-300">
+                    <span className="text-neutral-300">
                       {plan.exercises.length} <span className="hidden xs:inline">exercises</span><span className="xs:hidden">ex</span>
                     </span>
-                    <span className="text-slate-500">•</span>
+                    <span className="text-neutral-500">•</span>
                     <span className="text-orange-400 font-bold uppercase tracking-wide">{plan.category || 'General'}</span>
-                    <span className="text-slate-500">•</span>
-                    <span className="text-slate-400">📋</span>
+                    <span className="text-neutral-500">•</span>
+                    <span className="text-neutral-400">📋</span>
                   </div>
                 </div>
 
                 {/* Compact Exercise List */}
                 <div className="space-y-1.5 xs:space-y-2 mb-2.5 xs:mb-3 relative z-10">
                   {(expandedPlans[plan.id] ? plan.exercises : plan.exercises.slice(0, 2)).map((exercise, index) => (
-                    <div key={index} className="flex items-center gap-1.5 xs:gap-2 p-1.5 xs:p-2 sm:p-2.5 bg-slate-800/40 border border-slate-700/30 hover:border-orange-500/30 rounded transition-all duration-200 group/exercise">
+                    <div key={index} className="flex items-center gap-1.5 xs:gap-2 p-1.5 xs:p-2 sm:p-2.5 bg-neutral-900/40 border border-neutral-800/30 hover:border-orange-500/30 rounded transition-all duration-200 group/exercise">
                       <div className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-orange-500 to-red-600 rounded flex items-center justify-center text-white font-black text-[8px] xs:text-[9px] sm:text-[10px] shadow-lg shadow-orange-500/20 group-hover/exercise:scale-110 transition-transform duration-200">
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-white font-black text-[9px] xs:text-[10px] sm:text-xs md:text-sm truncate uppercase tracking-wide leading-none">{exercise.name}</div>
-                        <div className="text-slate-400 text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-medium mt-0.5">{exercise.sets}</div>
+                        <div className="text-neutral-400 text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-medium mt-0.5">{exercise.sets}</div>
                       </div>
                     </div>
                   ))}
                   {plan.exercises.length > 2 && (
                     <button
                       onClick={() => setExpandedPlans(prev => ({ ...prev, [plan.id]: !prev[plan.id] }))}
-                      className="w-full text-center py-1.5 xs:py-2 hover:bg-slate-700/30 rounded transition-all duration-200 active:scale-95"
+                      className="w-full text-center py-1.5 xs:py-2 hover:bg-neutral-800/30 rounded transition-all duration-200 active:scale-95"
                     >
                       <span className="text-[9px] xs:text-[10px] sm:text-xs text-orange-400 font-black uppercase tracking-wide">
                         {expandedPlans[plan.id] ? '▲ Show Less' : `+${plan.exercises.length - 2} more`}
@@ -469,7 +469,7 @@ export default function MyPlans() {
                 </div>
 
                 {/* Compact Meta Info */}
-                <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs text-slate-400 mb-2.5 xs:mb-3 p-1.5 xs:p-2 sm:p-2.5 bg-slate-800/30 border border-slate-700/30 rounded font-medium relative z-10">
+                <div className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs text-neutral-400 mb-2.5 xs:mb-3 p-1.5 xs:p-2 sm:p-2.5 bg-neutral-900/30 border border-neutral-800/30 rounded font-medium relative z-10">
                   <div className="flex items-center gap-1 mb-0.5 xs:mb-1">
                     <span>📅</span>
                     <span><span className="hidden xs:inline">Created: </span>{new Date(plan.createdAt).toLocaleDateString()}</span>
@@ -487,7 +487,7 @@ export default function MyPlans() {
                   <Link
                     to="/start-workout"
                     state={{ workoutPlan: plan }}
-                    className="w-full px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 bg-slate-700/50 hover:bg-slate-600/60 text-slate-300 hover:text-white rounded text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-black text-center flex items-center justify-center gap-1 xs:gap-1.5 uppercase tracking-wide transition-all duration-200 active:scale-95 border border-slate-600/30 shadow-lg"
+                    className="w-full px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 bg-neutral-800/50 hover:bg-neutral-700/60 text-neutral-300 hover:text-white rounded text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-black text-center flex items-center justify-center gap-1 xs:gap-1.5 uppercase tracking-wide transition-all duration-200 active:scale-95 border border-neutral-700/30 shadow-lg"
                   >
                     <span className="text-xs xs:text-sm sm:text-base">🏋️</span>
                     <span>Start Workout</span>

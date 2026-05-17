@@ -116,7 +116,7 @@ export default function ExerciseDetail() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function ExerciseDetail() {
         </h2>
         <button
           onClick={() => navigate('/library')}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-blue-700"
         >
           Back to Library
         </button>
@@ -181,7 +181,7 @@ export default function ExerciseDetail() {
               </span>
             </div>
           </div>
-          <button className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="flex items-center px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors">
             <PlayIcon className="h-5 w-5 mr-2" />
             Start Exercise
           </button>
@@ -194,7 +194,7 @@ export default function ExerciseDetail() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600 mb-1">{exercise.duration}</div>
+            <div className="text-2xl font-bold text-red-700 mb-1">{exercise.duration}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Duration</div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -202,7 +202,7 @@ export default function ExerciseDetail() {
             <div className="text-sm text-gray-600 dark:text-gray-400">Calories</div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600 mb-1">{exercise.equipment}</div>
+            <div className="text-2xl font-bold text-red-800 mb-1">{exercise.equipment}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Equipment</div>
           </div>
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -221,7 +221,7 @@ export default function ExerciseDetail() {
           <ol className="space-y-3">
             {exercise.instructions.map((instruction, index) => (
               <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3">
+                <span className="flex-shrink-0 w-6 h-6 bg-red-700 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3">
                   {index + 1}
                 </span>
                 <span className="text-gray-600 dark:text-gray-400">{instruction}</span>
@@ -239,7 +239,7 @@ export default function ExerciseDetail() {
             <ul className="space-y-2">
               {exercise.tips.map((tip, index) => (
                 <li key={index} className="flex items-start">
-                  <span className="text-green-500 mr-2">•</span>
+                  <span className="text-red-600 mr-2">•</span>
                   <span className="text-gray-600 dark:text-gray-400">{tip}</span>
                 </li>
               ))}

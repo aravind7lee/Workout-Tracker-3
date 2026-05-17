@@ -212,24 +212,24 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
             >
               <form onSubmit={handleSubmit}>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 z-10" size={16} />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 z-10" size={16} />
                   <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search all foods, workouts, plans..."
-                    className="w-full pl-10 pr-10 py-2 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full pl-10 pr-10 py-2 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/50 rounded-xl text-white placeholder-neutral-400 focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20"
                     autoFocus
                   />
                   {isSearching && (
                     <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                      <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                      <div className="animate-spin w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full"></div>
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-white"
                   >
                     <X size={16} />
                   </button>
@@ -243,39 +243,39 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-slate-800/95 backdrop-blur-xl border border-slate-600/50 rounded-xl shadow-2xl py-2 max-h-80 overflow-y-auto z-50"
+                    className="absolute top-full left-0 right-0 mt-2 bg-neutral-900/95 backdrop-blur-xl border border-neutral-700/50 rounded-xl shadow-2xl py-2 max-h-80 overflow-y-auto z-50"
                   >
                     {results.length > 0 ? (
                       <>
-                        <div className="px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-400 border-b border-slate-600/50">
+                        <div className="px-4 py-2 text-xs font-medium uppercase tracking-wide text-neutral-400 border-b border-neutral-700/50">
                           Results ({results.length})
                         </div>
                         {results.map((result) => (
                           <button
                             key={result.id}
                             onClick={() => handleResultClick(result)}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-700/50 transition-colors"
+                            className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-neutral-800/50 transition-colors"
                           >
                             <div className="text-2xl">{result.icon}</div>
                             <div className="flex-1 min-w-0">
                               <div className="font-medium truncate text-white">{result.title}</div>
-                              <div className="text-sm truncate text-slate-400">{result.description}</div>
+                              <div className="text-sm truncate text-neutral-400">{result.description}</div>
                             </div>
-                            <div className="text-xs px-2 py-1 rounded-full bg-slate-700/50 text-slate-300 capitalize">
+                            <div className="text-xs px-2 py-1 rounded-full bg-neutral-800/50 text-neutral-300 capitalize">
                               {result.type}
                             </div>
                           </button>
                         ))}
                       </>
                     ) : !isSearching ? (
-                      <div className="px-4 py-8 text-center text-slate-400">
+                      <div className="px-4 py-8 text-center text-neutral-400">
                         <div className="mb-2">No results found</div>
                         <div className="text-sm">Try different keywords</div>
                       </div>
                     ) : (
                       <div className="px-4 py-8 text-center">
-                        <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-                        <div className="text-xs mt-2 text-slate-400">Searching...</div>
+                        <div className="animate-spin w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full mx-auto"></div>
+                        <div className="text-xs mt-2 text-neutral-400">Searching...</div>
                       </div>
                     )}
                   </motion.div>
@@ -287,7 +287,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(true)}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200"
+              className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800/50 rounded-xl transition-all duration-200"
             >
               <Search size={20} />
             </motion.button>
@@ -305,7 +305,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200"
+        className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800/50 rounded-xl transition-all duration-200"
       >
         <Search size={20} />
       </motion.button>
@@ -330,28 +330,28 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '-100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 left-0 right-0 z-50 p-4 bg-slate-900/95 backdrop-blur-xl border-b border-slate-600/50"
+              className="fixed top-0 left-0 right-0 z-50 p-4 bg-black/95 backdrop-blur-xl border-b border-neutral-700/50"
             >
               <form onSubmit={handleSubmit} className="mb-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 z-10" size={18} />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 z-10" size={18} />
                   <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search all foods, workouts, plans..."
-                    className="w-full pl-10 pr-10 py-3 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full pl-10 pr-10 py-3 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/50 rounded-xl text-white placeholder-neutral-400 focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20"
                     autoFocus
                   />
                   {isSearching && (
                     <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                      <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                      <div className="animate-spin w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full"></div>
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-white"
                   >
                     <X size={16} />
                   </button>
@@ -360,25 +360,25 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
               
               {/* Mobile results */}
               {query && (
-                <div className="rounded-xl p-2 max-h-60 overflow-y-auto bg-slate-800/60 backdrop-blur-sm border border-slate-600/50">
+                <div className="rounded-xl p-2 max-h-60 overflow-y-auto bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/50">
                   {results.length > 0 ? (
                     <>
-                      <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2 text-slate-400">
+                      <div className="text-xs font-medium uppercase tracking-wide px-2 py-1 mb-2 text-neutral-400">
                         Results ({results.length})
                       </div>
                       {results.map((result) => (
                         <button
                           key={result.id}
                           onClick={() => handleResultClick(result)}
-                          className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg transition-colors hover:bg-slate-700/50 active:bg-slate-600/50"
+                          className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg transition-colors hover:bg-neutral-800/50 active:bg-neutral-700/50"
                           style={{ minHeight: '48px', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
                         >
                           <div className="text-lg">{result.icon}</div>
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-sm truncate text-white">{result.title}</div>
-                            <div className="text-xs truncate text-slate-400">{result.description}</div>
+                            <div className="text-xs truncate text-neutral-400">{result.description}</div>
                           </div>
-                          <div className="text-xs px-2 py-1 rounded-full bg-slate-700/50 text-slate-300 capitalize">
+                          <div className="text-xs px-2 py-1 rounded-full bg-neutral-800/50 text-neutral-300 capitalize">
                             {result.type}
                           </div>
                         </button>
@@ -386,13 +386,13 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
                     </>
                   ) : !isSearching ? (
                     <div className="px-2 py-4 text-center">
-                      <div className="text-sm text-slate-400">No results found</div>
-                      <div className="text-xs mt-1 text-slate-500">Try different keywords</div>
+                      <div className="text-sm text-neutral-400">No results found</div>
+                      <div className="text-xs mt-1 text-neutral-500">Try different keywords</div>
                     </div>
                   ) : (
                     <div className="px-2 py-4 text-center">
-                      <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-                      <div className="text-xs mt-2 text-slate-400">Searching...</div>
+                      <div className="animate-spin w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full mx-auto"></div>
+                      <div className="text-xs mt-2 text-neutral-400">Searching...</div>
                     </div>
                   )}
                 </div>

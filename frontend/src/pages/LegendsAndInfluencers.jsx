@@ -237,7 +237,7 @@ const LegendsAndInfluencers = () => {
                 <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">Classic Legends</span>
               </div>
               <div className="w-px h-8 bg-gray-600" />
-              <div className="flex items-center space-x-2 text-blue-400">
+              <div className="flex items-center space-x-2 text-red-500">
                 <Globe size={24} />
                 <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">Modern Influencers</span>
               </div>
@@ -308,11 +308,11 @@ const LegendsAndInfluencers = () => {
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <Globe className="text-blue-400" size={32} />
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              <Globe className="text-red-500" size={32} />
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
                 Modern Influencers
               </h2>
-              <Globe className="text-blue-400" size={32} />
+              <Globe className="text-red-500" size={32} />
             </div>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Today's champions inspiring the next generation
@@ -334,7 +334,7 @@ const LegendsAndInfluencers = () => {
           transition={{ duration: 0.8 }}
           className="py-20 text-center"
         >
-          <div className="bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-3xl p-12 border border-slate-700/50">
+          <div className="bg-gradient-to-r from-black/50 to-neutral-900/50 backdrop-blur-sm rounded-3xl p-12 border border-neutral-800/50">
             <motion.div
               initial={{ scale: 0.9 }}
               whileInView={{ scale: 1 }}
@@ -352,7 +352,7 @@ const LegendsAndInfluencers = () => {
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300"
+                  className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-red-600/25 transition-all duration-300"
                 >
                   <Zap size={24} />
                   <span>Start Your Workout Plan</span>

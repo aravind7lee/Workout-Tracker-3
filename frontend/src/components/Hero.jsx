@@ -61,7 +61,7 @@ export default function Hero() {
       <div className="relative w-full h-screen min-h-[100vh] max-h-screen">
         {/* Skeleton Loader */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 animate-pulse">
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-black animate-pulse">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
           </div>
         )}
@@ -234,7 +234,7 @@ export default function Hero() {
         {/* Real-time update indicator */}
         {isAuthenticated?.() && isOnline && (
           <motion.div
-            className="absolute bottom-4 right-4 bg-green-500/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-green-300 border border-green-500/30"
+            className="absolute bottom-4 right-4 bg-red-600/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-green-300 border border-red-600/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}

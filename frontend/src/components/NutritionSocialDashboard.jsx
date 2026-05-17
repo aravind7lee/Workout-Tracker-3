@@ -28,7 +28,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
         description: 'Hit your daily protein target',
         type: 'daily',
         icon: '🏆',
-        color: 'text-blue-600 dark:text-blue-400',
+        color: 'text-red-700 dark:text-red-500',
         bgColor: 'bg-blue-50 dark:bg-blue-900/20'
       });
     }
@@ -41,7 +41,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
         description: 'Nailed your calorie target',
         type: 'daily',
         icon: '🎯',
-        color: 'text-green-600 dark:text-green-400',
+        color: 'text-green-600 dark:text-red-500',
         bgColor: 'bg-green-50 dark:bg-green-900/20'
       });
     }
@@ -54,7 +54,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
         description: 'Had 5+ meals today',
         type: 'daily',
         icon: '📅',
-        color: 'text-purple-600 dark:text-purple-400',
+        color: 'text-red-800 dark:text-red-600',
         bgColor: 'bg-purple-50 dark:bg-purple-900/20'
       });
     }
@@ -144,7 +144,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-purple-200 dark:border-purple-800 shadow-lg">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2.5 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-700 to-pink-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-red-700/30">
               <span className="text-white text-base sm:text-lg md:text-xl">🌟</span>
             </div>
             <div>
@@ -160,7 +160,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
           
           <button
             onClick={() => setShowShareModal(true)}
-            className="relative group overflow-hidden px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs md:text-sm uppercase tracking-wider hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+            className="relative group overflow-hidden px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-red-700 to-pink-600 text-white rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs md:text-sm uppercase tracking-wider hover:from-red-800 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             <span className="relative flex items-center gap-1 sm:gap-1.5 md:gap-2">
@@ -241,7 +241,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
                 <div className="text-sm text-light-text-primary dark:text-dark-text-primary whitespace-pre-line">
                   {shareContent.text}
                 </div>
-                <div className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                <div className="text-xs text-red-700 dark:text-red-500 mt-2">
                   {shareContent.hashtags}
                 </div>
               </div>
@@ -250,7 +250,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => shareToSocial('whatsapp')}
-                  className="flex items-center justify-center gap-2 p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
+                  className="flex items-center justify-center gap-2 p-3 bg-red-600 text-white rounded-lg hover:bg-green-600 transition-all"
                 >
                   <span>💬</span>
                   WhatsApp
@@ -264,7 +264,7 @@ const NutritionSocialDashboard = ({ totals, targets, meals, customCalorieTarget 
                 </button>
                 <button
                   onClick={() => shareToSocial('twitter')}
-                  className="flex items-center justify-center gap-2 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                  className="flex items-center justify-center gap-2 p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all"
                 >
                   <span>🐦</span>
                   Twitter

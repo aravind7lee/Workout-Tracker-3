@@ -42,7 +42,7 @@ export function WatchFormVideoLink({ exerciseName, className = '' }) {
   return (
     <button
       onClick={handleClick}
-      className={`text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1 transition-colors ${className}`}
+      className={`text-xs text-red-500 hover:text-blue-300 underline flex items-center gap-1 transition-colors ${className}`}
       title={`Watch ${exerciseName} form video`}
     >
       <span>\ud83c\udfa5</span>

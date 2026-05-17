@@ -120,14 +120,14 @@ export default function RealTimeProgress({ planId, workoutData, onProgressUpdate
   };
 
   return (
-    <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700">
+    <div className="bg-neutral-900/60 rounded-lg p-4 border border-neutral-800">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white">Real-time Progress</h3>
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${
-            navigator.onLine ? 'bg-green-500' : 'bg-red-500'
+            navigator.onLine ? 'bg-red-600' : 'bg-red-500'
           }`}></div>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-neutral-400">
             {navigator.onLine ? 'Live' : 'Offline'}
           </span>
         </div>
@@ -135,13 +135,13 @@ export default function RealTimeProgress({ planId, workoutData, onProgressUpdate
 
       {/* Progress Bar */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm text-slate-400 mb-2">
+        <div className="flex justify-between text-sm text-neutral-400 mb-2">
           <span>Overall Progress</span>
           <span>{getProgressPercentage()}%</span>
         </div>
-        <div className="w-full bg-slate-700 rounded-full h-2">
+        <div className="w-full bg-neutral-800 rounded-full h-2">
           <div 
-            className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-red-600 to-red-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${getProgressPercentage()}%` }}
           ></div>
         </div>
@@ -149,41 +149,41 @@ export default function RealTimeProgress({ planId, workoutData, onProgressUpdate
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="bg-slate-700/50 rounded-lg p-3">
-          <div className="text-2xl font-bold text-blue-400">
+        <div className="bg-neutral-800/50 rounded-lg p-3">
+          <div className="text-2xl font-bold text-red-500">
             {progress.completedExercises}/{progress.totalExercises}
           </div>
-          <div className="text-xs text-slate-400">Exercises</div>
+          <div className="text-xs text-neutral-400">Exercises</div>
         </div>
         
-        <div className="bg-slate-700/50 rounded-lg p-3">
-          <div className="text-2xl font-bold text-green-400">
+        <div className="bg-neutral-800/50 rounded-lg p-3">
+          <div className="text-2xl font-bold text-red-500">
             {progress.completedSets}/{progress.totalSets}
           </div>
-          <div className="text-xs text-slate-400">Sets</div>
+          <div className="text-xs text-neutral-400">Sets</div>
         </div>
         
-        <div className="bg-slate-700/50 rounded-lg p-3">
-          <div className="text-2xl font-bold text-purple-400">
+        <div className="bg-neutral-800/50 rounded-lg p-3">
+          <div className="text-2xl font-bold text-red-600">
             {formatDuration(progress.duration)}
           </div>
-          <div className="text-xs text-slate-400">Duration</div>
+          <div className="text-xs text-neutral-400">Duration</div>
         </div>
         
-        <div className="bg-slate-700/50 rounded-lg p-3">
+        <div className="bg-neutral-800/50 rounded-lg p-3">
           <div className="text-2xl font-bold text-orange-400">
             {progress.calories}
           </div>
-          <div className="text-xs text-slate-400">Calories</div>
+          <div className="text-xs text-neutral-400">Calories</div>
         </div>
       </div>
 
       {/* Volume */}
-      <div className="bg-slate-700/50 rounded-lg p-3 mb-4">
+      <div className="bg-neutral-800/50 rounded-lg p-3 mb-4">
         <div className="text-xl font-bold text-yellow-400">
           {progress.volume.toLocaleString()} lbs
         </div>
-        <div className="text-xs text-slate-400">Total Volume</div>
+        <div className="text-xs text-neutral-400">Total Volume</div>
       </div>
 
       {/* Tracking Controls */}
@@ -206,7 +206,7 @@ export default function RealTimeProgress({ planId, workoutData, onProgressUpdate
       </div>
 
       {/* Real-time Features Info */}
-      <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+      <div className="mt-4 p-3 bg-blue-900/20 border border-red-600/30 rounded-lg">
         <div className="text-xs text-blue-300 space-y-1">
           <div>✅ Real-time progress sync</div>
           <div>✅ Offline data persistence</div>

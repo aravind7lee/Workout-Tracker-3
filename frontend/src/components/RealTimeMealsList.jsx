@@ -98,7 +98,7 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
           <span>🍽️</span> Today's Meals
         </h3>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
           <span className="text-sm text-light-text-muted dark:text-dark-text-muted">
             {displayMeals.length} meals
           </span>
@@ -140,7 +140,7 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
                     isDeleting 
                       ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800' 
                       : meal.synced === false 
-                      ? 'bg-blue-500/10 dark:bg-blue-500/10 border border-blue-500/30 dark:border-blue-400/30' 
+                      ? 'bg-red-600/10 dark:bg-red-600/10 border border-red-600/30 dark:border-red-500/30' 
                       : 'bg-gray-50 dark:bg-dark-bg-secondary/60 hover:bg-gray-100 dark:hover:bg-dark-bg-secondary/80 border border-gray-200 dark:border-dark-border backdrop-blur-xs'
                   }`}
                 >
@@ -152,7 +152,7 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
                           {meal.parsedName || meal.name || 'Unknown Food'}
                         </div>
                         {meal.synced === false && (
-                          <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded animate-pulse">
+                          <div className="text-xs bg-red-600/20 text-red-500 px-2 py-1 rounded animate-pulse">
                             Syncing...
                           </div>
                         )}
@@ -182,9 +182,9 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
                       <span className="capitalize">{meal.mealType || 'snack'}</span>
                       {meal.source && (
                         <span className={`px-1 rounded text-xs ${
-                          meal.source === 'nutritionix' ? 'bg-green-500/20 text-green-400' :
+                          meal.source === 'nutritionix' ? 'bg-red-600/20 text-red-500' :
                           meal.source === 'fallback' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-slate-600/50 text-slate-400'
+                          'bg-neutral-700/50 text-neutral-400'
                         }`}>
                           {meal.source === 'nutritionix' ? '🔥 Live' : meal.source}
                         </span>
@@ -200,13 +200,13 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
                         <div className="text-light-text-muted dark:text-dark-text-muted text-xs">cal</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-blue-600 dark:text-blue-400 font-medium text-sm">
+                        <div className="text-red-700 dark:text-red-500 font-medium text-sm">
                           {Math.round((meal.protein || 0) * 10) / 10}g
                         </div>
                         <div className="text-light-text-muted dark:text-dark-text-muted text-xs">protein</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-green-600 dark:text-green-400 font-medium text-sm">
+                        <div className="text-green-600 dark:text-red-500 font-medium text-sm">
                           {Math.round((meal.carbs || 0) * 10) / 10}g
                         </div>
                         <div className="text-light-text-muted dark:text-dark-text-muted text-xs">carbs</div>
@@ -229,13 +229,13 @@ const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
                       <div className="text-light-text-muted dark:text-dark-text-muted text-xs">cal</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-blue-600 dark:text-blue-400 font-medium">
+                      <div className="text-red-700 dark:text-red-500 font-medium">
                         {Math.round((meal.protein || 0) * 10) / 10}g
                       </div>
                       <div className="text-light-text-muted dark:text-dark-text-muted text-xs">protein</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-green-600 dark:text-green-400 font-medium">
+                      <div className="text-green-600 dark:text-red-500 font-medium">
                         {Math.round((meal.carbs || 0) * 10) / 10}g
                       </div>
                       <div className="text-light-text-muted dark:text-dark-text-muted text-xs">carbs</div>

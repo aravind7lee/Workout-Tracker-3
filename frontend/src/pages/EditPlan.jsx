@@ -194,8 +194,8 @@ export default function EditPlan() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading plan...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-neutral-400">Loading plan...</p>
         </div>
       </div>
     );
@@ -206,10 +206,10 @@ export default function EditPlan() {
       <div className="text-center py-12">
         <div className="text-6xl mb-4">❌</div>
         <h2 className="text-2xl font-bold text-white mb-4">Plan Not Found</h2>
-        <p className="text-slate-400 mb-6">The plan you're trying to edit doesn't exist.</p>
+        <p className="text-neutral-400 mb-6">The plan you're trying to edit doesn't exist.</p>
         <button 
           onClick={() => navigate('/my-plans')}
-          className="btn bg-blue-600 hover:bg-blue-700 text-white"
+          className="btn bg-red-700 hover:bg-blue-700 text-white"
         >
           Back to My Plans
         </button>
@@ -230,7 +230,7 @@ export default function EditPlan() {
               setHasUnsavedChanges(true);
             }}
             placeholder="Enter plan name..."
-            className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-400 text-sm sm:text-base"
+            className="px-3 py-2 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white placeholder-neutral-400 text-sm sm:text-base"
           />
           <select
             value={planCategory}
@@ -238,7 +238,7 @@ export default function EditPlan() {
               setPlanCategory(e.target.value);
               setHasUnsavedChanges(true);
             }}
-            className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 text-white text-sm sm:text-base"
+            className="px-3 py-2 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-sm sm:text-base"
           >
             <option value="General">General</option>
             <option value="Strength">Strength</option>
@@ -251,8 +251,8 @@ export default function EditPlan() {
             disabled={saving || !hasUnsavedChanges}
             className={`btn text-white disabled:opacity-50 disabled:cursor-not-allowed ${
               hasUnsavedChanges 
-                ? 'bg-green-600 hover:bg-green-700 ring-2 ring-green-400/50' 
-                : 'bg-slate-600'
+                ? 'bg-green-600 hover:bg-green-700 ring-2 ring-red-500/50' 
+                : 'bg-neutral-700'
             }`}
           >
             {saving ? (
@@ -281,7 +281,7 @@ export default function EditPlan() {
         </div>
       </div>
 
-      <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 sm:p-4">
+      <div className="bg-blue-900/20 border border-red-600/30 rounded-lg p-3 sm:p-4">
         <div className="flex items-start gap-3">
           <div className="text-2xl">✏️</div>
           <div>
@@ -302,7 +302,7 @@ export default function EditPlan() {
         {/* Exercise Library */}
         <div 
           className={`card min-h-[300px] sm:min-h-[500px] transition-all duration-200 ${
-            dragOverArea === 'library' ? 'bg-slate-700/50 border-slate-500 shadow-lg' : ''
+            dragOverArea === 'library' ? 'bg-neutral-800/50 border-neutral-500 shadow-lg' : ''
           }`}
           onDragOver={handleDragOver}
           onDragEnter={(e) => handleDragEnter(e, 'library')}
@@ -327,7 +327,7 @@ export default function EditPlan() {
                 className={`p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   selectedMuscleGroup === key
                     ? `${group.color} text-white shadow-lg`
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+                    : 'bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700/50'
                 }`}
               >
                 <div className="text-lg sm:text-xl mb-1">{group.icon}</div>
@@ -344,14 +344,14 @@ export default function EditPlan() {
                 draggable={true}
                 onDragStart={(e) => handleDragStart(e, { ...exercise, category: currentMuscleGroup.name }, 'library')}
                 onDragEnd={handleDragEnd}
-                className="p-3 sm:p-4 rounded-lg bg-slate-800/60 border border-slate-700 cursor-grab active:cursor-grabbing transition-all duration-200 hover:bg-slate-700/60 hover:border-slate-600 hover:shadow-md select-none"
+                className="p-3 sm:p-4 rounded-lg bg-neutral-900/60 border border-neutral-800 cursor-grab active:cursor-grabbing transition-all duration-200 hover:bg-neutral-800/60 hover:border-neutral-700 hover:shadow-md select-none"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="font-medium text-white text-sm sm:text-base">
                       {exercise.name}
                     </div>
-                    <div className="text-xs sm:text-sm text-slate-400 flex items-center gap-2">
+                    <div className="text-xs sm:text-sm text-neutral-400 flex items-center gap-2">
                       <span>{exercise.sets}</span>
                       <span className={`px-2 py-1 rounded text-xs ${
                         exercise.difficulty === 'beginner' ? 'bg-green-900/30 text-green-300' :
@@ -364,7 +364,7 @@ export default function EditPlan() {
                   </div>
                   <button
                     onClick={() => addToPlan({ ...exercise, category: currentMuscleGroup.name })}
-                    className="text-blue-400 hover:text-blue-300 text-lg font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-blue-900/20 transition-colors"
+                    className="text-red-500 hover:text-blue-300 text-lg font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-blue-900/20 transition-colors"
                     title="Add to plan"
                   >
                     +
@@ -379,7 +379,7 @@ export default function EditPlan() {
         <div 
           className={`card min-h-[300px] sm:min-h-[500px] transition-all duration-200 ${
             dragOverArea === 'plan' 
-              ? 'bg-green-900/30 border-green-400 shadow-xl ring-2 ring-green-400/50' 
+              ? 'bg-green-900/30 border-red-500 shadow-xl ring-2 ring-red-500/50' 
               : ''
           }`}
           onDragOver={handleDragOver}
@@ -392,7 +392,7 @@ export default function EditPlan() {
               <span>✏️</span> Editing Plan
             </h3>
             <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full">
+              <span className="text-xs sm:text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
                 {exercises.length} {exercises.length === 1 ? 'exercise' : 'exercises'}
               </span>
               {hasUnsavedChanges && (
@@ -401,7 +401,7 @@ export default function EditPlan() {
                 </span>
               )}
               {lastSaved && !hasUnsavedChanges && (
-                <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full">
+                <span className="text-xs text-red-500 bg-green-900/30 px-2 py-1 rounded-full">
                   ✓ Saved {lastSaved.toLocaleTimeString()}
                 </span>
               )}
@@ -409,10 +409,10 @@ export default function EditPlan() {
           </div>
           
           {exercises.length === 0 ? (
-            <div className="flex items-center justify-center h-32 sm:h-48 border-2 border-dashed border-slate-600 rounded-lg">
+            <div className="flex items-center justify-center h-32 sm:h-48 border-2 border-dashed border-neutral-700 rounded-lg">
               <div className="text-center">
                 <div className="text-3xl sm:text-4xl mb-3">✏️</div>
-                <p className="text-slate-400 text-sm sm:text-base font-medium">
+                <p className="text-neutral-400 text-sm sm:text-base font-medium">
                   Add exercises to edit your plan
                 </p>
               </div>
@@ -429,14 +429,14 @@ export default function EditPlan() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
-                      <span className="text-green-400 font-bold text-sm sm:text-base bg-green-900/30 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs sm:text-sm">
+                      <span className="text-red-500 font-bold text-sm sm:text-base bg-green-900/30 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs sm:text-sm">
                         {index + 1}
                       </span>
                       <div className="flex-1">
                         <div className="font-medium text-white text-sm sm:text-base">
                           {exercise.name}
                         </div>
-                        <div className="text-xs sm:text-sm text-slate-400">
+                        <div className="text-xs sm:text-sm text-neutral-400">
                           {exercise.category} • {exercise.sets}
                         </div>
                       </div>
@@ -445,14 +445,14 @@ export default function EditPlan() {
                       <button
                         onClick={() => moveUp(index)}
                         disabled={index === 0}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700/50 transition-colors"
+                        className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-neutral-800/50 transition-colors"
                       >
                         ↑
                       </button>
                       <button
                         onClick={() => moveDown(index)}
                         disabled={index === exercises.length - 1}
-                        className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700/50 transition-colors"
+                        className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-sm w-6 h-6 flex items-center justify-center rounded hover:bg-neutral-800/50 transition-colors"
                       >
                         ↓
                       </button>

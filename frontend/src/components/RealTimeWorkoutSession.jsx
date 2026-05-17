@@ -231,8 +231,8 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
           <RealTimeSyncStatus />
           <div className="flex items-center gap-2 text-sm">
             <span className={`px-2 py-1 rounded text-xs ${
-              autoSaveStatus === 'saved' ? 'bg-green-500/20 text-green-400' :
-              autoSaveStatus === 'saving' ? 'bg-blue-500/20 text-blue-400' :
+              autoSaveStatus === 'saved' ? 'bg-red-600/20 text-red-500' :
+              autoSaveStatus === 'saving' ? 'bg-red-600/20 text-red-500' :
               'bg-red-500/20 text-red-400'
             }`}>
               {autoSaveStatus === 'saved' ? '✓ Saved' :
@@ -278,40 +278,40 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
             <h3 className="text-xl font-semibold text-white">
               {currentExercise.name}
             </h3>
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-neutral-400">
               Exercise {currentExerciseIndex + 1} of {workoutData.exercises.length}
             </span>
           </div>
 
           {/* Current Set */}
-          <div className="bg-slate-700/50 rounded-lg p-4 mb-4">
+          <div className="bg-neutral-800/50 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-medium text-white">
                 Set {currentSetIndex + 1} of {currentExercise.sets.length}
               </span>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-neutral-400">
                 {progress.completedSets}/{progress.totalSets} sets completed
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Reps</label>
+                <label className="block text-sm text-neutral-400 mb-1">Reps</label>
                 <input
                   type="number"
                   value={currentSet?.reps || ''}
                   onChange={(e) => updateSet(currentExerciseIndex, currentSetIndex, 'reps', parseInt(e.target.value) || 0)}
-                  className="w-full p-2 rounded bg-slate-800 border border-slate-600 text-white"
+                  className="w-full p-2 rounded bg-neutral-900 border border-neutral-700 text-white"
                   placeholder="0"
                 />
               </div>
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Weight (lbs)</label>
+                <label className="block text-sm text-neutral-400 mb-1">Weight (lbs)</label>
                 <input
                   type="number"
                   value={currentSet?.weight || ''}
                   onChange={(e) => updateSet(currentExerciseIndex, currentSetIndex, 'weight', parseInt(e.target.value) || 0)}
-                  className="w-full p-2 rounded bg-slate-800 border border-slate-600 text-white"
+                  className="w-full p-2 rounded bg-neutral-900 border border-neutral-700 text-white"
                   placeholder="0"
                 />
               </div>
@@ -328,20 +328,20 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
 
           {/* All Sets for Current Exercise */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-slate-300">All Sets:</h4>
+            <h4 className="text-sm font-medium text-neutral-300">All Sets:</h4>
             {currentExercise.sets.map((set, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between p-2 rounded ${
-                  set.completed ? 'bg-green-500/20 border border-green-500/30' :
-                  index === currentSetIndex ? 'bg-blue-500/20 border border-blue-500/30' :
-                  'bg-slate-700/30'
+                  set.completed ? 'bg-red-600/20 border border-red-600/30' :
+                  index === currentSetIndex ? 'bg-red-600/20 border border-red-600/30' :
+                  'bg-neutral-800/30'
                 }`}
               >
                 <span className="text-sm text-white">
                   Set {index + 1}
                 </span>
-                <span className="text-sm text-slate-300">
+                <span className="text-sm text-neutral-300">
                   {set.reps} reps × {set.weight} lbs
                 </span>
                 <span className="text-xs">
@@ -361,14 +361,14 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
             <div
               key={index}
               className={`flex items-center justify-between p-3 rounded ${
-                exercise.completed ? 'bg-green-500/20 border border-green-500/30' :
-                index === currentExerciseIndex ? 'bg-blue-500/20 border border-blue-500/30' :
-                'bg-slate-700/30'
+                exercise.completed ? 'bg-red-600/20 border border-red-600/30' :
+                index === currentExerciseIndex ? 'bg-red-600/20 border border-red-600/30' :
+                'bg-neutral-800/30'
               }`}
             >
               <div>
                 <span className="text-white font-medium">{exercise.name}</span>
-                <div className="text-sm text-slate-400">
+                <div className="text-sm text-neutral-400">
                   {exercise.sets.filter(s => s.completed).length}/{exercise.sets.length} sets
                 </div>
               </div>
@@ -391,7 +391,7 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
       )}
 
       {/* Real-time Features Info */}
-      <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+      <div className="bg-blue-900/20 border border-red-600/30 rounded-lg p-4">
         <h4 className="text-blue-300 font-medium mb-2">🚀 Real-time Features Active:</h4>
         <div className="grid grid-cols-2 gap-2 text-xs text-blue-200">
           <div>✅ Auto-save every 30s</div>

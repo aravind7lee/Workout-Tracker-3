@@ -120,7 +120,7 @@
 
 .light-theme .workout-builder-header .premium-btn.primary,
 [data-theme="light"] .workout-builder-header .premium-btn.primary {
-  background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+  background: linear-gradient(135deg, #FF0000, #E60000) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
 }

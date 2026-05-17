@@ -103,7 +103,7 @@ const ProfilePicture = ({ currentImage, onImageUpdate }) => {
       {/* Profile Picture Circle */}
       <div 
         onClick={handleImageClick}
-        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-slate-600 hover:border-blue-500 transition-all duration-300"
+        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-neutral-700 hover:border-red-600 transition-all duration-300"
       >
         {currentImage ? (
           <img 
@@ -112,10 +112,10 @@ const ProfilePicture = ({ currentImage, onImageUpdate }) => {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
+          <div className="w-full h-full bg-neutral-800 flex items-center justify-center group-hover:bg-neutral-700 transition-colors duration-300">
             <div className="text-center">
-              <div className="text-3xl text-slate-400 mb-1">👤</div>
-              <div className="text-xs text-slate-400">Click to upload</div>
+              <div className="text-3xl text-neutral-400 mb-1">👤</div>
+              <div className="text-xs text-neutral-400">Click to upload</div>
             </div>
           </div>
         )}
@@ -152,7 +152,7 @@ const ProfilePicture = ({ currentImage, onImageUpdate }) => {
       {message && (
         <div className={`text-sm px-3 py-2 rounded-lg ${
           message.includes('✅') 
-            ? 'bg-green-900/30 text-green-400 border border-green-500/30' 
+            ? 'bg-green-900/30 text-red-500 border border-red-600/30' 
             : 'bg-red-900/30 text-red-400 border border-red-500/30'
         }`}>
           {message}
@@ -162,7 +162,7 @@ const ProfilePicture = ({ currentImage, onImageUpdate }) => {
       {/* User Info */}
       <div className="text-center">
         <h3 className="text-lg font-semibold text-white">{user?.name || 'User'}</h3>
-        <p className="text-sm text-slate-400">{user?.email || 'user@example.com'}</p>
+        <p className="text-sm text-neutral-400">{user?.email || 'user@example.com'}</p>
       </div>
     </div>
   );

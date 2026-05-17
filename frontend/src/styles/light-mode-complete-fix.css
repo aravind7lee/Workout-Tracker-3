@@ -5,14 +5,14 @@
 .light-theme,
 [data-theme="light"] {
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== COMPREHENSIVE TEXT COLOR OVERRIDES ===== */
 /* All text elements except colored stats */
 .light-theme *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color):not(.bg-gradient-to-r):not([class*="gradient"]),
 [data-theme="light"] *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color):not(.bg-gradient-to-r):not([class*="gradient"]) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== HEADINGS - MAXIMUM CONTRAST ===== */
@@ -25,29 +25,29 @@
 /* ===== LINKS ===== */
 .light-theme a,
 [data-theme="light"] a {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme a:hover,
 [data-theme="light"] a:hover {
-  color: #1e40af !important;
+  color: #E60000 !important;
 }
 
 /* ===== TAILWIND CLASS OVERRIDES ===== */
 .light-theme .text-white, .light-theme .text-slate-100, .light-theme .text-slate-200, .light-theme .text-slate-300, .light-theme .text-slate-400, .light-theme .text-slate-500,
 [data-theme="light"] .text-white, [data-theme="light"] .text-slate-100, [data-theme="light"] .text-slate-200, [data-theme="light"] .text-slate-300, [data-theme="light"] .text-slate-400, [data-theme="light"] .text-slate-500 {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .text-gray-100, .light-theme .text-gray-200, .light-theme .text-gray-300, .light-theme .text-gray-400, .light-theme .text-gray-500,
 [data-theme="light"] .text-gray-100, [data-theme="light"] .text-gray-200, [data-theme="light"] .text-gray-300, [data-theme="light"] .text-gray-400, [data-theme="light"] .text-gray-500 {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== PRESERVE COLORED STATS ===== */
 .light-theme .text-blue-400, .light-theme .text-blue-500,
 [data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .text-green-400, .light-theme .text-green-500,
@@ -83,7 +83,7 @@
 
 .light-theme section *:not(.bg-gradient-to-r):not([class*="gradient"]):not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path),
 [data-theme="light"] section *:not(.bg-gradient-to-r):not([class*="gradient"]):not(.preserve-color):not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme section h1, .light-theme section h2, .light-theme section h3, .light-theme section h4,
@@ -95,7 +95,7 @@
 /* Hero gradient text preservation */
 .light-theme .bg-gradient-to-r.from-blue-400.to-purple-400,
 [data-theme="light"] .bg-gradient-to-r.from-blue-400.to-purple-400 {
-  background: linear-gradient(to right, #1d4ed8, #7c3aed) !important;
+  background: linear-gradient(to right, #FF0000, #7c3aed) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -111,7 +111,7 @@
 
 .light-theme nav *:not(svg):not(path),
 [data-theme="light"] nav *:not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme nav h1, .light-theme nav h2, .light-theme nav h3,
@@ -121,13 +121,13 @@
 
 .light-theme nav .nav-link:hover,
 [data-theme="light"] nav .nav-link:hover {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
   background: rgba(29, 78, 216, 0.1) !important;
 }
 
 .light-theme nav .nav-link.active,
 [data-theme="light"] nav .nav-link.active {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
   background: rgba(29, 78, 216, 0.15) !important;
 }
 
@@ -136,12 +136,12 @@
 [data-theme="light"] .card {
   background: #f8fafc !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
 [data-theme="light"] .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .card h1, .light-theme .card h2, .light-theme .card h3, .light-theme .card h4, .light-theme .card h5, .light-theme .card h6,
@@ -164,7 +164,7 @@
 /* ===== BUTTON FIXES ===== */
 .light-theme .btn-primary,
 [data-theme="light"] .btn-primary {
-  background: #1d4ed8 !important;
+  background: #FF0000 !important;
   color: #ffffff !important;
   border: none !important;
 }
@@ -172,20 +172,20 @@
 .light-theme .btn-secondary,
 [data-theme="light"] .btn-secondary {
   background: transparent !important;
-  color: #1d4ed8 !important;
-  border: 2px solid #1d4ed8 !important;
+  color: #FF0000 !important;
+  border: 2px solid #FF0000 !important;
 }
 
 .light-theme button:not(.btn-primary):not(.btn-secondary),
 [data-theme="light"] button:not(.btn-primary):not(.btn-secondary) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== FORM ELEMENTS ===== */
 .light-theme input, .light-theme textarea, .light-theme select,
 [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #000000 !important;
   border: 1px solid rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -196,14 +196,14 @@
 
 .light-theme label,
 [data-theme="light"] label {
-  color: #0f172a !important;
+  color: #000000 !important;
   font-weight: 600 !important;
 }
 
 /* ===== FEATURE CARDS ===== */
 .light-theme .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path),
 [data-theme="light"] .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .features h3, .light-theme .features h4,
@@ -220,7 +220,7 @@
 
 .light-theme footer *:not(svg):not(path),
 [data-theme="light"] footer *:not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme footer h3, .light-theme footer h4,
@@ -237,13 +237,13 @@
 /* ===== DASHBOARD SPECIFIC FIXES ===== */
 .light-theme .space-y-4 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
 [data-theme="light"] .space-y-4 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== LIBRARY AND PLANS FIXES ===== */
 .light-theme .grid *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
 [data-theme="light"] .grid *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== SEARCH RESULTS ===== */
@@ -255,7 +255,7 @@
 
 .light-theme .search-results *:not(svg):not(path),
 [data-theme="light"] .search-results *:not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== MOBILE MENU ===== */
@@ -266,7 +266,7 @@
 
 .light-theme .mobile-menu *:not(svg):not(path),
 [data-theme="light"] .mobile-menu *:not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== STATS AND METRICS ===== */
@@ -280,20 +280,20 @@
 .light-theme .badge,
 [data-theme="light"] .badge {
   background: rgba(29, 78, 216, 0.1) !important;
-  color: #1d4ed8 !important;
-  border: 1px solid #1d4ed8 !important;
+  color: #FF0000 !important;
+  border: 1px solid #FF0000 !important;
 }
 
 /* ===== LISTS ===== */
 .light-theme li, .light-theme ul *, .light-theme ol *,
 [data-theme="light"] li, [data-theme="light"] ul *, [data-theme="light"] ol * {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== TABLES ===== */
 .light-theme table, .light-theme td, .light-theme th,
 [data-theme="light"] table, [data-theme="light"] td, [data-theme="light"] th {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== ICONS AND SVG ===== */
@@ -305,7 +305,7 @@
 /* ===== FINAL CATCH-ALL ===== */
 .light-theme p, .light-theme span, .light-theme div:not([class*="gradient"]):not(.preserve-color),
 [data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div:not([class*="gradient"]):not(.preserve-color) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 /* ===== ENSURE BACKGROUNDS ARE LIGHT ===== */
@@ -335,7 +335,7 @@
 /* ===== CARD HEADER FIXES ===== */
 .light-theme .bg-slate-800\/60 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
 [data-theme="light"] .bg-slate-800\/60 *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
 .light-theme .bg-slate-800\/60,

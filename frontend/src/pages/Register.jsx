@@ -187,7 +187,7 @@ const Register = () => {
                   passwordMatch === null 
                     ? 'border-amber-900/30 focus:border-amber-600 focus:ring-amber-600/20'
                     : passwordMatch 
-                    ? 'border-green-500/50 focus:border-green-500 focus:ring-green-500/20'
+                    ? 'border-red-600/50 focus:border-red-600 focus:ring-red-600/20'
                     : 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
                 }`}
                 value={formData.confirmPassword}
@@ -218,7 +218,7 @@ const Register = () => {
             {/* Password Match Indicator */}
             {passwordMatch !== null && formData.confirmPassword.length > 0 && (
               <div className={`mt-2 text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2 ${
-                passwordMatch ? 'text-green-400' : 'text-red-400'
+                passwordMatch ? 'text-red-500' : 'text-red-400'
               }`}>
                 {passwordMatch ? (
                   <>

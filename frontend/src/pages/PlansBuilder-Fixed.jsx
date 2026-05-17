@@ -357,26 +357,26 @@ export default function PlansBuilder() {
 
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
-      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-green-400' };
-      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-blue-400' };
+      case 'synced': return { icon: '✅', text: 'Synced', color: 'text-red-500' };
+      case 'syncing': return { icon: '🔄', text: 'Syncing...', color: 'text-red-500' };
       case 'saving': return { icon: '💾', text: 'Saving...', color: 'text-yellow-400' };
       case 'offline': return { icon: '📱', text: 'Offline', color: 'text-orange-400' };
       case 'sync-failed': return { icon: '⚠️', text: 'Sync Failed', color: 'text-red-400' };
-      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-purple-400' };
+      case 'draft-saved': return { icon: '📝', text: 'Draft Saved', color: 'text-red-600' };
       case 'error': return { icon: '❌', text: 'Error', color: 'text-red-500' };
-      default: return { icon: '⚡', text: 'Ready', color: 'text-slate-400' };
+      default: return { icon: '⚡', text: 'Ready', color: 'text-neutral-400' };
     }
   };
 
   const statusDisplay = getSyncStatusDisplay();
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Hero Header */}
-      <div className="relative w-full h-96 bg-gradient-to-b from-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="relative w-full h-96 bg-gradient-to-b from-blue-900 to-black flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">PLAN BUILDER</h1>
-          <p className="text-slate-300 mb-6">CREATE PROFESSIONAL WORKOUT PLANS</p>
+          <p className="text-neutral-300 mb-6">CREATE PROFESSIONAL WORKOUT PLANS</p>
           <div className="flex gap-4 justify-center">
             <button 
               onClick={() => navigate('/my-plans')}
@@ -386,7 +386,7 @@ export default function PlansBuilder() {
             </button>
             <button 
               onClick={() => document.getElementById('plan-builder')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium"
+              className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg font-medium"
             >
               🏋️ Build Plan
             </button>
@@ -398,7 +398,7 @@ export default function PlansBuilder() {
       <div id="plan-builder" className="container mx-auto px-4 py-8">
         
         {/* Status Bar */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-4 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <span className={`${statusDisplay.color} text-sm font-medium`}>
@@ -416,7 +416,7 @@ export default function PlansBuilder() {
                 className={`text-xs px-3 py-1 rounded-full ${
                   autoSave 
                     ? 'bg-blue-900/30 text-blue-300 border border-blue-700' 
-                    : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+                    : 'bg-neutral-800/50 text-neutral-400 border border-neutral-700'
                 }`}
               >
                 {autoSave ? '🔄 Auto-Save ON' : '💾 Auto-Save OFF'}
@@ -432,7 +432,7 @@ export default function PlansBuilder() {
         </div>
 
         {/* Form Controls */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6 mb-6">
           <h2 className="text-2xl font-semibold mb-4">Workout Plan Builder 🏋️</h2>
           
           <div className="space-y-4">
@@ -442,14 +442,14 @@ export default function PlansBuilder() {
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
                 placeholder="Enter plan name..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400"
+                className="w-full px-4 py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400"
               />
             </div>
             <div className="flex gap-4">
               <select
                 value={planCategory}
                 onChange={(e) => setPlanCategory(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white"
+                className="flex-1 px-4 py-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white"
               >
                 <option value="General">🏋️ General</option>
                 <option value="Strength">💪 Strength</option>
@@ -460,7 +460,7 @@ export default function PlansBuilder() {
               <button
                 onClick={savePlan}
                 disabled={saving || !planName.trim() || plan.length === 0}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 rounded-lg font-medium"
+                className="px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 rounded-lg font-medium"
               >
                 {saving ? '🔄 Saving...' : '💾 Save Plan'}
               </button>
@@ -473,7 +473,7 @@ export default function PlansBuilder() {
           
           {/* Exercise Library */}
           <div 
-            className="bg-slate-800 border border-slate-700 rounded-lg p-6"
+            className="bg-neutral-900 border border-neutral-800 rounded-lg p-6"
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'library')}
             onDragLeave={handleDragLeave}
@@ -490,7 +490,7 @@ export default function PlansBuilder() {
                   className={`p-3 rounded-lg text-sm font-medium ${
                     selectedMuscleGroup === key
                       ? `${group.color} text-white`
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
                   }`}
                 >
                   <div className="text-lg mb-1">{group.icon}</div>
@@ -512,21 +512,21 @@ export default function PlansBuilder() {
                     className={`p-4 rounded-lg border cursor-grab ${
                       isInPlan 
                         ? 'bg-green-900/30 border-green-700' 
-                        : 'bg-slate-700 border-slate-600 hover:bg-slate-600'
+                        : 'bg-neutral-800 border-neutral-700 hover:bg-neutral-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="font-medium text-white">{exercise.name}</div>
-                        <div className="text-sm text-slate-400">{exercise.sets}</div>
+                        <div className="text-sm text-neutral-400">{exercise.sets}</div>
                       </div>
                       <button
                         onClick={() => addToPlan({ ...exercise, category: currentMuscleGroup.name })}
                         disabled={isInPlan}
                         className={`w-8 h-8 rounded-lg font-bold ${
                           isInPlan 
-                            ? 'text-green-400 bg-green-900/30 cursor-not-allowed' 
-                            : 'text-blue-400 hover:bg-blue-900/20'
+                            ? 'text-red-500 bg-green-900/30 cursor-not-allowed' 
+                            : 'text-red-500 hover:bg-blue-900/20'
                         }`}
                       >
                         {isInPlan ? '✓' : '+'}
@@ -540,8 +540,8 @@ export default function PlansBuilder() {
 
           {/* Workout Plan */}
           <div 
-            className={`bg-slate-800 border border-slate-700 rounded-lg p-6 ${
-              dragOverArea === 'plan' ? 'border-green-400 bg-green-900/20' : ''
+            className={`bg-neutral-900 border border-neutral-800 rounded-lg p-6 ${
+              dragOverArea === 'plan' ? 'border-red-500 bg-green-900/20' : ''
             }`}
             onDragOver={handleDragOver}
             onDragEnter={(e) => handleDragEnter(e, 'plan')}
@@ -551,10 +551,10 @@ export default function PlansBuilder() {
             <h3 className="text-xl font-semibold mb-4">🎯 Your Workout Plan ({plan.length})</h3>
             
             {plan.length === 0 ? (
-              <div className="flex items-center justify-center h-48 border-2 border-dashed border-slate-600 rounded-lg">
+              <div className="flex items-center justify-center h-48 border-2 border-dashed border-neutral-700 rounded-lg">
                 <div className="text-center">
                   <div className="text-4xl mb-4">🎯</div>
-                  <p className="text-slate-400">Drag exercises here or use + button</p>
+                  <p className="text-neutral-400">Drag exercises here or use + button</p>
                 </div>
               </div>
             ) : (
@@ -569,26 +569,26 @@ export default function PlansBuilder() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 flex-1">
-                        <span className="text-green-400 font-bold w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center text-sm">
+                        <span className="text-red-500 font-bold w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center text-sm">
                           {index + 1}
                         </span>
                         <div className="flex-1">
                           <div className="font-medium text-white">{exercise.name}</div>
-                          <div className="text-sm text-slate-400">{exercise.category} • {exercise.sets}</div>
+                          <div className="text-sm text-neutral-400">{exercise.category} • {exercise.sets}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => moveUp(index)}
                           disabled={index === 0}
-                          className="text-slate-400 hover:text-white disabled:opacity-30 w-7 h-7 flex items-center justify-center rounded"
+                          className="text-neutral-400 hover:text-white disabled:opacity-30 w-7 h-7 flex items-center justify-center rounded"
                         >
                           ↑
                         </button>
                         <button
                           onClick={() => moveDown(index)}
                           disabled={index === plan.length - 1}
-                          className="text-slate-400 hover:text-white disabled:opacity-30 w-7 h-7 flex items-center justify-center rounded"
+                          className="text-neutral-400 hover:text-white disabled:opacity-30 w-7 h-7 flex items-center justify-center rounded"
                         >
                           ↓
                         </button>

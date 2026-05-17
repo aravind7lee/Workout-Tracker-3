@@ -134,9 +134,9 @@
 }
 
 .dark .analytics-gallery-card:hover {
-  border-color: #00d4ff;
+  border-color: #FF0000;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 
-              0 0 30px rgba(0, 212, 255, 0.3);
+              0 0 30px rgba(255, 0, 0, 0.3);
 }
 
 /* Light Mode Specific Styles */
@@ -180,7 +180,7 @@
 
 /* Focus Styles for Keyboard Navigation */
 .analytics-gallery-card:focus-within {
-  outline: 2px solid #00d4ff;
+  outline: 2px solid #FF0000;
   outline-offset: 2px;
 }
 

@@ -9,7 +9,7 @@ export default function OptimizedHeroImage({
   alt, 
   className = '', 
   fallbackIcon = '🏋️',
-  fallbackGradient = 'from-slate-800 to-slate-900',
+  fallbackGradient = 'from-neutral-900 to-black',
   onLoad,
   children 
 }) {

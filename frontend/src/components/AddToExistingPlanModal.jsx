@@ -46,26 +46,26 @@ const AddToExistingPlanModal = ({ exercise, onClose, onSave }) => {
       <div className="card max-w-md w-full" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-white">Add to Existing Plan</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white text-2xl">×</button>
+          <button onClick={onClose} className="text-neutral-400 hover:text-white text-2xl">×</button>
         </div>
         
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-neutral-900/50 rounded-lg">
             <div className={`w-10 h-10 ${exercise.color} rounded-lg flex items-center justify-center`}>
               <span className="text-xl">{exercise.icon}</span>
             </div>
             <div>
               <div className="font-medium text-white">{exercise.name}</div>
-              <div className="text-sm text-slate-400">{exercise.category}</div>
+              <div className="text-sm text-neutral-400">{exercise.category}</div>
             </div>
           </div>
           
           {plans.length === 0 ? (
             <div className="text-center py-6">
-              <div className="text-slate-400 mb-4">No existing plans found</div>
+              <div className="text-neutral-400 mb-4">No existing plans found</div>
               <button
                 onClick={onClose}
-                className="btn bg-blue-600 hover:bg-blue-700 text-white"
+                className="btn bg-red-700 hover:bg-blue-700 text-white"
               >
                 Create New Plan Instead
               </button>
@@ -73,11 +73,11 @@ const AddToExistingPlanModal = ({ exercise, onClose, onSave }) => {
           ) : (
             <>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Select Plan</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Select Plan</label>
                 <select
                   value={selectedPlan}
                   onChange={(e) => setSelectedPlan(e.target.value)}
-                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white"
+                  className="w-full p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white"
                 >
                   <option value="">Choose a plan...</option>
                   {plans.map(plan => (

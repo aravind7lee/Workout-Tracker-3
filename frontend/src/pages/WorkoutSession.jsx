@@ -198,8 +198,8 @@ export default function WorkoutSession() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading workout...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-neutral-400">Loading workout...</p>
         </div>
       </div>
     );
@@ -210,18 +210,18 @@ export default function WorkoutSession() {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="card text-center">
           <h1 className="text-2xl lg:text-3xl font-semibold text-white mb-4">{plan.name}</h1>
-          <p className="text-slate-400 mb-6">
+          <p className="text-neutral-400 mb-6">
             Ready to start your workout? This plan contains {plan.exercises.length} exercises.
           </p>
           
           <div className="space-y-4 mb-8">
             {plan.exercises.map((exercise, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg">
                 <div className="text-left">
                   <div className="font-medium text-white">{exercise.name}</div>
-                  <div className="text-sm text-slate-400">{exercise.category} • {exercise.sets}</div>
+                  <div className="text-sm text-neutral-400">{exercise.category} • {exercise.sets}</div>
                 </div>
-                <span className="text-blue-400 font-medium">{index + 1}</span>
+                <span className="text-red-500 font-medium">{index + 1}</span>
               </div>
             ))}
           </div>
@@ -256,19 +256,19 @@ export default function WorkoutSession() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl lg:text-2xl font-semibold text-white">{plan.name}</h1>
           <div className="text-right">
-            <div className="text-lg font-bold text-green-400">{formatTime(elapsedTime)}</div>
-            <div className="text-sm text-slate-400">Elapsed</div>
+            <div className="text-lg font-bold text-red-500">{formatTime(elapsedTime)}</div>
+            <div className="text-sm text-neutral-400">Elapsed</div>
           </div>
         </div>
         
         <div className="mb-4">
-          <div className="flex justify-between text-sm text-slate-400 mb-2">
+          <div className="flex justify-between text-sm text-neutral-400 mb-2">
             <span>Progress</span>
             <span>{completedExercises.size}/{plan.exercises.length} exercises</span>
           </div>
-          <div className="w-full bg-slate-700 rounded-full h-2">
+          <div className="w-full bg-neutral-800 rounded-full h-2">
             <div 
-              className="bg-green-500 h-2 rounded-full transition-all duration-300"
+              className="bg-red-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
@@ -278,13 +278,13 @@ export default function WorkoutSession() {
       {/* Current Exercise */}
       <div className="card">
         <div className="text-center mb-6">
-          <div className="text-sm text-slate-400 mb-2">
+          <div className="text-sm text-neutral-400 mb-2">
             Exercise {currentExercise + 1} of {plan.exercises.length}
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
             {plan.exercises[currentExercise]?.name}
           </h2>
-          <div className="text-slate-400">
+          <div className="text-neutral-400">
             {plan.exercises[currentExercise]?.category} • {plan.exercises[currentExercise]?.sets}
           </div>
         </div>
@@ -302,7 +302,7 @@ export default function WorkoutSession() {
             <button
               onClick={finishWorkout}
               disabled={isCompleting}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn bg-red-700 hover:bg-blue-700 text-white flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isCompleting ? (
                 <div className="flex items-center gap-2">
@@ -326,26 +326,26 @@ export default function WorkoutSession() {
               key={index}
               className={`flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
                 index === currentExercise 
-                  ? 'bg-blue-900/30 border border-blue-500/50' 
+                  ? 'bg-blue-900/30 border border-red-600/50' 
                   : completedExercises.has(index)
-                  ? 'bg-green-900/20 border border-green-500/30'
-                  : 'bg-slate-700/30 hover:bg-slate-700/50'
+                  ? 'bg-green-900/20 border border-red-600/30'
+                  : 'bg-neutral-800/30 hover:bg-neutral-800/50'
               }`}
               onClick={() => setCurrentExercise(index)}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
                   completedExercises.has(index)
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-red-600 text-white'
                     : index === currentExercise
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-600 text-slate-300'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-neutral-700 text-neutral-300'
                 }`}>
                   {completedExercises.has(index) ? '✓' : index + 1}
                 </div>
                 <div>
                   <div className="font-medium text-white">{exercise.name}</div>
-                  <div className="text-sm text-slate-400">{exercise.sets}</div>
+                  <div className="text-sm text-neutral-400">{exercise.sets}</div>
                 </div>
               </div>
             </div>

@@ -82,13 +82,13 @@ export default function Settings() {
   });
 
   const settingsTabs = [
-    { id: 'profile', label: 'Profile', icon: User, color: 'from-blue-500 to-cyan-500' },
-    { id: 'fitness', label: 'Fitness Goals', icon: Target, color: 'from-green-500 to-emerald-500' },
+    { id: 'profile', label: 'Profile', icon: User, color: 'from-red-600 to-red-600' },
+    { id: 'fitness', label: 'Fitness Goals', icon: Target, color: 'from-red-600 to-red-600' },
     { id: 'notifications', label: 'Notifications', icon: Bell, color: 'from-yellow-500 to-orange-500' },
     { id: 'privacy', label: 'Privacy & Security', icon: Shield, color: 'from-red-500 to-pink-500' },
-    { id: 'preferences', label: 'App Preferences', icon: Palette, color: 'from-purple-500 to-violet-500' },
-    { id: 'data', label: 'Data & Storage', icon: Database, color: 'from-indigo-500 to-blue-500' },
-    { id: 'help', label: 'Help & Support', icon: HelpCircle, color: 'from-gray-500 to-slate-500' }
+    { id: 'preferences', label: 'App Preferences', icon: Palette, color: 'from-red-700 to-violet-500' },
+    { id: 'data', label: 'Data & Storage', icon: Database, color: 'from-indigo-500 to-red-600' },
+    { id: 'help', label: 'Help & Support', icon: HelpCircle, color: 'from-gray-500 to-neutral-500' }
   ];
 
   const autoSave = useCallback(
@@ -313,7 +313,7 @@ export default function Settings() {
     <div className="space-y-4 sm:space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <User size={16} />
             Full Name
           </label>
@@ -321,12 +321,12 @@ export default function Settings() {
             type="text"
             value={settings.profile.name}
             onChange={(e) => handleSettingChange('profile', 'name', e.target.value)}
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
             placeholder="Enter your full name"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Mail size={16} />
             Email Address
           </label>
@@ -334,12 +334,12 @@ export default function Settings() {
             type="email"
             value={settings.profile.email}
             onChange={(e) => handleSettingChange('profile', 'email', e.target.value)}
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
             placeholder="Enter your email"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Smartphone size={16} />
             Phone Number
           </label>
@@ -348,11 +348,11 @@ export default function Settings() {
             value={settings.profile.phone}
             onChange={(e) => handleSettingChange('profile', 'phone', e.target.value)}
             placeholder="+1 (555) 123-4567"
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Globe size={16} />
             Location
           </label>
@@ -361,7 +361,7 @@ export default function Settings() {
             value={settings.profile.location}
             onChange={(e) => handleSettingChange('profile', 'location', e.target.value)}
             placeholder="City, Country"
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           />
         </div>
       </div>
@@ -372,14 +372,14 @@ export default function Settings() {
     <div className="space-y-4 sm:space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Target size={16} />
             Primary Fitness Goal
           </label>
           <select
             value={settings.fitnessGoals.goal}
             onChange={(e) => handleSettingChange('fitnessGoals', 'goal', e.target.value)}
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           >
             <option value="lose">🔥 Lose Weight</option>
             <option value="maintain">⚖️ Maintain Weight</option>
@@ -390,14 +390,14 @@ export default function Settings() {
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Target size={16} />
             Activity Level
           </label>
           <select
             value={settings.fitnessGoals.activityLevel}
             onChange={(e) => handleSettingChange('fitnessGoals', 'activityLevel', e.target.value)}
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           >
             <option value="sedentary">🪑 Sedentary (Little/No Exercise)</option>
             <option value="light">🚶 Light (1-3 days/week)</option>
@@ -408,7 +408,7 @@ export default function Settings() {
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Target size={16} />
             Target Weight (kg)
           </label>
@@ -417,19 +417,19 @@ export default function Settings() {
             value={settings.fitnessGoals.targetWeight || ''}
             onChange={(e) => handleSettingChange('fitnessGoals', 'targetWeight', e.target.value ? parseFloat(e.target.value) : null)}
             placeholder="Enter target weight"
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
             <Target size={16} />
             Weekly Workout Goal
           </label>
           <select
             value={settings.fitnessGoals.weeklyGoal}
             onChange={(e) => handleSettingChange('fitnessGoals', 'weeklyGoal', parseInt(e.target.value))}
-            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-green-500/50 focus:ring-2 focus:ring-green-500/20 transition-all"
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
           >
             <option value={1}>1 workout per week</option>
             <option value={2}>2 workouts per week</option>
@@ -444,47 +444,47 @@ export default function Settings() {
       
       <div className="p-4 sm:p-6 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/50 rounded-xl sm:rounded-2xl">
         <div className="text-green-300 text-sm flex items-center gap-2 mb-3">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
           <span className="font-medium">Current Fitness Goals & Progress</span>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs mb-4">
           <div className="text-center">
-            <div className="text-green-400 font-bold text-lg">
+            <div className="text-red-500 font-bold text-lg">
               {settings.fitnessGoals.goal === 'lose' ? '🔥' : 
                settings.fitnessGoals.goal === 'gain' ? '📈' : 
                settings.fitnessGoals.goal === 'muscle' ? '💪' : 
                settings.fitnessGoals.goal === 'strength' ? '⚡' : '⚖️'}
             </div>
-            <div className="text-slate-300 capitalize">{settings.fitnessGoals.goal} Weight</div>
+            <div className="text-neutral-300 capitalize">{settings.fitnessGoals.goal} Weight</div>
           </div>
           <div className="text-center">
-            <div className="text-blue-400 font-bold text-lg">{settings.fitnessGoals.weeklyGoal}</div>
-            <div className="text-slate-300">Weekly Goal</div>
+            <div className="text-red-500 font-bold text-lg">{settings.fitnessGoals.weeklyGoal}</div>
+            <div className="text-neutral-300">Weekly Goal</div>
             <div className="text-xs text-blue-300 mt-1">
               {Math.min(realTimeStats.totalWorkouts, settings.fitnessGoals.weeklyGoal)}/{settings.fitnessGoals.weeklyGoal} this week
             </div>
           </div>
           <div className="text-center">
-            <div className="text-purple-400 font-bold text-lg capitalize">{settings.fitnessGoals.activityLevel}</div>
-            <div className="text-slate-300">Activity Level</div>
+            <div className="text-red-600 font-bold text-lg capitalize">{settings.fitnessGoals.activityLevel}</div>
+            <div className="text-neutral-300">Activity Level</div>
           </div>
           <div className="text-center">
             <div className="text-orange-400 font-bold text-lg">
               {settings.fitnessGoals.targetWeight ? `${settings.fitnessGoals.targetWeight}kg` : 'Not Set'}
             </div>
-            <div className="text-slate-300">Target Weight</div>
+            <div className="text-neutral-300">Target Weight</div>
           </div>
         </div>
         
         <div className="mt-3">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
             <span>Weekly Progress</span>
             <span>{Math.min(realTimeStats.totalWorkouts, settings.fitnessGoals.weeklyGoal)}/{settings.fitnessGoals.weeklyGoal} workouts</span>
           </div>
-          <div className="w-full bg-slate-700 rounded-full h-2">
+          <div className="w-full bg-neutral-800 rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-red-600 to-red-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, (realTimeStats.totalWorkouts / settings.fitnessGoals.weeklyGoal) * 100)}%` }}
             ></div>
           </div>
@@ -495,17 +495,17 @@ export default function Settings() {
 
   const renderNotificationsSettings = () => (
     <div className="space-y-4 sm:space-y-6">
-      <div className="p-4 sm:p-6 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl sm:rounded-2xl border border-slate-700/50 backdrop-blur-sm">
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-neutral-900/80 to-black/80 rounded-xl sm:rounded-2xl border border-neutral-800/50 backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse"></div>
           <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
             🔔 NOTIFICATION CENTER
           </h3>
-          <div className="px-2 sm:px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
+          <div className="px-2 sm:px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
             REAL-TIME
           </div>
         </div>
-        <p className="text-slate-300 text-sm sm:text-base">Professional gym notifications • Instant MongoDB sync • Cross-device alerts</p>
+        <p className="text-neutral-300 text-sm sm:text-base">Professional gym notifications • Instant MongoDB sync • Cross-device alerts</p>
       </div>
 
       <div className="space-y-3 sm:space-y-4">
@@ -515,7 +515,7 @@ export default function Settings() {
             title: 'Email Notifications',
             description: 'Receive workout updates and progress reports via email',
             icon: Mail,
-            color: 'from-blue-500 to-cyan-500',
+            color: 'from-red-600 to-red-600',
             emoji: '📧'
           },
           {
@@ -531,7 +531,7 @@ export default function Settings() {
             title: 'Workout Reminders',
             description: 'Daily gym reminders to stay consistent with your fitness goals',
             icon: Target,
-            color: 'from-green-500 to-emerald-500',
+            color: 'from-red-600 to-red-600',
             emoji: '🏋️'
           },
           {
@@ -539,7 +539,7 @@ export default function Settings() {
             title: 'Nutrition Reminders',
             description: 'Smart reminders to log meals and track your nutrition intake',
             icon: Activity,
-            color: 'from-purple-500 to-violet-500',
+            color: 'from-red-700 to-violet-500',
             emoji: '🍎'
           }
         ].map((notification) => {
@@ -551,8 +551,8 @@ export default function Settings() {
               whileHover={{ scale: 1.02 }}
               className={`relative overflow-hidden rounded-xl sm:rounded-2xl border transition-all duration-300 ${
                 isEnabled
-                  ? `border-green-500/50 bg-gradient-to-br from-slate-800/80 to-slate-900/80 shadow-xl shadow-green-500/10`
-                  : 'border-slate-600/50 bg-gradient-to-br from-slate-800/40 to-slate-900/40'
+                  ? `border-red-600/50 bg-gradient-to-br from-neutral-900/80 to-black/80 shadow-xl shadow-red-600/10`
+                  : 'border-neutral-700/50 bg-gradient-to-br from-neutral-900/40 to-black/40'
               }`}
             >
               <div className="absolute inset-0 opacity-5">
@@ -565,7 +565,7 @@ export default function Settings() {
                     <div className={`p-2 sm:p-3 rounded-xl transition-all flex-shrink-0 ${
                       isEnabled
                         ? `bg-gradient-to-r ${notification.color}/20 text-white shadow-lg border border-white/10`
-                        : 'bg-slate-700/50 text-slate-400'
+                        : 'bg-neutral-800/50 text-neutral-400'
                     }`}>
                       <div className="text-xl sm:text-2xl">{notification.emoji}</div>
                     </div>
@@ -573,12 +573,12 @@ export default function Settings() {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                         <h4 className="text-white font-bold text-sm sm:text-base">{notification.title}</h4>
                         {isEnabled && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 w-fit">
+                          <span className="text-xs bg-red-600/20 text-red-500 px-2 py-1 rounded-full border border-red-600/30 w-fit">
                             ✅ ACTIVE
                           </span>
                         )}
                       </div>
-                      <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{notification.description}</p>
+                      <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">{notification.description}</p>
                     </div>
                   </div>
                   
@@ -588,15 +588,15 @@ export default function Settings() {
                     onClick={() => handleSettingChange('notifications', notification.key, !isEnabled)}
                     className={`relative w-14 h-7 sm:w-16 sm:h-8 rounded-full transition-all duration-300 flex-shrink-0 ${
                       isEnabled
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg shadow-green-500/25'
-                        : 'bg-slate-600'
+                        ? 'bg-gradient-to-r from-red-600 to-red-600 shadow-lg shadow-red-600/25'
+                        : 'bg-neutral-700'
                     }`}
                   >
                     <motion.div
                       animate={{ x: isEnabled ? (window.innerWidth >= 640 ? 32 : 28) : 2 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                       className={`absolute top-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all ${
-                        isEnabled ? 'bg-white shadow-md' : 'bg-slate-300'
+                        isEnabled ? 'bg-white shadow-md' : 'bg-neutral-300'
                       }`}
                     />
                   </motion.button>
@@ -607,13 +607,13 @@ export default function Settings() {
         })}
       </div>
       
-      <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl sm:rounded-2xl border border-slate-700/50 backdrop-blur-sm">
+      <div className="p-4 sm:p-6 bg-gradient-to-br from-neutral-900/80 to-black/80 rounded-xl sm:rounded-2xl border border-neutral-800/50 backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse"></div>
           <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
             📊 NOTIFICATION STATUS
           </h3>
-          <div className="px-2 sm:px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+          <div className="px-2 sm:px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
             LIVE SYNC
           </div>
         </div>
@@ -632,27 +632,27 @@ export default function Settings() {
                 key={key} 
                 className={`text-center p-3 sm:p-4 rounded-xl border transition-all ${
                   enabled 
-                    ? 'bg-green-500/10 border-green-500/30 shadow-lg' 
-                    : 'bg-slate-800/30 border-slate-600/30'
+                    ? 'bg-red-600/10 border-red-600/30 shadow-lg' 
+                    : 'bg-neutral-900/30 border-neutral-700/30'
                 }`}
                 whileHover={{ scale: 1.05 }}
               >
                 <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{labels[key]?.emoji}</div>
                 <div className={`font-bold text-lg sm:text-xl mb-1 ${
-                  enabled ? 'text-green-400' : 'text-red-400'
+                  enabled ? 'text-red-500' : 'text-red-400'
                 }`}>
                   {enabled ? '✅' : '❌'}
                 </div>
-                <div className="text-slate-300 text-xs sm:text-sm font-medium">{labels[key]?.name}</div>
+                <div className="text-neutral-300 text-xs sm:text-sm font-medium">{labels[key]?.name}</div>
               </motion.div>
             );
           })}
         </div>
         
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-full border border-green-500/30">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-green-400 text-xs sm:text-sm font-bold">Changes applied instantly • MongoDB real-time sync</span>
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600/20 to-red-600/20 rounded-full border border-red-600/30">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-red-500 text-xs sm:text-sm font-bold">Changes applied instantly • MongoDB real-time sync</span>
           </div>
         </div>
       </div>
@@ -664,28 +664,28 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
               <Moon size={16} />
               Theme (Dark Mode Only)
             </label>
             <div className="space-y-3">
               <motion.div 
-                className="p-4 rounded-xl border border-blue-500 bg-gradient-to-r from-slate-600/10 to-slate-800/10 shadow-lg"
+                className="p-4 rounded-xl border border-red-600 bg-gradient-to-r from-neutral-700/10 to-neutral-900/10 shadow-lg"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-r from-slate-600/20 to-slate-800/20 text-white shadow-md">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-neutral-700/20 to-neutral-900/20 text-white shadow-md">
                     <Moon size={18} />
                   </div>
                   <div className="flex-1">
                     <div className="text-white font-medium flex items-center gap-2">
                       Dark Mode
-                      <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+                      <span className="text-xs bg-red-600/20 text-red-500 px-2 py-1 rounded-full border border-red-600/30">
                         Active
                       </span>
                     </div>
-                    <div className="text-slate-400 text-sm">Perfect for gym environments - Professional experience</div>
+                    <div className="text-neutral-400 text-sm">Perfect for gym environments - Professional experience</div>
                   </div>
-                  <div className="text-blue-400 text-xl">✓</div>
+                  <div className="text-red-500 text-xl">✓</div>
                 </div>
               </motion.div>
             </div>
@@ -699,14 +699,14 @@ export default function Settings() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
               <Globe size={16} />
               Language
             </label>
             <select
               value={settings.preferences.language}
               onChange={(e) => handleSettingChange('preferences', 'language', e.target.value)}
-              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+              className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
             >
               <option value="en">🇺🇸 English</option>
               <option value="es">🇪🇸 Spanish</option>
@@ -718,7 +718,7 @@ export default function Settings() {
         
         <div className="mt-4 p-3 bg-green-900/20 border border-green-700/50 rounded-lg">
           <div className="text-green-300 text-sm flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             <span>Dark mode is permanently enabled • Professional gym experience • Real-time MongoDB sync</span>
           </div>
         </div>
@@ -730,16 +730,16 @@ export default function Settings() {
           </div>
           <div className="grid grid-cols-3 gap-3 text-xs">
             <div className="text-center">
-              <div className="text-blue-400 font-bold">{realTimeStats.totalWorkouts}</div>
-              <div className="text-slate-300">Total Workouts</div>
+              <div className="text-red-500 font-bold">{realTimeStats.totalWorkouts}</div>
+              <div className="text-neutral-300">Total Workouts</div>
             </div>
             <div className="text-center">
-              <div className="text-green-400 font-bold">{realTimeStats.totalMeals}</div>
-              <div className="text-slate-300">Total Meals</div>
+              <div className="text-red-500 font-bold">{realTimeStats.totalMeals}</div>
+              <div className="text-neutral-300">Total Meals</div>
             </div>
             <div className="text-center">
               <div className="text-yellow-400 font-bold">{realTimeStats.totalPlans}</div>
-              <div className="text-slate-300">Total Plans</div>
+              <div className="text-neutral-300">Total Plans</div>
             </div>
           </div>
         </div>
@@ -756,58 +756,58 @@ export default function Settings() {
       case 'data': return (
         <div className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="p-4 bg-neutral-900/40 rounded-lg border border-neutral-700/30">
               <h4 className="text-white font-medium mb-3 flex items-center gap-2">
                 <Database size={16} />
                 Data Storage Status
               </h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-300">MongoDB Connection:</span>
-                  <span className={isOnline ? 'text-green-400' : 'text-red-400'}>
+                  <span className="text-neutral-300">MongoDB Connection:</span>
+                  <span className={isOnline ? 'text-red-500' : 'text-red-400'}>
                     {isOnline ? '✅ Connected' : '❌ Offline'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Auto Backup:</span>
-                  <span className="text-green-400">✅ Enabled</span>
+                  <span className="text-neutral-300">Auto Backup:</span>
+                  <span className="text-red-500">✅ Enabled</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Cross-Device Sync:</span>
-                  <span className="text-green-400">✅ Active</span>
+                  <span className="text-neutral-300">Cross-Device Sync:</span>
+                  <span className="text-red-500">✅ Active</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Data Retention:</span>
-                  <span className="text-blue-400">1 Year</span>
+                  <span className="text-neutral-300">Data Retention:</span>
+                  <span className="text-red-500">1 Year</span>
                 </div>
               </div>
             </div>
             
-            <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-600/30">
+            <div className="p-4 bg-neutral-900/40 rounded-lg border border-neutral-700/30">
               <h4 className="text-white font-medium mb-3 flex items-center gap-2">
                 <Clock size={16} />
                 Real-Time Sync Status
               </h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Last Sync:</span>
-                  <span className="text-green-400">
+                  <span className="text-neutral-300">Last Sync:</span>
+                  <span className="text-red-500">
                     {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Never'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Sync Status:</span>
+                  <span className="text-neutral-300">Sync Status:</span>
                   <span className={`${statusDisplay.color.split(' ')[0]}`}>
                     {statusDisplay.text}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Auto-Sync:</span>
-                  <span className="text-green-400">✅ Every 30s</span>
+                  <span className="text-neutral-300">Auto-Sync:</span>
+                  <span className="text-red-500">✅ Every 30s</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-300">Data Source:</span>
-                  <span className="text-blue-400">MongoDB Atlas</span>
+                  <span className="text-neutral-300">Data Source:</span>
+                  <span className="text-red-500">MongoDB Atlas</span>
                 </div>
               </div>
             </div>
@@ -820,23 +820,23 @@ export default function Settings() {
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400">{realTimeStats.totalWorkouts}</div>
-                <div className="text-slate-300">Workouts Stored</div>
+                <div className="text-2xl font-bold text-red-500">{realTimeStats.totalWorkouts}</div>
+                <div className="text-neutral-300">Workouts Stored</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">{realTimeStats.totalMeals}</div>
-                <div className="text-slate-300">Meals Logged</div>
+                <div className="text-2xl font-bold text-red-500">{realTimeStats.totalMeals}</div>
+                <div className="text-neutral-300">Meals Logged</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400">{realTimeStats.totalPlans}</div>
-                <div className="text-slate-300">Plans Created</div>
+                <div className="text-2xl font-bold text-red-600">{realTimeStats.totalPlans}</div>
+                <div className="text-neutral-300">Plans Created</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-400">{realTimeStats.membershipDays}</div>
-                <div className="text-slate-300">Days Active</div>
+                <div className="text-neutral-300">Days Active</div>
               </div>
             </div>
-            <div className="mt-3 text-xs text-center text-slate-400">
+            <div className="mt-3 text-xs text-center text-neutral-400">
               All data is stored securely in MongoDB and synced in real-time across all your devices
             </div>
           </div>
@@ -845,8 +845,8 @@ export default function Settings() {
       
       default: return (
         <div className="text-center py-8">
-          <div className="text-slate-400 mb-2">Coming Soon</div>
-          <div className="text-slate-500 text-sm">This section is under development</div>
+          <div className="text-neutral-400 mb-2">Coming Soon</div>
+          <div className="text-neutral-500 text-sm">This section is under development</div>
         </div>
       );
     }
@@ -858,8 +858,8 @@ export default function Settings() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-slate-400">Loading real-time settings...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-neutral-400">Loading real-time settings...</p>
         </div>
       </div>
     );
@@ -868,7 +868,7 @@ export default function Settings() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Enhanced Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-cyan-900/10"></div>
         <div className="relative z-10 p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -878,7 +878,7 @@ export default function Settings() {
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mb-1" style={{ fontFamily: 'var(--font-heading)' }}>
                   💪 GYM SETTINGS
                 </h1>
-                <p className="text-slate-300 text-sm sm:text-base">Professional Configuration • Real-Time MongoDB Sync</p>
+                <p className="text-neutral-300 text-sm sm:text-base">Professional Configuration • Real-Time MongoDB Sync</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
@@ -886,7 +886,7 @@ export default function Settings() {
                 <div className="w-2 h-2 bg-current rounded-full animate-pulse"></div>
                 {statusDisplay.icon} {statusDisplay.text}
               </div>
-              <div className="px-3 py-2 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+              <div className="px-3 py-2 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
                 🔄 AUTO-SYNC
               </div>
             </div>
@@ -901,7 +901,7 @@ export default function Settings() {
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
           disabled={isSaving}
-          className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full shadow-xl shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-3 text-sm sm:text-base"
+          className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-full shadow-xl shadow-red-600/25 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-3 text-sm sm:text-base"
         >
           {isSaving ? (
             <div className="animate-spin w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full" />
@@ -914,8 +914,8 @@ export default function Settings() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="lg:col-span-1">
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
-            <div className="p-4 sm:p-6 border-b border-slate-700/50">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl">
+            <div className="p-4 sm:p-6 border-b border-neutral-800/50">
               <div className="flex items-center gap-3 mb-2">
                 <div className="text-xl sm:text-2xl">🎛️</div>
                 <h3 className="font-black text-white text-sm sm:text-base" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -923,10 +923,10 @@ export default function Settings() {
                 </h3>
               </div>
               <div className="flex items-center gap-2">
-                <div className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">
+                <div className="px-2 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
                   LIVE
                 </div>
-                <div className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/30">
+                <div className="px-2 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
                   MONGODB
                 </div>
               </div>
@@ -941,11 +941,11 @@ export default function Settings() {
                   className={`w-full flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-4 rounded-xl transition-all duration-300 ${
                     activeTab === tab.id
                       ? `bg-gradient-to-r ${tab.color}/20 border border-white/20 text-white shadow-lg backdrop-blur-sm`
-                      : 'text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent'
+                      : 'text-neutral-300 hover:text-white hover:bg-neutral-800/50 border border-transparent'
                   }`}
                 >
                   <div className={`p-2 rounded-lg transition-all ${
-                    activeTab === tab.id ? 'bg-white/10 shadow-md' : 'bg-slate-700/50'
+                    activeTab === tab.id ? 'bg-white/10 shadow-md' : 'bg-neutral-800/50'
                   }`}>
                     <tab.icon size={16} />
                   </div>
@@ -965,7 +965,7 @@ export default function Settings() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl"
+            className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl"
           >
             <div className="absolute inset-0 opacity-5">
               <div className={`w-full h-full bg-gradient-to-r ${settingsTabs.find(tab => tab.id === activeTab)?.color}`}></div>
@@ -983,16 +983,16 @@ export default function Settings() {
                         <h3 className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                           {settingsTabs.find(tab => tab.id === activeTab)?.label}
                         </h3>
-                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30 animate-pulse w-fit">
+                        <span className="text-xs bg-red-600/20 text-red-500 px-2 py-1 rounded-full border border-red-600/30 animate-pulse w-fit">
                           🔥 LIVE
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-400 mt-1">Professional Configuration • Real-Time MongoDB • Cross-Device Sync</p>
+                      <p className="text-xs sm:text-sm text-neutral-400 mt-1">Professional Configuration • Real-Time MongoDB • Cross-Device Sync</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs text-slate-400">Last Sync</div>
-                    <div className="text-xs sm:text-sm text-green-400 font-bold">
+                    <div className="text-xs text-neutral-400">Last Sync</div>
+                    <div className="text-xs sm:text-sm text-red-500 font-bold">
                       {realTimeStats.lastSync ? new Date(realTimeStats.lastSync).toLocaleTimeString() : 'Loading...'}
                     </div>
                   </div>

@@ -685,7 +685,7 @@ export default function Home() {
               className="relative group cursor-pointer"
               onClick={() => navigate('/library')}
             >
-              <div className="relative overflow-hidden bg-zinc-900 border border-emerald-500 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative h-[220px] sm:h-[400px] lg:h-[600px] overflow-hidden">
                     <OptimizedImage 
@@ -697,13 +697,13 @@ export default function Home() {
                     
                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-8 sm:left-8 sm:right-8">
                       <div className="flex items-center gap-1 sm:gap-4">
-                        <div className="bg-black/90 border border-emerald-500 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
-                          <div className="text-emerald-500 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Track</div>
+                        <div className="bg-black/90 border border-red-600 px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
+                          <div className="text-red-600 text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Track</div>
                           <div className="text-white text-[10px] sm:text-2xl font-black leading-tight mt-0.5">LIVE</div>
                         </div>
                         <div className="bg-black/90 border border-white px-1.5 py-1 sm:px-6 sm:py-3 flex-1">
                           <div className="text-white text-[7px] sm:text-xs font-black tracking-wide uppercase leading-none">Progress</div>
-                          <div className="text-emerald-500 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">REAL-TIME</div>
+                          <div className="text-red-600 text-[10px] sm:text-2xl font-black leading-tight mt-0.5">REAL-TIME</div>
                         </div>
                       </div>
                     </div>
@@ -712,11 +712,11 @@ export default function Home() {
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center relative bg-black">
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-emerald-500" />
-                        <span className="text-[9px] sm:text-sm font-black text-emerald-500 tracking-wider uppercase">Workout Tracking</span>
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-600" />
+                        <span className="text-[9px] sm:text-sm font-black text-red-600 tracking-wider uppercase">Workout Tracking</span>
                       </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-emerald-500 bg-zinc-900 border sm:border-2 border-emerald-500 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-emerald-500" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-600 bg-zinc-900 border sm:border-2 border-red-600 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-600" />
                         SMART LOGGING
                       </span>
                     </div>
@@ -726,13 +726,13 @@ export default function Home() {
                         LOG EVERY
                       </span>
                       <br />
-                      <span className="text-emerald-500">
+                      <span className="text-red-600">
                         REP & SET
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Track <span className="text-emerald-500 font-black">every workout detail</span> with precision logging and real-time sync.
+                      Track <span className="text-red-600 font-black">every workout detail</span> with precision logging and real-time sync.
                     </p>
                   </div>
                 </div>
@@ -748,16 +748,16 @@ export default function Home() {
               className="relative group cursor-pointer"
               onClick={() => navigate('/analytics')}
             >
-              <div className="relative overflow-hidden bg-zinc-900 border border-purple-600 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
+              <div className="relative overflow-hidden bg-zinc-900 border border-red-800 sm:border-4 shadow-2xl transition-all duration-300 hover:border-white" style={{ contain: 'layout style paint' }}>
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="p-3 sm:p-8 lg:p-16 flex flex-col justify-center order-2 lg:order-1 relative bg-black">
                     <div className="mb-3 sm:mb-8">
                       <div className="flex items-center gap-1.5 sm:gap-4 mb-2 sm:mb-6">
-                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-purple-600" />
-                        <span className="text-[9px] sm:text-sm font-black text-purple-600 tracking-wider uppercase">Analytics</span>
+                        <div className="w-0.5 sm:w-2 h-6 sm:h-16 bg-red-800" />
+                        <span className="text-[9px] sm:text-sm font-black text-red-800 tracking-wider uppercase">Analytics</span>
                       </div>
-                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-purple-600 bg-zinc-900 border sm:border-2 border-purple-600 uppercase tracking-wide">
-                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-purple-600" />
+                      <span className="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 sm:px-6 sm:py-3 text-[8px] sm:text-sm font-black text-red-800 bg-zinc-900 border sm:border-2 border-red-800 uppercase tracking-wide">
+                        <div className="w-1 h-1 sm:w-2 sm:h-2 bg-red-800" />
                         DATA DRIVEN
                       </span>
                     </div>
@@ -767,13 +767,13 @@ export default function Home() {
                         VISUALIZE YOUR
                       </span>
                       <br />
-                      <span className="text-purple-600">
+                      <span className="text-red-800">
                         PROGRESS
                       </span>
                     </h3>
                     
                     <p className="text-zinc-400 text-[11px] sm:text-lg lg:text-xl leading-snug sm:leading-relaxed font-medium">
-                      Monitor <span className="text-purple-600 font-black">detailed analytics</span> with charts, trends, and performance insights.
+                      Monitor <span className="text-red-800 font-black">detailed analytics</span> with charts, trends, and performance insights.
                     </p>
                   </div>
                   
@@ -896,19 +896,19 @@ export default function Home() {
           <div className={`transition-all duration-700 delay-950 ${isVisible['body-fat'] ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ willChange: isVisible['body-fat'] ? 'auto' : 'transform, opacity' }}>
             <div className="text-center mb-6 sm:mb-12 px-3">
               <div className="inline-flex items-center gap-1.5 sm:gap-4 mb-3 sm:mb-6">
-                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-cyan-500" />
-                <span className="text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-cyan-500 uppercase">Body Composition</span>
-                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-cyan-500" />
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-red-600" />
+                <span className="text-[9px] sm:text-sm font-black tracking-[0.15em] sm:tracking-[0.3em] text-red-600 uppercase">Body Composition</span>
+                <div className="w-8 sm:w-24 h-0.5 sm:h-1 bg-red-600" />
               </div>
               
               <h2 className="text-2xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 uppercase leading-[0.85]">
                 <span className="text-white">NATURAL BODY FAT</span>
                 <br />
-                <span className="text-cyan-500">PERCENTAGE GUIDE</span>
+                <span className="text-red-600">PERCENTAGE GUIDE</span>
               </h2>
               
               <p className="text-xs sm:text-lg text-zinc-400 max-w-3xl mx-auto leading-snug font-medium">
-                Understand how <span className="text-cyan-500 font-black">natural men look</span> at different body fat percentages
+                Understand how <span className="text-red-600 font-black">natural men look</span> at different body fat percentages
               </p>
             </div>
 
@@ -993,15 +993,15 @@ export default function Home() {
 
             {/* Bottom Info */}
             <div className="mt-8 sm:mt-12 px-3 max-w-4xl mx-auto">
-              <div className="bg-zinc-900 border-2 border-cyan-500 p-4 sm:p-8">
+              <div className="bg-zinc-900 border-2 border-red-600 p-4 sm:p-8">
                 <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black border-2 border-cyan-500 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black border-2 border-red-600 flex items-center justify-center flex-shrink-0">
                     <span className="text-xl sm:text-2xl">💡</span>
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm sm:text-xl font-black text-white uppercase mb-2 sm:mb-3">Natural Physique Reality</h4>
                     <p className="text-[11px] sm:text-base text-zinc-400 leading-relaxed font-medium">
-                      These images represent <span className="text-cyan-500 font-black">natural, drug-free physiques</span> at various body fat percentages. 
+                      These images represent <span className="text-red-600 font-black">natural, drug-free physiques</span> at various body fat percentages. 
                       For optimal health and testosterone, most natural men thrive between <span className="text-lime-500 font-black">12-15%</span>. 
                       Going below 10% requires extreme discipline and may not be sustainable long-term. 
                       Focus on <span className="text-white font-black">progressive overload, consistent training, and proper nutrition</span> for best results.
@@ -1026,13 +1026,13 @@ export default function Home() {
                         REST DAY
                       </h2>
                       <div className="flex items-center justify-center gap-2 mt-3">
-                        <div className="w-2 h-2 bg-cyan-500 animate-pulse" />
-                        <p className="text-xs sm:text-sm text-cyan-500 font-black uppercase tracking-wide">Recovery Active</p>
+                        <div className="w-2 h-2 bg-red-600 animate-pulse" />
+                        <p className="text-xs sm:text-sm text-red-600 font-black uppercase tracking-wide">Recovery Active</p>
                       </div>
                     </div>
                   </div>
                   <p className="text-xs sm:text-base text-zinc-400 max-w-2xl mx-auto font-medium leading-relaxed mt-6">
-                    Muscles grow during rest. <span className="text-cyan-500 font-black">Recover, stretch, fuel</span> for tomorrow.
+                    Muscles grow during rest. <span className="text-red-600 font-black">Recover, stretch, fuel</span> for tomorrow.
                   </p>
                 </div>
 
@@ -1040,7 +1040,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
                   {/* Card 1: Active Recovery */}
                   <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
-                    <div className="relative bg-zinc-900 border-2 border-blue-500 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
+                    <div className="relative bg-zinc-900 border-2 border-red-600 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
                       {/* Image */}
                       <div className="relative h-[320px] sm:h-[400px] overflow-hidden">
                         <OptimizedImage 
@@ -1062,19 +1062,19 @@ export default function Home() {
                       <div className="p-4 sm:p-6 bg-zinc-900">
                         <ul className="space-y-2 text-xs sm:text-sm text-zinc-400 font-medium">
                           <li className="flex items-start gap-2">
-                            <span className="text-blue-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Light cardio (20-30 min walk)</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-blue-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Foam rolling techniques</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-blue-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Mobility work & yoga</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-blue-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Swimming or cycling (low intensity)</span>
                           </li>
                         </ul>
@@ -1084,7 +1084,7 @@ export default function Home() {
 
                   {/* Card 2: Stretching Protocol */}
                   <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
-                    <div className="relative bg-zinc-900 border-2 border-purple-500 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
+                    <div className="relative bg-zinc-900 border-2 border-red-700 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
                       {/* Image */}
                       <div className="relative h-[320px] sm:h-[400px] overflow-hidden">
                         <OptimizedImage 
@@ -1106,19 +1106,19 @@ export default function Home() {
                       <div className="p-4 sm:p-6 bg-zinc-900">
                         <ul className="space-y-2 text-xs sm:text-sm text-zinc-400 font-medium">
                           <li className="flex items-start gap-2">
-                            <span className="text-purple-500 mt-1 font-black">•</span>
+                            <span className="text-red-700 mt-1 font-black">•</span>
                             <span>Full body stretch routine (15 min)</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-purple-500 mt-1 font-black">•</span>
+                            <span className="text-red-700 mt-1 font-black">•</span>
                             <span>Focus on tight muscle groups</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-purple-500 mt-1 font-black">•</span>
+                            <span className="text-red-700 mt-1 font-black">•</span>
                             <span>Hold each stretch 30-60 seconds</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-purple-500 mt-1 font-black">•</span>
+                            <span className="text-red-700 mt-1 font-black">•</span>
                             <span>Deep breathing & morning stretches</span>
                           </li>
                         </ul>
@@ -1128,7 +1128,7 @@ export default function Home() {
 
                   {/* Card 3: Recovery Nutrition */}
                   <div className="relative group transform transition-all duration-300 hover:translate-y-[-4px]">
-                    <div className="relative bg-zinc-900 border-2 border-green-500 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
+                    <div className="relative bg-zinc-900 border-2 border-red-600 shadow-2xl overflow-hidden group-hover:border-lime-500 transition-all duration-300">
                       {/* Image */}
                       <div className="relative h-[320px] sm:h-[400px] overflow-hidden">
                         <OptimizedImage 
@@ -1150,19 +1150,19 @@ export default function Home() {
                       <div className="p-4 sm:p-6 bg-zinc-900">
                         <ul className="space-y-2 text-xs sm:text-sm text-zinc-400 font-medium">
                           <li className="flex items-start gap-2">
-                            <span className="text-green-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Protein: 0.8-1g per lb bodyweight</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-green-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Hydration: 1 gallon water minimum</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-green-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Anti-inflammatory foods (berries, fish)</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className="text-green-500 mt-1 font-black">•</span>
+                            <span className="text-red-600 mt-1 font-black">•</span>
                             <span>Sleep: 7-9 hours for muscle repair</span>
                           </li>
                         </ul>
@@ -1177,7 +1177,7 @@ export default function Home() {
                     <p className="text-sm sm:text-xl italic text-zinc-400 font-medium transition-opacity duration-500">
                       "{recoveryQuotes[recoveryQuoteIndex]}"
                     </p>
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-cyan-500" />
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-red-600" />
                   </div>
                 </div>
 

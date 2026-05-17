@@ -64,12 +64,12 @@ const DashboardImageCard = ({
       <div className="relative h-64 xs:h-72 sm:h-80 md:h-96 lg:h-[420px] xl:h-[450px]">
         {/* Skeleton Loader */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-slate-800 animate-pulse">
-            <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800">
+          <div className="absolute inset-0 bg-neutral-900 animate-pulse">
+            <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-slate-600 border-t-slate-400 rounded-full animate-spin"></div>
-                  <div className="text-slate-400 text-xs sm:text-sm font-medium">Loading...</div>
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-neutral-700 border-t-neutral-400 rounded-full animate-spin"></div>
+                  <div className="text-neutral-400 text-xs sm:text-sm font-medium">Loading...</div>
                 </div>
               </div>
             </div>

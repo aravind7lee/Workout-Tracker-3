@@ -9,7 +9,7 @@ export default function ParticleBackground() {
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full animate-pulse"
+            className="absolute w-2 h-2 bg-red-600/20 rounded-full animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,

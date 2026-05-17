@@ -61,7 +61,7 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
     <div className="flex flex-col items-center space-y-3">
       <div 
         onClick={() => fileInputRef.current?.click()}
-        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-slate-600 hover:border-blue-500 transition-all duration-300"
+        className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-neutral-700 hover:border-red-600 transition-all duration-300"
       >
         {currentImage ? (
           <img 
@@ -70,10 +70,10 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors duration-300">
+          <div className="w-full h-full bg-neutral-800 flex items-center justify-center group-hover:bg-neutral-700 transition-colors duration-300">
             <div className="text-center">
-              <div className="text-3xl text-slate-400 mb-1">👤</div>
-              <div className="text-xs text-slate-400">Click to upload</div>
+              <div className="text-3xl text-neutral-400 mb-1">👤</div>
+              <div className="text-xs text-neutral-400">Click to upload</div>
             </div>
           </div>
         )}
@@ -106,7 +106,7 @@ const ImageUploader = ({ currentImage, onImageUpdate }) => {
       {message && (
         <div className={`text-sm px-3 py-1 rounded-full ${
           message.includes('✅') 
-            ? 'bg-green-500/20 text-green-400' 
+            ? 'bg-red-600/20 text-red-500' 
             : 'bg-red-500/20 text-red-400'
         }`}>
           {message}

@@ -24,33 +24,33 @@
   --font-body: "Inter", sans-serif;
 
   /* Ultra Premium Dark Theme */
-  --bg: #050810;
-  --bg-soft: rgba(8, 15, 26, 0.9);
-  --bg-card: rgba(15, 23, 42, 0.8);
-  --bg-accent: rgba(0, 212, 255, 0.1);
-  --bg-gradient-primary: linear-gradient(135deg, #050810 0%, #0f172a 25%, #1e293b 50%, #0f172a 75%, #050810 100%);
+  --bg: #000000;
+  --bg-soft: #0D0D0D;
+  --bg-card: #1A1A1A;
+  --bg-accent: rgba(255, 0, 0, 0.1);
+  --bg-gradient-primary: linear-gradient(135deg, #000000 0%, #0D0D0D 25%, #1A1A1A 50%, #0D0D0D 75%, #000000 100%);
 
   /* Ultra Premium Text Colors */
-  --text: #f8fafc;
-  --text-secondary: #e2e8f0;
-  --heading: #ffffff;
-  --muted: #94a3b8;
+  --text: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --heading: #FFFFFF;
+  --muted: #808080;
   --text-glow: 0 0 10px rgba(248, 250, 252, 0.3);
   --heading-glow: 0 0 20px rgba(255, 255, 255, 0.4);
 
   /* Advanced Neon Accent System */
-  --accent: #00d4ff;
-  --accent-secondary: #0ea5e9;
-  --accent-tertiary: #8b5cf6;
-  --accent-quaternary: #00ff88;
-  --accent-glow: rgba(0, 212, 255, 0.5);
-  --accent-glow-strong: rgba(0, 212, 255, 0.8);
-  --accent-glow-subtle: rgba(0, 212, 255, 0.2);
-  --accent-contrast: #000000;
+  --accent: #FF0000;
+  --accent-secondary: #8B0000;
+  --accent-tertiary: #E60000;
+  --accent-quaternary: #CC0000;
+  --accent-glow: rgba(255, 0, 0, 0.5);
+  --accent-glow-strong: rgba(255, 0, 0, 0.8);
+  --accent-glow-subtle: rgba(255, 0, 0, 0.2);
+  --accent-contrast: #FFFFFF;
 
   /* Premium Borders & Shadows */
-  --panel-border: rgba(71, 85, 105, 0.4);
-  --border-glow: rgba(0, 212, 255, 0.3);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(255, 0, 0, 0.3);
   --border-premium: rgba(255, 255, 255, 0.1);
   --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.7);
   --shadow-glow: 0 0 30px var(--accent-glow);
@@ -59,10 +59,10 @@
 
   /* Advanced Button System */
   --btn-primary-bg: linear-gradient(135deg, var(--accent), var(--accent-secondary), var(--accent-tertiary));
-  --btn-secondary-bg: rgba(15, 23, 42, 0.7);
+  --btn-secondary-bg: rgba(26, 26, 26, 0.7);
   --btn-secondary-border: var(--accent);
   --btn-secondary-text: var(--accent);
-  --btn-ghost-bg: rgba(0, 212, 255, 0.05);
+  --btn-ghost-bg: rgba(255, 0, 0, 0.05);
 
   /* Enhanced State Colors */
   --success: #00ff88;
@@ -83,16 +83,16 @@
 
 /* Premium Dark Theme Class */
 .dark {
-  --bg: #0a0e1a;
-  --bg-soft: rgba(15, 23, 42, 0.85);
-  --bg-card: rgba(30, 41, 59, 0.75);
-  --bg-accent: rgba(0, 212, 255, 0.08);
-  --text: #f1f5f9;
-  --text-secondary: #e2e8f0;
-  --heading: #ffffff;
-  --muted: #94a3b8;
-  --accent: #00d4ff;
-  --accent-glow: rgba(0, 212, 255, 0.4);
+  --bg: #000000;
+  --bg-soft: #0D0D0D;
+  --bg-card: #1A1A1A;
+  --bg-accent: rgba(255, 0, 0, 0.08);
+  --text: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --heading: #FFFFFF;
+  --muted: #808080;
+  --accent: #FF0000;
+  --accent-glow: rgba(255, 0, 0, 0.4);
   --panel-border: rgba(71, 85, 105, 0.3);
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
@@ -173,11 +173,11 @@ option,
   font-family: var(--font-heading) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
-  background: linear-gradient(135deg, #ffffff, #00d4ff, #8b5cf6);
+  background: linear-gradient(135deg, #ffffff, #FF0000, #8B0000);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+  text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
 }
 
 .text-premium {
@@ -187,16 +187,16 @@ option,
 
 .text-accent-glow {
   color: var(--accent);
-  text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  text-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
 
 /* Ultra Premium Body */
 body {
   background: 
-    radial-gradient(circle at 15% 15%, rgba(0, 212, 255, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 50% 20%, rgba(0, 255, 136, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(255, 71, 87, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 15% 15%, rgba(255, 0, 0, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(139, 0, 0, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 20%, rgba(255, 0, 0, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.06) 0%, transparent 40%),
     var(--bg-gradient-primary);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -231,8 +231,8 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle 800px at 10% 10%, rgba(0, 212, 255, 0.03), transparent),
-    radial-gradient(circle 600px at 90% 90%, rgba(139, 92, 246, 0.02), transparent);
+    radial-gradient(circle 800px at 10% 10%, rgba(255, 0, 0, 0.03), transparent),
+    radial-gradient(circle 600px at 90% 90%, rgba(139, 0, 0, 0.02), transparent);
   pointer-events: none;
   z-index: -1;
 }
@@ -337,25 +337,25 @@ select:focus {
   body {
     background: radial-gradient(
         ellipse 1200px 800px at 20% 20%,
-        rgba(0, 212, 255, 0.15) 0%,
+        rgba(255, 0, 0, 0.15) 0%,
         transparent 60%
       ),
       radial-gradient(
         ellipse 1000px 600px at 80% 80%,
-        rgba(139, 92, 246, 0.1) 0%,
+        rgba(139, 0, 0, 0.1) 0%,
         transparent 60%
       ),
       radial-gradient(
         ellipse 800px 400px at 40% 60%,
-        rgba(0, 255, 136, 0.08) 0%,
+        rgba(255, 0, 0, 0.08) 0%,
         transparent 60%
       ),
       linear-gradient(
         135deg,
-        #0a0e1a 0%,
-        #1e293b 30%,
-        #334155 70%,
-        #0f172a 100%
+        #000000 0%,
+        #0D0D0D 30%,
+        #1A1A1A 70%,
+        #000000 100%
       );
   }
 }
@@ -384,12 +384,12 @@ select:focus {
 }
 
 /* Simple Hover Effects */
-.glow-cyan {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.glow-red {
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
 }
 
-.glow-cyan:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+.glow-red:hover {
+  box-shadow: 0 6px 16px rgba(255, 0, 0, 0.5);
 }
 
 .glow-purple {
@@ -400,18 +400,18 @@ select:focus {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Deep Slate Components */
+/* Deep Slate Components -> Now Red Theme Components */
 .nav-premium {
   background: var(--bg-soft);
-  border-bottom: 1px solid var(--panel-border);
-  box-shadow: var(--shadow-soft);
+  border-bottom: 1px solid var(--accent);
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);
 }
 
 .modal-premium {
   background: var(--bg-soft);
-  border: 1px solid var(--panel-border);
+  border: 1px solid var(--accent);
   border-radius: 12px;
-  box-shadow: var(--shadow-floating);
+  box-shadow: 0 8px 32px rgba(255, 0, 0, 0.2);
 }
 
 .badge-premium {
@@ -521,7 +521,7 @@ select:focus {
 *:focus-visible {
   outline: 2px solid var(--accent) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2) !important;
 }
 
 @media (max-width: 640px) {

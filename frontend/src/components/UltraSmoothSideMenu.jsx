@@ -128,7 +128,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
           {/* Buttery smooth sidebar */}
           <div
             ref={sidebarRef}
-            className="fixed top-0 right-0 h-screen w-80 max-w-[90vw] sm:max-w-[85vw] z-50 overflow-y-auto overflow-x-hidden bg-slate-900/95 border-l border-slate-700"
+            className="fixed top-0 right-0 h-screen w-80 max-w-[90vw] sm:max-w-[85vw] z-50 overflow-y-auto overflow-x-hidden bg-black/95 border-l border-neutral-800"
             style={{
               transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
               transition: 'transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -144,7 +144,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
             <div className="relative h-full flex flex-col">
               {/* Header Section */}
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700/50 flex-shrink-0">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-neutral-800/50 flex-shrink-0">
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleMenuItemClick('/')}
@@ -167,11 +167,11 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     <h2 className="text-xl font-bold text-white font-heading">GRIND-X</h2>
                     <div className="flex items-center space-x-2">
                       {connectionStatus.fullyOnline ? (
-                        <Wifi size={12} className="text-green-400" />
+                        <Wifi size={12} className="text-red-500" />
                       ) : (
                         <WifiOff size={12} className="text-red-400" />
                       )}
-                      <span className={`text-xs ${connectionStatus.fullyOnline ? 'text-green-400' : 'text-red-400'}`}>
+                      <span className={`text-xs ${connectionStatus.fullyOnline ? 'text-red-500' : 'text-red-400'}`}>
                         {connectionStatus.mode.toUpperCase()}
                       </span>
                     </div>
@@ -180,14 +180,14 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-full bg-slate-800/50 hover:bg-slate-700/50"
+                  className="p-2 rounded-full bg-neutral-900/50 hover:bg-neutral-800/50"
                   style={{
                     transition: 'background-color 0.06s ease-out',
                     willChange: 'background-color',
                     backfaceVisibility: 'hidden',
                   }}
                 >
-                  <X size={20} className="text-slate-400" />
+                  <X size={20} className="text-neutral-400" />
                 </button>
               </div>
 
@@ -205,8 +205,8 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         onClick={() => handleMenuItemClick(item.to)}
                         className={`w-full flex items-center space-x-4 px-4 py-3 sm:py-4 rounded-xl min-h-[52px] ${
                           isActive 
-                            ? 'bg-blue-500/20 text-white border border-blue-500/30' 
-                            : 'text-slate-300 hover:text-white hover:bg-slate-700/30'
+                            ? 'bg-red-600/20 text-white border border-red-600/30' 
+                            : 'text-neutral-300 hover:text-white hover:bg-neutral-800/30'
                         }`}
                         style={{
                           transition: 'all 0.06s ease-out',
@@ -239,18 +239,18 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                 {/* Profile Section - Inside scrollable area */}
                 {isAuthenticated() && user ? (
-                  <div className="border-t border-slate-700/50 pt-4 mt-4">
-                    <div className="bg-slate-800/30 rounded-xl p-3 sm:p-4">
+                  <div className="border-t border-neutral-800/50 pt-4 mt-4">
+                    <div className="bg-neutral-900/30 rounded-xl p-3 sm:p-4">
                       <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                         <div>
                           {user?.profileImage ? (
                             <img
                               src={user.profileImage}
                               alt="Profile"
-                              className="w-12 h-12 rounded-full object-cover border-2 border-blue-500/30"
+                              className="w-12 h-12 rounded-full object-cover border-2 border-red-600/30"
                             />
                           ) : (
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white font-bold">
                               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                             </div>
                           )}
@@ -260,12 +260,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         <h3 className="text-white font-medium truncate">
                           {user?.name || 'User'}
                         </h3>
-                        <p className="text-slate-400 text-sm truncate">
+                        <p className="text-neutral-400 text-sm truncate">
                           {user?.email || ''}
                         </p>
                         <div className="flex items-center space-x-1 mt-1">
-                          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                          <span className="text-xs text-green-400">Online</span>
+                          <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                          <span className="text-xs text-red-500">Online</span>
                         </div>
                       </div>
                       </div>
@@ -273,7 +273,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                       <div className="space-y-2">
                         <button
                           onClick={() => handleMenuItemClick('/profile')}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 min-h-[44px]"
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800/50 min-h-[44px]"
                           style={{
                             transition: 'all 0.06s ease-out',
                             willChange: 'background-color, color',
@@ -286,7 +286,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                         <button
                           onClick={() => handleMenuItemClick('/settings')}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 min-h-[44px]"
+                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800/50 min-h-[44px]"
                           style={{
                             transition: 'all 0.06s ease-out',
                             willChange: 'background-color, color',
@@ -298,7 +298,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         </button>
 
                         {/* Logout Button - Highlighted */}
-                        <div className="pt-2 border-t border-slate-600/30 mt-3">
+                        <div className="pt-2 border-t border-neutral-700/30 mt-3">
                           <button
                             onClick={handleLogout}
                             className="w-full flex items-center space-x-3 px-3 py-4 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 min-h-[48px] border border-red-500/20"
@@ -316,7 +316,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="border-t border-slate-700/50 pt-4 mt-4">
+                  <div className="border-t border-neutral-800/50 pt-4 mt-4">
                     <div className="space-y-3">
                       <button
                         onClick={() => handleMenuItemClick('/login')}
@@ -333,7 +333,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                       <button
                         onClick={() => handleMenuItemClick('/register')}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 min-h-[48px]"
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-red-700 text-white hover:bg-blue-700 min-h-[48px]"
                         style={{
                           transition: 'background-color 0.06s ease-out',
                           willChange: 'background-color',

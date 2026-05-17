@@ -5,26 +5,26 @@
 /* ===== ROOT VARIABLES (DEEP SLATE THEME) ===== */
 :root {
   /* === BACKGROUNDS === */
-  --bg: #0f172a;                    /* Deep slate background */
-  --bg-soft: #1e293b;              /* Card backgrounds */
-  --bg-accent: #334155;             /* Elevated elements */
+  --bg: #000000;                    /* Black background */
+  --bg-soft: #0D0D0D;              /* Card backgrounds */
+  --bg-accent: #1A1A1A;             /* Elevated elements */
   
   /* === TEXT COLORS === */
-  --text: #cbd5e1;                  /* Secondary text */
-  --heading: #f8fafc;               /* Primary text/headings */
-  --muted: #94a3b8;                 /* Muted text */
-  --link: #06b6d4;                  /* Cyan links */
+  --text: #B3B3B3;                  /* Secondary text */
+  --heading: #FFFFFF;               /* Primary text/headings */
+  --muted: #808080;                 /* Muted text */
+  --link: #FF0000;                  /* Red links */
   
   /* === BORDERS & STRUCTURE === */
-  --panel-border: #475569;          /* Border color */
+  --panel-border: rgba(255, 255, 255, 0.1);          /* Border color */
   
   /* === BRAND ACCENT === */
-  --accent: #06b6d4;                /* Primary accent - cyan */
-  --accent-hover: #0891b2;          /* Darker cyan for hover */
-  --accent-contrast: #ffffff;       /* White text on cyan */
+  --accent: #FF0000;                /* Primary accent - red */
+  --accent-hover: #E60000;          /* Darker red for hover */
+  --accent-contrast: #ffffff;       /* White text on red */
   
   /* === SHADOWS & DEPTH === */
-  --shadow-soft: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-soft: 0 4px 12px rgba(255, 0, 0, 0.1);
   
   /* === STATE COLORS === */
   --success: #10b981;               /* Green */
@@ -53,17 +53,17 @@
   --bg-accent: rgba(59,130,246,0.08); /* Blue accent tint */
   
   /* === TEXT COLORS - MAXIMUM CONTRAST === */
-  --text: #0f172a;                  /* Very dark text - maximum contrast */
+  --text: #000000;                  /* Very dark text - maximum contrast */
   --heading: #020617;               /* Nearly black headings - ultimate visibility */
   --muted: #475569;                 /* Dark gray muted text - still readable */
-  --link: #1d4ed8;                  /* Strong blue links */
+  --link: #FF0000;                  /* Strong blue links */
   
   /* === BORDERS & STRUCTURE === */
   --panel-border: rgba(0,0,0,0.15); /* Stronger borders for better definition */
   
   /* === BRAND ACCENT === */
-  --accent: #1d4ed8;                /* Strong blue accent */
-  --accent-hover: #1e40af;          /* Darker blue for hover */
+  --accent: #FF0000;                /* Strong blue accent */
+  --accent-hover: #E60000;          /* Darker blue for hover */
   --accent-contrast: #ffffff;       /* White text on blue */
   
   /* === SHADOWS & DEPTH === */
@@ -129,13 +129,13 @@
 
 .theme-toggle:hover {
   background: var(--toggle-active-bg);
-  box-shadow: 0 0 0 4px rgba(0,212,255,0.15);
+  box-shadow: 0 0 0 4px rgba(255, 0, 0,0.15);
   transform: translateY(-1px);
 }
 
 .theme-toggle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0,212,255,0.4);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0,0.4);
 }
 
 .theme-toggle[aria-checked="true"] {
@@ -264,7 +264,7 @@
   padding: 12px 24px;
   font-weight: 600;
   transition: all 300ms ease;
-  box-shadow: 0 4px 12px rgba(0,212,255,0.3);
+  box-shadow: 0 4px 12px rgba(255, 0, 0,0.3);
 }
 
 .btn-primary:hover {
@@ -424,7 +424,7 @@ a:hover {
 
 /* Dark mode - simple background */
 :root .navbar .nav-link:hover {
-  background: rgba(0,212,255,0.1);
+  background: rgba(255, 0, 0,0.1);
   border-radius: 8px;
 }
 
@@ -438,7 +438,7 @@ a:hover {
 
 .navbar .nav-link.active {
   color: var(--accent);
-  background: rgba(0,212,255,0.1);
+  background: rgba(255, 0, 0,0.1);
   border: 1px solid var(--accent);
 }
 
@@ -460,7 +460,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Dark mode simple focus */
 :root input:focus, :root textarea:focus, :root select:focus {
-  box-shadow: 0 0 0 3px rgba(0,212,255,0.2);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0,0.2);
 }
 
 /* Light mode - clean focus */
@@ -556,9 +556,9 @@ input::placeholder, textarea::placeholder {
 .dark input:focus-visible,
 .dark textarea:focus-visible,
 .dark select:focus-visible {
-  outline: 2px solid #00d4ff !important;
+  outline: 2px solid #FF0000 !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* Ensure minimum contrast ratios */
@@ -600,48 +600,48 @@ input::placeholder, textarea::placeholder {
 
 /* Dark mode global styles with Deep Slate theme */
 .dark {
-  /* Deep Slate CSS Variables */
-  --bg: #0f172a !important;
-  --bg-soft: #1e293b !important;
-  --bg-card: #1e293b !important;
-  --bg-accent: #334155 !important;
-  --text: #cbd5e1 !important;
-  --text-secondary: #cbd5e1 !important;
-  --heading: #f8fafc !important;
-  --muted: #94a3b8 !important;
-  --accent: #06b6d4 !important;
-  --accent-secondary: #0891b2 !important;
-  --accent-hover: #0891b2 !important;
+  /* Red Gym CSS Variables */
+  --bg: #000000 !important;
+  --bg-soft: #0D0D0D !important;
+  --bg-card: #0D0D0D !important;
+  --bg-accent: #1A1A1A !important;
+  --text: #B3B3B3 !important;
+  --text-secondary: #B3B3B3 !important;
+  --heading: #FFFFFF !important;
+  --muted: #808080 !important;
+  --accent: #FF0000 !important;
+  --accent-secondary: #E60000 !important;
+  --accent-hover: #E60000 !important;
   --accent-contrast: #ffffff !important;
-  --panel-border: #475569 !important;
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-  --shadow-premium: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  --shadow-floating: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
-  --btn-primary-bg: #06b6d4 !important;
-  --btn-secondary-bg: #334155 !important;
-  --btn-secondary-text: #cbd5e1 !important;
+  --panel-border: rgba(255, 255, 255, 0.1) !important;
+  --shadow-soft: 0 4px 12px rgba(255, 0, 0, 0.1) !important;
+  --shadow-premium: 0 8px 24px rgba(255, 0, 0, 0.15) !important;
+  --shadow-floating: 0 12px 32px rgba(255, 0, 0, 0.2) !important;
+  --btn-primary-bg: #FF0000 !important;
+  --btn-secondary-bg: #1A1A1A !important;
+  --btn-secondary-text: #B3B3B3 !important;
   --success: #10b981 !important;
   --danger: #ef4444 !important;
   --warning: #f59e0b !important;
   
   /* Apply background and text */
   --tw-bg-opacity: 1;
-  background-color: #0f172a !important;
+  background-color: #000000 !important;
   color: #cbd5e1 !important;
 }
 
 /* Dark mode containers with Deep Slate colors */
 .dark .bg-white {
-  background-color: #1e293b !important;
+  background-color: #0D0D0D !important;
   border: 1px solid #475569 !important;
 }
 
 .dark .bg-gray-50 {
-  background-color: #334155 !important;
+  background-color: #1A1A1A !important;
 }
 
 .dark .bg-gray-100 {
-  background-color: #334155 !important;
+  background-color: #1A1A1A !important;
 }
 
 .dark .bg-gray-200 {
@@ -649,15 +649,15 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .bg-slate-800 {
-  background-color: #1e293b !important;
+  background-color: #0D0D0D !important;
 }
 
 .dark .bg-slate-700 {
-  background-color: #334155 !important;
+  background-color: #1A1A1A !important;
 }
 
 .dark .bg-slate-900 {
-  background-color: #0f172a !important;
+  background-color: #000000 !important;
 }
 
 .dark .bg-slate-800\/50 {
@@ -702,7 +702,7 @@ input::placeholder, textarea::placeholder {
 .dark input,
 .dark textarea,
 .dark select {
-  background-color: #334155 !important;
+  background-color: #1A1A1A !important;
   border-color: #475569 !important;
   color: #cbd5e1 !important;
 }
@@ -710,18 +710,18 @@ input::placeholder, textarea::placeholder {
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #06b6d4 !important;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2) !important;
 }
 
 /* Dark mode buttons */
 .dark .btn-primary {
-  background: #06b6d4 !important;
+  background: #FF0000 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark .btn-primary:hover {
-  background: #0891b2 !important;
+  background: #8B0000 !important;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
   transform: translateY(-1px) !important;
 }
@@ -741,15 +741,15 @@ input::placeholder, textarea::placeholder {
 /* Dark mode chip pills */
 .dark .chip,
 .dark .badge {
-  background: rgba(0, 212, 255, 0.1) !important;
-  border: 1px solid rgba(0, 212, 255, 0.3) !important;
-  color: #00d4ff !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+  color: #FF0000 !important;
   backdrop-filter: blur(8px);
 }
 
 .dark .chip:hover,
 .dark .badge:hover {
-  background: rgba(6, 182, 212, 0.2) !important;
+  background: rgba(255, 0, 0, 0.2) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -818,7 +818,7 @@ input::placeholder, textarea::placeholder {
 /* Preserve colored stat elements */
 .light-theme .text-blue-400, .light-theme .text-blue-500,
 [data-theme="light"] .text-blue-400, [data-theme="light"] .text-blue-500 {
-  color: #1d4ed8 !important;
+  color: #FF0000 !important;
 }
 
 .light-theme .text-green-400, .light-theme .text-green-500,
@@ -950,29 +950,29 @@ input::placeholder, textarea::placeholder {
 
 /* ===== DEEP SLATE DARK MODE ===== */
 .dark .glassmorphism {
-  background: #1e293b !important;
+  background: #0D0D0D !important;
   border: 1px solid #475569 !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Dark mode neon glow effects */
 .dark .glow-effect {
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), 0 0 40px rgba(255, 0, 0, 0.2) !important;
 }
 
 .dark .glow-effect:hover {
-  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 60px rgba(0, 212, 255, 0.3) !important;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.6), 0 0 60px rgba(255, 0, 0, 0.3) !important;
 }
 
 /* Dark mode particle effects */
 .dark .particle-bg::before {
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
 }
 
 /* Dark mode progress bars */
 .dark .progress-bar {
-  background: linear-gradient(90deg, #00d4ff, #0ea5e9, #8b5cf6);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  background: linear-gradient(90deg, #FF0000, #E60000, #8B0000);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
 /* Dark mode modal overlays */
@@ -981,14 +981,14 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .modal {
-  background: #1e293b !important;
+  background: #0D0D0D !important;
   border: 1px solid #475569 !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Dark mode tooltips */
 .dark .tooltip {
-  background: #334155 !important;
+  background: #1A1A1A !important;
   border: 1px solid #475569 !important;
   color: #f8fafc !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
@@ -1001,27 +1001,27 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #334155;
+  background: #1A1A1A;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #06b6d4;
+  background: #FF0000;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #0891b2;
+  background: #8B0000;
 }
 
 /* Dark mode selection */
 .dark ::selection {
-  background: rgba(6, 182, 212, 0.3);
+  background: rgba(255, 0, 0, 0.3);
   color: #f8fafc;
 }
 
 /* Dark mode focus rings */
 .dark *:focus-visible {
-  outline: 2px solid #06b6d4;
+  outline: 2px solid #FF0000;
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
 }
