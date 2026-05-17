@@ -21,16 +21,26 @@ export default function Hero() {
   const [imageLoaded, setImageLoaded]   = useState(false);
   const [imageError,  setImageError]    = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const heroRef = useRef(null);
-
-  // ── Accessibility: respect prefers-reduced-motion ──────────────────────
+  // ── Accessibility & Performance Tracking ──────────────────────
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mq.matches);
-    const h = (e) => setReducedMotion(e.matches);
-    mq.addEventListener("change", h);
-    return () => mq.removeEventListener("change", h);
+    // Check reduced motion
+    const motionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(motionMq.matches);
+    const handleMotion = (e) => setReducedMotion(e.matches);
+    motionMq.addEventListener("change", handleMotion);
+
+    // Check mobile (<= 768px)
+    const mobileMq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mobileMq.matches);
+    const handleMobile = (e) => setIsMobile(e.matches);
+    mobileMq.addEventListener("change", handleMobile);
+
+    return () => {
+      motionMq.removeEventListener("change", handleMotion);
+      mobileMq.removeEventListener("change", handleMobile);
+    };
   }, []);
 
   // ── Preload hero image at highest priority ─────────────────────────────
@@ -56,10 +66,10 @@ export default function Hero() {
   });
 
   // ── Cinematic scroll-driven transforms ────────────────────────────────
-  const bgScale   = useTransform(smooth, [0, 1], [1, reducedMotion ? 1 : 1.32]);
-  const bgBlurVal = useTransform(smooth, [0, 0.75], [0, reducedMotion ? 0 : 20]);
+  const bgScale   = useTransform(smooth, [0, 1], [1, (reducedMotion || isMobile) ? 1.05 : 1.32]);
+  const bgBlurVal = useTransform(smooth, [0, 0.75], [0, (reducedMotion || isMobile) ? 0 : 20]);
   const bgFilter  = useTransform(bgBlurVal, (v) => `blur(${v}px)`);
-  const bgOpacity = useTransform(smooth, [0, 0.8],  [1, 0]);
+  const bgOpacity = useTransform(smooth, [0, 0.8],  [1, isMobile ? 0.3 : 0]);
 
   // Overlay darkens as you scroll
   const overlayOp = useTransform(smooth, [0, 0.65], [0.2, 0.85]);
@@ -107,20 +117,22 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full"
         style={{
           scale: bgScale,
-          filter: bgFilter,
+          ...(isMobile ? {} : { filter: bgFilter }),
           opacity: bgOpacity,
           transformOrigin: "center center",
-          willChange: "transform, filter, opacity",
+          willChange: isMobile ? "opacity, transform" : "transform, filter, opacity",
         }}
       >
-        {/* LQIP blurred placeholder */}
-        <img
-          src={LQIP}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "blur(10px)", transform: "scale(1.05)" }}
-        />
+        {/* LQIP blurred placeholder - removed after load for performance */}
+        {!imageLoaded && (
+          <img
+            src={LQIP}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: "blur(10px)", transform: "scale(1.05)" }}
+          />
+        )}
 
         {/* Full-res hero image */}
         {!imageError && (
@@ -275,7 +287,9 @@ export default function Hero() {
                     letterSpacing: "-0.02em",
                     textTransform: "uppercase",
                     color: "#ffffff",
-                    textShadow: "0 2px 40px rgba(0,0,0,0.95), 0 0 80px rgba(0,0,0,0.6)",
+                    textShadow: isMobile
+                      ? "0 2px 10px rgba(0,0,0,0.9)"
+                      : "0 2px 40px rgba(0,0,0,0.95), 0 0 80px rgba(0,0,0,0.6)",
                     marginBottom: "2px",
                   }}
                 >
@@ -284,10 +298,12 @@ export default function Hero() {
                     style={{
                       color: "#dc2626",
                       display: "inline-block",
-                      textShadow: "0 0 40px rgba(220,38,38,0.6), 0 2px 20px rgba(0,0,0,0.9)",
+                      textShadow: isMobile
+                        ? "0 2px 10px rgba(0,0,0,0.9)"
+                        : "0 0 40px rgba(220,38,38,0.6), 0 2px 20px rgba(0,0,0,0.9)",
                     }}
                     animate={
-                      reducedMotion ? {} : {
+                      (reducedMotion || isMobile) ? {} : {
                         textShadow: [
                           "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
                           "0 0 50px rgba(220,38,38,0.85), 0 2px 20px rgba(0,0,0,0.9)",
@@ -387,9 +403,9 @@ export default function Hero() {
                       fontSize: "clamp(10px, 1.5vw, 12px)",
                       padding: "13px 30px",
                       border: "1px solid rgba(255,255,255,0.18)",
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
-                      boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+                      backdropFilter: isMobile ? "none" : "blur(12px)",
+                      WebkitBackdropFilter: isMobile ? "none" : "blur(12px)",
+                      boxShadow: isMobile ? "none" : "0 4px 20px rgba(0,0,0,0.5)",
                       transition: "all 0.3s ease",
                       textDecoration: "none",
                     }}
