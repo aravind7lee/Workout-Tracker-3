@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
       // CRITICAL: Clear ALL user-specific data
       localStorage.removeItem("mongodb_workouts_cache");
       localStorage.removeItem("workoutSync_workouts");
+      localStorage.removeItem("completedWorkouts");
       localStorage.removeItem("workoutPlans");
       localStorage.removeItem("recentMeals");
 
