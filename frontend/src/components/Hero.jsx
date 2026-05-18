@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useRealTime } from "../context/RealTimeContext";
 import Heroimg from "../assets/Heroimg.jpg";
+import logo from "../assets/logo.png";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Scroll Zoom Hero — Professional Edition
@@ -335,50 +336,38 @@ export default function Hero() {
                   Welcome to
                 </p>
 
-                {/* "GRINDX" — the hero brand name, sharp & solid */}
-                <h1
-                  style={{
-                    fontSize: "clamp(3.6rem, 11vw, 8rem)",
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                    textTransform: "uppercase",
-                    color: "#ffffff",
-                    textShadow: isMobile
-                      ? "0 2px 10px rgba(0,0,0,0.9)"
-                      : "0 2px 40px rgba(0,0,0,0.95), 0 0 80px rgba(0,0,0,0.6)",
-                    marginBottom: "2px",
-                  }}
+                {/* Logo Image Replacement for Peak AURA */}
+                <motion.div
+                  className="flex justify-center items-center w-full"
+                  style={{ marginBottom: "15px", marginTop: "5px" }}
                 >
-                  GRIND
-                  <motion.span
+                  <motion.img
+                    src={logo}
+                    alt="GrindX Logo"
+                    className="w-[85%] sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[45%] max-w-[600px] h-auto object-contain"
                     style={{
-                      color: "#dc2626",
-                      display: "inline-block",
-                      textShadow: isMobile
-                        ? "0 2px 10px rgba(0,0,0,0.9)"
-                        : "0 0 40px rgba(220,38,38,0.6), 0 2px 20px rgba(0,0,0,0.9)",
+                      filter: isMobile
+                        ? "drop-shadow(0 4px 12px rgba(0,0,0,0.9))"
+                        : "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 40px rgba(220,38,38,0.3))",
                     }}
                     animate={
                       reducedMotion || isMobile
                         ? {}
                         : {
-                            textShadow: [
-                              "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
-                              "0 0 50px rgba(220,38,38,0.85), 0 2px 20px rgba(0,0,0,0.9)",
-                              "0 0 20px rgba(220,38,38,0.4), 0 2px 20px rgba(0,0,0,0.9)",
+                            filter: [
+                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 30px rgba(220,38,38,0.25))",
+                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(220,38,38,0.65))",
+                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 30px rgba(220,38,38,0.25))",
                             ],
                           }
                     }
                     transition={{
-                      duration: 2.8,
+                      duration: 3.5,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                  >
-                    X
-                  </motion.span>
-                </h1>
+                  />
+                </motion.div>
 
                 {/* Red underline accent */}
                 <motion.div
