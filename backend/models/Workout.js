@@ -9,6 +9,7 @@ const SetSchema = new mongoose.Schema({
 
 const ExerciseLogSchema = new mongoose.Schema({
   exercise: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
+  exerciseName: String,
   sets: [SetSchema],
   notes: String
 });

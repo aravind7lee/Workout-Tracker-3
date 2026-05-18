@@ -79,14 +79,16 @@ export default function WorkoutSession() {
         category: plan.category || "Plan Workout",
         difficulty: plan.difficulty || "Intermediate",
         exercises: plan.exercises.map((ex, index) => ({
-          name: ex.name,
-          category: ex.category,
+          exercise: ex.id || null, // For backend
+          name: ex.name,           // For backend and frontend
+          category: ex.category,   // For frontend
           sets: Array.isArray(ex.sets) 
             ? ex.sets 
             : typeof ex.sets === 'string' 
               ? Array.from({ length: parseInt(ex.sets.split('x')[0]) || 1 }).map(() => ({ reps: 0, weight: 0 }))
               : [{ reps: 0, weight: 0 }],
           completed: completedExercises.has(index),
+          notes: ex.notes || "",
         })),
         duration: duration * 60, // Convert to seconds for consistency
         completedExercises: completedCount,

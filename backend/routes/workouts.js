@@ -1,5 +1,6 @@
 // backend/routes/workouts.js
 import express from 'express';
+import mongoose from 'mongoose';
 import Workout from '../models/Workout.js';
 import auth from '../middleware/auth.js';
 
@@ -44,15 +45,28 @@ router.post('/', auth, async (req, res) => {
     const workoutData = {
       user: req.user._id,
       title: data.title,
-      exercises: (data.exercises || []).map(ex => ({
-        exercise: ex.exercise || ex.name || 'Unknown Exercise',
-        sets: (ex.sets || []).map(set => ({
-          reps: Number(set.reps) || 0,
-          weight: Number(set.weight) || 0,
-          rest: Number(set.rest) || 60
-        })),
-        notes: ex.notes || ''
-      })),
+      exercises: (data.exercises || []).map(ex => {
+        let exerciseId = null;
+        let exerciseName = ex.name || ex.exerciseName || 'Unknown Exercise';
+
+        // Check if ex.exercise is a valid ObjectId (if it was passed from the frontend)
+        if (ex.exercise && mongoose.Types.ObjectId.isValid(ex.exercise)) {
+            exerciseId = ex.exercise;
+        } else if (typeof ex.exercise === 'string' && ex.exercise.trim() !== '') {
+            exerciseName = ex.exercise;
+        }
+
+        return {
+          exercise: exerciseId,
+          exerciseName: exerciseName,
+          sets: (ex.sets || []).map(set => ({
+            reps: Number(set.reps) || 0,
+            weight: Number(set.weight) || 0,
+            rest: Number(set.rest) || 60
+          })),
+          notes: ex.notes || ''
+        };
+      }),
       durationMinutes: Number(data.durationMinutes) || 0,
       calories: Number(data.calories) || 0,
       date: data.date ? new Date(data.date) : new Date(),
