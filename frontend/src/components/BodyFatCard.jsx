@@ -6,43 +6,57 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
       border: "border-red-500",
       text: "text-red-500",
       bg: "bg-red-500/10",
-      shadow: "shadow-red-500/30",
+      shadow: "shadow-red-500/35",
+      stroke: "stroke-red-500",
+      textShadow: "[text-shadow:0_0_6px_rgba(239,68,68,0.6)]",
     },
     orange: {
       border: "border-orange-500",
       text: "text-orange-500",
       bg: "bg-orange-500/10",
-      shadow: "shadow-orange-500/30",
+      shadow: "shadow-orange-500/35",
+      stroke: "stroke-orange-500",
+      textShadow: "[text-shadow:0_0_6px_rgba(249,115,22,0.6)]",
     },
     yellow: {
       border: "border-yellow-500",
       text: "text-yellow-500",
       bg: "bg-yellow-500/10",
-      shadow: "shadow-yellow-500/30",
+      shadow: "shadow-yellow-500/35",
+      stroke: "stroke-yellow-500",
+      textShadow: "[text-shadow:0_0_6px_rgba(234,179,8,0.6)]",
     },
     lime: {
       border: "border-lime-500",
       text: "text-lime-500",
       bg: "bg-lime-500/10",
-      shadow: "shadow-lime-500/30",
+      shadow: "shadow-lime-500/35",
+      stroke: "stroke-lime-500",
+      textShadow: "[text-shadow:0_0_6px_rgba(132,204,22,0.6)]",
     },
     green: {
       border: "border-red-600",
       text: "text-red-600",
       bg: "bg-red-600/10",
-      shadow: "shadow-red-600/30",
+      shadow: "shadow-red-600/35",
+      stroke: "stroke-red-600",
+      textShadow: "[text-shadow:0_0_6px_rgba(220,38,38,0.6)]",
     },
     blue: {
       border: "border-red-600",
       text: "text-red-600",
       bg: "bg-red-600/10",
-      shadow: "shadow-red-600/30",
+      shadow: "shadow-red-600/35",
+      stroke: "stroke-red-600",
+      textShadow: "[text-shadow:0_0_6px_rgba(220,38,38,0.6)]",
     },
     purple: {
       border: "border-red-700",
       text: "text-red-700",
       bg: "bg-red-700/10",
-      shadow: "shadow-red-700/30",
+      shadow: "shadow-red-700/35",
+      stroke: "stroke-red-700",
+      textShadow: "[text-shadow:0_0_6px_rgba(185,28,28,0.6)]",
     },
   };
 
@@ -61,13 +75,44 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 pointer-events-none" />
 
-          {/* Top-Left Corner: Perfect Glowing Double-Ring HUD Percentage Circle */}
-          <div className={`absolute top-3 left-3 z-20 w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 ${colors.border} flex items-center justify-center bg-black/50 backdrop-blur-md shadow-lg ${colors.shadow} transition-all duration-300 group-hover:scale-110`}>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-950 flex items-center justify-center border border-neutral-850">
-              <span className={`text-[10px] sm:text-[12px] font-black tracking-tighter ${colors.text}`}>
+          {/* Top-Left Corner: Perfect Glowing Double-Ring HUD SVG Percentage Circle */}
+          <div className={`absolute top-3 left-3 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-neutral-800 flex items-center justify-center bg-zinc-950/60 backdrop-blur-md shadow-2xl ${colors.shadow} transition-all duration-300 group-hover:scale-110`}>
+            
+            {/* SVG Circular Progress Ring */}
+            <svg viewBox="0 0 40 40" className="w-full h-full absolute inset-0 -rotate-90 p-0.5">
+              {/* Background Track */}
+              <circle
+                cx="20"
+                cy="20"
+                r="17"
+                className="stroke-neutral-900"
+                strokeWidth="2"
+                fill="transparent"
+              />
+              {/* Dynamic Colored Glowing Segment */}
+              <circle
+                cx="20"
+                cy="20"
+                r="17"
+                className={`${colors.stroke} transition-all duration-1000 ease-out`}
+                strokeWidth="2.5"
+                fill="transparent"
+                strokeDasharray={106.8}
+                strokeDashoffset={106.8 - (106.8 * bf.percent) / 100}
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Inner Dashboard Display */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-950/95 flex items-center justify-center border border-neutral-850 relative z-10 shadow-inner">
+              <span className={`text-[10px] sm:text-[12px] font-black tracking-tighter ${colors.text} ${colors.textShadow}`}>
                 {bf.percent}%
               </span>
             </div>
+
+            {/* Tech Crosshairs Ticks */}
+            <div className="absolute top-0.5 bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 bg-neutral-800/40 pointer-events-none" />
+            <div className="absolute left-0.5 right-0.5 top-1/2 -translate-y-1/2 h-0.5 bg-neutral-800/40 pointer-events-none" />
           </div>
 
           {/* Bottom-Right Corner: Glowing Border Condition Badge */}
