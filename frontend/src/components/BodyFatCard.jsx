@@ -53,24 +53,13 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
-
-          <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-            <div
-              className={`bg-black/90 border-2 ${colors.border} px-3 py-2 sm:px-4 sm:py-3`}
-            >
-              <div
-                className={`${colors.text} text-xl sm:text-3xl font-black leading-none`}
-              >
-                {bf.percent}%
-              </div>
-              <div className="text-white text-[8px] sm:text-xs font-black uppercase tracking-wide mt-1">
-                Body Fat
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+        <div className="p-4 sm:p-5 space-y-2.5 sm:space-y-3.5">
+          <div className={`${colors.text} text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] mb-1`}>
+            {bf.percent}% Body Fat
+          </div>
+
           <h3 className="text-sm sm:text-base font-black text-white uppercase leading-tight group-hover:text-red-600 transition-colors duration-300">
             {bf.title}
           </h3>
@@ -79,7 +68,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
             {bf.desc}
           </p>
 
-          <div className="pt-3 border-t border-neutral-900">
+          <div className="pt-2.5 border-t border-neutral-900">
             <div className="flex items-center justify-between">
               <span className="text-[9px] sm:text-xs text-zinc-500 font-bold uppercase">
                 Condition

@@ -2602,13 +2602,20 @@ export default function Home() {
           @media (max-height: 800px) {
             .body-fat-card-wrapper .relative.h-\\[280px\\],
             .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
-              height: 220px !important;
+              height: 200px !important;
             }
             .body-fat-card-wrapper .p-4 {
               padding: 0.75rem !important;
             }
             .body-fat-card-wrapper .space-y-3 > * + * {
-              margin-top: 0.5rem !important;
+              margin-top: 0.4rem !important;
+            }
+            .body-fat-card-wrapper p {
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              font-size: 12px !important;
             }
           }
           @media (max-height: 700px) {
