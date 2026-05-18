@@ -1333,12 +1333,12 @@ export default function Home() {
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: "sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between py-6 sm:py-10 bg-black",
+            className: "sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between py-6 sm:py-8 bg-black",
           },
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className: "text-center mb-2 sm:mb-6 px-3 flex-shrink-0 relative z-10",
+              className: "text-center mb-2 sm:mb-4 px-3 flex-shrink-0 relative z-10",
             },
             /*#__PURE__*/ React.createElement(
               "div",
@@ -1386,7 +1386,7 @@ export default function Home() {
                   x: springX,
                   paddingRight: "40vw",
                 },
-                className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[80%] sm:h-[85%] max-h-[500px]",
+                className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[88%] sm:h-[94%] max-h-[550px]",
               },
               [
                 {
@@ -1619,7 +1619,7 @@ export default function Home() {
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className: "absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 z-20 pointer-events-none",
+              className: "w-full flex flex-col items-center gap-2 z-20 pointer-events-none mt-4 sm:mt-6 flex-shrink-0",
             },
             /*#__PURE__*/ React.createElement(
               "div",
@@ -2583,11 +2583,6 @@ export default function Home() {
             display: flex;
             align-items: stretch;
           }
-          @media (min-width: 640px) {
-            .body-fat-card-wrapper {
-              width: 380px;
-            }
-          }
           .body-fat-spacer {
             width: 15vw;
             min-width: 15vw;
@@ -2600,14 +2595,12 @@ export default function Home() {
             }
           }
           @media (max-height: 800px) {
-            .body-fat-card-wrapper .relative.h-\\[280px\\],
-            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
-              height: 200px !important;
-            }
-            .body-fat-card-wrapper .p-4 {
+            .body-fat-card-wrapper .p-4,
+            .body-fat-card-wrapper .sm\\:p-5 {
               padding: 0.75rem !important;
             }
-            .body-fat-card-wrapper .space-y-3 > * + * {
+            .body-fat-card-wrapper .space-y-2\\.5 > * + *,
+            .body-fat-card-wrapper .sm\\:space-y-3\\.5 > * + * {
               margin-top: 0.4rem !important;
             }
             .body-fat-card-wrapper p {
@@ -2619,9 +2612,11 @@ export default function Home() {
             }
           }
           @media (max-height: 700px) {
-            .body-fat-card-wrapper .relative.h-\\[280px\\],
-            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
-              height: 170px !important;
+            .body-fat-card-wrapper {
+              width: 260px !important;
+            }
+            .body-fat-card-wrapper .relative.h-\\[300px\\] {
+              height: 260px !important;
             }
             .body-fat-card-wrapper p {
               display: -webkit-box;
@@ -2632,9 +2627,11 @@ export default function Home() {
             }
           }
           @media (max-height: 600px) {
-            .body-fat-card-wrapper .relative.h-\\[280px\\],
-            .body-fat-card-wrapper .sm\\:h-\\[350px\\] {
-              height: 120px !important;
+            .body-fat-card-wrapper {
+              width: 200px !important;
+            }
+            .body-fat-card-wrapper .relative.h-\\[300px\\] {
+              height: 200px !important;
             }
             .body-fat-card-wrapper p {
               -webkit-line-clamp: 2;
