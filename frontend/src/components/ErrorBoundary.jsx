@@ -23,6 +23,14 @@ class ErrorBoundary extends React.Component {
       /Loading CSS chunk/,
       /Network Error/,
       /fetch/,
+      /ERR_EMPTY_RESPONSE/,
+      /ERR_NETWORK/,
+      /No authentication token/,
+      /Invalid authentication token/,
+      /Token validation failed/,
+      /401/,
+      /Unauthorized/,
+      /net::/,
     ];
     const shouldSuppress = suppressedPatterns.some((pattern) =>
       pattern.test(errorMessage),
@@ -53,6 +61,14 @@ class ErrorBoundary extends React.Component {
       /Loading CSS chunk/,
       /Network Error/,
       /fetch/,
+      /ERR_EMPTY_RESPONSE/,
+      /ERR_NETWORK/,
+      /No authentication token/,
+      /Invalid authentication token/,
+      /Token validation failed/,
+      /401/,
+      /Unauthorized/,
+      /net::/,
     ];
     const shouldSuppress = suppressedPatterns.some((pattern) =>
       pattern.test(errorMessage),

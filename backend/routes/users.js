@@ -237,7 +237,7 @@ router.get('/stats', auth, async (req, res) => {
       syncTimestamp: Date.now()
     };
     
-    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${currentStreak} streak`);
+    console.log(`✅ Real-time stats for user ${user._id}: ${completedWorkouts.length} workouts, ${plans.length} plans, ${user.currentStreak || 0} streak`);
     
     res.json(stats);
   } catch (error) {

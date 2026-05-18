@@ -8,7 +8,13 @@ const getApiBaseUrl = () => {
     return import.meta.env.VITE_API_BASE;
   }
 
-  // ALWAYS use deployed backend (local MongoDB connection is blocked)
+  // Use local backend in development
+  const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
+  if (isDev) {
+    return "http://localhost:5000/api";
+  }
+
+  // Production fallback
   return "https://workout-tracker-backend-wga7.onrender.com/api";
 };
 
@@ -105,31 +111,43 @@ api.interceptors.response.use(
       return Promise.resolve({ data: null, status: 200 });
     }
 
-    // Handle authentication errors
+    // Silently handle cancelled requests (no token / invalid token)
+    if (
+      error.message === "No authentication token" ||
+      error.message === "Invalid authentication token" ||
+      error.message === "Token validation failed"
+    ) {
+      return Promise.reject(error);
+    }
+
+    // Handle authentication errors from the server
     if (error.response?.status === 401) {
-      const errorData = error.response?.data;
+      // Only clear token and redirect if the user was previously logged in
+      const hadToken = !!localStorage.getItem("token");
 
-      // Clear invalid/expired tokens
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      if (hadToken) {
+        // Clear invalid/expired tokens
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
-      // Dispatch logout event to clean up auth context
-      window.dispatchEvent(new CustomEvent("userLoggedOut"));
+        // Dispatch logout event to clean up auth context
+        window.dispatchEvent(new CustomEvent("userLoggedOut"));
 
-      // Only redirect if not already on auth pages
-      if (
-        window.location.pathname !== "/login" &&
-        window.location.pathname !== "/register"
-      ) {
-        console.log("🔓 Token invalid/expired, redirecting to login");
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 100);
+        // Only redirect if not already on auth pages
+        if (
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/register"
+        ) {
+          console.log("🔓 Token invalid/expired, redirecting to login");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 500);
+        }
       }
     }
 
     // Mark network errors for offline handling
-    if (error.code === "ERR_NETWORK" || error.code === "ECONNREFUSED") {
+    if (error.code === "ERR_NETWORK" || error.code === "ECONNREFUSED" || error.code === "ERR_EMPTY_RESPONSE") {
       error.offline = true;
     }
 

@@ -1,6 +1,6 @@
 // Fixed Register Page with Offline Support
 import { Star, Edit } from 'lucide-react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { registerUser, checkBackendStatus } from "../services/authService";

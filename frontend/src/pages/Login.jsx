@@ -1,6 +1,6 @@
 // Fixed Login Page with Better Error Handling
 import { RefreshCw, BarChart3, LockKeyhole, CheckCircle2, XCircle, Star } from 'lucide-react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginUser, checkBackendStatus } from "../services/authService";

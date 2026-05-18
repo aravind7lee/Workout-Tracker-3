@@ -159,8 +159,8 @@ export const RealTimeProvider = ({ children }) => {
           api.get("/workouts").catch(() => null),
         ];
 
-        [heroStats, analyticsData, userStats, workoutsData] =
-          await Promise.allSettled(mongoPromises);
+        const results = await Promise.allSettled(mongoPromises);
+        [heroStats, analyticsData, userStats, workoutsData] = results;
       } catch (error) {
         console.warn("⚠️ MongoDB API calls failed:", error.message);
       }
