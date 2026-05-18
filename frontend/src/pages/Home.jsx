@@ -732,9 +732,6 @@ export default function Home() {
       loading: "lazy",
       decoding: "async",
       className: className,
-      style: {
-        contentVisibility: "auto",
-      },
     }),
   );
 

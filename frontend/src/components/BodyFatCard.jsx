@@ -76,7 +76,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 pointer-events-none" />
 
           {/* Top-Left Corner: Perfect Glowing Double-Ring HUD SVG Percentage Circle */}
-          <div className={`absolute top-3 left-3 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-neutral-800 flex items-center justify-center bg-zinc-950/60 backdrop-blur-md shadow-2xl ${colors.shadow} transition-all duration-300 group-hover:scale-110`}>
+          <div className={`absolute top-3 left-3 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-neutral-800 flex items-center justify-center bg-zinc-950/95 shadow-2xl ${colors.shadow} transition-all duration-300 group-hover:scale-110`}>
             
             {/* SVG Circular Progress Ring */}
             <svg viewBox="0 0 40 40" className="w-full h-full absolute inset-0 -rotate-90 p-0.5">
@@ -116,7 +116,7 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
           </div>
 
           {/* Bottom-Right Corner: Glowing Border Condition Badge */}
-          <div className={`absolute bottom-3 right-3 z-20 bg-zinc-950/90 backdrop-blur-md border-2 ${colors.border} px-3 py-1 rounded-full shadow-lg ${colors.shadow} flex items-center justify-center`}>
+          <div className={`absolute bottom-3 right-3 z-20 bg-zinc-950/95 border-2 ${colors.border} px-3 py-1 rounded-full shadow-lg ${colors.shadow} flex items-center justify-center`}>
             <span className={`text-[9px] sm:text-[11px] font-black tracking-wider uppercase flex items-center gap-1 leading-none ${colors.text}`}>
               {bf.health}
             </span>
