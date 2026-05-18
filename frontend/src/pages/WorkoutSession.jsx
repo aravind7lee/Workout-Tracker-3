@@ -81,7 +81,11 @@ export default function WorkoutSession() {
         exercises: plan.exercises.map((ex, index) => ({
           name: ex.name,
           category: ex.category,
-          sets: ex.sets,
+          sets: Array.isArray(ex.sets) 
+            ? ex.sets 
+            : typeof ex.sets === 'string' 
+              ? Array.from({ length: parseInt(ex.sets.split('x')[0]) || 1 }).map(() => ({ reps: 0, weight: 0 }))
+              : [{ reps: 0, weight: 0 }],
           completed: completedExercises.has(index),
         })),
         duration: duration * 60, // Convert to seconds for consistency

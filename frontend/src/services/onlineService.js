@@ -164,6 +164,11 @@ class OnlineService {
         throw new Error("Backend is offline");
       }
 
+      // Ensure title exists for backend validation
+      if (!workoutData.title) {
+        workoutData.title = workoutData.name || workoutData.planName || "Workout Session";
+      }
+
       const response = await api.post("/workouts", workoutData, {
         timeout: 8000,
         headers: {
