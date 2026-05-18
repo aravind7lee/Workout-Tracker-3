@@ -68,14 +68,6 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
               </div>
             </div>
           </div>
-
-          <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-            <div className="bg-black/90 border border-white px-3 py-2 sm:px-4 sm:py-2">
-              <div className="text-white text-[10px] sm:text-sm font-black uppercase tracking-wide">
-                {bf.health}
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
@@ -92,17 +84,11 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
               <span className="text-[9px] sm:text-xs text-zinc-500 font-bold uppercase">
                 Condition
               </span>
-              <div className={`px-2 py-1 ${colors.bg} border ${colors.border}`}>
+              <div className={`px-2.5 py-1 ${colors.bg} border ${colors.border} flex items-center justify-center`}>
                 <span
-                  className={`text-[9px] sm:text-xs ${colors.text} font-black uppercase`}
+                  className={`text-[9px] sm:text-xs ${colors.text} font-black uppercase flex items-center gap-1 leading-none`}
                 >
-                  {bf.percent >= 30
-                    ? "CUTTING NEEDED"
-                    : bf.percent >= 15
-                      ? "MAINTAINABLE"
-                      : bf.percent >= 10
-                        ? "LEAN"
-                        : "EXTREME"}
+                  {bf.health}
                 </span>
               </div>
             </div>
