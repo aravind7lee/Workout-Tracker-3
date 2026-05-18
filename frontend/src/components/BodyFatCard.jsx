@@ -6,36 +6,43 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
       border: "border-red-500",
       text: "text-red-500",
       bg: "bg-red-500/10",
+      shadow: "shadow-red-500/30",
     },
     orange: {
       border: "border-orange-500",
       text: "text-orange-500",
       bg: "bg-orange-500/10",
+      shadow: "shadow-orange-500/30",
     },
     yellow: {
       border: "border-yellow-500",
       text: "text-yellow-500",
       bg: "bg-yellow-500/10",
+      shadow: "shadow-yellow-500/30",
     },
     lime: {
       border: "border-lime-500",
       text: "text-lime-500",
       bg: "bg-lime-500/10",
+      shadow: "shadow-lime-500/30",
     },
     green: {
       border: "border-red-600",
       text: "text-red-600",
       bg: "bg-red-600/10",
+      shadow: "shadow-red-600/30",
     },
     blue: {
       border: "border-red-600",
       text: "text-red-600",
       bg: "bg-red-600/10",
+      shadow: "shadow-red-600/30",
     },
     purple: {
       border: "border-red-700",
       text: "text-red-700",
       bg: "bg-red-700/10",
+      shadow: "shadow-red-700/30",
     },
   };
 
@@ -54,16 +61,18 @@ const BodyFatCard = ({ bf, OptimizedImage }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 pointer-events-none" />
 
-          {/* Top-Left Corner: Perfect Glassmorphic Percentage Circle */}
-          <div className="absolute top-3 left-3 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/75 backdrop-blur-md border border-neutral-800/80 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-            <span className={`text-xs sm:text-sm font-black tracking-tighter ${colors.text}`}>
-              {bf.percent}%
-            </span>
+          {/* Top-Left Corner: Perfect Glowing Double-Ring HUD Percentage Circle */}
+          <div className={`absolute top-3 left-3 z-20 w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 ${colors.border} flex items-center justify-center bg-black/50 backdrop-blur-md shadow-lg ${colors.shadow} transition-all duration-300 group-hover:scale-110`}>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-950 flex items-center justify-center border border-neutral-850">
+              <span className={`text-[10px] sm:text-[12px] font-black tracking-tighter ${colors.text}`}>
+                {bf.percent}%
+              </span>
+            </div>
           </div>
 
-          {/* Bottom-Right Corner: Condition Badge */}
-          <div className="absolute bottom-3 right-3 z-20 bg-black/75 backdrop-blur-md border border-neutral-800/80 px-2.5 py-1 rounded-full shadow-lg flex items-center">
-            <span className={`text-[10px] sm:text-xs font-black tracking-wider uppercase flex items-center gap-1 leading-none ${colors.text}`}>
+          {/* Bottom-Right Corner: Glowing Border Condition Badge */}
+          <div className={`absolute bottom-3 right-3 z-20 bg-zinc-950/90 backdrop-blur-md border-2 ${colors.border} px-3 py-1 rounded-full shadow-lg ${colors.shadow} flex items-center justify-center`}>
+            <span className={`text-[9px] sm:text-[11px] font-black tracking-wider uppercase flex items-center gap-1 leading-none ${colors.text}`}>
               {bf.health}
             </span>
           </div>

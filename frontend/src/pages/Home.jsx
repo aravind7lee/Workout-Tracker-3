@@ -2604,11 +2604,8 @@ export default function Home() {
               margin-top: 0.4rem !important;
             }
             .body-fat-card-wrapper p {
-              display: -webkit-box;
-              -webkit-line-clamp: 3;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              font-size: 12px !important;
+              font-size: 11.5px !important;
+              line-height: 1.4 !important;
             }
           }
           @media (max-height: 700px) {
@@ -2619,11 +2616,8 @@ export default function Home() {
               height: 260px !important;
             }
             .body-fat-card-wrapper p {
-              display: -webkit-box;
-              -webkit-line-clamp: 3;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
               font-size: 11px !important;
+              line-height: 1.35 !important;
             }
           }
           @media (max-height: 600px) {
@@ -2634,7 +2628,8 @@ export default function Home() {
               height: 200px !important;
             }
             .body-fat-card-wrapper p {
-              -webkit-line-clamp: 2;
+              font-size: 10px !important;
+              line-height: 1.3 !important;
             }
           }
         `,
