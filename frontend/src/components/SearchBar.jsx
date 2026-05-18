@@ -468,7 +468,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
               opacity: 0,
             },
             onClick: handleClose,
-            className: "fixed inset-0 bg-black/60 backdrop-blur-sm z-40",
+            className: "fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]",
             style: {
               touchAction: "none",
             },
@@ -494,7 +494,7 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
                 stiffness: 300,
               },
               className:
-                "fixed top-0 left-0 right-0 z-50 p-4 bg-black/95 backdrop-blur-xl border-b border-neutral-700/50",
+                "fixed top-0 left-0 right-0 z-[100] p-4 bg-black/95 backdrop-blur-xl border-b border-neutral-700/50",
             },
             /*#__PURE__*/ React.createElement(
               "form",

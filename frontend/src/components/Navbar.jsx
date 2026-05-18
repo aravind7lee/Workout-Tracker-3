@@ -212,22 +212,22 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center gap-2 p-1 pr-2 sm:pr-3 lg:pr-4 rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-red-500/40 hover:bg-zinc-800/80 transition-all duration-300 group shadow-lg backdrop-blur-md"
+                  className="flex items-center gap-1.5 sm:gap-2 p-1 pr-1.5 sm:pr-3 lg:pr-4 rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-red-500/40 hover:bg-zinc-800/80 transition-all duration-300 group shadow-lg backdrop-blur-md"
                 >
                   <div className="relative">
                     {user?.profileImage ? (
                       <img
                         src={user.profileImage}
                         alt="Profile"
-                        className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full object-cover border-2 border-red-500/50 group-hover:border-red-500 transition-colors"
+                        className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full object-cover border-2 border-red-500/50 group-hover:border-red-500 transition-colors"
                       />
                     ) : (
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-black text-[10px] sm:text-xs lg:text-sm border-2 border-red-500/30 group-hover:border-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)]">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-black text-[9px] sm:text-xs lg:text-sm border-2 border-red-500/30 group-hover:border-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)]">
                         {(user?.name && user.name.charAt(0)?.toUpperCase()) || "U"}
                       </div>
                     )}
                     {connectionStatus.fullyOnline && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full border border-zinc-900 shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full border border-zinc-900 shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
                     )}
                   </div>
                   <span className="hidden xl:block text-[11px] lg:text-xs font-black text-white tracking-widest uppercase truncate max-w-[100px]">
@@ -284,17 +284,17 @@ export default function Navbar() {
               <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 flex-shrink-0">
                 <Link
                   to="/login"
-                  className="px-2 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-[11px] font-black text-zinc-400 hover:text-white uppercase tracking-widest transition-colors duration-300 flex items-center justify-center whitespace-nowrap"
+                  className="px-1.5 py-1 sm:px-4 sm:py-2 text-[9px] sm:text-[11px] font-black text-zinc-400 hover:text-white uppercase tracking-widest transition-colors duration-300 flex items-center justify-center whitespace-nowrap"
                 >
-                  <User size={14} className="hidden xs:inline-block mr-1 opacity-50" />
+                  <User size={14} className="hidden sm:inline-block mr-1 opacity-50" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="relative group overflow-hidden px-3 py-1.5 sm:px-5 sm:py-2 text-[10px] sm:text-[11px] font-black text-white uppercase tracking-widest rounded-full bg-red-600 border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] hover:bg-red-500 transition-all duration-300 flex items-center justify-center whitespace-nowrap"
+                  className="relative group overflow-hidden px-2 py-1 sm:px-5 sm:py-2 text-[9px] sm:text-[11px] font-black text-white uppercase tracking-widest rounded-full bg-red-600 border border-red-500 shadow-[0_0_10px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] hover:bg-red-500 transition-all duration-300 flex items-center justify-center whitespace-nowrap"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-                  <Zap size={14} className="hidden xs:inline-block mr-1" />
+                  <Zap size={14} className="hidden sm:inline-block mr-1" />
                   <span className="relative z-10">Sign Up</span>
                 </Link>
               </div>
