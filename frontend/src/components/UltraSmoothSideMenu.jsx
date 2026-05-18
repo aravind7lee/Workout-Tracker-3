@@ -2,16 +2,11 @@
 import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp, Target, Award, Clock, Wifi, WifiOff } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from "../context/AuthContext";
 import { useConnectionStatus } from "../services/connectionService";
 import logo from "../assets/logo.png";
-
-// Ultra-fast transitions for mobile performance
-const mobileTransition = {
-  duration: 0.15,
-  ease: "ease-out",
-};
 
 const menuItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, color: "#FF0000" },
@@ -113,74 +108,84 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
   if (!mounted) return null;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.03,
+        delayChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: 20 },
+    show: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 350,
+        damping: 26,
+      },
+    },
+  };
+
   return (
-    <>
+    <AnimatePresence>
       {isOpen && (
         <>
-          {/* Buttery smooth backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-black/50"
-            style={{
-              opacity: isOpen ? 1 : 0,
-              transition: "opacity 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-              willChange: "opacity",
-              backfaceVisibility: "hidden",
-              transform: "translateZ(0)",
-            }}
+          {/* Backdrop with framer-motion */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/75 backdrop-blur-[6px]"
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Buttery smooth sidebar */}
-          <div
+          {/* Premium Glassmorphic Sidebar with framer-motion */}
+          <motion.div
             ref={sidebarRef}
-            className="fixed top-0 right-0 h-screen w-80 max-w-[90vw] sm:max-w-[85vw] z-50 overflow-y-auto overflow-x-hidden bg-black/95 border-l border-neutral-800"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 240 }}
+            className="fixed top-0 right-0 h-screen w-80 max-w-[85vw] sm:max-w-[80vw] z-50 overflow-y-auto overflow-x-hidden bg-black/90 backdrop-blur-ultra border-l border-neutral-900/90 shadow-2xl flex flex-col"
             style={{
-              transform: isOpen ? "translateX(0)" : "translateX(100%)",
-              transition:
-                "transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-              boxShadow: "-10px 0 30px rgba(0, 0, 0, 0.5)",
               willChange: "transform",
               backfaceVisibility: "hidden",
-              perspective: "1000px",
-              WebkitFontSmoothing: "antialiased",
-              MozOsxFontSmoothing: "grayscale",
             }}
           >
             <div className="relative h-full flex flex-col">
               {/* Header Section */}
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-neutral-800/50 flex-shrink-0">
+              <div className="flex items-center justify-between p-4 sm:p-5 border-b border-neutral-900/60 flex-shrink-0">
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleMenuItemClick("/")}
-                    className="hover:opacity-80 transition-opacity duration-200 active:scale-95 flex-shrink-0"
+                    className="hover:opacity-90 transition-opacity active:scale-95 flex-shrink-0"
                     style={{
-                      transition: "all 0.06s ease-out",
-                      willChange: "opacity, transform",
-                      backfaceVisibility: "hidden",
+                      filter: "drop-shadow(0 0 6px rgba(255,0,0,0.2))",
                     }}
                   >
                     <img
                       src={logo}
                       alt="GymTracker"
-                      className="h-8 w-auto"
+                      className="h-8 w-auto object-contain"
                       loading="eager"
                       decoding="async"
                     />
                   </button>
                   <div>
-                    <h2 className="text-xl font-bold text-white font-heading">
+                    <h2 className="text-lg font-bold text-white font-heading tracking-wider">
                       GRIND-X
                     </h2>
-                    <div className="flex items-center space-x-2">
-                      {connectionStatus.fullyOnline ? (
-                        <Wifi size={12} className="text-red-500" />
-                      ) : (
-                        <WifiOff size={12} className="text-red-400" />
-                      )}
-                      <span
-                        className={`text-xs ${connectionStatus.fullyOnline ? "text-red-500" : "text-red-400"}`}
-                      >
-                        {connectionStatus.mode.toUpperCase()}
+                    <div className="flex items-center space-x-1.5 mt-0.5 bg-[#FF0000]/10 border border-[#FF0000]/20 px-2 py-0.5 rounded-full">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FF0000] animate-pulse" />
+                      <span className="text-[9px] font-bold text-[#FF0000] tracking-wider uppercase font-body">
+                        {connectionStatus.mode}
                       </span>
                     </div>
                   </div>
@@ -188,189 +193,189 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-full bg-neutral-900/50 hover:bg-neutral-800/50"
-                  style={{
-                    transition: "background-color 0.06s ease-out",
-                    willChange: "background-color",
-                    backfaceVisibility: "hidden",
-                  }}
+                  className="p-2 rounded-full bg-neutral-900/50 hover:bg-[#FF0000]/10 border border-neutral-900 hover:border-[#FF0000]/20 text-neutral-400 hover:text-[#FF0000] transition-all duration-300 active:scale-90"
                 >
-                  <X size={20} className="text-neutral-400" />
+                  <X size={18} />
                 </button>
               </div>
 
               {/* Scrollable Content Area */}
-              <div className="flex-1 overflow-y-auto py-4 px-3">
-                {/* Navigation Menu */}
-                <div className="space-y-2 mb-6">
-                  {menuItems.map((item, index) => {
-                    const Icon = item.icon;
-                    const isActive = isActiveRoute(item.to);
+              <div className="flex-1 overflow-y-auto py-4 px-3 flex flex-col justify-between">
+                {/* Upper block with menu items */}
+                <div>
+                  {/* Navigation Menu */}
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="space-y-1.5 mb-6"
+                  >
+                    {menuItems.map((item, index) => {
+                      const Icon = item.icon;
+                      const isActive = isActiveRoute(item.to);
 
-                    return (
-                      <button
-                        key={item.to}
-                        onClick={() => handleMenuItemClick(item.to)}
-                        className={`w-full flex items-center space-x-4 px-4 py-3 sm:py-4 rounded-xl min-h-[52px] ${
-                          isActive
-                            ? "bg-red-600/20 text-white border border-red-600/30"
-                            : "text-neutral-300 hover:text-white hover:bg-neutral-800/30"
-                        }`}
-                        style={{
-                          transition: "all 0.06s ease-out",
-                          willChange: "background-color, color",
-                          backfaceVisibility: "hidden",
-                          transform: "translateZ(0)",
-                        }}
-                      >
-                        {/* Icon */}
-                        <div
-                          className="flex-shrink-0"
-                          style={{ color: isActive ? item.color : "#94a3b8" }}
-                        >
-                          <Icon size={20} />
-                        </div>
+                      return (
+                        <motion.div key={item.to} variants={itemVariants}>
+                          <button
+                            onClick={() => handleMenuItemClick(item.to)}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-300 group ${
+                              isActive
+                                ? "bg-gradient-to-r from-[#FF0000]/15 to-transparent text-white border-l-[3px] border-[#FF0000] pl-[9px]"
+                                : "text-neutral-400 hover:text-white hover:bg-neutral-900/30 border-l-[3px] border-transparent pl-[9px]"
+                            }`}
+                          >
+                            {/* Icon with beautiful wrapper */}
+                            <div
+                              className={`p-2 rounded-lg transition-all duration-300 ${
+                                isActive
+                                  ? "bg-[#FF0000]/15 text-[#FF0000]"
+                                  : "bg-neutral-950/60 text-neutral-400 group-hover:text-white group-hover:bg-neutral-900"
+                              }`}
+                            >
+                              <Icon size={18} className="transition-transform duration-300 group-hover:scale-110" />
+                            </div>
 
-                        {/* Label */}
-                        <span className="font-medium font-body text-sm sm:text-base">
-                          {item.label}
-                        </span>
+                            {/* Label */}
+                            <span className="font-semibold font-body text-sm">
+                              {item.label}
+                            </span>
 
-                        {/* Active indicator */}
-                        {isActive && (
-                          <div
-                            className="ml-auto w-2 h-2 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: item.color }}
-                          />
-                        )}
-                      </button>
-                    );
-                  })}
+                            {/* Active dot */}
+                            {isActive && (
+                              <motion.div
+                                layoutId="activeSideDot"
+                                className="ml-auto w-1.5 h-1.5 rounded-full bg-[#FF0000]"
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                              />
+                            )}
+                          </button>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
                 </div>
 
-                {/* Profile Section - Inside scrollable area */}
-                {isAuthenticated() && user ? (
-                  <div className="border-t border-neutral-800/50 pt-4 mt-4">
-                    <div className="bg-neutral-900/30 rounded-xl p-3 sm:p-4">
-                      <div className="flex items-center space-x-3 mb-3 sm:mb-4">
-                        <div>
-                          {user?.profileImage ? (
-                            <img
-                              src={user.profileImage}
-                              alt="Profile"
-                              className="w-12 h-12 rounded-full object-cover border-2 border-red-600/30"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white font-bold">
-                              {user?.name?.charAt(0)?.toUpperCase() || "U"}
-                            </div>
-                          )}
+                {/* Lower block with Profile / Auth + Motivation Quote */}
+                <div className="space-y-4">
+                  {/* Profile Section - Inside scrollable area */}
+                  {isAuthenticated() && user ? (
+                    <div className="border-t border-neutral-900/60 pt-4 mt-2 px-1">
+                      <div className="relative overflow-hidden bg-gradient-to-br from-[#0F0F0F] via-[#080808] to-[#0A0A0A] border border-neutral-900/80 rounded-2xl p-4 shadow-xl">
+                        {/* Premium glow decorative circle */}
+                        <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-[#FF0000]/5 rounded-full blur-2xl pointer-events-none" />
+                        
+                        <div className="flex items-center space-x-3 mb-4">
+                          <div className="relative">
+                            {user?.profileImage ? (
+                              <img
+                                src={user.profileImage}
+                                alt="Profile"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-[#FF0000]/20 shadow-md shadow-[#FF0000]/10"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FF0000] to-[#B30000] flex items-center justify-center text-white font-bold shadow-md shadow-[#FF0000]/20">
+                                {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                              </div>
+                            )}
+                            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-black" />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-white text-sm font-semibold truncate font-body">
+                              {user?.name || "User"}
+                            </h3>
+                            <p className="text-neutral-500 text-xs truncate font-body">
+                              {user?.email || ""}
+                            </p>
+                            <span className="inline-flex items-center mt-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#FF0000]/10 text-[#FF0000] border border-[#FF0000]/20 uppercase tracking-wider font-body">
+                              Premium Athlete
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-white font-medium truncate">
-                            {user?.name || "User"}
-                          </h3>
-                          <p className="text-neutral-400 text-sm truncate">
-                            {user?.email || ""}
-                          </p>
-                          <div className="flex items-center space-x-1 mt-1">
-                            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                            <span className="text-xs text-red-500">Online</span>
+                        <div className="space-y-1 pt-2 border-t border-neutral-900/60">
+                          <button
+                            onClick={() => handleMenuItemClick("/profile")}
+                            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900/40 transition-all duration-200"
+                          >
+                            <UserCircle size={16} className="text-neutral-500" />
+                            <span className="text-xs font-semibold font-body">My Account</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleMenuItemClick("/settings")}
+                            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900/40 transition-all duration-200"
+                          >
+                            <Settings size={16} className="text-neutral-500" />
+                            <span className="text-xs font-semibold font-body">Settings</span>
+                          </button>
+
+                          <div className="pt-2 border-t border-neutral-900/60 mt-2">
+                            <button
+                              onClick={handleLogout}
+                              className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-red-950/20 to-transparent hover:from-[#FF0000]/10 hover:bg-[#FF0000]/5 text-[#FF0000] hover:text-[#E60000] border border-[#FF0000]/15 hover:border-[#FF0000]/30 transition-all duration-300 shadow-sm"
+                            >
+                              <LogOut size={16} />
+                              <span className="text-xs font-bold font-body uppercase tracking-wider">
+                                Log out
+                              </span>
+                            </button>
                           </div>
                         </div>
                       </div>
-
-                      <div className="space-y-2">
+                    </div>
+                  ) : (
+                    <div className="border-t border-neutral-900/60 pt-4 mt-2 px-1">
+                      <div className="space-y-2.5">
                         <button
-                          onClick={() => handleMenuItemClick("/profile")}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800/50 min-h-[44px]"
-                          style={{
-                            transition: "all 0.06s ease-out",
-                            willChange: "background-color, color",
-                            backfaceVisibility: "hidden",
-                          }}
+                          onClick={() => handleMenuItemClick("/login")}
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-[#0D0D0D] border border-neutral-800 hover:bg-[#1A1A1A] text-white min-h-[44px] shadow-lg transition-all duration-200"
                         >
-                          <UserCircle size={18} />
-                          <span className="text-sm sm:text-base font-body">
-                            My Account
-                          </span>
+                          <User size={16} />
+                          <span className="font-semibold text-xs font-body">Login</span>
                         </button>
 
                         <button
-                          onClick={() => handleMenuItemClick("/settings")}
-                          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800/50 min-h-[44px]"
-                          style={{
-                            transition: "all 0.06s ease-out",
-                            willChange: "background-color, color",
-                            backfaceVisibility: "hidden",
-                          }}
+                          onClick={() => handleMenuItemClick("/register")}
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-[#FF0000] to-[#B30000] hover:from-[#E60000] hover:to-[#8B0000] text-white border border-[#FF0000]/20 min-h-[44px] shadow-lg shadow-[#FF0000]/10 transition-all duration-300"
                         >
-                          <Settings size={18} />
-                          <span className="text-sm sm:text-base font-body">
-                            Settings
-                          </span>
+                          <Zap size={16} />
+                          <span className="font-semibold text-xs font-body">Sign Up</span>
                         </button>
+                      </div>
+                    </div>
+                  )}
 
-                        {/* Logout Button - Highlighted */}
-                        <div className="pt-2 border-t border-neutral-700/30 mt-3">
-                          <button
-                            onClick={handleLogout}
-                            className="w-full flex items-center space-x-3 px-3 py-4 rounded-lg bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 min-h-[48px] border border-red-500/20"
-                            style={{
-                              transition: "all 0.06s ease-out",
-                              willChange: "background-color, color",
-                              backfaceVisibility: "hidden",
-                            }}
-                          >
-                            <LogOut size={20} />
-                            <span className="text-base font-body font-semibold">
-                              Logout
-                            </span>
-                          </button>
+                  {/* Fitness Motivation Card */}
+                  <div className="px-1">
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0A0A0A] via-[#050505] to-[#080808] border border-neutral-900/80 p-4 shadow-xl">
+                      {/* Decorative background glow */}
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF0000]/5 rounded-full blur-2xl pointer-events-none" />
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="p-2 rounded-lg bg-[#FF0000]/10 text-[#FF0000] mt-0.5">
+                          <Zap size={15} className="animate-pulse" />
+                        </div>
+                        <div>
+                          <h4 className="text-[10px] font-bold text-white uppercase tracking-wider font-body">
+                            Daily Grind
+                          </h4>
+                          <p className="text-[11px] text-neutral-400 mt-1 font-body leading-relaxed italic">
+                            "The pain you feel today will be the strength you feel tomorrow. Grind harder."
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="border-t border-neutral-800/50 pt-4 mt-4">
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => handleMenuItemClick("/login")}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gray-700 text-white hover:bg-gray-600 min-h-[48px]"
-                        style={{
-                          transition: "background-color 0.06s ease-out",
-                          willChange: "background-color",
-                          backfaceVisibility: "hidden",
-                        }}
-                      >
-                        <User size={18} />
-                        <span className="font-medium font-body">Login</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleMenuItemClick("/register")}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-red-700 text-white hover:bg-blue-700 min-h-[48px]"
-                        style={{
-                          transition: "background-color 0.06s ease-out",
-                          willChange: "background-color",
-                          backfaceVisibility: "hidden",
-                        }}
-                      >
-                        <Zap size={18} />
-                        <span className="font-medium font-body">Sign Up</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                </div>
 
                 {/* Bottom padding for scroll */}
-                <div className="h-6"></div>
+                <div className="h-2"></div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </>
       )}
-    </>
+    </AnimatePresence>
   );
 }

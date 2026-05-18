@@ -511,11 +511,7 @@ export default function Home() {
     ],
     [],
   );
-  const showRestDay = useMemo(() => {
-    if (!isAuthenticated() || !auth?.user) return false;
-    const today = new Date().getDay();
-    return todayWorkouts === 0 || today === 0;
-  }, [isAuthenticated, auth?.user, todayWorkouts]);
+  const showRestDay = true; // Always show Rest Day & Recovery sections to everyone as requested
 
   // Optimized timer management
   useEffect(() => {
@@ -1385,8 +1381,10 @@ export default function Home() {
                 style: {
                   x: springX,
                   paddingRight: "40vw",
+                  willChange: "transform",
+                  transform: "translateZ(0)",
                 },
-                className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[88%] sm:h-[94%] max-h-[550px]",
+                className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[88%] sm:h-[94%] max-h-[550px] transform-gpu",
               },
               [
                 {
@@ -1529,7 +1527,13 @@ export default function Home() {
                   "div",
                   {
                     key: bf.percent,
-                    className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch",
+                    className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch transform-gpu",
+                    style: {
+                      transform: "translateZ(0)",
+                      willChange: "transform",
+                      WebkitBackfaceVisibility: "hidden",
+                      backfaceVisibility: "hidden",
+                    },
                   },
                   /*#__PURE__*/ React.createElement(BodyFatCard, {
                     bf: bf,
@@ -1540,7 +1544,13 @@ export default function Home() {
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
-                  className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch",
+                  className: "body-fat-card-wrapper flex-shrink-0 flex items-stretch transform-gpu",
+                  style: {
+                    transform: "translateZ(0)",
+                    willChange: "transform",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  },
                 },
                 /*#__PURE__*/ React.createElement(
                   "div",
@@ -2307,7 +2317,7 @@ export default function Home() {
           "data-animate": true,
           "data-id": "cta",
           id: "cta",
-          className: "relative py-6 sm:py-20",
+          className: "relative py-4 sm:py-20",
         },
         /*#__PURE__*/ React.createElement(
           "div",
@@ -2321,7 +2331,7 @@ export default function Home() {
             "div",
             {
               className:
-                "relative bg-black border-4 border-lime-500 shadow-2xl overflow-hidden",
+                "relative bg-black border-2 sm:border-4 border-lime-500 shadow-2xl overflow-hidden",
             },
             /*#__PURE__*/ React.createElement(
               "div",
@@ -2331,20 +2341,20 @@ export default function Home() {
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
-                  className: "relative w-full order-2 lg:order-1",
+                  className: "relative w-full overflow-hidden order-2 lg:order-1 lg:h-full",
                 },
                 /*#__PURE__*/ React.createElement("img", {
                   src: Again,
                   alt: "Elite Training",
                   loading: "lazy",
-                  className: "w-full h-auto",
+                  className: "w-full h-auto lg:h-full lg:object-cover transition-transform duration-700 hover:scale-105",
                 }),
               ),
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
                   className:
-                    "p-8 sm:p-12 lg:p-16 flex flex-col justify-center bg-black order-1 lg:order-2",
+                    "p-5 xs:p-7 sm:p-12 lg:p-16 flex flex-col justify-center bg-black order-1 lg:order-2",
                 },
                 /*#__PURE__*/ React.createElement("div", {
                   className:
@@ -2363,16 +2373,16 @@ export default function Home() {
                     "div",
                     {
                       className:
-                        "inline-flex items-center gap-2 sm:gap-3 px-4 py-2 sm:px-6 sm:py-3 bg-zinc-900 border-2 border-lime-500 mb-6 sm:mb-8",
+                        "inline-flex items-center gap-1.5 sm:gap-3 px-2.5 py-1 sm:px-5 sm:py-2.5 bg-zinc-950/60 border border-lime-500/20 mb-4 sm:mb-8 rounded-md w-fit",
                     },
                     /*#__PURE__*/ React.createElement("div", {
-                      className: "w-2 h-2 bg-lime-500 animate-pulse",
+                      className: "w-1.5 h-1.5 bg-lime-500 rounded-full animate-pulse",
                     }),
                     /*#__PURE__*/ React.createElement(
                       "span",
                       {
                         className:
-                          "text-xs sm:text-sm font-black tracking-[0.2em] text-lime-500 uppercase",
+                          "text-[9px] sm:text-xs font-black tracking-[0.15em] text-lime-500 uppercase font-body",
                       },
                       "Elite Access",
                     ),
@@ -2381,19 +2391,19 @@ export default function Home() {
                     "h2",
                     {
                       className:
-                        "text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 uppercase leading-[0.85]",
+                        "text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-6 uppercase leading-[0.9]",
                     },
                     /*#__PURE__*/ React.createElement(
                       "span",
                       {
-                        className: "text-white block mb-2",
+                        className: "text-white block mb-1 sm:mb-2",
                       },
                       "STOP",
                     ),
                     /*#__PURE__*/ React.createElement(
                       "span",
                       {
-                        className: "text-white block mb-2",
+                        className: "text-white block mb-1 sm:mb-2",
                       },
                       "WASTING",
                     ),
@@ -2408,13 +2418,13 @@ export default function Home() {
                   /*#__PURE__*/ React.createElement(
                     "div",
                     {
-                      className: "mb-8 sm:mb-10",
+                      className: "mb-5 sm:mb-8",
                     },
                     /*#__PURE__*/ React.createElement(
                       "p",
                       {
                         className:
-                          "text-sm sm:text-lg text-zinc-400 font-black uppercase tracking-wide",
+                          "text-xs sm:text-lg text-zinc-400 font-bold uppercase tracking-wider",
                       },
                       "Track. Dominate. Repeat.",
                     ),
@@ -2422,7 +2432,7 @@ export default function Home() {
                   /*#__PURE__*/ React.createElement(
                     "div",
                     {
-                      className: "flex flex-col gap-4",
+                      className: "flex flex-row gap-2.5 xs:gap-3.5 w-full",
                     },
                     isAuthenticated()
                       ? /*#__PURE__*/ React.createElement(
@@ -2430,18 +2440,18 @@ export default function Home() {
                           {
                             onClick: () => navigate("/dashboard"),
                             className:
-                              "group relative w-full px-8 py-5 sm:px-10 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-x-1 active:translate-x-0 focus:outline-none focus:ring-4 focus:ring-lime-500 uppercase tracking-wide overflow-hidden",
+                              "group relative flex-1 px-4 py-3.5 sm:px-10 sm:py-5 text-xs xs:text-sm sm:text-lg font-black bg-gradient-to-r from-lime-500 to-emerald-600 hover:from-lime-400 hover:to-emerald-500 text-black shadow-lg transform transition-all duration-300 active:scale-95 focus:outline-none focus:ring-4 focus:ring-lime-500 uppercase tracking-wide overflow-hidden flex items-center justify-center rounded-lg",
                           },
                           /*#__PURE__*/ React.createElement(
                             "span",
                             {
                               className:
-                                "relative z-10 flex items-center justify-center gap-3",
+                                "relative z-10 flex items-center justify-center gap-2",
                             },
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
-                                className: "text-2xl",
+                                className: "text-base sm:text-2xl",
                               },
                               /*#__PURE__*/ React.createElement(BicepsFlexed, {
                                 className: "w-[1em] h-[1em] inline-block",
@@ -2466,18 +2476,18 @@ export default function Home() {
                             {
                               onClick: () => navigate("/register"),
                               className:
-                                "group relative w-full px-8 py-5 sm:px-10 sm:py-6 text-base sm:text-xl font-black bg-lime-500 text-black shadow-2xl transform transition-all duration-300 hover:bg-white hover:translate-x-1 active:translate-x-0 focus:outline-none focus:ring-4 focus:ring-lime-500 uppercase tracking-wide overflow-hidden",
+                                "group relative flex-1 px-4 py-3.5 sm:px-10 sm:py-5 text-xs xs:text-sm sm:text-lg font-black bg-gradient-to-r from-lime-500 to-emerald-600 hover:from-lime-400 hover:to-emerald-500 text-black shadow-lg transform transition-all duration-300 active:scale-95 focus:outline-none focus:ring-4 focus:ring-lime-500 uppercase tracking-wide overflow-hidden flex items-center justify-center rounded-lg",
                             },
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
                                 className:
-                                  "relative z-10 flex items-center justify-center gap-3",
+                                  "relative z-10 flex items-center justify-center gap-2",
                               },
                               /*#__PURE__*/ React.createElement(
                                 "span",
                                 {
-                                  className: "text-2xl",
+                                  className: "text-base sm:text-2xl",
                                 },
                                 /*#__PURE__*/ React.createElement(Zap, {
                                   className: "w-[1em] h-[1em] inline-block",
@@ -2499,18 +2509,18 @@ export default function Home() {
                             {
                               onClick: () => navigate("/login"),
                               className:
-                                "w-full px-8 py-5 sm:px-10 sm:py-6 text-base sm:text-xl font-black bg-zinc-900 border-4 border-white text-white shadow-2xl transform transition-all duration-300 hover:bg-white hover:text-black hover:translate-x-1 active:translate-x-0 focus:outline-none focus:ring-4 focus:ring-white uppercase tracking-wide",
+                                "flex-1 px-4 py-3.5 sm:px-10 sm:py-5 text-xs xs:text-sm sm:text-lg font-black bg-[#0D0D0D] border border-zinc-800 hover:bg-zinc-900 text-white shadow-lg transform transition-all duration-300 active:scale-95 focus:outline-none focus:ring-4 focus:ring-white uppercase tracking-wide flex items-center justify-center rounded-lg",
                             },
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
                                 className:
-                                  "flex items-center justify-center gap-3",
+                                  "flex items-center justify-center gap-2",
                               },
                               /*#__PURE__*/ React.createElement(
                                 "span",
                                 {
-                                  className: "text-2xl",
+                                  className: "text-base sm:text-2xl",
                                 },
                                 /*#__PURE__*/ React.createElement(Star, {
                                   className: "w-[1em] h-[1em] inline-block",

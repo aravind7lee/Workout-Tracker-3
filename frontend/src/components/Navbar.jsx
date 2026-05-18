@@ -311,19 +311,19 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+              <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3">
                 <Link
                   to="/login"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#0D0D0D] text-white rounded-lg hover:bg-[#1A1A1A] transition-all duration-200 flex items-center justify-center shadow-lg border border-[#1A1A1A]"
+                  className="px-1.5 py-1 xs:px-2.5 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm font-medium bg-[#0D0D0D] text-white rounded-lg hover:bg-[#1A1A1A] transition-all duration-200 flex items-center justify-center shadow-lg border border-[#1A1A1A] whitespace-nowrap"
                 >
-                  <User size={16} className="mr-1" />
+                  <User size={14} className="hidden xs:inline-block mr-1 flex-shrink-0" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium bg-[#FF0000] text-white rounded-lg hover:bg-[#FF0000]/90 transition-all duration-200 flex items-center justify-center shadow-lg"
+                  className="px-1.5 py-1 xs:px-2.5 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm font-medium bg-gradient-to-r from-[#FF0000] to-[#B30000] hover:from-[#E60000] hover:to-[#8B0000] text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-lg shadow-[#FF0000]/10 border border-[#FF0000]/20 whitespace-nowrap"
                 >
-                  <Zap size={16} className="mr-1" />
+                  <Zap size={14} className="hidden xs:inline-block mr-1 flex-shrink-0" />
                   Sign Up
                 </Link>
               </div>
