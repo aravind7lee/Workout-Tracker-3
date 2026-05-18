@@ -123,75 +123,79 @@ export default function Navbar() {
       initial="visible"
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className={`navbar-container fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        isScrolled ? "navbar-scrolled" : "navbar-default"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled
+          ? "bg-zinc-950/85 backdrop-blur-2xl border-b border-red-900/20 shadow-[0_4px_30px_rgba(0,0,0,0.8)] py-1.5"
+          : "bg-gradient-to-b from-black/90 via-black/50 to-transparent py-4"
       }`}
     >
-      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12">
-        <div
-          className={`flex items-center justify-between w-full transition-all duration-300 ${
-            isScrolled ? "h-12 sm:h-14" : "h-14 sm:h-16"
-          }`}
-        >
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="flex items-center justify-between w-full h-12 sm:h-14">
           {/* Logo Section */}
-          <Link to="/" className="group">
+          <Link to="/" className="group flex-shrink-0">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative z-10"
+              className="relative z-10 group-hover:drop-shadow-[0_0_15px_rgba(255,0,0,0.5)] transition-all duration-500"
             >
               <img
                 src={logo}
                 alt="GymTracker Logo"
-                className="h-8 sm:h-10 w-auto object-contain transition-all duration-300 drop-shadow-lg"
-                style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
+                className="h-8 sm:h-10 xl:h-11 w-auto object-contain drop-shadow-xl"
                 loading="eager"
-                decoding="async"
               />
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center justify-center flex-1 space-x-2">
-            {navLinks.map((link) => (
-              <Link key={link.to} to={link.to} className="relative group">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center ${
-                    isActiveRoute(link.to)
-                      ? "text-white bg-[#FF0000]/20 border border-[#FF0000]/30"
-                      : "text-neutral-300 hover:text-white hover:bg-neutral-800/30"
-                  }`}
-                >
-                  <span className="font-body">{link.label}</span>
-                </motion.div>
-
-                {/* Active indicator */}
-                {isActiveRoute(link.to) && (
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-4 xl:px-8">
+            {navLinks.map((link) => {
+              const active = isActiveRoute(link.to);
+              return (
+                <Link key={link.to} to={link.to} className="relative group">
                   <motion.div
-                    layoutId="activeTab"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#FF0000] rounded-full"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </Link>
-            ))}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`relative px-3 py-2 rounded-full text-[11px] xl:text-[12px] 2xl:text-[13px] font-black tracking-widest uppercase transition-all duration-300 flex items-center whitespace-nowrap ${
+                      active
+                        ? "text-white"
+                        : "text-zinc-500 hover:text-zinc-200"
+                    }`}
+                  >
+                    <span className="relative z-10 whitespace-nowrap">{link.label}</span>
+                    
+                    {/* Active Indicator & Glow */}
+                    {active && (
+                      <motion.div
+                        layoutId="activeNavTab"
+                        className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-900/20 rounded-full border border-red-500/30 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    
+                    {/* Hover Effect for Inactive */}
+                    {!active && (
+                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 rounded-full transition-colors duration-300" />
+                    )}
+                  </motion.div>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
-            {/* Connection Status Indicator */}
-            <div className="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-neutral-900/50 backdrop-blur-sm">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-shrink-0">
+            {/* Connection Status */}
+            <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
               {connectionStatus.fullyOnline ? (
-                <Wifi size={14} className="text-[#FF0000]" />
+                <Wifi size={14} className="text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
               ) : (
-                <WifiOff size={14} className="text-red-400" />
+                <WifiOff size={14} className="text-zinc-600" />
               )}
             </div>
 
-            {/* Desktop Search Bar */}
+            {/* Desktop Search */}
             <div className="hidden lg:block">
               <SearchBar isMobile={false} />
             </div>
@@ -201,163 +205,119 @@ export default function Navbar() {
               <SearchBar isMobile={true} />
             </div>
 
-            {/* Profile Dropdown */}
+            {/* Profile / Auth Dropdown */}
             {isAuthenticated() && user ? (
-              <div ref={profileRef} className="relative">
+              <div ref={profileRef} className="relative z-[60]">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center space-x-2 p-2 rounded-xl hover:bg-neutral-800/50 transition-all duration-200"
+                  className="flex items-center gap-2.5 p-1 pr-3 lg:pr-4 rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-red-500/40 hover:bg-zinc-800/80 transition-all duration-300 group shadow-lg backdrop-blur-md"
                 >
-                  {user?.profileImage ? (
-                    <img
-                      src={user.profileImage}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover border-2 border-[#FF0000]/30"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white font-bold text-sm">
-                      {(user?.name && user.name.charAt(0)?.toUpperCase()) ||
-                        "U"}
-                    </div>
-                  )}
-                  <span className="hidden sm:block text-white font-medium font-body">
+                  <div className="relative">
+                    {user?.profileImage ? (
+                      <img
+                        src={user.profileImage}
+                        alt="Profile"
+                        className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover border-2 border-red-500/50 group-hover:border-red-500 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-black text-xs lg:text-sm border-2 border-red-500/30 group-hover:border-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)]">
+                        {(user?.name && user.name.charAt(0)?.toUpperCase()) || "U"}
+                      </div>
+                    )}
+                    {connectionStatus.fullyOnline && (
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-zinc-900 shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
+                    )}
+                  </div>
+                  <span className="hidden xl:block text-[11px] lg:text-xs font-black text-white tracking-widest uppercase truncate max-w-[100px]">
                     {user?.name || "User"}
-                  </span>
-                  <span className="hidden lg:block text-xs text-[#FF0000] bg-[#FF0000]/20 px-2 py-1 rounded-full">
-                    <Wifi size={14} />
                   </span>
                 </motion.button>
 
                 <AnimatePresence>
                   {showProfileDropdown && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2"
-                      style={{
-                        background: "var(--bg-soft)",
-                        border: "1px solid var(--panel-border)",
-                        backdropFilter: "blur(20px)",
-                      }}
+                      transition={{ duration: 0.2, type: "spring", stiffness: 400, damping: 25 }}
+                      className="absolute right-0 mt-3 w-56 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] py-2 border border-zinc-800 bg-zinc-950/95 backdrop-blur-xl z-[60] overflow-hidden"
                     >
+                      <div className="px-4 py-3 border-b border-zinc-800/50 mb-1 bg-gradient-to-b from-red-900/10 to-transparent">
+                        <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-0.5">Signed In As</p>
+                        <p className="text-sm font-black text-white truncate">{user?.name || "Elite Athlete"}</p>
+                      </div>
+
                       <Link
                         to="/profile"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center space-x-3 px-4 py-2 transition-colors"
-                        style={{
-                          color: "var(--text)",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "var(--heading)";
-                          e.target.style.background = "var(--bg-accent)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "var(--text)";
-                          e.target.style.background = "transparent";
-                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-400 hover:text-white hover:bg-red-500/10 transition-colors group"
                       >
-                        <UserCircle size={16} />
-                        <span className="font-body">My Account</span>
+                        <UserCircle size={16} className="group-hover:text-red-500 transition-colors" />
+                        <span className="text-xs font-bold uppercase tracking-widest">My Profile</span>
                       </Link>
+                      
                       <Link
                         to="/settings"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center space-x-3 px-4 py-2 transition-colors"
-                        style={{
-                          color: "var(--text)",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "var(--heading)";
-                          e.target.style.background = "var(--bg-accent)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "var(--text)";
-                          e.target.style.background = "transparent";
-                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-400 hover:text-white hover:bg-red-500/10 transition-colors group"
                       >
-                        <Settings size={16} />
-                        <span className="font-body">Settings</span>
+                        <Settings size={16} className="group-hover:text-red-500 transition-colors" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Settings</span>
                       </Link>
-                      <hr
-                        style={{
-                          margin: "8px 0",
-                          border: "none",
-                          borderTop: "1px solid var(--panel-border)",
-                        }}
-                      />
+                      
+                      <div className="h-px bg-zinc-800/50 my-1 mx-4" />
+                      
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-2 transition-colors w-full text-left"
-                        style={{
-                          color: "var(--danger)",
-                          background: "transparent",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = "rgba(255, 71, 87, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = "transparent";
-                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 transition-colors w-full text-left group"
                       >
                         <LogOut size={16} />
-                        <span className="font-body">Logout</span>
+                        <span className="text-xs font-bold uppercase tracking-widest">Logout</span>
                       </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3">
+              <div className="flex items-center gap-2 lg:gap-3">
                 <Link
                   to="/login"
-                  className="px-1.5 py-1 xs:px-2.5 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm font-medium bg-[#0D0D0D] text-white rounded-lg hover:bg-[#1A1A1A] transition-all duration-200 flex items-center justify-center shadow-lg border border-[#1A1A1A] whitespace-nowrap"
+                  className="px-4 py-2 text-[10px] sm:text-[11px] font-black text-zinc-400 hover:text-white uppercase tracking-widest transition-colors duration-300 flex items-center justify-center whitespace-nowrap"
                 >
-                  <User size={14} className="hidden xs:inline-block mr-1 flex-shrink-0" />
+                  <User size={14} className="hidden xs:inline-block mr-1.5 opacity-50" />
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-1.5 py-1 xs:px-2.5 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm font-medium bg-gradient-to-r from-[#FF0000] to-[#B30000] hover:from-[#E60000] hover:to-[#8B0000] text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-lg shadow-[#FF0000]/10 border border-[#FF0000]/20 whitespace-nowrap"
+                  className="relative group overflow-hidden px-5 py-2 text-[10px] sm:text-[11px] font-black text-white uppercase tracking-widest rounded-full bg-red-600 border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] hover:bg-red-500 transition-all duration-300 flex items-center justify-center whitespace-nowrap"
                 >
-                  <Zap size={14} className="hidden xs:inline-block mr-1 flex-shrink-0" />
-                  Sign Up
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                  <Zap size={14} className="hidden xs:inline-block mr-1.5" />
+                  <span className="relative z-10">Sign Up</span>
                 </Link>
               </div>
             )}
 
-            {/* Ultra-Smooth Mobile Menu Button */}
+            {/* Mobile Sidebar Trigger (Ultra Smooth Component will handle the rest) */}
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="xl:hidden p-3 rounded-full bg-[#000000] transition-all duration-300 ml-2 relative group border border-[#1A1A1A]"
+              className="lg:hidden p-2.5 rounded-full bg-zinc-900 border border-zinc-800 shadow-lg text-zinc-400 hover:text-white hover:border-red-500/50 hover:bg-zinc-800 transition-all duration-300 ml-1 relative z-[60]"
             >
-              <motion.div
-                animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 30,
-                  duration: 0.3,
-                }}
-              >
+              <AnimatePresence mode="wait">
                 {isOpen ? (
-                  <X
-                    size={22}
-                    className="text-neutral-400 group-hover:text-white transition-colors duration-200"
-                  />
+                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <X size={20} />
+                  </motion.div>
                 ) : (
-                  <Menu
-                    size={22}
-                    className="text-neutral-400 group-hover:text-white transition-colors duration-200"
-                  />
+                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <Menu size={20} />
+                  </motion.div>
                 )}
-              </motion.div>
-              <div className="absolute inset-0 rounded-full bg-[#FF0000]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              </AnimatePresence>
             </motion.button>
           </div>
         </div>
