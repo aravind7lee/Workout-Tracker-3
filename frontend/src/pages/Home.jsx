@@ -1384,6 +1384,7 @@ export default function Home() {
                 ref: flexContainerRef,
                 style: {
                   x: springX,
+                  paddingRight: "40vw",
                 },
                 className: "flex gap-4 sm:gap-8 pl-[10vw] items-stretch h-[80%] sm:h-[85%] max-h-[500px]",
               },
@@ -1613,12 +1614,6 @@ export default function Home() {
                   )
                 )
               )
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "body-fat-spacer",
-              }
             ),
         ),
           /*#__PURE__*/ React.createElement(
