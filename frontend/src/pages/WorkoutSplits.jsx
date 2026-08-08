@@ -1161,11 +1161,11 @@ const WorkoutSplits = () => {
             "div",
             {
               className:
-                "group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-red-600/20 to-red-600/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-red-600/40 hover:border-red-500/60 transition-all duration-300",
+                "group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-lg border border-zinc-800 hover:border-zinc-700 transition-all duration-200",
             },
             /*#__PURE__*/ React.createElement(Target, {
               className:
-                "w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-500 group-hover:text-green-300 transition-colors",
+                "w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-500 transition-colors",
             }),
             /*#__PURE__*/ React.createElement(
               "span",
@@ -1180,7 +1180,7 @@ const WorkoutSplits = () => {
             "div",
             {
               className:
-                "group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-red-700/20 to-red-600/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-red-700/40 hover:border-red-600/60 transition-all duration-300",
+                "group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-lg border border-zinc-800 hover:border-zinc-700 transition-all duration-200",
             },
             /*#__PURE__*/ React.createElement(Clock, {
               className:

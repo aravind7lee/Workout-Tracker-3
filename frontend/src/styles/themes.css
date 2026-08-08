@@ -5,38 +5,38 @@
 /* ===== ROOT VARIABLES (DEEP SLATE THEME) ===== */
 :root {
   /* === BACKGROUNDS === */
-  --bg: #000000;                    /* Black background */
-  --bg-soft: #0D0D0D;              /* Card backgrounds */
-  --bg-accent: #1A1A1A;             /* Elevated elements */
+  --bg: #09090b;                    /* Matte dark main background */
+  --bg-soft: #121215;              /* Soft surfaces */
+  --bg-accent: #18181b;             /* Card backgrounds */
   
   /* === TEXT COLORS === */
-  --text: #B3B3B3;                  /* Secondary text */
-  --heading: #FFFFFF;               /* Primary text/headings */
-  --muted: #808080;                 /* Muted text */
-  --link: #FF0000;                  /* Red links */
+  --text: #a1a1aa;                  /* Secondary text */
+  --heading: #f8fafc;               /* Primary text/headings */
+  --muted: #71717a;                 /* Muted text */
+  --link: #dc2626;                  /* Red links */
   
   /* === BORDERS & STRUCTURE === */
-  --panel-border: rgba(255, 255, 255, 0.1);          /* Border color */
+  --panel-border: rgba(255, 255, 255, 0.08);          /* Crisp border color */
   
   /* === BRAND ACCENT === */
-  --accent: #FF0000;                /* Primary accent - red */
-  --accent-hover: #E60000;          /* Darker red for hover */
+  --accent: #dc2626;                /* Primary accent - clean red */
+  --accent-hover: #b91c1c;          /* Darker red for hover */
   --accent-contrast: #ffffff;       /* White text on red */
   
   /* === SHADOWS & DEPTH === */
-  --shadow-soft: 0 4px 12px rgba(255, 0, 0, 0.1);
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.4);
   
   /* === STATE COLORS === */
-  --success: #10b981;               /* Green */
+  --success: #22c55e;               /* Green */
   --danger: #ef4444;                /* Red */
   --warning: #f59e0b;               /* Orange */
   
   /* === BUTTON COLORS === */
   --btn-primary-bg: var(--accent);
   --btn-primary-text: #ffffff;
-  --btn-secondary-bg: var(--bg-accent);
-  --btn-secondary-text: var(--text);
-  --btn-secondary-border: var(--panel-border);
+  --btn-secondary-bg: #27272a;
+  --btn-secondary-text: #f8fafc;
+  --btn-secondary-border: rgba(255, 255, 255, 0.1);
   
   /* === TOGGLE SPECIFIC === */
   --toggle-bg: var(--bg-accent);

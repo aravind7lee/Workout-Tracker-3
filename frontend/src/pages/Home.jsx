@@ -1552,14 +1552,8 @@ export default function Home() {
                 /*#__PURE__*/ React.createElement(
                   "div",
                   {
-                    className: "bg-zinc-900 border-2 border-red-600 p-4 sm:p-8 flex flex-col justify-center relative shadow-2xl overflow-hidden w-full",
+                    className: "bg-zinc-900/90 border border-zinc-800/90 rounded-xl p-4 sm:p-8 flex flex-col justify-center relative shadow-lg overflow-hidden w-full",
                   },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "absolute top-0 right-0 w-24 h-24 bg-red-600/10 rounded-full blur-2xl pointer-events-none",
-                    }
-                  ),
                   /*#__PURE__*/ React.createElement(
                     "div",
                     {
@@ -1568,7 +1562,7 @@ export default function Home() {
                     /*#__PURE__*/ React.createElement(
                       "div",
                       {
-                        className: "w-10 h-10 sm:w-14 sm:h-14 bg-black border-2 border-red-600 flex items-center justify-center flex-shrink-0 shadow-lg",
+                        className: "w-10 h-10 sm:w-14 sm:h-14 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md",
                       },
                       /*#__PURE__*/ React.createElement(Lightbulb, {
                         className: "w-5 h-5 sm:w-7 sm:h-7 text-red-600",

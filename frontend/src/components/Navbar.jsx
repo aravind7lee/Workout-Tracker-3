@@ -123,10 +123,10 @@ export default function Navbar() {
       initial="visible"
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-zinc-950/85 backdrop-blur-2xl border-b border-red-900/20 shadow-[0_4px_30px_rgba(0,0,0,0.8)] py-1.5"
-          : "bg-gradient-to-b from-black/90 via-black/50 to-transparent py-4"
+          ? "bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800/80 shadow-lg py-2"
+          : "bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 py-3"
       }`}
     >
       <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
@@ -134,51 +134,34 @@ export default function Navbar() {
           {/* Logo Section */}
           <Link to="/" className="group flex-shrink-0">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative z-10 group-hover:drop-shadow-[0_0_15px_rgba(255,0,0,0.5)] transition-all duration-500"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative z-10 transition-transform duration-300"
             >
               <img
                 src={logo}
                 alt="GymTracker Logo"
-                className="h-8 sm:h-10 xl:h-11 w-auto object-contain drop-shadow-xl"
+                className="h-8 sm:h-10 xl:h-11 w-auto object-contain"
                 loading="eager"
               />
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-4 xl:px-8">
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-1 xl:gap-1.5 px-4 xl:px-8">
             {navLinks.map((link) => {
               const active = isActiveRoute(link.to);
               return (
                 <Link key={link.to} to={link.to} className="relative group">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`relative px-3 py-2 rounded-full text-[11px] xl:text-[12px] 2xl:text-[13px] font-black tracking-widest uppercase transition-all duration-300 flex items-center whitespace-nowrap ${
+                  <div
+                    className={`relative px-3.5 py-1.5 rounded-md text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center whitespace-nowrap ${
                       active
-                        ? "text-white"
-                        : "text-zinc-500 hover:text-zinc-200"
+                        ? "text-red-500 bg-red-950/30 border border-red-800/40"
+                        : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                     }`}
                   >
                     <span className="relative z-10 whitespace-nowrap">{link.label}</span>
-                    
-                    {/* Active Indicator & Glow */}
-                    {active && (
-                      <motion.div
-                        layoutId="activeNavTab"
-                        className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-900/20 rounded-full border border-red-500/30 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
-                        initial={false}
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    
-                    {/* Hover Effect for Inactive */}
-                    {!active && (
-                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 rounded-full transition-colors duration-300" />
-                    )}
-                  </motion.div>
+                  </div>
                 </Link>
               );
             })}

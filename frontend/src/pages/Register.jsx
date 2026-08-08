@@ -107,7 +107,7 @@ const Register = () => {
       "div",
       {
         className:
-          "bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-red-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-md relative z-10",
+          "bg-zinc-900/95 border border-zinc-800 rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl w-full max-w-md relative z-10",
       },
       /*#__PURE__*/ React.createElement(
         "div",

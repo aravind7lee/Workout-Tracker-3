@@ -18,83 +18,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== ULTRA PREMIUM DARK MODE THEME VARIABLES ===== */
+/* ===== ENTERPRISE GYM DARK MODE DESIGN SYSTEM ===== */
 :root {
   --font-heading: "Bebas Neue", cursive;
   --font-body: "Inter", sans-serif;
 
-  /* Ultra Premium Dark Theme */
-  --bg: #000000;
-  --bg-soft: #0D0D0D;
-  --bg-card: #1A1A1A;
-  --bg-accent: rgba(255, 0, 0, 0.1);
-  --bg-gradient-primary: linear-gradient(135deg, #000000 0%, #0D0D0D 25%, #1A1A1A 50%, #0D0D0D 75%, #000000 100%);
+  /* Matte Dark Palette */
+  --bg: #09090b;
+  --bg-soft: #121215;
+  --bg-card: #18181b;
+  --bg-card-hover: #222226;
+  --bg-accent: rgba(220, 38, 38, 0.08);
 
-  /* Ultra Premium Text Colors */
-  --text: #FFFFFF;
-  --text-secondary: #B3B3B3;
-  --heading: #FFFFFF;
-  --muted: #808080;
-  --text-glow: 0 0 10px rgba(248, 250, 252, 0.3);
-  --heading-glow: 0 0 20px rgba(255, 255, 255, 0.4);
+  /* Typography */
+  --text: #f8fafc;
+  --text-secondary: #a1a1aa;
+  --heading: #ffffff;
+  --muted: #71717a;
 
-  /* Advanced Neon Accent System */
-  --accent: #FF0000;
-  --accent-secondary: #8B0000;
-  --accent-tertiary: #E60000;
-  --accent-quaternary: #CC0000;
-  --accent-glow: rgba(255, 0, 0, 0.5);
-  --accent-glow-strong: rgba(255, 0, 0, 0.8);
-  --accent-glow-subtle: rgba(255, 0, 0, 0.2);
-  --accent-contrast: #FFFFFF;
+  /* Clean Red Brand Accent (No Glows) */
+  --accent: #dc2626;
+  --accent-secondary: #b91c1c;
+  --accent-tertiary: #991b1b;
+  --accent-contrast: #ffffff;
 
-  /* Premium Borders & Shadows */
-  --panel-border: rgba(255, 255, 255, 0.1);
-  --border-glow: rgba(255, 0, 0, 0.3);
-  --border-premium: rgba(255, 255, 255, 0.1);
-  --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 30px var(--accent-glow);
-  --shadow-premium: 0 25px 80px rgba(0, 0, 0, 0.9), inset 0 2px 0 rgba(255, 255, 255, 0.1);
-  --shadow-floating: 0 30px 100px rgba(0, 0, 0, 0.8);
+  /* Clean Crisp Neutral Borders */
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --border-medium: #27272a;
+  --border-accent: #dc2626;
 
-  /* Advanced Button System */
-  --btn-primary-bg: linear-gradient(135deg, var(--accent), var(--accent-secondary), var(--accent-tertiary));
-  --btn-secondary-bg: rgba(26, 26, 26, 0.7);
-  --btn-secondary-border: var(--accent);
-  --btn-secondary-text: var(--accent);
-  --btn-ghost-bg: rgba(255, 0, 0, 0.05);
+  /* Clean Shadows */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-floating: 0 20px 50px rgba(0, 0, 0, 0.8);
 
-  /* Enhanced State Colors */
-  --success: #00ff88;
-  --success-glow: rgba(0, 255, 136, 0.4);
-  --danger: #ff4757;
-  --danger-glow: rgba(255, 71, 87, 0.4);
-  --warning: #ffa502;
-  --warning-glow: rgba(255, 165, 2, 0.4);
-  --info: var(--accent);
+  /* Button System */
+  --btn-primary-bg: #dc2626;
+  --btn-primary-hover: #b91c1c;
+  --btn-secondary-bg: #27272a;
+  --btn-secondary-border: rgba(255, 255, 255, 0.1);
+  --btn-secondary-text: #f8fafc;
 
-  /* Glassmorphism Variables */
-  --glass-primary: rgba(15, 23, 42, 0.85);
-  --glass-secondary: rgba(30, 41, 59, 0.75);
-  --glass-tertiary: rgba(51, 65, 85, 0.65);
-  --glass-blur: blur(25px);
-  --glass-saturation: saturate(180%);
+  /* Status Colors */
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
 
-/* Premium Dark Theme Class */
+/* Dark Mode Overrides */
 .dark {
-  --bg: #000000;
-  --bg-soft: #0D0D0D;
-  --bg-card: #1A1A1A;
-  --bg-accent: rgba(255, 0, 0, 0.08);
-  --text: #FFFFFF;
-  --text-secondary: #B3B3B3;
-  --heading: #FFFFFF;
-  --muted: #808080;
-  --accent: #FF0000;
-  --accent-glow: rgba(255, 0, 0, 0.4);
-  --panel-border: rgba(71, 85, 105, 0.3);
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --bg: #09090b;
+  --bg-soft: #121215;
+  --bg-card: #18181b;
+  --bg-accent: rgba(220, 38, 38, 0.08);
+  --text: #f8fafc;
+  --text-secondary: #a1a1aa;
+  --heading: #ffffff;
+  --muted: #71717a;
+  --accent: #dc2626;
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Typography System */
@@ -192,12 +176,7 @@ option,
 
 /* Ultra Premium Body */
 body {
-  background: 
-    radial-gradient(circle at 15% 15%, rgba(255, 0, 0, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(139, 0, 0, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 50% 20%, rgba(255, 0, 0, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.06) 0%, transparent 40%),
-    var(--bg-gradient-primary);
+  background-color: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -205,7 +184,6 @@ body {
   min-height: 100vh;
   font-size: 16px;
   line-height: 1.6;
-  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
   position: relative;
 }
@@ -223,27 +201,13 @@ html {
   isolation: isolate;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle 800px at 10% 10%, rgba(255, 0, 0, 0.03), transparent),
-    radial-gradient(circle 600px at 90% 90%, rgba(139, 0, 0, 0.02), transparent);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Ultra Premium Cards */
+/* Enterprise Gym Cards */
 .card {
-  background: var(--bg-soft);
+  background: var(--bg-card);
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
   border: 1px solid var(--panel-border);
-  padding: 2rem;
+  padding: 1.75rem;
   color: var(--text);
   transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
   will-change: transform;
@@ -252,7 +216,7 @@ body::before {
 .card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-premium);
-  border-color: var(--accent);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 @media (hover: none) {

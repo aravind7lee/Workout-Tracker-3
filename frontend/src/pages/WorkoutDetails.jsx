@@ -181,7 +181,7 @@ export default function WorkoutDetails() {
                   "span",
                   {
                     className:
-                      "px-2 py-0.5 sm:px-2.5 sm:py-1 md:px-3 md:py-1 bg-red-700/20 text-red-500 rounded-lg text-[10px] sm:text-xs md:text-sm font-bold border border-red-600/30",
+                      "px-2.5 py-1 bg-red-950/40 text-red-400 rounded-md text-[10px] sm:text-xs font-bold border border-red-800/40",
                   },
                   workout.difficulty,
                 ),
@@ -190,7 +190,7 @@ export default function WorkoutDetails() {
                   "span",
                   {
                     className:
-                      "px-2 py-0.5 sm:px-2.5 sm:py-1 md:px-3 md:py-1 bg-red-800/20 text-red-600 rounded-lg text-[10px] sm:text-xs md:text-sm font-bold border border-red-700/30",
+                      "px-2.5 py-1 bg-zinc-800 text-zinc-300 rounded-md text-[10px] sm:text-xs font-bold border border-zinc-700",
                   },
                   /*#__PURE__*/ React.createElement(ClipboardList, {
                     className: "w-[1em] h-[1em] inline-block",

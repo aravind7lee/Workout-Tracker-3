@@ -336,35 +336,17 @@ export default function Hero() {
                   Welcome to
                 </p>
 
-                {/* Logo Image Replacement for Peak AURA */}
+                {/* Logo Image */}
                 <motion.div
                   className="flex justify-center items-center w-full"
                   style={{ marginBottom: "15px", marginTop: "5px" }}
                 >
-                  <motion.img
+                  <img
                     src={logo}
                     alt="GrindX Logo"
                     className="w-[85%] sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[45%] max-w-[600px] h-auto object-contain"
                     style={{
-                      filter: isMobile
-                        ? "drop-shadow(0 4px 12px rgba(0,0,0,0.9))"
-                        : "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 40px rgba(220,38,38,0.3))",
-                    }}
-                    animate={
-                      reducedMotion || isMobile
-                        ? {}
-                        : {
-                            filter: [
-                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 30px rgba(220,38,38,0.25))",
-                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(220,38,38,0.65))",
-                              "drop-shadow(0 10px 40px rgba(0,0,0,0.9)) drop-shadow(0 0 30px rgba(220,38,38,0.25))",
-                            ],
-                          }
-                    }
-                    transition={{
-                      duration: 3.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
+                      filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.8))",
                     }}
                   />
                 </motion.div>
@@ -419,18 +401,16 @@ export default function Hero() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "8px",
-                      background:
-                        "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
+                      background: "#dc2626",
                       color: "#fff",
-                      fontWeight: 800,
-                      letterSpacing: "0.12em",
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
                       textTransform: "uppercase",
-                      fontSize: "clamp(10px, 1.5vw, 12px)",
-                      padding: "13px 30px",
-                      border: "1px solid rgba(255,100,100,0.25)",
-                      boxShadow:
-                        "0 0 24px rgba(185,28,28,0.45), 0 4px 20px rgba(0,0,0,0.7)",
-                      transition: "all 0.3s ease",
+                      fontSize: "clamp(11px, 1.5vw, 13px)",
+                      padding: "12px 28px",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
+                      transition: "all 0.2s ease",
                       textDecoration: "none",
                     }}
                   >

@@ -83,36 +83,12 @@ export default function Footer() {
     "footer",
     {
       className:
-        "relative mt-12 sm:mt-16 bg-gradient-to-br from-black via-neutral-900 to-black border-t border-neutral-800/50",
+        "relative mt-12 sm:mt-16 bg-zinc-950 border-t border-zinc-800/80",
     },
     /*#__PURE__*/ React.createElement(
       "div",
       {
-        className: "absolute inset-0 overflow-hidden pointer-events-none",
-      },
-      /*#__PURE__*/ React.createElement("div", {
-        className:
-          "absolute -top-20 -right-20 w-40 h-40 bg-red-600/5 rounded-full blur-2xl animate-pulse",
-      }),
-      /*#__PURE__*/ React.createElement("div", {
-        className:
-          "absolute -bottom-20 -left-20 w-40 h-40 bg-red-700/5 rounded-full blur-2xl animate-pulse",
-        style: {
-          animationDelay: "2s",
-        },
-      }),
-      /*#__PURE__*/ React.createElement("div", {
-        className:
-          "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-red-600/3 rounded-full blur-xl animate-pulse",
-        style: {
-          animationDelay: "4s",
-        },
-      }),
-    ),
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "relative backdrop-blur-xl",
+        className: "relative",
       },
       /*#__PURE__*/ React.createElement(
         "div",

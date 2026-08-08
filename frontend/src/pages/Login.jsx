@@ -132,7 +132,7 @@ const Login = () => {
         {
           onSubmit: handleSubmit,
           className:
-            "bg-gradient-to-b from-black/15 to-black/25 backdrop-blur-sm border border-red-600/30 rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] space-y-4 sm:space-y-5 md:space-y-6",
+            "bg-zinc-900/95 border border-zinc-800 rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl space-y-4 sm:space-y-5 md:space-y-6",
         },
         /*#__PURE__*/ React.createElement(
           "h2",
