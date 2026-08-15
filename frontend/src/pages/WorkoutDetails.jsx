@@ -3,20 +3,59 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 
+import api from "../utils/api";
+
 export default function WorkoutDetails() {
   const { workoutId } = useParams();
   const navigate = useNavigate();
   const [workout, setWorkout] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // Try both localStorage keys
-    let workouts = JSON.parse(
-      localStorage.getItem("workoutSync_workouts") || "[]",
-    );
-    if (workouts.length === 0) {
-      workouts = JSON.parse(localStorage.getItem("completedWorkouts") || "[]");
-    }
-    const found = workouts.find((w) => w.id.toString() === workoutId);
-    setWorkout(found);
+    const fetchWorkoutDetails = async () => {
+      setLoading(true);
+      try {
+        if (workoutId) {
+          // Attempt API fetch from MongoDB Atlas
+          try {
+            const res = await api.get(`/workouts/${workoutId}`);
+            if (res.data) {
+              const data = res.data.workout || res.data;
+              const normalized = {
+                ...data,
+                id: data._id || data.id,
+                exercise: data.title || data.name || 'Workout Session',
+                name: data.title || data.name || 'Workout Session',
+                completedAt: data.completedAt || data.date || data.createdAt,
+                duration: data.durationMinutes ? data.durationMinutes * 60 : (data.duration || 0),
+                caloriesBurned: data.calories || data.caloriesBurned || 0,
+                sets: data.exercises?.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0) || 0,
+                totalVolume: data.totalVolume || 0
+              };
+              setWorkout(normalized);
+              setLoading(false);
+              return;
+            }
+          } catch (apiError) {
+            console.warn('API fetch for workout detail failed, trying local storage:', apiError.message);
+          }
+
+          // Fallback to localStorage
+          let workouts = JSON.parse(localStorage.getItem("workoutSync_workouts") || "[]");
+          if (workouts.length === 0) {
+            workouts = JSON.parse(localStorage.getItem("completedWorkouts") || "[]");
+          }
+          const found = workouts.find((w) => (w._id || w.id)?.toString() === workoutId);
+          setWorkout(found || null);
+        }
+      } catch (err) {
+        console.error('Error in WorkoutDetails:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkoutDetails();
   }, [workoutId]);
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);

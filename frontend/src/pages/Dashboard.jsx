@@ -15,6 +15,7 @@ import Dashboard1 from "../assets/Dashboard1.jpg";
 import Dashboard2 from "../assets/Dashboard2.jpg";
 import Dashboardnew from "../assets/Dashboardnew.jpg";
 import DashboardImageCard from "../components/DashboardImageCard";
+import FitnessIntelligenceWidget from "../components/FitnessIntelligenceWidget";
 
 
 const Dashboard = () => {
@@ -478,6 +479,7 @@ const Dashboard = () => {
               ),
             ),
           ),
+          /*#__PURE__*/ React.createElement(FitnessIntelligenceWidget, null),
           /*#__PURE__*/ React.createElement(
             "div",
             {

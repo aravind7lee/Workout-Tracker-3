@@ -1,7 +1,32 @@
-// Personal Records (PR) Service - Real-time PR tracking across entire website
+// Personal Records (PR) Service - Authoritative backend PR tracking from MongoDB Atlas
+import api from '../utils/api';
+
 export class PRService {
   static getPRKey(userId, exerciseName) {
     return `pr_${userId}_${exerciseName.toLowerCase().replace(/\s+/g, "_")}`;
+  }
+
+  // Fetch all authoritative PRs from MongoDB Atlas API
+  static async fetchUserPRsFromAPI() {
+    try {
+      const res = await api.get('/workouts/prs');
+      if (res.data?.success && Array.isArray(res.data.prs)) {
+        const prMap = {};
+        res.data.prs.forEach(item => {
+          prMap[item._id] = {
+            exerciseName: item._id,
+            maxWeight: item.maxWeight || 0,
+            maxReps: item.maxReps || 0,
+            lastUpdated: item.latestDate
+          };
+        });
+        return prMap;
+      }
+      return {};
+    } catch (error) {
+      console.warn('Failed to fetch PRs from API, using local storage fallback:', error.message);
+      return {};
+    }
   }
 
   static getUserPRs(userId) {
@@ -44,15 +69,11 @@ export class PRService {
         ...workoutData.sets.map((set) => parseFloat(set.weight) || 0),
       );
       const totalVolume = workoutData.sets.reduce(
-        (sum, set) => sum + set.weight * set.reps,
+        (sum, set) => sum + (set.weight * set.reps),
         0,
       );
       const maxReps = Math.max(
-        ...workoutData.sets.map((set) => parseInt(set.reps) || 0),
-      );
-      const totalReps = workoutData.sets.reduce(
-        (sum, set) => sum + parseInt(set.reps),
-        0,
+        ...workoutData.sets.map((set) => parseInt(set.reps, 10) || 0),
       );
 
       // Check for new PRs
@@ -86,16 +107,6 @@ export class PRService {
         });
       }
 
-      if (!currentPR || totalReps > (currentPR.totalReps || 0)) {
-        newPRs.push({
-          type: "Total Reps",
-          value: totalReps,
-          unit: "reps",
-          previous: currentPR?.totalReps || 0,
-          improvement: totalReps - (currentPR?.totalReps || 0),
-        });
-      }
-
       // Update PR record if any new PRs found
       if (newPRs.length > 0) {
         const updatedPR = {
@@ -103,7 +114,6 @@ export class PRService {
           maxWeight: Math.max(maxWeight, currentPR?.maxWeight || 0),
           totalVolume: Math.max(totalVolume, currentPR?.totalVolume || 0),
           maxReps: Math.max(maxReps, currentPR?.maxReps || 0),
-          totalReps: Math.max(totalReps, currentPR?.totalReps || 0),
           lastUpdated: new Date().toISOString(),
           workoutId: workoutData.id || Date.now(),
         };
@@ -132,49 +142,7 @@ export class PRService {
       return [];
     }
   }
-
-  static showPRAlert(newPRs, exerciseName) {
-    if (newPRs.length === 0) return;
-
-    // Create PR alert element
-    const alertDiv = document.createElement("div");
-    alertDiv.className =
-      "fixed top-4 right-4 z-50 bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-6 rounded-lg shadow-2xl animate-bounce max-w-sm";
-    alertDiv.innerHTML = `
-      <div class="text-center">
-        <div class="text-3xl mb-2">🏆</div>
-        <div class="text-xl font-bold mb-2">NEW PR!</div>
-        <div class="text-sm font-semibold mb-3">${exerciseName}</div>
-        ${newPRs
-          .map(
-            (pr) => `
-          <div class="text-sm bg-white/20 rounded p-2 mb-2">
-            <div class="font-medium">${pr.type}: ${pr.value}${pr.unit}</div>
-            <div class="text-xs">+${pr.improvement}${pr.unit} improvement!</div>
-          </div>
-        `,
-          )
-          .join("")}
-        <div class="text-xs mt-3">🎉 Congratulations!</div>
-      </div>
-    `;
-
-    document.body.appendChild(alertDiv);
-
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      if (alertDiv.parentNode) {
-        alertDiv.remove();
-      }
-    }, 5000);
-
-    // Add click to dismiss
-    alertDiv.addEventListener("click", () => {
-      if (alertDiv.parentNode) {
-        alertDiv.remove();
-      }
-    });
-  }
 }
 
 export default PRService;
+

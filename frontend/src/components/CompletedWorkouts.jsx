@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import { useRealTime } from "../context/RealTimeContext";
 import { workoutSync } from "../services/workoutSync";
 import { realTimeWorkoutSync } from "../services/realTimeWorkoutSync";
+import api from "../utils/api";
+
 
 
 export default function CompletedWorkouts() {
@@ -76,13 +78,35 @@ export default function CompletedWorkouts() {
     try {
       setLoading(true);
 
-      // Get workouts from real-time sync service
-      const workouts = realTimeWorkoutSync.getWorkoutHistory(365); // Get last year
+      // Attempt to load from MongoDB Atlas API
+      try {
+        const res = await api.get('/workouts');
+        const dbWorkouts = Array.isArray(res.data) ? res.data : (res.data?.workouts || []);
+        
+        if (dbWorkouts && dbWorkouts.length > 0) {
+          const normalized = dbWorkouts.map(w => ({
+            ...w,
+            id: w._id || w.id,
+            exercise: w.title || w.name || 'Workout Session',
+            name: w.title || w.name || 'Workout Session',
+            completedAt: w.completedAt || w.date || w.createdAt,
+            duration: w.durationMinutes ? w.durationMinutes * 60 : (w.duration || 0),
+            caloriesBurned: w.calories || w.caloriesBurned || 0,
+            sets: w.exercises?.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0) || 0,
+            totalVolume: w.totalVolume || 0
+          }));
+
+          setCompletedWorkouts(normalized);
+          console.log("✅ Loaded real workouts from MongoDB API:", normalized.length);
+          return;
+        }
+      } catch (apiError) {
+        console.warn("API fetch failed, trying local sync service fallback:", apiError.message);
+      }
+
+      // Fallback to local sync service
+      const workouts = realTimeWorkoutSync.getWorkoutHistory(365);
       setCompletedWorkouts(workouts);
-      console.log(
-        "✅ Loaded real workouts from RealTimeWorkoutSync:",
-        workouts.length,
-      );
     } catch (error) {
       console.error("Error loading workouts:", error);
       setCompletedWorkouts([]);
@@ -134,55 +158,22 @@ export default function CompletedWorkouts() {
   };
   const deleteWorkout = async (workoutId) => {
     try {
-      // Delete from localStorage first
-      const workouts = JSON.parse(
-        localStorage.getItem("workoutSync_workouts") || "[]",
-      );
-      const updated = workouts.filter((w) => w.id !== workoutId);
-      localStorage.setItem("workoutSync_workouts", JSON.stringify(updated));
-
-      // Delete from MongoDB backend if available
-      try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/workouts/${workoutId}`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-          if (response.ok) {
-            console.log("✅ Workout deleted from MongoDB");
-          } else {
-            console.warn("⚠️ MongoDB delete failed:", response.status);
-          }
+      if (workoutId) {
+        try {
+          await api.delete(`/workouts/${workoutId}`);
+          console.log("✅ Workout deleted from MongoDB Atlas");
+        } catch (apiError) {
+          console.warn("MongoDB delete API call:", apiError.message);
         }
-      } catch (apiError) {
-        console.warn(
-          "⚠️ MongoDB delete failed, local delete successful:",
-          apiError.message,
-        );
       }
 
-      // Update UI immediately
-      setCompletedWorkouts(updated);
+      setCompletedWorkouts(prev => prev.filter(w => (w._id || w.id) !== workoutId));
+      setDeleteConfirm(null);
 
-      // Update real-time sync
-      if (window.realTimeWorkoutSync) {
-        window.realTimeWorkoutSync.refreshStats();
-      }
-
-      // Broadcast stats update
+      // Refresh real-time stats
       window.dispatchEvent(new CustomEvent("realTimeStatsUpdate"));
-      setDeleteConfirm(null);
-      console.log("🗑️ Workout deleted successfully");
     } catch (error) {
-      console.error("❌ Error deleting workout:", error);
-      setDeleteConfirm(null);
+      console.error("Error deleting workout:", error);
     }
   };
   if (loading) {

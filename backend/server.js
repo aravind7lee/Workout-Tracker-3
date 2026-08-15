@@ -2,6 +2,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 
 // Import routes
@@ -17,6 +18,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import reviewRoutes from './routes/reviews.js';
 import syncRoutes from './routes/sync.js';
 import workoutSplitsRoutes from './routes/workoutSplits.js';
+import intelligenceRoutes from './routes/intelligence.js';
 
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
@@ -28,23 +30,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enhanced CORS configuration
+// Security HTTP headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for flexibility with frontend embeds/Vite dev
+  crossOriginEmbedderPolicy: false
+}));
+
+// Configured CORS origins
+const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()) : [];
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3007', 
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://localhost:5000',
+  'https://grindx-workout-tracker.onrender.com',
+  'https://workout-tracker-frontend.onrender.com',
+  'https://gymtracker-app.onrender.com',
+  'https://grind-x-workout-tracker.netlify.app'
+];
+const allowedOrigins = Array.from(new Set([...defaultAllowedOrigins, ...envOrigins]));
+
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:3007', 
-      'http://localhost:5173',
-      'http://localhost:8080',
-      'http://localhost:5000',
-      'https://grindx-workout-tracker.onrender.com',
-      'https://workout-tracker-frontend.onrender.com',
-      'https://gymtracker-app.onrender.com',
-      'https://grind-x-workout-tracker.netlify.app'
-    ];
     
     // Allow localhost with any port
     if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
@@ -56,12 +66,16 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // Check allowed origins
+    // Check allowed origins list
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     
-    callback(null, true); // Allow all origins in production for now
+    if (process.env.NODE_ENV === 'production') {
+      return callback(new Error('CORS Policy: Origin not allowed'), false);
+    }
+    
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -106,6 +120,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/workout-splits', workoutSplitsRoutes);
+app.use('/api/intelligence', intelligenceRoutes);
 
 // Enhanced preflight handling
 app.use((req, res, next) => {
@@ -249,7 +264,7 @@ const connectDB = async () => {
   console.error('3. Choose "Connect your application"');
   console.error('4. Copy the connection string');
   console.error('5. Update MONGO_URI in your .env file');
-  console.error('6. Make sure to replace <password> with: aravvvvc1');
+  console.error('6. Make sure to replace <password> with your database user password');
   console.error('7. Make sure to replace <dbname> with: gym-tracker');
   console.error('8. Check if cluster is paused (Resume it if paused)');
   console.error('9. Restart this server\n');

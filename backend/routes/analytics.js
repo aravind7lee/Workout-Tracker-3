@@ -1,80 +1,218 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import auth from '../middleware/auth.js';
+import Workout from '../models/Workout.js';
+import Meal from '../models/Meal.js';
+import User from '../models/User.js';
 
 const router = express.Router();
 
 // Apply auth middleware to all routes
 router.use(auth);
 
-// Get user stats
+// Helper function for muscle mapping
+const MUSCLE_MAPPING = {
+  'bench press': 'Chest',
+  'incline bench': 'Chest',
+  'chest fly': 'Chest',
+  'push-up': 'Chest',
+  'pushup': 'Chest',
+  'dip': 'Chest',
+  'pull-up': 'Back',
+  'pullup': 'Back',
+  'chin-up': 'Back',
+  'lat pulldown': 'Back',
+  'row': 'Back',
+  'deadlift': 'Back',
+  'squat': 'Legs',
+  'leg press': 'Legs',
+  'lunge': 'Legs',
+  'calf raise': 'Legs',
+  'overhead press': 'Shoulders',
+  'shoulder press': 'Shoulders',
+  'lateral raise': 'Shoulders',
+  'face pull': 'Shoulders',
+  'curl': 'Arms',
+  'tricep': 'Arms',
+  'skull crusher': 'Arms',
+  'plank': 'Abs/Core',
+  'crunch': 'Abs/Core',
+  'leg raise': 'Abs/Core'
+};
+
+const getMuscleGroup = (name) => {
+  if (!name) return 'Other';
+  const lower = name.toLowerCase();
+  for (const [key, category] of Object.entries(MUSCLE_MAPPING)) {
+    if (lower.includes(key)) return category;
+  }
+  return 'Other';
+};
+
+// GET /api/analytics/stats - Real user workout and nutrition stats from MongoDB
 router.get('/stats', async (req, res) => {
   try {
-    const stats = {
-      totalWorkouts: 24,
-      totalMeals: 156,
-      currentStreak: 7,
-      xpPoints: 1250,
-      joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      lastActive: new Date()
-    };
+    const userId = req.user._id || req.user.id;
+    const userObjId = new mongoose.Types.ObjectId(userId.toString());
 
-    res.json({ success: true, data: stats });
+    const [workoutCount, mealCount, userDoc, volumeResult] = await Promise.all([
+      Workout.countDocuments({ user: userObjId, completed: true }),
+      Meal.countDocuments({ $or: [{ userId: userId.toString() }, { user: userObjId }] }),
+      User.findById(userObjId),
+      Workout.aggregate([
+        { $match: { user: userObjId, completed: true } },
+        { $group: { _id: null, totalVolume: { $sum: '$totalVolume' }, totalDuration: { $sum: '$durationMinutes' } } }
+      ])
+    ]);
+
+    const totalVolume = volumeResult[0]?.totalVolume || 0;
+    const totalDurationMinutes = volumeResult[0]?.totalDuration || 0;
+    const streak = userDoc?.currentStreak || 0;
+    const xpPoints = (workoutCount * 100) + (mealCount * 50);
+
+    res.json({
+      success: true,
+      data: {
+        totalWorkouts: workoutCount,
+        totalMeals: mealCount,
+        totalVolume,
+        totalDurationMinutes,
+        currentStreak: streak,
+        xpPoints,
+        joinDate: userDoc?.createdAt || new Date()
+      }
+    });
   } catch (error) {
+    console.error('Error fetching analytics stats:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Get calorie trends (last 7 days)
+// GET /api/analytics/calories - Real 7-day calorie trends from Meal collection
 router.get('/calories', async (req, res) => {
   try {
-    const calorieData = [
-      { date: '2024-01-15', calories: 2200, day: 'Mon' },
-      { date: '2024-01-16', calories: 2100, day: 'Tue' },
-      { date: '2024-01-17', calories: 2350, day: 'Wed' },
-      { date: '2024-01-18', calories: 2000, day: 'Thu' },
-      { date: '2024-01-19', calories: 2400, day: 'Fri' },
-      { date: '2024-01-20', calories: 2600, day: 'Sat' },
-      { date: '2024-01-21', calories: 2300, day: 'Sun' }
-    ];
+    const userId = req.user._id || req.user.id;
+    const userIdStr = userId.toString();
+    const userObjId = new mongoose.Types.ObjectId(userIdStr);
 
-    res.json({ success: true, data: calorieData });
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const meals = await Meal.find({
+      $or: [{ userId: userIdStr }, { user: userObjId }],
+      createdAt: { $gte: sevenDaysAgo }
+    }).sort({ createdAt: 1 });
+
+    // Group meals by date string YYYY-MM-DD
+    const dateMap = {};
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sevenDaysAgo);
+      d.setDate(d.getDate() + i);
+      const dateKey = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      dateMap[dateKey] = { date: dateKey, day: dayName, calories: 0, protein: 0, carbs: 0, fat: 0 };
+    }
+
+    meals.forEach(m => {
+      const dateKey = new Date(m.createdAt || m.consumedAt).toISOString().split('T')[0];
+      if (dateMap[dateKey]) {
+        dateMap[dateKey].calories += (Number(m.calories) || 0);
+        dateMap[dateKey].protein += (Number(m.protein) || 0);
+        dateMap[dateKey].carbs += (Number(m.carbs) || 0);
+        dateMap[dateKey].fat += (Number(m.fat) || 0);
+      }
+    });
+
+    res.json({ success: true, data: Object.values(dateMap) });
   } catch (error) {
+    console.error('Error fetching calorie trends:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Get workout frequency
+// GET /api/analytics/frequency - Real workout distribution by day of week
 router.get('/frequency', async (req, res) => {
   try {
-    const frequencyData = [
-      { day: 'Mon', workouts: 2 },
-      { day: 'Tue', workouts: 1 },
-      { day: 'Wed', workouts: 3 },
-      { day: 'Thu', workouts: 1 },
-      { day: 'Fri', workouts: 2 },
-      { day: 'Sat', workouts: 4 },
-      { day: 'Sun', workouts: 1 }
-    ];
+    const userId = req.user._id || req.user.id;
+    const userObjId = new mongoose.Types.ObjectId(userId.toString());
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const frequencyMap = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
+
+    const workouts = await Workout.find({ user: userObjId, completed: true }, 'date createdAt');
+    
+    workouts.forEach(w => {
+      const d = new Date(w.date || w.createdAt);
+      const dayName = daysOfWeek[d.getDay()];
+      if (frequencyMap[dayName] !== undefined) {
+        frequencyMap[dayName]++;
+      }
+    });
+
+    const frequencyData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => ({
+      day,
+      workouts: frequencyMap[day]
+    }));
 
     res.json({ success: true, data: frequencyData });
   } catch (error) {
+    console.error('Error fetching frequency:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Get muscle group distribution
+// GET /api/analytics/muscles - Real muscle group set distribution calculated from workouts
 router.get('/muscles', async (req, res) => {
   try {
-    const muscleData = [
-      { muscle: 'Chest', percentage: 25, color: '#3B82F6' },
-      { muscle: 'Back', percentage: 20, color: '#10B981' },
-      { muscle: 'Legs', percentage: 30, color: '#F59E0B' },
-      { muscle: 'Arms', percentage: 15, color: '#EF4444' },
-      { muscle: 'Shoulders', percentage: 10, color: '#8B5CF6' }
-    ];
+    const userId = req.user._id || req.user.id;
+    const userObjId = new mongoose.Types.ObjectId(userId.toString());
 
-    res.json({ success: true, data: muscleData });
+    const workouts = await Workout.find({ user: userObjId, completed: true }, 'exercises');
+
+    const muscleCounts = {
+      Chest: 0,
+      Back: 0,
+      Legs: 0,
+      Shoulders: 0,
+      Arms: 0,
+      'Abs/Core': 0,
+      Other: 0
+    };
+
+    let totalSets = 0;
+
+    workouts.forEach(w => {
+      (w.exercises || []).forEach(ex => {
+        const group = getMuscleGroup(ex.exerciseName || ex.name);
+        const setCount = (ex.sets || []).length || 1;
+        muscleCounts[group] = (muscleCounts[group] || 0) + setCount;
+        totalSets += setCount;
+      });
+    });
+
+    const colorMap = {
+      Chest: '#ef4444',
+      Back: '#3b82f6',
+      Legs: '#f59e0b',
+      Shoulders: '#8b5cf6',
+      Arms: '#10b981',
+      'Abs/Core': '#f97316',
+      Other: '#6b7280'
+    };
+
+    const muscleData = Object.entries(muscleCounts)
+      .filter(([_, count]) => count > 0)
+      .map(([muscle, count]) => ({
+        muscle,
+        sets: count,
+        percentage: totalSets > 0 ? Math.round((count / totalSets) * 100) : 0,
+        color: colorMap[muscle] || '#6b7280'
+      }));
+
+    res.json({ success: true, data: muscleData, totalSets });
   } catch (error) {
+    console.error('Error fetching muscle distribution:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

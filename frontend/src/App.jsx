@@ -35,6 +35,7 @@ import WorkoutsFixed from "./pages/WorkoutsFixed";
 import WorkoutsComplete from "./pages/WorkoutsComplete";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import MobileBottomNav from "./components/MobileBottomNav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ChromeErrorBoundary from "./components/ChromeErrorBoundary";
 import ThemeErrorBoundary from "./components/ThemeErrorBoundary";
@@ -989,6 +990,20 @@ export default function App() {
                         ),
                       }),
                       /*#__PURE__*/ React.createElement(Route, {
+                        path: "/workout-session",
+                        element: /*#__PURE__*/ React.createElement(
+                          WorkoutSession,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/active-workout",
+                        element: /*#__PURE__*/ React.createElement(
+                          WorkoutSession,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
                         path: "/profile",
                         element: /*#__PURE__*/ React.createElement(
                           Profile,
@@ -1058,6 +1073,7 @@ export default function App() {
                     ),
                   ),
                   /*#__PURE__*/ React.createElement(Footer, null),
+                  /*#__PURE__*/ React.createElement(MobileBottomNav, null),
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 // backend/routes/plans.js
 import express from 'express';
+import mongoose from 'mongoose';
 import Plan from '../models/Plan.js';
 import Workout from '../models/Workout.js';
 import auth from '../middleware/auth.js';
@@ -45,6 +46,10 @@ router.get('/', auth, async (req, res) => {
 // Get single plan by ID
 router.get('/:id', auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+
     const plan = await Plan.findOne({ _id: req.params.id, user: req.user._id })
       .populate('days.exercises');
     
@@ -129,9 +134,14 @@ router.post('/', auth, async (req, res) => {
 // Update plan
 router.put('/:id', auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+
+    const { user, _id, ...updateFields } = req.body;
     const plan = await Plan.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
-      { ...req.body, updatedAt: new Date() },
+      { ...updateFields, updatedAt: new Date() },
       { new: true }
     );
     
@@ -149,6 +159,10 @@ router.put('/:id', auth, async (req, res) => {
 // Delete plan
 router.delete('/:id', auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+
     const plan = await Plan.findOneAndDelete({ _id: req.params.id, user: req.user._id });
     
     if (!plan) {
@@ -165,6 +179,10 @@ router.delete('/:id', auth, async (req, res) => {
 // Duplicate plan
 router.post('/:id/duplicate', auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+
     const originalPlan = await Plan.findOne({ _id: req.params.id, user: req.user._id });
     
     if (!originalPlan) {
