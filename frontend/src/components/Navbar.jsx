@@ -32,11 +32,13 @@ export default function Navbar() {
   const navLinks = [
     { to: "/dashboard", label: "Dashboard" },
     { to: "/start-workout", label: "Start Workout" },
-    { to: "/workouts", label: "History" },
+    { to: "/library", label: "Library" },
+    { to: "/my-plans", label: "My Plans" },
     { to: "/plans", label: "Plans" },
-    { to: "/analytics", label: "Progress" },
+    { to: "/splits", label: "Splits" },
     { to: "/nutrition", label: "Nutrition" },
-    { to: "/exercise-library", label: "Library" },
+    { to: "/analytics", label: "Analytics" },
+    { to: "/legends", label: "Champs" },
     { to: "/profile", label: "Profile" },
   ];
 

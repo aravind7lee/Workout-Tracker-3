@@ -1,1687 +1,657 @@
-// Real-time Exercise Library with User Progress Tracking
-import { CheckCircle2, Smartphone, Search, Target, User, Rocket, Dumbbell, Circle, BarChart3, XCircle } from 'lucide-react';
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { exerciseLibrary } from "../data/exerciseLibrary";
-import { onlineService } from "../services/onlineService";
-import { realTimeSyncService } from "../services/realTimeSyncService";
-import { offlineStorageService } from "../services/offlineStorageService";
-import QuickPlanModal from "../components/QuickPlanModal";
-import AddToExistingPlanModal from "../components/AddToExistingPlanModal";
-import SuccessNotification from "../components/SuccessNotification";
-import WorkoutSetupModal from "../components/WorkoutSetupModal";
-import LibraryHeaderImg from "../assets/Libraryheader.jpg";
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { 
+  Search, Dumbbell, Play, Plus, X, Video, ChevronRight, ChevronDown,
+  Sparkles, Check, Info, Filter, ArrowRight, Layers, Eye, Edit3, CheckCircle2, Zap, Star, ClipboardList
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { exerciseLibrary } from '../data/exerciseLibrary';
+import { getFormTips } from '../data/exerciseFormTips';
+import { getExerciseVideo } from '../data/exerciseVideos';
+import QuickPlanModal from '../components/QuickPlanModal';
+import AddToExistingPlanModal from '../components/AddToExistingPlanModal';
+import WorkoutSetupModal from '../components/WorkoutSetupModal';
 
+import LibraryHeaderImg from "../assets/Libraryheader.jpg";
+import Library1 from "../assets/Library1.jpg";
+import Library2 from "../assets/Library2.jpg";
+import Library4 from "../assets/Library4.jpg";
+import Library5 from "../assets/Library5.jpg";
+import Library6 from "../assets/Library6.jpg";
+import Library7 from "../assets/Library7.jpg";
+import Library8 from "../assets/Library8.jpg";
+import Library11 from "../assets/Library11.jpg";
+
+const FEATURED_CATEGORIES = [
+  {
+    id: "cat_strength",
+    title: "STRENGTH TRAINING",
+    tagline: "Build Raw Power",
+    description: "Compound movements for maximum strength gains",
+    image: Library1,
+    filterCategory: "Chest"
+  },
+  {
+    id: "cat_hypertrophy",
+    title: "MUSCLE BUILDING",
+    tagline: "Mass & Definition",
+    description: "Hypertrophy training for maximum muscle growth",
+    image: Library2,
+    filterCategory: "Back"
+  },
+  {
+    id: "cat_functional",
+    title: "FUNCTIONAL FITNESS",
+    tagline: "Real-World Movement",
+    description: "Practical exercises for daily performance",
+    image: Library4,
+    filterCategory: "Legs"
+  },
+  {
+    id: "cat_mobility",
+    title: "FLEXIBILITY & MOBILITY",
+    tagline: "Recovery & Movement",
+    description: "Enhance range of motion and recovery",
+    image: Library5,
+    filterCategory: "Core"
+  },
+  {
+    id: "cat_heavy",
+    title: "HEAVY LIFTING",
+    tagline: "Elite Technique",
+    description: "Advanced lifting techniques and form",
+    image: Library6,
+    filterCategory: "Chest"
+  },
+  {
+    id: "cat_bodyweight",
+    title: "BODYWEIGHT TRAINING",
+    tagline: "No Equipment Needed",
+    description: "Master your bodyweight movements",
+    image: Library7,
+    filterCategory: "Arms"
+  },
+  {
+    id: "cat_sports",
+    title: "SPORTS PERFORMANCE",
+    tagline: "Athletic Excellence",
+    description: "Sport-specific training protocols",
+    image: Library8,
+    filterCategory: "Shoulders"
+  },
+  {
+    id: "cat_power",
+    title: "POWER TRAINING",
+    tagline: "Explosive Movement",
+    description: "Develop explosive power and athletic performance",
+    image: Library11,
+    filterCategory: "Legs"
+  }
+];
 
 export default function Library() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get("search") || "";
+
   const [searchQuery, setSearchQuery] = useState(navbarSearch);
-  const [filters, setFilters] = useState({
-    category: "",
-    difficulty: "",
-    muscle: "",
-  });
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(24);
 
-  // Real-time data states
-  const [isOnline, setIsOnline] = useState(false);
-  const [userProgress, setUserProgress] = useState(null);
-  const [exerciseStats, setExerciseStats] = useState({});
-  const [recentWorkouts, setRecentWorkouts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [lastSync, setLastSync] = useState(null);
+  // Accordion state for form tips
+  const [expandedFormTips, setExpandedFormTips] = useState({});
 
-  // Update search when navbar search parameter changes
-  useEffect(() => {
-    if (navbarSearch && navbarSearch !== searchQuery) {
-      setSearchQuery(navbarSearch);
-    }
-  }, [navbarSearch]);
-
-  // Check for workout completion from navigation state
-  useEffect(() => {
-    const state = location.state;
-    if (state?.workoutCompleted) {
-      let message = `${state.exercise} completed in ${state.duration}`;
-      if (state.savedOnline) {
-        message += " ✅ Saved online!";
-      } else if (state.savedOffline) {
-        message += " 📱 Saved offline";
-      }
-      if (state.error) {
-        message += ` (Error: ${state.error})`;
-      }
-      setShowSuccessNotification(message);
-
-      // Clear the state to prevent showing notification on refresh
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
-
-  // Debug: Track modal state changes
-  useEffect(() => {
-    if (showWorkoutSetup) {
-      console.log("🔍 WorkoutSetupModal opened for:", showWorkoutSetup.name);
-    } else {
-      console.log("🔍 WorkoutSetupModal closed");
-    }
-  }, [showWorkoutSetup]);
-  const [selectedExercise, setSelectedExercise] = useState(null);
+  // Modals & Drawers
+  const [showWorkoutSetup, setShowWorkoutSetup] = useState(null);
   const [showQuickPlan, setShowQuickPlan] = useState(null);
   const [showAddToExisting, setShowAddToExisting] = useState(null);
-  const [showSuccessNotification, setShowSuccessNotification] = useState(null);
-  const [showWorkoutSetup, setShowWorkoutSetup] = useState(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [visibleCards, setVisibleCards] = useState(20);
-  const observerRef = useRef(null);
-  const loadMoreRef = useRef(null);
+  const [selectedVideoExercise, setSelectedVideoExercise] = useState(null);
+  const [selectedDetailExercise, setSelectedDetailExercise] = useState(null);
+  const [completedNotification, setCompletedNotification] = useState(null);
 
-  // Load header image with optimization
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageError(true);
-    img.src = LibraryHeaderImg;
-    img.loading = "eager";
+  const exercisesSectionRef = useRef(null);
+
+  // Toggle Form Tips Accordion
+  const toggleFormTips = (exId) => {
+    setExpandedFormTips(prev => ({
+      ...prev,
+      [exId]: !prev[exId]
+    }));
+  };
+
+  // Flatten exercise library with 100% video URL mapping for every exercise
+  const allExercises = useMemo(() => {
+    const list = [];
+    Object.entries(exerciseLibrary).forEach(([muscleKey, group]) => {
+      if (group && Array.isArray(group.exercises)) {
+        group.exercises.forEach((ex) => {
+          const muscleName = group.name || muscleKey;
+          const mappedVideo = getExerciseVideo(ex.name) || ex.videoUrl || "https://www.youtube.com/watch?v=rT7DgCr-3pg";
+
+          list.push({
+            ...ex,
+            id: ex.id || `ex_${ex.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+            muscleKey,
+            muscleName,
+            videoUrl: mappedVideo,
+            type: ex.type || (['Barbell Bench Press', 'Squat', 'Deadlift', 'Overhead Press'].includes(ex.name) ? 'compound' : 'isolation'),
+            difficulty: ex.difficulty || 'beginner',
+            icon: group.icon || '💪'
+          });
+        });
+      }
+    });
+    return list;
   }, []);
 
-  // Lazy load more cards on scroll
-  useEffect(() => {
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          visibleCards < filteredExercises.length
-        ) {
-          setVisibleCards((prev) =>
-            Math.min(prev + 20, filteredExercises.length),
-          );
-        }
-      },
-      {
-        rootMargin: "200px",
-      },
-    );
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
-    }
-    return () => {
-      if (observerRef.current) observerRef.current.disconnect();
-    };
-  }, [visibleCards, filteredExercises.length]);
-
-  // Reset visible cards when filters change
-  useEffect(() => {
-    setVisibleCards(20);
-  }, [searchQuery, filters]);
-
-  // Real-time data fetching with sync service
-  useEffect(() => {
-    const initializeRealTimeData = async () => {
-      setLoading(true);
-      try {
-        // Check backend status
-        const online = await onlineService.checkBackendStatus();
-        setIsOnline(online);
-        if (user) {
-          try {
-            // Get real-time data (online or cached)
-            const data = await realTimeSyncService.getRealTimeData();
-            if (data && data.userProgress) {
-              setUserProgress(data.userProgress);
-            }
-            if (
-              data &&
-              data.workoutHistory &&
-              Array.isArray(data.workoutHistory)
-            ) {
-              setRecentWorkouts(data.workoutHistory.slice(0, 5));
-
-              // Calculate exercise-specific stats
-              const stats = calculateExerciseStats(data.workoutHistory);
-              setExerciseStats(stats);
-            }
-            if (data && data.exerciseStats) {
-              setExerciseStats((prev) => ({
-                ...prev,
-                ...data.exerciseStats,
-              }));
-            }
-            setLastSync(new Date());
-
-            // Start real-time sync if online
-            if (online) {
-              realTimeSyncService.startRealTimeSync(1); // Sync every minute
-            }
-          } catch (syncError) {
-            console.error("Real-time sync error:", syncError);
-            // Continue with cached data
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load real-time data:", error);
-        // Load cached data as fallback
-        try {
-          const cachedProgress = offlineStorageService.getCachedUserProgress();
-          const cachedStats = offlineStorageService.getCachedExerciseStats();
-          const cachedHistory = offlineStorageService.getCachedWorkoutHistory();
-          if (cachedProgress) setUserProgress(cachedProgress);
-          if (cachedStats && typeof cachedStats === "object")
-            setExerciseStats(cachedStats);
-          if (
-            cachedHistory &&
-            cachedHistory.workouts &&
-            Array.isArray(cachedHistory.workouts)
-          ) {
-            setRecentWorkouts(cachedHistory.workouts.slice(0, 5));
-          }
-        } catch (cacheError) {
-          console.error("Failed to load cached data:", cacheError);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    initializeRealTimeData();
-
-    // Set up sync callbacks
-    const handleSyncUpdate = (event, data) => {
-      try {
-        if (
-          event === "progress_updated" ||
-          event === "incremental_sync_complete"
-        ) {
-          if (data && data.userProgress) {
-            setUserProgress(data.userProgress);
-          }
-          setLastSync(new Date());
-        } else if (event === "full_sync_complete") {
-          if (data && data.userProgress) setUserProgress(data.userProgress);
-          if (
-            data &&
-            data.workoutHistory &&
-            Array.isArray(data.workoutHistory)
-          ) {
-            setRecentWorkouts(data.workoutHistory.slice(0, 5));
-            const stats = calculateExerciseStats(data.workoutHistory);
-            setExerciseStats(stats);
-          }
-          if (data && data.exerciseStats) {
-            setExerciseStats((prev) => ({
-              ...prev,
-              ...data.exerciseStats,
-            }));
-          }
-          setLastSync(data.timestamp || new Date());
-        }
-      } catch (error) {
-        console.error("Sync callback error:", error);
-      }
-    };
-    realTimeSyncService.onSync(handleSyncUpdate);
-    return () => {
-      realTimeSyncService.offSync(handleSyncUpdate);
-      realTimeSyncService.stopAutoSync();
-    };
-  }, [user]);
-
-  // Calculate exercise-specific statistics
-  const calculateExerciseStats = (workouts) => {
-    if (!Array.isArray(workouts)) return {};
-    const stats = {};
-    try {
-      workouts.forEach((workout) => {
-        if (!workout || !workout.exercises) return;
-        workout.exercises.forEach((exercise) => {
-          const exerciseName =
-            exercise.exercise?.name || exercise.name || "Unknown Exercise";
-          if (!stats[exerciseName]) {
-            stats[exerciseName] = {
-              totalSessions: 0,
-              totalSets: 0,
-              totalReps: 0,
-              maxWeight: 0,
-              lastPerformed: null,
-              personalBest: 0,
-            };
-          }
-          stats[exerciseName].totalSessions++;
-          stats[exerciseName].totalSets += exercise.sets?.length || 0;
-          if (Array.isArray(exercise.sets)) {
-            exercise.sets.forEach((set) => {
-              stats[exerciseName].totalReps += set.reps || 0;
-              if (set.weight && set.weight > stats[exerciseName].maxWeight) {
-                stats[exerciseName].maxWeight = set.weight;
-                stats[exerciseName].personalBest = set.weight;
-              }
-            });
-          }
-          const workoutDate = new Date(workout.date || workout.createdAt);
-          if (
-            !stats[exerciseName].lastPerformed ||
-            workoutDate > stats[exerciseName].lastPerformed
-          ) {
-            stats[exerciseName].lastPerformed = workoutDate;
-          }
-        });
-      });
-    } catch (error) {
-      console.error("Error calculating exercise stats:", error);
-    }
-    return stats;
-  };
-
-  // Flatten all exercises from all muscle groups with real-time data
-  const allExercises = useMemo(() => {
-    const exercises = [];
-    Object.entries(exerciseLibrary).forEach(([muscleKey, muscleGroup]) => {
-      muscleGroup.exercises.forEach((exercise) => {
-        const exerciseStatsData = exerciseStats[exercise.name] || {};
-        exercises.push({
-          ...exercise,
-          category: muscleGroup.name,
-          muscle: muscleGroup.name,
-          icon: muscleGroup.icon,
-          color: muscleGroup.color,
-          // Real-time progress data
-          userStats: exerciseStatsData,
-          hasProgress: Object.keys(exerciseStatsData).length > 0,
-          lastPerformed: exerciseStatsData.lastPerformed,
-          totalSessions: exerciseStatsData.totalSessions || 0,
-          personalBest: exerciseStatsData.maxWeight || 0,
-        });
-      });
-    });
-    return exercises;
-  }, [exerciseStats]);
-
-  // Filter exercises based on search and filters
+  // Filter exercises
   const filteredExercises = useMemo(() => {
-    return allExercises.filter((exercise) => {
-      const matchesSearch =
-        !searchQuery ||
-        exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exercise.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exercise.category.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory =
-        !filters.category || exercise.category === filters.category;
-      const matchesDifficulty =
-        !filters.difficulty || exercise.difficulty === filters.difficulty;
-      const matchesMuscle =
-        !filters.muscle || exercise.muscle === filters.muscle;
-      return (
-        matchesSearch && matchesCategory && matchesDifficulty && matchesMuscle
-      );
+    const q = searchQuery.trim().toLowerCase();
+
+    return allExercises.filter((ex) => {
+      const matchesCategory = selectedCategory === "all" || ex.muscleName.toLowerCase() === selectedCategory.toLowerCase();
+      const matchesDifficulty = selectedDifficulty === "all" || (ex.difficulty && ex.difficulty.toLowerCase() === selectedDifficulty.toLowerCase());
+      const matchesSearch = !q ||
+        ex.name.toLowerCase().includes(q) ||
+        ex.muscleName.toLowerCase().includes(q) ||
+        (ex.type && ex.type.toLowerCase().includes(q));
+
+      return matchesCategory && matchesDifficulty && matchesSearch;
     });
-  }, [allExercises, searchQuery, filters]);
+  }, [allExercises, searchQuery, selectedCategory, selectedDifficulty]);
 
-  // Get unique values for filters
-  const categories = [...new Set(allExercises.map((ex) => ex.category))];
-  const difficulties = ["beginner", "intermediate", "advanced"];
-  const muscles = [...new Set(allExercises.map((ex) => ex.muscle))];
-  const handleQuickPlan = (exercise) => {
-    setShowQuickPlan(exercise);
-  };
-  const handlePlanSaved = (savedPlan) => {
-    // Show success message and navigate immediately for better UX
-    setTimeout(() => {
-      navigate("/my-plans?highlight=" + savedPlan.id);
-    }, 500);
-  };
-  const handleAddToExisting = (exercise) => {
-    setShowAddToExisting(exercise);
+  const visibleExercises = useMemo(() => {
+    return filteredExercises.slice(0, visibleCount);
+  }, [filteredExercises, visibleCount]);
+
+  const scrollToExercises = () => {
+    if (exercisesSectionRef.current) {
+      exercisesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  // Show workout setup modal - this opens the modal on the same page
-  const handleStartWorkout = (exercise) => {
-    console.log("🎯 Opening workout setup modal for:", exercise.name);
-    console.log(
-      "👤 User type:",
-      user ? (user.isDemo ? "Demo User" : "Real User") : "Not logged in",
-    );
+  const handleSelectCategoryCard = (cat) => {
+    setSelectedCategory(cat.filterCategory || "all");
+    scrollToExercises();
+  };
+
+  const handleStartWorkoutSetup = (exercise) => {
     setShowWorkoutSetup(exercise);
   };
 
-  // Handle workout setup completion - this navigates to StartWorkout with config
-  const handleWorkoutSetupComplete = async ({ exercise, config }) => {
-    console.log("✅ Workout setup completed:", {
-      exercise: exercise.name,
-      config,
-    });
-    console.log(
-      "👤 User info:",
-      user
-        ? {
-            id: user.id,
-            email: user.email,
-            isDemo: user.isDemo,
-          }
-        : "Not logged in",
-    );
-    try {
-      // Track the interaction for all users (works online and offline)
-      if (user) {
-        await realTimeSyncService.trackExerciseInteraction(
-          exercise.id,
-          "workout_start",
-        );
-
-        // Update local stats immediately for better UX
-        if (!isOnline) {
-          const updatedStats = offlineStorageService.simulateRealTimeUpdate(
-            exercise.name,
-            "workout_start",
-          );
-          setExerciseStats((prev) => ({
-            ...prev,
-            [exercise.name]: updatedStats,
-          }));
-        }
+  const handleWorkoutSetupComplete = ({ exercise, config }) => {
+    setShowWorkoutSetup(null);
+    navigate("/start-workout", {
+      state: {
+        selectedExercise: exercise,
+        workoutConfig: config,
+        fromLibrary: true
       }
-
-      // Close the setup modal
-      setShowWorkoutSetup(null);
-
-      // Navigate to workout session with exercise and configuration
-      console.log("🚀 Navigating to StartWorkout with config:", config);
-      navigate("/start-workout", {
-        state: {
-          selectedExercise: exercise,
-          workoutConfig: config,
-          fromLibrary: true,
-          user: user, // Pass user info to StartWorkout
-        },
-      });
-    } catch (error) {
-      console.error("Failed to start workout session:", error);
-      // Close modal and still navigate even if tracking fails
-      setShowWorkoutSetup(null);
-      navigate("/start-workout", {
-        state: {
-          selectedExercise: exercise,
-          workoutConfig: config,
-          fromLibrary: true,
-          user: user,
-        },
-      });
-    }
+    });
   };
-  return /*#__PURE__*/ React.createElement(
-    "div",
-    {
-      className: "min-h-screen bg-black",
-    },
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "relative w-full h-56 md:h-96 lg:h-[480px] overflow-hidden",
-      },
-      imageError
-        ? /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "w-full h-full bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "text-center text-white px-4",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-6xl mb-4",
-                },
-                /*#__PURE__*/ React.createElement(Dumbbell, {
-                  className: "w-[1em] h-[1em] inline-block",
-                }),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "h1",
-                {
-                  className:
-                    "text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl",
-                },
-                "Exercise Library",
-              ),
-              /*#__PURE__*/ React.createElement(
-                "p",
-                {
-                  className:
-                    "text-lg md:text-xl opacity-90 max-w-2xl mx-auto drop-shadow-lg",
-                },
-                "Browse, track, and customize your exercises with ease.",
-              ),
-            ),
-          )
-        : /*#__PURE__*/ React.createElement(
-            React.Fragment,
-            null,
-            /*#__PURE__*/ React.createElement("img", {
-              src: LibraryHeaderImg,
-              alt: "Exercise Library header",
-              className: "w-full h-full object-cover",
-              loading: "eager",
-              decoding: "async",
-              style: {
-                objectPosition: "50% 50%",
-              },
-            }),
-            /*#__PURE__*/ React.createElement("div", {
-              className:
-                "absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60",
-            }),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "absolute inset-0 flex items-center justify-center",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-center text-white px-4 max-w-4xl mx-auto",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "h1",
-                  {
-                    className:
-                      "text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl leading-tight",
-                    style: {
-                      color: "#f59e0b",
-                    },
-                  },
-                  "Exercise Library",
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "p",
-                  {
-                    className:
-                      "text-lg md:text-xl lg:text-2xl opacity-95 max-w-2xl mx-auto drop-shadow-lg font-medium leading-relaxed",
-                  },
-                  "Browse, track, and customize your exercises with ease.",
-                ),
-              ),
-            ),
-          ),
-    ),
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "relative bg-black pt-8 pb-12",
-      },
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className: "container mx-auto px-4 max-w-7xl",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "card p-6 mb-8 relative z-10 transform -translate-y-8",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "flex flex-col sm:flex-row items-center justify-between mb-6 gap-4",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "flex items-center gap-3",
-              },
-              /*#__PURE__*/ React.createElement("div", {
-                className: `w-3 h-3 rounded-full ${isOnline ? "bg-red-500 animate-pulse" : "bg-yellow-400"}`,
-              }),
-              /*#__PURE__*/ React.createElement(
-                "span",
-                {
-                  className: "text-white font-medium text-sm sm:text-base",
-                },
-                isOnline
-                  ? "🟢 Online Mode - Real-time Progress Tracking"
-                  : "🟡 Offline Mode - Limited Features",
-              ),
-            ),
-            lastSync &&
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-xs text-neutral-400 flex items-center gap-2",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "span",
-                  null,
-                  "Last sync: ",
-                  lastSync.toLocaleTimeString(),
-                ),
-                (() => {
-                  try {
-                    const syncStatus = realTimeSyncService.getSyncStatus();
-                    return (
-                      syncStatus &&
-                      syncStatus.pendingOfflineItems > 0 &&
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className:
-                            "bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded text-xs",
-                        },
-                        syncStatus.pendingOfflineItems,
-                        " pending",
-                      )
-                    );
-                  } catch (error) {
-                    return null;
-                  }
-                })(),
-              ),
-          ),
-          user && userProgress
-            ? /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-center p-3 bg-neutral-900/50 rounded-lg",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xl sm:text-2xl font-bold text-red-500",
-                    },
-                    userProgress.workouts || 0,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xs sm:text-sm text-neutral-400",
-                    },
-                    "Total Workouts",
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-center p-3 bg-neutral-900/50 rounded-lg",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xl sm:text-2xl font-bold text-red-500",
-                    },
-                    userProgress.streak || 0,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xs sm:text-sm text-neutral-400",
-                    },
-                    "Day Streak",
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-center p-3 bg-neutral-900/50 rounded-lg",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xl sm:text-2xl font-bold text-red-600",
-                    },
-                    userProgress.xpPoints || 0,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xs sm:text-sm text-neutral-400",
-                    },
-                    "XP Points",
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-center p-3 bg-neutral-900/50 rounded-lg",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className:
-                        "text-xl sm:text-2xl font-bold text-orange-400",
-                    },
-                    userProgress.weeklyGoal?.completed || 0,
-                    "/",
-                    userProgress.weeklyGoal?.target || 4,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xs sm:text-sm text-neutral-400",
-                    },
-                    "Weekly Goal",
-                  ),
-                ),
-              )
-            : /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-center py-4",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-neutral-400 text-sm",
-                  },
-                  user
-                    ? "Loading your progress..."
-                    : "Sign in to track your progress",
-                ),
-              ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "space-y-6 mb-8",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              id: "search-filters",
-              className: "space-y-4",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "relative",
-              },
-              /*#__PURE__*/ React.createElement("input", {
-                value: searchQuery,
-                onChange: (e) => setSearchQuery(e.target.value),
-                className:
-                  "w-full p-4 pl-12 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white placeholder-neutral-400 text-base focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all",
-                placeholder:
-                  "Search exercises by name, type, or muscle group...",
-              }),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className:
-                    "absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400 text-lg",
-                },
-                /*#__PURE__*/ React.createElement(Search, {
-                  className: "w-[1em] h-[1em] inline-block",
-                }),
-              ),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "grid grid-cols-1 sm:grid-cols-3 gap-4",
-              },
-              /*#__PURE__*/ React.createElement(
-                "select",
-                {
-                  value: filters.category,
-                  onChange: (e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      category: e.target.value,
-                    })),
-                  className:
-                    "p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "option",
-                  {
-                    value: "",
-                  },
-                  "All Categories",
-                ),
-                categories.map((cat) =>
-                  /*#__PURE__*/ React.createElement(
-                    "option",
-                    {
-                      key: cat,
-                      value: cat,
-                    },
-                    cat,
-                  ),
-                ),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "select",
-                {
-                  value: filters.difficulty,
-                  onChange: (e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      difficulty: e.target.value,
-                    })),
-                  className:
-                    "p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "option",
-                  {
-                    value: "",
-                  },
-                  "All Difficulties",
-                ),
-                difficulties.map((diff) =>
-                  /*#__PURE__*/ React.createElement(
-                    "option",
-                    {
-                      key: diff,
-                      value: diff,
-                    },
-                    diff.charAt(0).toUpperCase() + diff.slice(1),
-                  ),
-                ),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "select",
-                {
-                  value: filters.muscle,
-                  onChange: (e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      muscle: e.target.value,
-                    })),
-                  className:
-                    "p-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-white text-base focus:ring-2 focus:ring-red-600 focus:border-transparent",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "option",
-                  {
-                    value: "",
-                  },
-                  "All Muscles",
-                ),
-                muscles.map((muscle) =>
-                  /*#__PURE__*/ React.createElement(
-                    "option",
-                    {
-                      key: muscle,
-                      value: muscle,
-                    },
-                    muscle,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "grid grid-cols-2 sm:grid-cols-4 gap-4",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "card text-center py-4 bg-blue-900/20 border border-blue-800/30",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-2xl font-bold text-red-500",
-                },
-                allExercises.length,
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-sm text-neutral-400",
-                },
-                "Total Exercises",
-              ),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "card text-center py-4 bg-green-900/20 border border-green-800/30",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-2xl font-bold text-red-500",
-                },
-                categories.length,
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-sm text-neutral-400",
-                },
-                "Muscle Groups",
-              ),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "card text-center py-4 bg-purple-900/20 border border-purple-800/30",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-2xl font-bold text-red-600",
-                },
-                filteredExercises.length,
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-sm text-neutral-400",
-                },
-                "Filtered Results",
-              ),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "card text-center py-4 bg-orange-900/20 border border-orange-800/30",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-2xl font-bold text-orange-400",
-                },
-                allExercises.filter((ex) => ex.hasProgress).length,
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-sm text-neutral-400",
-                },
-                "Exercises Done",
-              ),
-            ),
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-neutral-400 text-base",
-            },
-            "Showing ",
-            filteredExercises.length,
-            " of ",
-            allExercises.length,
-            " exercises",
-          ),
-          /*#__PURE__*/ React.createElement(
-            "button",
-            {
-              onClick: () => {
-                setSearchQuery("");
-                setFilters({
-                  category: "",
-                  difficulty: "",
-                  muscle: "",
-                });
-              },
-              className: "btn-secondary text-sm px-4 py-2",
-            },
-            "Clear All Filters",
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            id: "exercise-grid",
-            className:
-              "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
-          },
-          filteredExercises.length === 0
-            ? /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "col-span-full text-center py-16",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-6xl mb-4",
-                  },
-                  /*#__PURE__*/ React.createElement(Search, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-xl font-semibold text-white mb-2",
-                  },
-                  "No exercises found",
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "text-neutral-400 mb-6",
-                  },
-                  "Try adjusting your search or filters",
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "button",
-                  {
-                    onClick: () => {
-                      setSearchQuery("");
-                      setFilters({
-                        category: "",
-                        difficulty: "",
-                        muscle: "",
-                      });
-                    },
-                    className:
-                      "btn bg-red-700 hover:bg-blue-700 text-white px-6 py-3",
-                  },
-                  "Clear All Filters",
-                ),
-              )
-            : filteredExercises.slice(0, visibleCards).map((exercise) =>
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    key: exercise.id,
-                    className: `card transition-transform hover:scale-[1.02] will-change-transform plan-card ${exercise.hasProgress ? "ring-2 ring-red-600/30" : "hover:ring-2 hover:ring-red-600/30"}`,
-                    style: {
-                      contain: "layout style paint",
-                    },
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "flex items-start gap-3 mb-4",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: `w-12 h-12 ${exercise.color} rounded-lg flex items-center justify-center flex-shrink-0 relative`,
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-2xl",
-                        },
-                        exercise.icon,
-                      ),
-                      exercise.hasProgress &&
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center",
-                          },
-                          /*#__PURE__*/ React.createElement(
-                            "span",
-                            {
-                              className: "text-xs text-white",
-                            },
-                            "\u2713",
-                          ),
-                        ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex-1 min-w-0",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "font-semibold text-white text-base mb-1 truncate",
-                        },
-                        exercise.name,
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-sm text-neutral-400",
-                        },
-                        exercise.category,
-                      ),
-                      exercise.hasProgress &&
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className: "text-xs text-red-500 mt-1",
-                          },
-                          exercise.totalSessions,
-                          " sessions \u2022 Best: ",
-                          exercise.personalBest,
-                          "kg",
-                        ),
-                    ),
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "space-y-3 mb-4",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex items-center justify-between",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-sm text-neutral-300",
-                        },
-                        "Sets/Reps:",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-sm font-medium text-white",
-                        },
-                        exercise.sets,
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex items-center justify-between",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-sm text-neutral-300",
-                        },
-                        "Type:",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: `text-xs px-2 py-1 rounded ${exercise.type === "compound" ? "bg-blue-900/30 text-blue-300" : exercise.type === "isolation" ? "bg-purple-900/30 text-purple-300" : "bg-green-900/30 text-green-300"}`,
-                        },
-                        exercise.type,
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex items-center justify-between",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-sm text-neutral-300",
-                        },
-                        "Difficulty:",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: `text-xs px-2 py-1 rounded ${exercise.difficulty === "beginner" ? "bg-green-900/30 text-green-300" : exercise.difficulty === "intermediate" ? "bg-yellow-900/30 text-yellow-300" : "bg-red-900/30 text-red-300"}`,
-                        },
-                        exercise.difficulty,
-                      ),
-                    ),
-                    exercise.hasProgress &&
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "bg-neutral-900/50 rounded p-2 space-y-1",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className: "flex justify-between text-xs",
-                          },
-                          /*#__PURE__*/ React.createElement(
-                            "span",
-                            {
-                              className: "text-neutral-400",
-                            },
-                            "Last performed:",
-                          ),
-                          /*#__PURE__*/ React.createElement(
-                            "span",
-                            {
-                              className: "text-red-500",
-                            },
-                            exercise.lastPerformed
-                              ? new Date(
-                                  exercise.lastPerformed,
-                                ).toLocaleDateString()
-                              : "Never",
-                          ),
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className: "flex justify-between text-xs",
-                          },
-                          /*#__PURE__*/ React.createElement(
-                            "span",
-                            {
-                              className: "text-neutral-400",
-                            },
-                            "Total sets:",
-                          ),
-                          /*#__PURE__*/ React.createElement(
-                            "span",
-                            {
-                              className: "text-red-500",
-                            },
-                            exercise.userStats.totalSets || 0,
-                          ),
-                        ),
-                      ),
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "space-y-2",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "button",
-                      {
-                        onClick: () => setSelectedExercise(exercise),
-                        className: "btn-secondary w-full text-sm",
-                      },
-                      exercise.hasProgress
-                        ? "📊 View Progress"
-                        : "View Details",
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex gap-2",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "button",
-                        {
-                          onClick: () => handleQuickPlan(exercise),
-                          className:
-                            "btn bg-red-700 hover:bg-blue-700 text-white flex-1 text-sm",
-                        },
-                        "+ New Plan",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "button",
-                        {
-                          onClick: () => handleAddToExisting(exercise),
-                          className:
-                            "btn bg-green-600 hover:bg-green-700 text-white flex-1 text-sm",
-                        },
-                        "+ Add to Plan",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "button",
-                      {
-                        onClick: () => {
-                          console.log(
-                            "💆 Start Workout button clicked for:",
-                            exercise.name,
-                          );
-                          console.log(
-                            "👤 User type:",
-                            user
-                              ? user.isDemo
-                                ? "Demo User"
-                                : "Real User"
-                              : "Not logged in",
-                          );
-                          handleStartWorkout(exercise);
-                        },
-                        className: `btn ${isOnline ? "bg-red-800 hover:bg-purple-700" : "bg-neutral-700 hover:bg-neutral-800"} text-white w-full text-sm`,
-                      },
-                      /*#__PURE__*/ React.createElement(Target, {
-                        className: "w-[1em] h-[1em] inline-block",
-                      }),
-                      " ",
-                      isOnline ? "Start Workout" : "Start Workout (Offline)",
-                    ),
-                  ),
-                ),
-              ),
-          visibleCards < filteredExercises.length &&
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                ref: loadMoreRef,
-                className: "col-span-full text-center py-8",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "text-neutral-400",
-                },
-                "Loading more exercises...",
-              ),
-            ),
-        ),
-      ),
-    ),
-    selectedExercise &&
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4",
-          onClick: () => setSelectedExercise(null),
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "bg-gradient-to-br from-black to-black rounded-2xl sm:rounded-3xl max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-neutral-800/50 shadow-2xl",
-            onClick: (e) => e.stopPropagation(),
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "p-4 sm:p-6",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "flex items-start justify-between mb-4 sm:mb-6",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                null,
-                /*#__PURE__*/ React.createElement(
-                  "h2",
-                  {
-                    className:
-                      "text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2",
-                  },
-                  selectedExercise.name,
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "p",
-                  {
-                    className: "text-neutral-300 text-sm sm:text-base",
-                  },
-                  selectedExercise.category,
-                ),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "button",
-                {
-                  onClick: () => setSelectedExercise(null),
-                  className:
-                    "text-neutral-400 hover:text-white transition-colors text-lg sm:text-xl p-1",
-                  "aria-label": "Close",
-                },
-                "\u2715",
-              ),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "space-y-4",
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "flex items-center gap-3",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: `w-12 h-12 ${selectedExercise.color} rounded-lg flex items-center justify-center relative`,
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "span",
-                    {
-                      className: "text-2xl",
-                    },
-                    selectedExercise.icon,
-                  ),
-                  selectedExercise.hasProgress &&
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-xs text-white",
-                        },
-                        "\u2713",
-                      ),
-                    ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  null,
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "font-medium text-white",
-                    },
-                    selectedExercise.category,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-sm text-neutral-400",
-                    },
-                    selectedExercise.sets,
-                  ),
-                  selectedExercise.hasProgress &&
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "text-xs text-red-500 mt-1",
-                      },
-                      selectedExercise.totalSessions,
-                      " sessions completed",
-                    ),
-                ),
-              ),
-              selectedExercise.hasProgress &&
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "bg-neutral-900/50 rounded-lg p-3 space-y-2",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-sm font-medium text-white mb-2",
-                    },
-                    /*#__PURE__*/ React.createElement(BarChart3, {
-                      className: "w-[1em] h-[1em] inline-block",
-                    }),
-                    " Your Progress",
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "grid grid-cols-2 gap-3 text-xs",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      null,
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-neutral-400",
-                        },
-                        "Total Sessions",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-red-500 font-medium",
-                        },
-                        selectedExercise.userStats.totalSessions,
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      null,
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-neutral-400",
-                        },
-                        "Total Sets",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-red-500 font-medium",
-                        },
-                        selectedExercise.userStats.totalSets,
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      null,
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-neutral-400",
-                        },
-                        "Total Reps",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-red-600 font-medium",
-                        },
-                        selectedExercise.userStats.totalReps,
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      null,
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-neutral-400",
-                        },
-                        "Max Weight",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-orange-400 font-medium",
-                        },
-                        selectedExercise.userStats.maxWeight,
-                        "kg",
-                      ),
-                    ),
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-xs text-neutral-400 mt-2",
-                    },
-                    "Last performed: ",
-                    selectedExercise.lastPerformed
-                      ? new Date(
-                          selectedExercise.lastPerformed,
-                        ).toLocaleDateString()
-                      : "Never",
-                  ),
-                ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "grid grid-cols-2 gap-4",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  null,
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-sm text-neutral-400 mb-1",
-                    },
-                    "Type",
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: `text-xs px-2 py-1 rounded inline-block ${selectedExercise.type === "compound" ? "bg-blue-900/30 text-blue-300" : selectedExercise.type === "isolation" ? "bg-purple-900/30 text-purple-300" : "bg-green-900/30 text-green-300"}`,
-                    },
-                    selectedExercise.type,
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  null,
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "text-sm text-neutral-400 mb-1",
-                    },
-                    "Difficulty",
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: `text-xs px-2 py-1 rounded inline-block ${selectedExercise.difficulty === "beginner" ? "bg-green-900/30 text-green-300" : selectedExercise.difficulty === "intermediate" ? "bg-yellow-900/30 text-yellow-300" : "bg-red-900/30 text-red-300"}`,
-                    },
-                    selectedExercise.difficulty,
-                  ),
-                ),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "space-y-2 pt-4 border-t border-neutral-800/50",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "flex gap-2",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "button",
-                    {
-                      onClick: () => {
-                        setSelectedExercise(null);
-                        handleQuickPlan(selectedExercise);
-                      },
-                      className:
-                        "btn bg-red-700 hover:bg-blue-700 text-white flex-1",
-                    },
-                    "New Plan",
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "button",
-                    {
-                      onClick: () => {
-                        const exerciseToAdd = selectedExercise;
-                        setSelectedExercise(null);
-                        handleAddToExisting(exerciseToAdd);
-                      },
-                      className:
-                        "btn bg-green-600 hover:bg-green-700 text-white flex-1",
-                    },
-                    "Add to Plan",
-                  ),
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "button",
-                  {
-                    onClick: () => {
-                      console.log(
-                        "💆 Modal Start Workout button clicked for:",
-                        selectedExercise.name,
-                      );
-                      console.log(
-                        "👤 User type:",
-                        user
-                          ? user.isDemo
-                            ? "Demo User"
-                            : "Real User"
-                          : "Not logged in",
-                      );
-                      const exerciseToStart = selectedExercise;
-                      setSelectedExercise(null);
-                      handleStartWorkout(exerciseToStart);
-                    },
-                    className: `btn ${isOnline ? "bg-red-800 hover:bg-purple-700" : "bg-neutral-700 hover:bg-neutral-800"} text-white w-full`,
-                  },
-                  /*#__PURE__*/ React.createElement(Target, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " ",
-                  isOnline
-                    ? "Start Workout Session"
-                    : "Start Workout (Offline)",
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "button",
-                  {
-                    onClick: () => setSelectedExercise(null),
-                    className: "btn-secondary w-full",
-                  },
-                  "Close",
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    showQuickPlan &&
-      /*#__PURE__*/ React.createElement(QuickPlanModal, {
-        exercise: showQuickPlan,
-        onClose: () => setShowQuickPlan(null),
-        onSave: handlePlanSaved,
-      }),
-    showAddToExisting &&
-      /*#__PURE__*/ React.createElement(AddToExistingPlanModal, {
-        exercise: showAddToExisting,
-        onClose: () => setShowAddToExisting(null),
-        onSave: handlePlanSaved,
-      }),
-    user &&
-      (() => {
-        try {
-          const syncStatus = realTimeSyncService.getSyncStatus();
-          return (
-            syncStatus &&
-            syncStatus.syncInProgress &&
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "fixed bottom-4 right-4 bg-red-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-40",
-              },
-              /*#__PURE__*/ React.createElement(
-                "span",
-                {
-                  className: "text-sm",
-                },
-                "Syncing...",
-              ),
-            )
-          );
-        } catch (error) {
-          return null;
-        }
-      })(),
-    showSuccessNotification &&
-      /*#__PURE__*/ React.createElement(SuccessNotification, {
-        message: showSuccessNotification,
-        onClose: () => setShowSuccessNotification(null),
-      }),
-    showWorkoutSetup &&
-      /*#__PURE__*/ React.createElement(WorkoutSetupModal, {
-        exercise: showWorkoutSetup,
-        onClose: () => {
-          console.log("❌ Closing workout setup modal");
-          setShowWorkoutSetup(null);
-        },
-        onStartWorkout: handleWorkoutSetupComplete,
-      }),
+
+  const handleMarkComplete = (exercise) => {
+    setCompletedNotification(`Marked ${exercise.name} as completed!`);
+    setTimeout(() => {
+      setCompletedNotification(null);
+    }, 3000);
+  };
+
+  const getEmbedUrl = (url) => {
+    if (!url) return 'https://www.youtube.com/embed/rT7DgCr-3pg';
+    if (url.includes('embed/')) return url;
+    if (url.includes('watch?v=')) {
+      const id = url.split('v=')[1]?.split('&')[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    if (url.includes('youtu.be/')) {
+      const id = url.split('youtu.be/')[1]?.split('?')[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    return 'https://www.youtube.com/embed/rT7DgCr-3pg';
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white pb-32 overflow-x-hidden">
+      
+      {/* 1. HERO SECTION (EXACT 100% FULL SCREEN HERO MATCHING ATTACHED SCREENSHOT) */}
+      <div className="relative w-full min-h-[85vh] h-[85vh] sm:h-[88vh] lg:h-[90vh] rounded-none sm:rounded-3xl overflow-hidden border-b sm:border border-neutral-800/80 shadow-2xl bg-black">
+        <img 
+          src={LibraryHeaderImg} 
+          alt="Exercise Library Hero" 
+          className="w-full h-full object-cover object-top sm:object-[center_top] filter brightness-105 contrast-100 saturate-105"
+          loading="eager"
+        />
+        {/* Subtle, non-dull gradient overlay for full image clarity and text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/30 pointer-events-none" />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 max-w-5xl mx-auto space-y-4 sm:space-y-6 z-10">
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl font-black text-[#ff9800] sm:text-[#f39c12] tracking-wider uppercase drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] font-sans">
+            EXERCISE LIBRARY
+          </h1>
+          <p className="text-sm sm:text-base lg:text-xl text-neutral-100 font-medium max-w-xs sm:max-w-2xl mx-auto drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] leading-relaxed">
+            Browse, track, and customize your exercises with ease.
+          </p>
+
+          {/* Exact Buttons matching Close-Up Reference Image: Sharp Rectangles (rounded-none) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3 sm:pt-6 w-full max-w-[300px] sm:max-w-none mx-auto">
+            <button
+              onClick={scrollToExercises}
+              style={{ backgroundColor: '#e51c23', color: '#ffffff' }}
+              className="w-full sm:w-auto h-13 sm:h-14 px-8 !bg-[#e51c23] hover:!bg-[#c61a20] text-white font-black text-xs sm:text-sm uppercase tracking-[0.18em] rounded-none shadow-2xl flex items-center justify-center gap-3 whitespace-nowrap transition-all transform active:scale-95 hover:scale-[1.02] cursor-pointer border-none"
+            >
+              <span>EXPLORE EXERCISES</span>
+              <ArrowRight className="w-4 h-4 stroke-[3.5] shrink-0" />
+            </button>
+
+            <button
+              onClick={() => navigate('/start-workout')}
+              style={{ 
+                background: 'linear-gradient(180deg, rgba(120, 85, 70, 0.55) 0%, rgba(60, 40, 30, 0.70) 100%)', 
+                borderColor: 'rgba(210, 180, 165, 0.45)' 
+              }}
+              className="w-full sm:w-auto h-13 sm:h-14 px-8 text-white font-black text-xs sm:text-sm uppercase tracking-[0.18em] rounded-none shadow-2xl border backdrop-blur-md flex items-center justify-center whitespace-nowrap transition-all transform active:scale-95 hover:scale-[1.02] cursor-pointer"
+            >
+              <span>START TRAINING</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Completion Toast Notification */}
+      {completedNotification && (
+        <div className="fixed top-20 right-6 z-50 bg-emerald-500 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 font-bold text-xs animate-bounce">
+          <CheckCircle2 className="w-5 h-5" />
+          <span>{completedNotification}</span>
+        </div>
+      )}
+
+      {/* 2. 8 CATEGORY IMAGE CARDS GRID */}
+      <div className="max-w-7xl mx-auto px-4 pt-12 space-y-12">
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-wider">
+            <Layers className="w-4 h-4" /> Workout Categories
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+            Targeted Training Categories
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-400 max-w-lg mx-auto">
+            Select a category below to explore specific exercises and technique guides.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FEATURED_CATEGORIES.map((cat) => (
+            <div
+              key={cat.id}
+              onClick={() => handleSelectCategoryCard(cat)}
+              className="group relative h-80 rounded-3xl overflow-hidden cursor-pointer border border-neutral-800/80 hover:border-orange-500/60 shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <img 
+                src={cat.image} 
+                alt={cat.title} 
+                className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 filter brightness-90"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+
+              <div className="absolute inset-x-0 bottom-0 p-6 space-y-2">
+                <h3 className="text-lg font-black text-white uppercase tracking-wider group-hover:text-orange-400 transition-colors">
+                  {cat.title}
+                </h3>
+                <p className="text-xs font-bold text-red-500 uppercase tracking-wide">
+                  {cat.tagline}
+                </p>
+                <p className="text-xs text-neutral-300 leading-relaxed line-clamp-2">
+                  {cat.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 3. EXERCISES LIST SECTION */}
+        <div ref={exercisesSectionRef} className="pt-8 space-y-8 border-t border-neutral-900">
+          
+          {/* Search & Filter Header */}
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black text-white uppercase tracking-tight">
+                  Exercise Directory
+                </h2>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  Showing {filteredExercises.length} of {allExercises.length} available exercises
+                </p>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                <input
+                  type="text"
+                  placeholder="Search exercises by name, type, muscle..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-8 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white text-xs"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Muscle Category Filter Buttons */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
+              {['all', 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Abs / Core'].map((muscle) => (
+                <button
+                  key={muscle}
+                  onClick={() => setSelectedCategory(muscle)}
+                  className={`px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                    selectedCategory.toLowerCase() === muscle.toLowerCase()
+                      ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                      : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  {muscle === 'all' ? 'All Muscles' : muscle}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Exercise Cards Grid */}
+          {filteredExercises.length === 0 ? (
+            <div className="py-16 text-center space-y-3 bg-neutral-900/40 border border-neutral-800 rounded-3xl">
+              <Dumbbell className="w-8 h-8 text-orange-500 mx-auto" />
+              <h3 className="text-base font-bold text-white">No Exercises Found</h3>
+              <p className="text-xs text-neutral-400">Try clearing your search or category filters.</p>
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
+                className="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-xl"
+              >
+                Reset Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+              {visibleExercises.map((ex) => {
+                const formTips = getFormTips(ex.name);
+                const isFormTipsOpen = expandedFormTips[ex.id];
+
+                return (
+                  <div
+                    key={ex.id}
+                    className="bg-neutral-950 border border-neutral-800/90 rounded-3xl p-5 space-y-4 hover:border-neutral-700 transition-all shadow-2xl"
+                  >
+                    <div className="space-y-3">
+                      {/* Exercise Header */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-[10px] text-orange-400 font-extrabold uppercase tracking-wider">
+                            {ex.muscleName}
+                          </span>
+                          <h3 className="text-lg font-black text-white mt-0.5">{ex.name}</h3>
+                        </div>
+                      </div>
+
+                      {/* Type Pill Badge (Red) */}
+                      <div className="p-3 bg-neutral-900/90 border border-neutral-800/90 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs text-neutral-300 font-medium">
+                          <Zap className="w-4 h-4 text-red-500" />
+                          <span>Type:</span>
+                        </div>
+                        <span className="px-3 py-1 bg-red-950/70 border border-red-800/80 text-red-400 font-bold text-xs rounded-xl capitalize">
+                          {ex.type || 'compound'}
+                        </span>
+                      </div>
+
+                      {/* Difficulty Pill Badge (Green) */}
+                      <div className="p-3 bg-neutral-900/90 border border-neutral-800/90 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs text-neutral-300 font-medium">
+                          <Star className="w-4 h-4 text-red-500" />
+                          <span>Difficulty:</span>
+                        </div>
+                        <span className="px-3 py-1 bg-emerald-950/70 border border-emerald-800/80 text-emerald-400 font-bold text-xs rounded-xl capitalize">
+                          {ex.difficulty || 'beginner'}
+                        </span>
+                      </div>
+
+                      {/* Form Tips & Technique Collapsible Accordion */}
+                      <div className="bg-neutral-900/90 border border-neutral-800/90 rounded-2xl overflow-hidden">
+                        <button
+                          onClick={() => toggleFormTips(ex.id)}
+                          className="w-full p-3.5 flex items-center justify-between text-xs font-bold text-neutral-200 hover:text-white transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <ClipboardList className="w-4 h-4 text-neutral-400" />
+                            <span>Form Tips & Technique</span>
+                          </div>
+                          <span className={`text-red-500 transition-transform duration-200 ${isFormTipsOpen ? 'rotate-180' : ''}`}>
+                            ▼
+                          </span>
+                        </button>
+
+                        {isFormTipsOpen && (
+                          <div className="p-4 border-t border-neutral-800/80 bg-neutral-950 space-y-3 text-xs text-neutral-300 leading-relaxed">
+                            {formTips?.formTips && formTips.formTips.length > 0 && (
+                              <div className="space-y-1">
+                                <strong className="text-orange-400 block text-[10px] uppercase font-bold tracking-wider">Key Technique & Form Tips:</strong>
+                                <ul className="list-disc list-inside space-y-1 text-neutral-300">
+                                  {formTips.formTips.map((tip, idx) => (
+                                    <li key={idx}>{tip}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {formTips?.commonMistakes && formTips.commonMistakes.length > 0 && (
+                              <div className="space-y-1 pt-2 border-t border-neutral-800/60">
+                                <strong className="text-red-400 block text-[10px] uppercase font-bold tracking-wider">Common Mistakes to Avoid:</strong>
+                                <ul className="list-disc list-inside space-y-1 text-neutral-400">
+                                  {formTips.commonMistakes.map((mistake, idx) => (
+                                    <li key={idx}>{mistake}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {formTips?.breathingTip && (
+                              <div className="pt-2 border-t border-neutral-800/60">
+                                <strong className="text-emerald-400 block text-[10px] uppercase font-bold tracking-wider">Breathing Pattern:</strong>
+                                <p className="text-neutral-300">{formTips.breathingTip}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Button Stack */}
+                    <div className="space-y-2 pt-2 border-t border-neutral-800/80">
+                      {/* Watch Form Video Button */}
+                      <button
+                        onClick={() => setSelectedVideoExercise(ex)}
+                        className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Video className="w-4 h-4 text-neutral-400" /> Watch Form Video
+                      </button>
+
+                      {/* View Details Button */}
+                      <button
+                        onClick={() => setSelectedDetailExercise(ex)}
+                        className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Eye className="w-4 h-4 text-neutral-400" /> View Details
+                      </button>
+
+                      {/* + New Plan & Add to Plan Buttons */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => setShowQuickPlan(ex)}
+                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
+                        >
+                          + New Plan
+                        </button>
+                        <button
+                          onClick={() => setShowAddToExisting(ex)}
+                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
+                        >
+                          <Edit3 className="w-3.5 h-3.5 text-neutral-400" /> Add to Plan
+                        </button>
+                      </div>
+
+                      {/* Start Workout & Complete Buttons */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => handleStartWorkoutSetup(ex)}
+                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
+                        >
+                          <Play className="w-3.5 h-3.5 text-neutral-400 fill-current" /> Start Workout
+                        </button>
+                        <button
+                          onClick={() => handleMarkComplete(ex)}
+                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-neutral-400" /> Complete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Load More Button */}
+          {visibleCount < filteredExercises.length && (
+            <div className="text-center pt-6">
+              <button
+                onClick={() => setVisibleCount((prev) => prev + 24)}
+                className="px-8 py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-white text-xs font-bold uppercase tracking-wider rounded-2xl shadow-xl inline-flex items-center gap-2"
+              >
+                Load More Exercises ({filteredExercises.length - visibleCount} Remaining)
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Exercise Details Drawer / Modal */}
+      {selectedDetailExercise && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs text-orange-400 font-bold uppercase">{selectedDetailExercise.muscleName}</span>
+                <h3 className="text-xl font-black text-white">{selectedDetailExercise.name}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedDetailExercise(null)}
+                className="p-2 text-neutral-400 hover:text-white rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-neutral-300">
+              <div className="p-3 bg-neutral-950 border border-neutral-800 rounded-xl space-y-1">
+                <span className="text-orange-400 font-bold uppercase text-[10px]">Target Sets & Reps</span>
+                <p className="font-mono text-sm font-bold text-white">{selectedDetailExercise.sets || '3 Sets x 10 Reps'}</p>
+              </div>
+
+              <div className="p-3 bg-neutral-950 border border-neutral-800 rounded-xl space-y-1">
+                <span className="text-orange-400 font-bold uppercase text-[10px]">Equipment Required</span>
+                <p className="font-bold text-white capitalize">{selectedDetailExercise.equipment || 'Barbell / Dumbbell'}</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                const ex = selectedDetailExercise;
+                setSelectedDetailExercise(null);
+                handleStartWorkoutSetup(ex);
+              }}
+              className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl"
+            >
+              Configure & Start Workout
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Pre-Workout Setup Modal */}
+      {showWorkoutSetup && (
+        <WorkoutSetupModal
+          exercise={showWorkoutSetup}
+          onClose={() => setShowWorkoutSetup(null)}
+          onStartWorkout={handleWorkoutSetupComplete}
+        />
+      )}
+
+      {/* Video Demo Modal with 100% Embed Link Parser */}
+      {selectedVideoExercise && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 max-w-2xl w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs text-orange-400 font-bold uppercase">{selectedVideoExercise.muscleName}</span>
+                <h3 className="text-xl font-black text-white">{selectedVideoExercise.name} Form Guide</h3>
+              </div>
+              <button
+                onClick={() => setSelectedVideoExercise(null)}
+                className="p-2 text-neutral-400 hover:text-white rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="aspect-video bg-black rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl">
+              <iframe
+                src={getEmbedUrl(selectedVideoExercise.videoUrl)}
+                title={`${selectedVideoExercise.name} Form Video`}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-xs text-neutral-400 font-mono">Official Technique Video</span>
+              <button
+                onClick={() => setSelectedVideoExercise(null)}
+                className="px-5 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold rounded-xl"
+              >
+                Close Video Demo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Plan & Add to Existing Modals */}
+      {showQuickPlan && (
+        <QuickPlanModal
+          exercise={showQuickPlan}
+          onClose={() => setShowQuickPlan(null)}
+          onSaved={() => setShowQuickPlan(null)}
+        />
+      )}
+
+      {showAddToExisting && (
+        <AddToExistingPlanModal
+          exercise={showAddToExisting}
+          onClose={() => setShowAddToExisting(null)}
+          onAdded={() => setShowAddToExisting(null)}
+        />
+      )}
+    </div>
   );
 }
-
-// Add cleanup on component unmount
-Library.displayName = "Library";

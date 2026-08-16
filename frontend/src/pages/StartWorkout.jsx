@@ -7,7 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 
-const ACTIVE_DRAFT_KEY = 'active_workout_draft';
+const ACTIVE_SESSION_KEY = 'active_workout_session';
 
 export default function StartWorkout() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function StartWorkout() {
 
   useEffect(() => {
     // Check for active draft in localStorage
-    const savedDraft = localStorage.getItem(ACTIVE_DRAFT_KEY);
+    const savedDraft = localStorage.getItem(ACTIVE_SESSION_KEY);
     if (savedDraft) {
       try {
         const parsed = JSON.parse(savedDraft);
@@ -30,7 +30,7 @@ export default function StartWorkout() {
           setActiveDraft(parsed);
         }
       } catch (e) {
-        localStorage.removeItem(ACTIVE_DRAFT_KEY);
+        localStorage.removeItem(ACTIVE_SESSION_KEY);
       }
     }
 
@@ -69,24 +69,24 @@ export default function StartWorkout() {
   };
 
   const handleDiscardDraft = () => {
-    localStorage.removeItem(ACTIVE_DRAFT_KEY);
+    localStorage.removeItem(ACTIVE_SESSION_KEY);
     setActiveDraft(null);
   };
 
   const handleStartFreestyle = () => {
     const title = freestyleTitle.trim() || 'Freestyle Workout';
-    localStorage.removeItem(ACTIVE_DRAFT_KEY);
+    localStorage.removeItem(ACTIVE_SESSION_KEY);
     navigate('/workout-session', { state: { defaultTitle: title } });
   };
 
   const handleRepeatLastWorkout = () => {
     if (!lastWorkout) return;
-    localStorage.removeItem(ACTIVE_DRAFT_KEY);
+    localStorage.removeItem(ACTIVE_SESSION_KEY);
     navigate('/workout-session', { state: { repeatWorkout: lastWorkout } });
   };
 
   const handleStartPlan = (plan) => {
-    localStorage.removeItem(ACTIVE_DRAFT_KEY);
+    localStorage.removeItem(ACTIVE_SESSION_KEY);
     navigate('/workout-session', { state: { workoutPlan: plan } });
   };
 

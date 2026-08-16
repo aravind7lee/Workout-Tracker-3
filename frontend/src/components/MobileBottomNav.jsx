@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Play, History, Layers, TrendingUp, Utensils, BookOpen, User } from 'lucide-react';
+import { Home, Play, History, Layers, TrendingUp, Utensils, BookOpen, User, Trophy } from 'lucide-react';
 
 export default function MobileBottomNav() {
   const location = useLocation();
@@ -13,10 +13,10 @@ export default function MobileBottomNav() {
   const links = [
     { to: '/dashboard', label: 'Home', icon: Home },
     { to: '/start-workout', label: 'Workout', icon: Play, highlight: true },
-    { to: '/workouts', label: 'History', icon: History },
-    { to: '/plans', label: 'Plans', icon: Layers },
+    { to: '/library', label: 'Library', icon: BookOpen },
+    { to: '/splits', label: 'Splits', icon: Layers },
     { to: '/analytics', label: 'Progress', icon: TrendingUp },
-    { to: '/nutrition', label: 'Nutrition', icon: Utensils },
+    { to: '/legends', label: 'Champs', icon: Trophy },
     { to: '/profile', label: 'Profile', icon: User }
   ];
 
@@ -34,7 +34,7 @@ export default function MobileBottomNav() {
             <NavLink
               key={link.to}
               to={link.to}
-              className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
+              className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl transition-all ${
                 link.highlight && !isActive
                   ? 'text-orange-400 font-bold'
                   : isActive
@@ -49,9 +49,9 @@ export default function MobileBottomNav() {
                   ? 'bg-orange-500/10 text-orange-500'
                   : ''
               }`}>
-                <Icon className="w-5 h-5 stroke-[2.2]" />
+                <Icon className="w-4 h-4 stroke-[2.2]" />
               </div>
-              <span className="text-[10px] tracking-tight mt-0.5">{link.label}</span>
+              <span className="text-[9px] tracking-tight mt-0.5">{link.label}</span>
             </NavLink>
           );
         })}

@@ -16,6 +16,7 @@ import { RealTimeProvider } from "./context/RealTimeContext";
 import { WorkoutCompletionProvider } from "./context/WorkoutCompletionContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import Library from "./pages/Library";
 import LibrarySimple from "./pages/LibrarySimple";
 import Analytics from "./pages/Analytics";
 import Nutrition from "./pages/Nutrition";
@@ -878,7 +879,7 @@ export default function App() {
                   /*#__PURE__*/ React.createElement(
                     "main",
                     {
-                      className: "pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto",
+                      className: "pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen",
                     },
                     /*#__PURE__*/ React.createElement(
                       Routes,
@@ -908,7 +909,14 @@ export default function App() {
                       /*#__PURE__*/ React.createElement(Route, {
                         path: "/library",
                         element: /*#__PURE__*/ React.createElement(
-                          LibrarySimple,
+                          Library,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/exercise-library",
+                        element: /*#__PURE__*/ React.createElement(
+                          Library,
                           null,
                         ),
                       }),
