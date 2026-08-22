@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Workout from '../models/Workout.js';
 import auth from '../middleware/auth.js';
+import { broadcastToUser } from './sse.js';
 
 const router = express.Router();
 
@@ -300,6 +301,9 @@ router.post('/', auth, async (req, res) => {
     const workout = new Workout(workoutData);
     const savedWorkout = await workout.save();
     
+    // Broadcast real-time event
+    broadcastToUser(userId, 'workout_updated', { workoutId: savedWorkout._id });
+    
     res.status(201).json({ 
       success: true,
       workout: savedWorkout,
@@ -426,6 +430,9 @@ router.put('/:id', auth, async (req, res) => {
     await workout.save();
     await workout.populate('exercises.exercise');
     
+    // Broadcast real-time event
+    broadcastToUser(userId, 'workout_updated', { workoutId: workout._id });
+    
     res.json({ success: true, workout });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
@@ -451,9 +458,56 @@ router.delete('/:id', auth, async (req, res) => {
     }
     
     await Workout.findByIdAndDelete(req.params.id);
+    
+    // Broadcast real-time event
+    broadcastToUser(userId, 'workout_updated', { workoutId: req.params.id });
+    
     res.json({ success: true, message: 'Workout deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+// POST /api/workouts/cleanup-duplicates - Remove duplicate workouts for current user
+router.post('/cleanup-duplicates', auth, async (req, res) => {
+  try {
+    const userId = getUserId(req.user);
+    
+    // Get all workouts for this user
+    const allWorkouts = await Workout.find({ user: userId }).sort({ createdAt: 1 });
+    
+    // Group by title
+    const byTitle = {};
+    allWorkouts.forEach(w => {
+      const title = w.title || 'Unknown';
+      if (!byTitle[title]) byTitle[title] = [];
+      byTitle[title].push(w);
+    });
+    
+    let totalDeleted = 0;
+    const details = [];
+    
+    for (const [title, workouts] of Object.entries(byTitle)) {
+      if (workouts.length > 1) {
+        // Keep the first (oldest), delete the rest
+        const idsToDelete = workouts.slice(1).map(w => w._id);
+        await Workout.deleteMany({ _id: { $in: idsToDelete } });
+        totalDeleted += idsToDelete.length;
+        details.push({ title, kept: 1, deleted: idsToDelete.length });
+      }
+    }
+    
+    const remaining = await Workout.countDocuments({ user: userId });
+    
+    res.json({
+      success: true,
+      message: `Cleaned up ${totalDeleted} duplicate workouts`,
+      details,
+      remainingWorkouts: remaining
+    });
+  } catch (error) {
+    console.error('Error cleaning duplicates:', error);
+    res.status(500).json({ success: false, message: 'Failed to clean duplicates', error: error.message });
   }
 });
 

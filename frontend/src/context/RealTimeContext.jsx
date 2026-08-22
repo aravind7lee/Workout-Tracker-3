@@ -44,12 +44,10 @@ export const RealTimeProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
 
-  // Load workout stats using real-time workout sync service - USER SPECIFIC
+  // Load workout stats from local cache (only for instant UI while API loads)
   const loadWorkoutStats = useCallback(() => {
     try {
-      // Only load stats if user is authenticated
       if (!isAuthenticated() || !user) {
-        console.log("🔒 No authenticated user - returning zero stats");
         return {
           workouts: 0,
           totalWorkouts: 0,
@@ -65,39 +63,33 @@ export const RealTimeProvider = ({ children }) => {
         };
       }
 
+      // We read from local cache just to prevent empty UI while fetching.
+      // But we will NO LONGER use this as the source of truth if API is available.
       const realtimeStats = realTimeWorkoutSync.getStats();
 
-      // Get plans count from localStorage - filter by current user only
       const plans = JSON.parse(localStorage.getItem("workoutPlans") || "[]");
       const userPlans = plans.filter((plan) => {
-        // Only include plans that belong to current user
         return (
           plan.userId === user.id ||
           plan.userId === user._id ||
           (!plan.userId && plan.synced === false)
-        ); // Backward compatibility for local plans
+        );
       });
-      const totalPlans = userPlans.length;
-
-      console.log(
-        `📊 User ${user.id} stats: ${realtimeStats.totalWorkouts} workouts, ${totalPlans} user-specific plans`,
-      );
 
       return {
-        workouts: realtimeStats.todayWorkouts,
-        totalWorkouts: realtimeStats.totalWorkouts,
-        todayWorkouts: realtimeStats.todayWorkouts,
-        weeklyWorkouts: realtimeStats.weeklyWorkouts,
-        monthlyWorkouts: realtimeStats.monthlyWorkouts,
-        totalCalories: realtimeStats.totalCalories,
-        totalDuration: realtimeStats.totalDuration,
-        totalPlans: totalPlans,
-        isRealTime: true,
+        workouts: realtimeStats.todayWorkouts || 0,
+        totalWorkouts: realtimeStats.totalWorkouts || 0,
+        todayWorkouts: realtimeStats.todayWorkouts || 0,
+        weeklyWorkouts: realtimeStats.weeklyWorkouts || 0,
+        monthlyWorkouts: realtimeStats.monthlyWorkouts || 0,
+        totalCalories: realtimeStats.totalCalories || 0,
+        totalDuration: realtimeStats.totalDuration || 0,
+        totalPlans: userPlans.length,
+        isRealTime: false, // Mark as false since it's local
         lastSync: realtimeStats.lastUpdate || new Date().toISOString(),
-        dataSource: `User-${user.id}-RealTimeSync`,
+        dataSource: `User-${user.id}-LocalCache`,
       };
     } catch (error) {
-      console.error("Error loading workout stats:", error);
       return {
         workouts: 0,
         totalWorkouts: 0,
@@ -139,62 +131,45 @@ export const RealTimeProvider = ({ children }) => {
 
     try {
       console.log("🚀 Fetching real-time MongoDB stats...");
-
-      // Load local stats first for instant display
       const localStats = loadWorkoutStats();
-      setStats((prev) => ({ ...prev, ...localStats }));
 
-      // Sync with MongoDB - try multiple endpoints for comprehensive data
-      // Skip API calls if not authenticated
-      let heroStats = { status: "rejected" };
-      let analyticsData = { status: "rejected" };
-      let userStats = { status: "rejected" };
-      let workoutsData = { status: "rejected" };
+      // Show local immediately if we don't have stats yet, but don't override existing fresh stats with local
+      setStats((prev) => prev.isRealTime ? prev : { ...prev, ...localStats });
 
-      try {
-        const mongoPromises = [
-          api.get("/analytics/hero-stats").catch(() => null),
-          api.get("/analytics").catch(() => null),
-          api.get("/users/stats").catch(() => null),
-          api.get("/workouts").catch(() => null),
-        ];
-
-        const results = await Promise.allSettled(mongoPromises);
-        [heroStats, analyticsData, userStats, workoutsData] = results;
-      } catch (error) {
-        console.warn("⚠️ MongoDB API calls failed:", error.message);
-      }
+      // Fetch from MongoDB
+      const [heroStatsRes, workoutsRes] = await Promise.allSettled([
+        api.get("/analytics/hero-stats"),
+        api.get("/workouts")
+      ]);
 
       let realTimeData = {
         ...localStats,
-        meals: 0,
-        totalMeals: 0,
-        totalPlans: localStats.totalPlans,
-        weeklyGoal: {
-          completed: localStats.weeklyWorkouts,
-          target: 4,
-          percentage: (localStats.weeklyWorkouts / 4) * 100,
-        },
         isRealTime: true,
-        dataSource: "MongoDB + localStorage",
+        dataSource: "MongoDB API",
       };
 
-      // Process MongoDB workout data if available - USER SPECIFIC
-      if (workoutsData.status === "fulfilled" && workoutsData.value?.data) {
-        const mongoWorkouts = workoutsData.value.data;
-        if (Array.isArray(mongoWorkouts) && mongoWorkouts.length > 0) {
-          // Filter MongoDB workouts by current user
-          const userMongoWorkouts = mongoWorkouts.filter((w) => {
-            return (
-              w.user === user.id ||
-              w.user === user._id ||
-              w.userId === user.id ||
-              w.userId === user._id
-            );
-          });
+      // Apply hero stats (which has total workouts, meals, streaks)
+      if (heroStatsRes.status === "fulfilled" && heroStatsRes.value?.data?.data) {
+        const hData = heroStatsRes.value.data.data;
+        realTimeData = {
+          ...realTimeData,
+          totalWorkouts: hData.totalWorkouts || 0,
+          workouts: hData.totalWorkouts || 0,
+          meals: hData.meals || 0,
+          totalMeals: hData.totalMeals || 0,
+          weeklyGoal: hData.weeklyGoal || realTimeData.weeklyGoal,
+        };
+      }
 
-          console.log(
-            `📊 MongoDB: ${userMongoWorkouts.length} workouts for user ${user.id}`,
+      // Process MongoDB workout data for accurate today/weekly counts and calories
+      if (workoutsRes.status === "fulfilled" && workoutsRes.value?.data) {
+        let mongoWorkouts = workoutsRes.value.data;
+        if (mongoWorkouts.workouts) {
+            mongoWorkouts = mongoWorkouts.workouts;
+        }
+        if (Array.isArray(mongoWorkouts)) {
+          const userMongoWorkouts = mongoWorkouts.filter(w => 
+            w.user === user.id || w.user === user._id || w.userId === user.id || w.userId === user._id
           );
 
           if (userMongoWorkouts.length > 0) {
@@ -202,53 +177,34 @@ export const RealTimeProvider = ({ children }) => {
             const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
             const mongoTodayWorkouts = userMongoWorkouts.filter(
-              (w) =>
-                new Date(w.completedAt || w.createdAt).toDateString() === today,
+              (w) => new Date(w.completedAt || w.createdAt).toDateString() === today
             ).length;
 
             const mongoWeeklyWorkouts = userMongoWorkouts.filter(
-              (w) => new Date(w.completedAt || w.createdAt) >= weekAgo,
+              (w) => new Date(w.completedAt || w.createdAt) >= weekAgo
             ).length;
 
             const mongoTotalCalories = userMongoWorkouts.reduce(
               (sum, w) => sum + (w.caloriesBurned || 0),
-              0,
+              0
+            );
+            
+            const mongoTotalDuration = userMongoWorkouts.reduce(
+              (sum, w) => sum + (w.durationMinutes || w.duration || 0),
+              0
             );
 
-            // Use MongoDB data if it has more recent data
             realTimeData = {
               ...realTimeData,
-              totalWorkouts: Math.max(
-                userMongoWorkouts.length,
-                localStats.totalWorkouts,
-              ),
-              todayWorkouts: Math.max(
-                mongoTodayWorkouts,
-                localStats.todayWorkouts,
-              ),
-              weeklyWorkouts: Math.max(
-                mongoWeeklyWorkouts,
-                localStats.weeklyWorkouts,
-              ),
-              totalCalories: Math.max(
-                mongoTotalCalories,
-                localStats.totalCalories,
-              ),
-              dataSource: `User-${user.id}-MongoDB-Sync`,
+              // If heroStats didn't give us totalWorkouts, fallback to length of userMongoWorkouts
+              totalWorkouts: Math.max(realTimeData.totalWorkouts, userMongoWorkouts.length),
+              todayWorkouts: mongoTodayWorkouts,
+              weeklyWorkouts: mongoWeeklyWorkouts,
+              totalCalories: mongoTotalCalories,
+              totalDuration: mongoTotalDuration,
             };
           }
         }
-      }
-
-      // Process other MongoDB data
-      if (heroStats.status === "fulfilled" && heroStats.value?.data?.data) {
-        const data = heroStats.value.data.data;
-        realTimeData = {
-          ...realTimeData,
-          meals: data.meals || 0,
-          totalMeals: data.meals || 0,
-          weeklyGoal: data.weeklyGoal || realTimeData.weeklyGoal,
-        };
       }
 
       console.log("✅ Real-time MongoDB sync complete:", realTimeData);
@@ -306,42 +262,79 @@ export const RealTimeProvider = ({ children }) => {
 
     console.log(`🚀 Initializing stats for user: ${user.id}`);
 
-    // Clean fake workouts first for current user
-    realTimeWorkoutSync.cleanFakeWorkouts();
+    // Clear all localStorage workout caches to prevent fake/stale data from appearing.
+    // MongoDB is the single source of truth — stats will be fetched from there.
+    try {
+      localStorage.removeItem("workoutSync_workouts");
+      localStorage.removeItem("workoutSync_stats");
+      localStorage.removeItem("realtime_workouts");
+      localStorage.removeItem("completed_workouts");
+      localStorage.removeItem("workout_stats");
+      console.log("🧹 Cleared local workout caches");
+    } catch (e) {
+      // Ignore localStorage errors
+    }
 
-    // Load local stats immediately
-    const localStats = loadWorkoutStats();
-    setStats((prev) => ({ ...prev, ...localStats }));
+    // Automatically trigger backend cleanup of any existing duplicate workouts
+    if (navigator.onLine) {
+      api.post('/workouts/cleanup-duplicates')
+        .then(res => {
+          if (res.data?.success && res.data?.details?.length > 0) {
+            console.log("🧹 Auto-cleaned duplicates from MongoDB:", res.data);
+            // Fetch fresh stats after cleaning up
+            fetchRealTimeStats();
+          }
+        })
+        .catch(err => console.warn("Failed to clean duplicates:", err));
+    }
 
-    // Subscribe to real-time updates
+    // Subscribe to real-time updates (from local interactions)
     const unsubscribe = realTimeWorkoutSync.subscribe((newStats) => {
-      if (!user) {
-        console.log("🔒 No user - ignoring stats update");
-        return;
-      }
-      console.log(`📊 Real-time stats update for user ${user.id}:`, newStats);
-      setStats((prev) => ({
-        ...prev,
-        workouts: newStats.todayWorkouts,
-        totalWorkouts: newStats.totalWorkouts,
-        todayWorkouts: newStats.todayWorkouts,
-        weeklyWorkouts: newStats.weeklyWorkouts,
-        monthlyWorkouts: newStats.monthlyWorkouts,
-        totalCalories: newStats.totalCalories,
-        totalDuration: newStats.totalDuration,
-        isRealTime: true,
-        lastSync: newStats.lastUpdate || new Date().toISOString(),
-        dataSource: `User-${user.id}-RealTimeSync`,
-      }));
+      if (!user) return;
+      // We'll just fetch real time stats instead of relying on the local sync service directly,
+      // but debounce it to prevent spamming the backend
+      setTimeout(() => {
+          fetchRealTimeStats();
+      }, 500);
     });
 
-    // Then try to fetch from MongoDB
+    // Initialize Server-Sent Events (SSE) for True Instant Cross-Device Sync
+    let sse;
+    const token = localStorage.getItem("token");
+    if (user && token && navigator.onLine) {
+      const baseUrl = api.defaults.baseURL;
+      sse = new EventSource(`${baseUrl}/sse/stream?token=${token}`);
+
+      sse.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "workout_updated") {
+            console.log("⚡ SSE Push Received: Workout updated on another device! Refreshing stats...");
+            fetchRealTimeStats();
+            
+            // Also notify other components (like CompletedWorkouts list) to refresh
+            window.dispatchEvent(new CustomEvent("refreshCompletedWorkouts"));
+          } else if (data.type === "connected") {
+            console.log("🔗 SSE Connection established with backend");
+          }
+        } catch (error) {
+          console.error("Error parsing SSE data:", error);
+        }
+      };
+
+      sse.onerror = (error) => {
+        console.warn("SSE connection error, it will auto-reconnect", error);
+      };
+    }
+
+    // Then fetch from MongoDB
     fetchRealTimeStats();
 
     return () => {
       if (unsubscribe) unsubscribe();
+      if (sse) sse.close();
     };
-  }, [user, isAuthenticated, fetchRealTimeStats, loadWorkoutStats]);
+  }, [user, isAuthenticated, fetchRealTimeStats]); // loadWorkoutStats removed from deps since it's inside fetch
 
   // Listen for real-time events
   useEffect(() => {
@@ -399,22 +392,9 @@ export const RealTimeProvider = ({ children }) => {
 
     // WORKOUT COMPLETION STATS UPDATE
     const handleWorkoutStatsUpdate = (event) => {
-      console.log("💪 Real-time workout stats update received:", event.detail);
-
-      // Reload stats from workout sync service immediately
-      const freshStats = loadWorkoutStats();
-      setStats((prev) => ({
-        ...prev,
-        ...freshStats,
-        lastSync: new Date().toISOString(),
-        dataSource: "Real-time Update",
-        isRealTime: true,
-      }));
-
-      console.log(
-        "✅ INSTANT: Workout stats refreshed from WorkoutSync:",
-        freshStats,
-      );
+      console.log("💪 Real-time workout stats update received, refetching from MongoDB");
+      // Fetch fresh stats from API since a workout completed
+      setTimeout(fetchRealTimeStats, 500);
     };
 
     // Real-time MongoDB sync handler
@@ -462,17 +442,25 @@ export const RealTimeProvider = ({ children }) => {
     // Also listen for plan updates to refresh totalPlans immediately
     const handlePlanUpdate = () => {
       console.log("📋 Plan updated - refreshing plans count");
-      const freshStats = loadWorkoutStats();
-      setStats((prev) => ({
-        ...prev,
-        totalPlans: freshStats.totalPlans,
-        lastSync: new Date().toISOString(),
-        dataSource: "Plan Update",
-      }));
+      setTimeout(fetchRealTimeStats, 500);
+    };
+
+    // Add visibility and online listeners
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+         console.log("👁️ Tab visible again, refetching stats");
+         fetchRealTimeStats();
+      }
+    };
+    const handleOnline = () => {
+      console.log("🌐 Network online, refetching stats");
+      fetchRealTimeStats();
     };
 
     window.addEventListener("planUpdated", handlePlanUpdate);
     window.addEventListener("planDeleted", handlePlanUpdate);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("online", handleOnline);
 
     return () => {
       window.removeEventListener("workoutCompleted", handleWorkoutCompleted);
@@ -487,6 +475,8 @@ export const RealTimeProvider = ({ children }) => {
       window.removeEventListener("planUpdated", handlePlanUpdate);
       window.removeEventListener("planDeleted", handlePlanUpdate);
       window.removeEventListener("userLoggedOut", handleUserLogout);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("online", handleOnline);
     };
   }, [fetchRealTimeStats, loadWorkoutStats]);
 
@@ -507,16 +497,9 @@ export const RealTimeProvider = ({ children }) => {
 
   // Update workout stats (for real-time workout completion)
   const updateWorkoutStats = useCallback(() => {
-    const freshStats = loadWorkoutStats();
-    setStats((prev) => ({
-      ...prev,
-      ...freshStats,
-      lastSync: new Date().toISOString(),
-      dataSource: "Real-time Workout Update",
-      isRealTime: true,
-    }));
-    console.log("💪 REAL-TIME: Workout stats updated:", freshStats);
-  }, [loadWorkoutStats]);
+    // Rely on fetchRealTimeStats instead of loadWorkoutStats
+    fetchRealTimeStats();
+  }, [fetchRealTimeStats]);
 
   // Add completed workout (for real-time updates)
   const addCompletedWorkout = useCallback((workoutData) => {

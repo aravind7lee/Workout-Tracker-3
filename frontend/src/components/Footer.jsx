@@ -207,7 +207,7 @@ export default function Footer() {
             "div",
             {
               className:
-                "sm:col-span-2 lg:col-span-4 grid grid-cols-3 sm:grid-cols-3 gap-4 sm:gap-6",
+                "sm:col-span-2 lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6",
             },
             /*#__PURE__*/ React.createElement(
               "div",

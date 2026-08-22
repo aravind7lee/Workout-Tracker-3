@@ -1,83 +1,95 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-// Simple fallback service
+import api from "../utils/api";
+
+// API-backed service
 const workoutCompletionService = {
   async completeWorkout(workoutData) {
-    const workout = {
-      id: Date.now(),
-      ...workoutData,
-      completedAt: new Date().toISOString(),
-      savedOffline: true,
-    };
-
     try {
-      const existingWorkouts = JSON.parse(
-        localStorage.getItem("completedWorkouts") || "[]",
-      );
-      const updatedWorkouts = [workout, ...existingWorkouts];
-      localStorage.setItem(
-        "completedWorkouts",
-        JSON.stringify(updatedWorkouts),
+      // Map frontend flat structure to backend nested schema
+      const backendPayload = {
+        title: workoutData.exercise || workoutData.name || workoutData.title || "Quick Workout",
+        durationMinutes: Math.ceil((workoutData.duration || 0) / 60) || 1, // Convert seconds to minutes, minimum 1
+        calories: workoutData.caloriesBurned || workoutData.calories || 0,
+        status: "completed",
+        startedAt: new Date(Date.now() - (workoutData.duration || 60) * 1000).toISOString(),
+        exercises: [
+          {
+            exerciseName: workoutData.exercise || workoutData.name || "Unknown Exercise",
+            sets: Array.from({ length: workoutData.sets || 1 }).map(() => ({
+              reps: workoutData.reps || 10,
+              weight: workoutData.weight || 0,
+              rest: 60
+            })),
+            notes: workoutData.notes || ""
+          }
+        ]
+      };
+
+      const response = await api.post("/workouts", backendPayload);
+      const workout = response.data?.workout || response.data;
+      
+      if (!workout || !workout._id) {
+          throw new Error("Invalid response from server when saving workout.");
+      }
+
+      const completedWorkout = {
+          ...workout,
+          id: workout._id,
+      };
+
+      // Dispatch event to update UI and other contexts
+      window.dispatchEvent(
+        new CustomEvent("workoutCompleted", { detail: completedWorkout }),
       );
 
-      window.dispatchEvent(
-        new CustomEvent("workoutCompleted", { detail: workout }),
-      );
-      window.dispatchEvent(
-        new CustomEvent("realTimeStatsUpdate", {
-          detail: {
-            todayWorkouts: updatedWorkouts.filter(
-              (w) =>
-                new Date(w.completedAt).toDateString() ===
-                new Date().toDateString(),
-            ).length,
-            totalWorkouts: updatedWorkouts.length,
-          },
-        }),
-      );
-
-      return workout;
+      return completedWorkout;
     } catch (error) {
-      console.error("Error saving workout:", error);
-      throw error;
+      console.error("Error saving workout to API:", error);
+      
+      // Fallback: Dispatch custom event for realTimeWorkoutSync to handle as offline
+      const offlineWorkout = {
+          id: Date.now().toString(),
+          ...workoutData,
+          completedAt: new Date().toISOString(),
+          savedOffline: true,
+      };
+      window.dispatchEvent(
+        new CustomEvent("workoutCompleted", { detail: offlineWorkout }),
+      );
+      return offlineWorkout;
     }
   },
 
   async getCompletedWorkouts(userId) {
     try {
-      const workouts = JSON.parse(
-        localStorage.getItem("completedWorkouts") || "[]",
-      );
-      return workouts.filter((w) => w.userId === userId);
+      const response = await api.get("/workouts");
+      let workouts = response.data?.workouts || response.data || [];
+      if (!Array.isArray(workouts)) workouts = [];
+      
+      // Filter by user and completed status
+      return workouts.filter((w) => {
+         const matchesUser = w.user === userId || w.userId === userId || w.user?._id === userId;
+         return matchesUser && (w.completed === true || w.completedAt);
+      });
     } catch (error) {
+      console.error("Error fetching completed workouts from API:", error);
       return [];
     }
   },
 
+  async deleteWorkout(workoutId, userId) {
+      try {
+          await api.delete(`/workouts/${workoutId}`);
+          return true;
+      } catch (error) {
+          console.error("Error deleting workout via API:", error);
+          return false;
+      }
+  },
+
   getWorkoutStats(userId) {
-    try {
-      const workouts = JSON.parse(
-        localStorage.getItem("completedWorkouts") || "[]",
-      ).filter((w) => w.userId === userId);
-
-      const today = new Date().toDateString();
-      const thisWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-      return {
-        todayWorkouts: workouts.filter(
-          (w) => new Date(w.completedAt).toDateString() === today,
-        ).length,
-        totalWorkouts: workouts.length,
-        weeklyWorkouts: workouts.filter(
-          (w) => new Date(w.completedAt) >= thisWeek,
-        ).length,
-        totalCalories: workouts.reduce(
-          (sum, w) => sum + (w.caloriesBurned || 0),
-          0,
-        ),
-        totalDuration: workouts.reduce((sum, w) => sum + (w.duration || 0), 0),
-      };
-    } catch (error) {
+      // Defer to RealTimeContext which has accurate MongoDB stats
       return {
         todayWorkouts: 0,
         totalWorkouts: 0,
@@ -85,7 +97,6 @@ const workoutCompletionService = {
         totalCalories: 0,
         totalDuration: 0,
       };
-    }
   },
 };
 

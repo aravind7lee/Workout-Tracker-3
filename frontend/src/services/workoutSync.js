@@ -2,8 +2,6 @@
 class WorkoutSyncService {
   constructor() {
     this.listeners = new Set();
-    // Clear any existing fake data on initialization
-    this.clearFakeData();
     this.workouts = this.loadWorkouts();
   }
 

@@ -169,7 +169,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-5 flex-shrink-0">
+          <div className={`flex items-center gap-1.5 sm:gap-3 lg:gap-5 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
             {/* Connection Status */}
             <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
               {connectionStatus.fullyOnline ? (

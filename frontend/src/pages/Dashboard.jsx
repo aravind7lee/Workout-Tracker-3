@@ -931,7 +931,7 @@ const Dashboard = () => {
                     className:
                       "text-xl sm:text-2xl md:text-3xl font-black text-white mb-1 leading-none",
                   },
-                  workoutStats?.totalWorkouts || stats?.totalWorkouts || 0,
+                  stats?.totalWorkouts ?? dashboardStats?.totalWorkouts ?? 0,
                 ),
                 /*#__PURE__*/ React.createElement(
                   "div",
@@ -947,8 +947,8 @@ const Dashboard = () => {
                     className:
                       "text-[9px] sm:text-[10px] md:text-xs text-red-500 font-bold",
                   },
-                  (workoutStats?.totalWorkouts || stats?.totalWorkouts || 0) > 0
-                    ? `${workoutStats?.totalWorkouts || stats?.totalWorkouts} done!`
+                  (stats?.totalWorkouts || 0) > 0
+                    ? `${stats?.totalWorkouts} done!`
                     : "Start now!",
                 ),
               ),
@@ -1011,7 +1011,7 @@ const Dashboard = () => {
                     className:
                       "text-xl sm:text-2xl md:text-3xl font-black text-white mb-1 leading-none",
                   },
-                  workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0,
+                  stats?.weeklyWorkouts ?? 0,
                 ),
                 /*#__PURE__*/ React.createElement(
                   "div",
@@ -1027,9 +1027,8 @@ const Dashboard = () => {
                     className:
                       "text-[9px] sm:text-[10px] md:text-xs text-red-500 font-bold",
                   },
-                  (workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts || 0) >
-                    0
-                    ? `${workoutStats?.weeklyWorkouts || stats?.weeklyWorkouts} this week!`
+                  (stats?.weeklyWorkouts || 0) > 0
+                    ? `${stats?.weeklyWorkouts} this week!`
                     : "Get started!",
                 ),
               ),

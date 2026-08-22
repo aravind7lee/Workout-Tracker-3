@@ -317,12 +317,16 @@ class RealTimeWorkoutSync {
       const exists = existingWorkouts.some(
         (w) =>
           w.id === workout.id ||
+          w._id === workout.id || // Handle MongoDB IDs
           (w.exercise === workout.exercise &&
             Math.abs(new Date(w.completedAt) - new Date(workout.completedAt)) <
               5000), // 5 second window
       );
 
       if (!exists) {
+        // NOTE: Do NOT call api.post here! The MongoDB save is already handled by
+        // WorkoutSession.jsx or WorkoutCompletionContext.jsx. This function only
+        // updates local state/localStorage for immediate UI feedback.
         existingWorkouts.unshift(workout);
         localStorage.setItem(
           "workoutSync_workouts",

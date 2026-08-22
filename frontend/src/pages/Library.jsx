@@ -4,6 +4,7 @@ import {
   Search, Dumbbell, Play, Plus, X, Video, ChevronRight, ChevronDown,
   Sparkles, Check, Info, Filter, ArrowRight, Layers, Eye, Edit3, CheckCircle2, Zap, Star, ClipboardList
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { exerciseLibrary } from '../data/exerciseLibrary';
 import { getFormTips } from '../data/exerciseFormTips';
@@ -235,28 +236,31 @@ export default function Library() {
             Browse, track, and customize your exercises with ease.
           </p>
 
-          {/* Exact Buttons matching Close-Up Reference Image: Sharp Rectangles (rounded-none) */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3 sm:pt-6 w-full max-w-[300px] sm:max-w-none mx-auto">
-            <button
+          {/* Premium Action Buttons (Matching My Plans Layout) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 w-full max-w-[280px] sm:max-w-none mx-auto"
+          >
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={scrollToExercises}
-              style={{ backgroundColor: '#e51c23', color: '#ffffff' }}
-              className="w-full sm:w-auto h-13 sm:h-14 px-8 !bg-[#e51c23] hover:!bg-[#c61a20] text-white font-black text-xs sm:text-sm uppercase tracking-[0.18em] rounded-none shadow-2xl flex items-center justify-center gap-3 whitespace-nowrap transition-all transform active:scale-95 hover:scale-[1.02] cursor-pointer border-none"
+              className="premium-btn-primary btn-primary preserve-color w-full sm:w-auto"
             >
-              <span>EXPLORE EXERCISES</span>
-              <ArrowRight className="w-4 h-4 stroke-[3.5] shrink-0" />
-            </button>
-
-            <button
+              Explore Exercises
+              <ArrowRight className="w-4 h-4 stroke-[3] shrink-0" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => navigate('/start-workout')}
-              style={{ 
-                background: 'linear-gradient(180deg, rgba(120, 85, 70, 0.55) 0%, rgba(60, 40, 30, 0.70) 100%)', 
-                borderColor: 'rgba(210, 180, 165, 0.45)' 
-              }}
-              className="w-full sm:w-auto h-13 sm:h-14 px-8 text-white font-black text-xs sm:text-sm uppercase tracking-[0.18em] rounded-none shadow-2xl border backdrop-blur-md flex items-center justify-center whitespace-nowrap transition-all transform active:scale-95 hover:scale-[1.02] cursor-pointer"
+              className="premium-btn-secondary btn-secondary preserve-color w-full sm:w-auto"
             >
-              <span>START TRAINING</span>
-            </button>
-          </div>
+              Start Training
+            </motion.button>
+          </motion.div>
         </div>
       </div>
 
@@ -389,140 +393,135 @@ export default function Library() {
                 return (
                   <div
                     key={ex.id}
-                    className="bg-neutral-950 border border-neutral-800/90 rounded-3xl p-5 space-y-4 hover:border-neutral-700 transition-all shadow-2xl"
+                    className="bg-neutral-950 border border-neutral-800/90 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3.5 hover:border-neutral-700 transition-all shadow-2xl"
                   >
-                    <div className="space-y-3">
-                      {/* Exercise Header */}
+                    {/* Exercise Header & Badges */}
+                    <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <span className="text-[10px] text-orange-400 font-extrabold uppercase tracking-wider">
+                          <span className="text-[9px] sm:text-[10px] text-orange-400 font-extrabold uppercase tracking-wider">
                             {ex.muscleName}
                           </span>
-                          <h3 className="text-lg font-black text-white mt-0.5">{ex.name}</h3>
+                          <h3 className="text-base sm:text-lg font-black text-white leading-snug">{ex.name}</h3>
                         </div>
                       </div>
 
-                      {/* Type Pill Badge (Red) */}
-                      <div className="p-3 bg-neutral-900/90 border border-neutral-800/90 rounded-2xl flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-xs text-neutral-300 font-medium">
-                          <Zap className="w-4 h-4 text-red-500" />
-                          <span>Type:</span>
-                        </div>
-                        <span className="px-3 py-1 bg-red-950/70 border border-red-800/80 text-red-400 font-bold text-xs rounded-xl capitalize">
-                          {ex.type || 'compound'}
+                      {/* Compact Inline Type & Difficulty Badges */}
+                      <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                        <span className="px-2.5 py-0.5 bg-red-950/80 border border-red-800/60 text-red-400 font-bold text-[10px] sm:text-xs rounded-full flex items-center gap-1">
+                          <Zap className="w-3 h-3 text-red-400" />
+                          <span className="capitalize">{ex.type || 'compound'}</span>
                         </span>
-                      </div>
-
-                      {/* Difficulty Pill Badge (Green) */}
-                      <div className="p-3 bg-neutral-900/90 border border-neutral-800/90 rounded-2xl flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-xs text-neutral-300 font-medium">
-                          <Star className="w-4 h-4 text-red-500" />
-                          <span>Difficulty:</span>
-                        </div>
-                        <span className="px-3 py-1 bg-emerald-950/70 border border-emerald-800/80 text-emerald-400 font-bold text-xs rounded-xl capitalize">
-                          {ex.difficulty || 'beginner'}
+                        <span className="px-2.5 py-0.5 bg-emerald-950/80 border border-emerald-800/60 text-emerald-400 font-bold text-[10px] sm:text-xs rounded-full flex items-center gap-1">
+                          <Star className="w-3 h-3 text-emerald-400" />
+                          <span className="capitalize">{ex.difficulty || 'intermediate'}</span>
                         </span>
-                      </div>
-
-                      {/* Form Tips & Technique Collapsible Accordion */}
-                      <div className="bg-neutral-900/90 border border-neutral-800/90 rounded-2xl overflow-hidden">
-                        <button
-                          onClick={() => toggleFormTips(ex.id)}
-                          className="w-full p-3.5 flex items-center justify-between text-xs font-bold text-neutral-200 hover:text-white transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <ClipboardList className="w-4 h-4 text-neutral-400" />
-                            <span>Form Tips & Technique</span>
-                          </div>
-                          <span className={`text-red-500 transition-transform duration-200 ${isFormTipsOpen ? 'rotate-180' : ''}`}>
-                            ▼
-                          </span>
-                        </button>
-
-                        {isFormTipsOpen && (
-                          <div className="p-4 border-t border-neutral-800/80 bg-neutral-950 space-y-3 text-xs text-neutral-300 leading-relaxed">
-                            {formTips?.formTips && formTips.formTips.length > 0 && (
-                              <div className="space-y-1">
-                                <strong className="text-orange-400 block text-[10px] uppercase font-bold tracking-wider">Key Technique & Form Tips:</strong>
-                                <ul className="list-disc list-inside space-y-1 text-neutral-300">
-                                  {formTips.formTips.map((tip, idx) => (
-                                    <li key={idx}>{tip}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {formTips?.commonMistakes && formTips.commonMistakes.length > 0 && (
-                              <div className="space-y-1 pt-2 border-t border-neutral-800/60">
-                                <strong className="text-red-400 block text-[10px] uppercase font-bold tracking-wider">Common Mistakes to Avoid:</strong>
-                                <ul className="list-disc list-inside space-y-1 text-neutral-400">
-                                  {formTips.commonMistakes.map((mistake, idx) => (
-                                    <li key={idx}>{mistake}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {formTips?.breathingTip && (
-                              <div className="pt-2 border-t border-neutral-800/60">
-                                <strong className="text-emerald-400 block text-[10px] uppercase font-bold tracking-wider">Breathing Pattern:</strong>
-                                <p className="text-neutral-300">{formTips.breathingTip}</p>
-                              </div>
-                            )}
-                          </div>
-                        )}
                       </div>
                     </div>
 
-                    {/* Action Button Stack */}
-                    <div className="space-y-2 pt-2 border-t border-neutral-800/80">
-                      {/* Watch Form Video Button */}
+                    {/* Form Tips & Technique Collapsible Accordion */}
+                    <div className="bg-neutral-900/70 border border-neutral-800/80 rounded-xl overflow-hidden">
+                      <button
+                        onClick={() => toggleFormTips(ex.id)}
+                        className="w-full px-3 py-2.5 flex items-center justify-between text-[11px] sm:text-xs font-bold text-neutral-300 hover:text-white transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <ClipboardList className="w-3.5 h-3.5 text-neutral-400" />
+                          <span>Form Tips & Technique</span>
+                        </div>
+                        <span className={`text-red-500 text-[10px] transition-transform duration-200 ${isFormTipsOpen ? 'rotate-180' : ''}`}>
+                          ▼
+                        </span>
+                      </button>
+
+                      {isFormTipsOpen && (
+                        <div className="p-3 border-t border-neutral-800/80 bg-neutral-950 space-y-2.5 text-[11px] sm:text-xs text-neutral-300 leading-relaxed">
+                          {formTips?.formTips && formTips.formTips.length > 0 && (
+                            <div className="space-y-1">
+                              <strong className="text-orange-400 block text-[9px] uppercase font-bold tracking-wider">Key Technique & Form Tips:</strong>
+                              <ul className="list-disc list-inside space-y-1 text-neutral-300">
+                                {formTips.formTips.map((tip, idx) => (
+                                  <li key={idx}>{tip}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {formTips?.commonMistakes && formTips.commonMistakes.length > 0 && (
+                            <div className="space-y-1 pt-2 border-t border-neutral-800/60">
+                              <strong className="text-red-400 block text-[9px] uppercase font-bold tracking-wider">Common Mistakes to Avoid:</strong>
+                              <ul className="list-disc list-inside space-y-1 text-neutral-400">
+                                {formTips.commonMistakes.map((mistake, idx) => (
+                                  <li key={idx}>{mistake}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {formTips?.breathingTip && (
+                            <div className="pt-2 border-t border-neutral-800/60">
+                              <strong className="text-emerald-400 block text-[9px] uppercase font-bold tracking-wider">Breathing Pattern:</strong>
+                              <p className="text-neutral-300">{formTips.breathingTip}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Button Grid - Clean 2-Column Mobile Grid */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-800/80">
+                      {/* Watch Form Video */}
                       <button
                         onClick={() => setSelectedVideoExercise(ex)}
-                        className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-2 transition-all"
+                        className="py-2.5 px-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all truncate"
                       >
-                        <Video className="w-4 h-4 text-neutral-400" /> Watch Form Video
+                        <Video className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Watch Video</span>
                       </button>
 
-                      {/* View Details Button */}
+                      {/* View Details */}
                       <button
                         onClick={() => setSelectedDetailExercise(ex)}
-                        className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-2 transition-all"
+                        className="py-2.5 px-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all truncate"
                       >
-                        <Eye className="w-4 h-4 text-neutral-400" /> View Details
+                        <Eye className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">View Details</span>
                       </button>
 
-                      {/* + New Plan & Add to Plan Buttons */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => setShowQuickPlan(ex)}
-                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          + New Plan
-                        </button>
-                        <button
-                          onClick={() => setShowAddToExisting(ex)}
-                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          <Edit3 className="w-3.5 h-3.5 text-neutral-400" /> Add to Plan
-                        </button>
-                      </div>
+                      {/* + New Plan */}
+                      <button
+                        onClick={() => setShowQuickPlan(ex)}
+                        className="py-2.5 px-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-all truncate"
+                      >
+                        <span>+ New Plan</span>
+                      </button>
 
-                      {/* Start Workout & Complete Buttons */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => handleStartWorkoutSetup(ex)}
-                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          <Play className="w-3.5 h-3.5 text-neutral-400 fill-current" /> Start Workout
-                        </button>
-                        <button
-                          onClick={() => handleMarkComplete(ex)}
-                          className="py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-neutral-400" /> Complete
-                        </button>
-                      </div>
+                      {/* Add to Plan */}
+                      <button
+                        onClick={() => setShowAddToExisting(ex)}
+                        className="py-2.5 px-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all truncate"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span className="truncate">Add to Plan</span>
+                      </button>
+
+                      {/* Start Workout */}
+                      <button
+                        onClick={() => handleStartWorkoutSetup(ex)}
+                        className="py-2.5 px-2 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/40 text-orange-400 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all truncate"
+                      >
+                        <Play className="w-3.5 h-3.5 text-orange-400 fill-current shrink-0" />
+                        <span className="truncate">Start</span>
+                      </button>
+
+                      {/* Complete */}
+                      <button
+                        onClick={() => handleMarkComplete(ex)}
+                        className="py-2.5 px-2 bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-800/50 text-emerald-400 text-[11px] sm:text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all truncate"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span className="truncate">Complete</span>
+                      </button>
                     </div>
                   </div>
                 );

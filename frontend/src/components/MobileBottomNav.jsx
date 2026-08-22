@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Play, History, Layers, TrendingUp, Utensils, BookOpen, User, Trophy } from 'lucide-react';
+import { Home, Play, History, Layers, TrendingUp, Utensils, BookOpen, User, Trophy, LayoutDashboard } from 'lucide-react';
 
 export default function MobileBottomNav() {
   const location = useLocation();
@@ -11,13 +11,13 @@ export default function MobileBottomNav() {
   }
 
   const links = [
-    { to: '/dashboard', label: 'Home', icon: Home },
+    { to: '/', label: 'Home', icon: Home },
     { to: '/start-workout', label: 'Workout', icon: Play, highlight: true },
     { to: '/library', label: 'Library', icon: BookOpen },
     { to: '/splits', label: 'Splits', icon: Layers },
     { to: '/analytics', label: 'Progress', icon: TrendingUp },
-    { to: '/legends', label: 'Champs', icon: Trophy },
-    { to: '/profile', label: 'Profile', icon: User }
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/nutrition', label: 'Nutrition', icon: Utensils }
   ];
 
   return (

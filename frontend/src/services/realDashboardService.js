@@ -1,28 +1,40 @@
 // frontend/src/services/realDashboardService.js - REAL DATA DASHBOARD
 import { exerciseLibrary } from "../data/exerciseLibrary";
 
+import api from "../utils/api";
+
 class RealDashboardService {
   constructor() {
     this.cache = new Map();
   }
 
-  // Get real workout plans from localStorage
-  getWorkoutPlans() {
+  // Get real workout plans from API
+  async getWorkoutPlans() {
     try {
+      if (navigator.onLine) {
+         const res = await api.get("/workouts/plans");
+         return res.data || [];
+      }
       return JSON.parse(localStorage.getItem("workoutPlans") || "[]");
     } catch (error) {
       console.error("Error loading workout plans:", error);
-      return [];
+      return JSON.parse(localStorage.getItem("workoutPlans") || "[]");
     }
   }
 
-  // Get real workout history from localStorage
-  getWorkoutHistory() {
+  // Get real workout history from API
+  async getWorkoutHistory() {
     try {
-      return JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+      if (navigator.onLine) {
+         const res = await api.get("/workouts");
+         let workouts = res.data?.workouts || res.data || [];
+         if (!Array.isArray(workouts)) workouts = [];
+         return workouts.filter(w => w.completed || w.completedAt);
+      }
+      return JSON.parse(localStorage.getItem("workoutHistory") || JSON.parse(localStorage.getItem("workoutSync_workouts") || "[]"));
     } catch (error) {
       console.error("Error loading workout history:", error);
-      return [];
+      return JSON.parse(localStorage.getItem("workoutHistory") || JSON.parse(localStorage.getItem("workoutSync_workouts") || "[]"));
     }
   }
 
@@ -42,8 +54,10 @@ class RealDashboardService {
 
   // Calculate real stats from actual data
   async getDashboardStats() {
-    const plans = this.getWorkoutPlans();
-    const history = this.getWorkoutHistory();
+    const plansPromise = this.getWorkoutPlans();
+    const historyPromise = this.getWorkoutHistory();
+    
+    const [plans, history] = await Promise.all([plansPromise, historyPromise]);
     const { meals } = this.getNutritionData();
 
     // Calculate total exercises available
@@ -116,7 +130,7 @@ class RealDashboardService {
   // Generate real achievements based on actual data
   async getAchievements() {
     const stats = await this.getDashboardStats();
-    const plans = this.getWorkoutPlans();
+    const plans = await this.getWorkoutPlans();
 
     const achievements = [
       {
@@ -183,7 +197,7 @@ class RealDashboardService {
 
   // Get recent activity from real data
   async getRecentActivity() {
-    const history = this.getWorkoutHistory();
+    const history = await this.getWorkoutHistory();
     const { meals } = this.getNutritionData();
 
     const activities = [];
@@ -220,7 +234,7 @@ class RealDashboardService {
 
   // Get muscle group distribution from workout plans
   async getMuscleDistribution() {
-    const plans = this.getWorkoutPlans();
+    const plans = await this.getWorkoutPlans();
     const muscleCount = {};
 
     plans.forEach((plan) => {

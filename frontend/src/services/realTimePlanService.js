@@ -196,6 +196,9 @@ class RealTimePlanService {
         return [];
       }
 
+      let plans = [];
+      let returnCachedImmediately = false;
+
       if (!forceRefresh && this.planCache.size > 0) {
         // Return only current user's plans from cache - STRICT filtering
         const userPlans = Array.from(this.planCache.values()).filter(
@@ -205,15 +208,15 @@ class RealTimePlanService {
         console.log(
           `💾 Cache: ${userPlans.length} plans for user ${currentUser.id}`,
         );
-        return userPlans;
+        plans = userPlans;
+        returnCachedImmediately = true;
+        // Proceed to fetch from MongoDB in background (stale-while-revalidate)
       }
 
-      let plans = [];
-
-      // Load from MongoDB if online
-      if (this.isOnline) {
-        try {
-          const backendPlans = await onlineService.getWorkoutPlans();
+      const fetchFromMongo = async () => {
+          if (this.isOnline) {
+            try {
+              const backendPlans = await onlineService.getWorkoutPlans();
           // Filter MongoDB plans by current user
           const userBackendPlans = backendPlans.filter(
             (plan) =>
@@ -245,65 +248,36 @@ class RealTimePlanService {
 
           if (plans.length === 0) {
             console.log("📊 No plans found in MongoDB for current user");
+          } else {
+            // Update cache with user-specific plans only
+            plans.forEach((plan) => {
+              if (plan.userId === currentUser.id || plan.userId === currentUser._id) {
+                this.planCache.set(plan.id, plan);
+              }
+            });
+            this.lastSync = new Date().toISOString();
+            
+            // Re-emit event so UI can update if it was relying on old cache
+            this.emit("plansRefreshed", plans);
+            window.dispatchEvent(new CustomEvent("planUpdated"));
           }
         } catch (error) {
           console.error("❌ MongoDB load failed, using local:", error);
           this.isOnline = false;
         }
       }
+    };
 
-      // Fallback to localStorage - filter by user
-      if (plans.length === 0) {
-        const localPlans = JSON.parse(
-          localStorage.getItem("workoutPlans") || "[]",
-        );
-        // STRICT filtering - only plans with explicit userId match
-        const userLocalPlans = localPlans.filter((plan) => {
-          const belongsToUser =
-            plan.userId === currentUser.id || plan.userId === currentUser._id;
-          if (!belongsToUser && plan.name) {
-            console.log(
-              `🗑️ Excluding plan: "${plan.name}" (userId: ${plan.userId})`,
-            );
-          }
-          return belongsToUser;
-        });
-
-        plans = userLocalPlans.map((plan) => ({
-          ...plan,
-          userId: plan.userId || currentUser.id,
-          synced: plan.synced || false,
-          isTemp: plan.isTemp || false,
-        }));
-        console.log(
-          `📱 User ${currentUser.id} plans loaded from localStorage:`,
-          plans.length,
-        );
-
-        if (plans.length === 0) {
-          console.log("📊 No plans found in localStorage for current user");
-        }
-      }
-
-      // Update cache with user-specific plans only - STRICT filtering
-      this.planCache.clear();
-      plans.forEach((plan) => {
-        // ONLY cache plans that explicitly belong to current user
-        if (plan.userId === currentUser.id || plan.userId === currentUser._id) {
-          this.planCache.set(plan.id, plan);
-        } else {
-          console.log(
-            `🗑️ Not caching plan: "${plan.name}" (userId: ${plan.userId})`,
+      if (returnCachedImmediately) {
+          fetchFromMongo(); // Execute background sync
+          return plans;
+      } else {
+          await fetchFromMongo();
+          return Array.from(this.planCache.values()).filter(
+              (plan) =>
+                plan.userId === currentUser.id || plan.userId === currentUser._id,
           );
-        }
-      });
-
-      console.log(
-        `💾 Cached ${this.planCache.size} plans for user ${currentUser.id}`,
-      );
-
-      this.lastSync = new Date().toISOString();
-      return plans;
+      }
     } catch (error) {
       console.error("❌ Failed to load plans:", error);
       return [];
