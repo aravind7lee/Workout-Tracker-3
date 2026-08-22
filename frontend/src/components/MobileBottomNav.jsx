@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Play, History, Layers, TrendingUp, Utensils, BookOpen, User, Trophy, LayoutDashboard } from 'lucide-react';
+import { Home, Play, BookOpen, Utensils, LayoutDashboard } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function MobileBottomNav() {
   const location = useLocation();
@@ -12,20 +13,18 @@ export default function MobileBottomNav() {
 
   const links = [
     { to: '/', label: 'Home', icon: Home },
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/start-workout', label: 'Workout', icon: Play, highlight: true },
     { to: '/library', label: 'Library', icon: BookOpen },
-    { to: '/splits', label: 'Splits', icon: Layers },
-    { to: '/analytics', label: 'Progress', icon: TrendingUp },
-    { to: '/nutrition', label: 'Nutrition', icon: Utensils }
+    { to: '/start-workout', label: 'Workout', icon: Play }, // Removed confusing 'highlight' block
+    { to: '/nutrition', label: 'Nutrition', icon: Utensils },
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }
   ];
 
   return (
     <nav 
       aria-label="Mobile Navigation Bar"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-neutral-950/95 border-t border-neutral-800 backdrop-blur-md px-2 py-1.5 shadow-2xl"
+      className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[380px] bg-[#121212]/95 backdrop-blur-2xl border border-white/[0.08] rounded-[36px] p-1.5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.8)]"
     >
-      <div className="flex items-center justify-around max-w-md mx-auto">
+      <div className="flex items-center justify-between px-1">
         {links.map((link) => {
           const Icon = link.icon;
           const isActive = location.pathname === link.to;
@@ -34,24 +33,26 @@ export default function MobileBottomNav() {
             <NavLink
               key={link.to}
               to={link.to}
-              className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl transition-all ${
-                link.highlight && !isActive
-                  ? 'text-orange-400 font-bold'
-                  : isActive
-                  ? 'text-orange-500 font-bold scale-105'
-                  : 'text-neutral-400 hover:text-neutral-200'
-              }`}
+              className="relative flex flex-col items-center justify-center w-[64px] h-[58px]"
             >
-              <div className={`p-1 rounded-xl transition-colors ${
-                link.highlight
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                  : isActive
-                  ? 'bg-orange-500/10 text-orange-500'
-                  : ''
-              }`}>
-                <Icon className="w-4 h-4 stroke-[2.2]" />
+              {/* Premium Framer Motion Sliding Indicator */}
+              {isActive && (
+                <motion.div
+                  layoutId="active-nav-pill"
+                  className="absolute top-1.5 w-[50px] h-[32px] bg-gradient-to-br from-orange-500 to-orange-600 rounded-[14px] shadow-[0_4px_12px_rgba(249,115,22,0.35)]"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              
+              {/* Icon & Text Content */}
+              <div className="relative z-10 flex flex-col items-center justify-center w-full h-full pt-1.5">
+                <Icon className={`w-5 h-5 mb-1 transition-all duration-300 ${isActive ? 'text-white stroke-[2.5]' : 'text-neutral-400 hover:text-neutral-300 stroke-[2]'}`} />
+                <span className={`text-[10px] tracking-wide transition-all duration-300 ${
+                  isActive ? 'text-white font-bold drop-shadow-md' : 'text-neutral-500 font-medium'
+                }`}>
+                  {link.label}
+                </span>
               </div>
-              <span className="text-[9px] tracking-tight mt-0.5">{link.label}</span>
             </NavLink>
           );
         })}

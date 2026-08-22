@@ -1,4 +1,4 @@
-import api from "../config/api";
+import api from "../utils/api";
 
 class WorkoutSplitsService {
   // Get all workout splits with optional filtering

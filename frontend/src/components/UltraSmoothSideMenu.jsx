@@ -217,25 +217,25 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         <motion.div key={item.to} variants={itemVariants}>
                           <button
                             onClick={() => handleMenuItemClick(item.to)}
-                            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-300 group ${
+                            className={`w-full flex items-center space-x-3 px-3 py-3 rounded-2xl transition-all duration-300 group border ${
                               isActive
-                                ? "bg-gradient-to-r from-[#FF0000]/15 to-transparent text-white border-l-[3px] border-[#FF0000] pl-[9px]"
-                                : "text-neutral-400 hover:text-white hover:bg-neutral-900/30 border-l-[3px] border-transparent pl-[9px]"
+                                ? "bg-[#1a1a1a] border-[#333] text-white shadow-lg"
+                                : "bg-[#141414]/80 border-[#222] text-zinc-400 hover:text-white hover:bg-[#1a1a1a] hover:border-[#333]"
                             }`}
                           >
                             {/* Icon with beautiful wrapper */}
                             <div
-                              className={`p-2 rounded-lg transition-all duration-300 ${
+                              className={`p-2 rounded-xl transition-all duration-300 flex items-center justify-center ${
                                 isActive
-                                  ? "bg-[#FF0000]/15 text-[#FF0000]"
-                                  : "bg-neutral-950/60 text-neutral-400 group-hover:text-white group-hover:bg-neutral-900"
+                                  ? "bg-[#252525] text-[#ff3b3b] shadow-inner"
+                                  : "bg-[#1f1f1f] text-zinc-500 group-hover:text-zinc-300 group-hover:bg-[#252525]"
                               }`}
                             >
                               <Icon size={18} className="transition-transform duration-300 group-hover:scale-110" />
                             </div>
 
                             {/* Label */}
-                            <span className="font-semibold font-body text-sm">
+                            <span className="font-semibold font-body text-[13px] tracking-wide">
                               {item.label}
                             </span>
 
@@ -243,7 +243,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                             {isActive && (
                               <motion.div
                                 layoutId="activeSideDot"
-                                className="ml-auto w-1.5 h-1.5 rounded-full bg-[#FF0000]"
+                                className="ml-auto w-2 h-2 rounded-full bg-[#ff3b3b] shadow-[0_0_8px_rgba(255,59,59,0.8)]"
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                               />
                             )}
@@ -259,9 +259,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                   {/* Profile Section - Inside scrollable area */}
                   {isAuthenticated() && user ? (
                     <div className="border-t border-neutral-900/60 pt-4 mt-2 px-1">
-                      <div className="relative overflow-hidden bg-gradient-to-br from-[#0F0F0F] via-[#080808] to-[#0A0A0A] border border-neutral-900/80 rounded-2xl p-4 shadow-xl">
-                        {/* Premium glow decorative circle */}
-                        <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-[#FF0000]/5 rounded-full blur-2xl pointer-events-none" />
+                      <div className="relative overflow-hidden bg-[#141414]/90 border border-[#222] rounded-2xl p-4 shadow-xl backdrop-blur-xl">
                         
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="relative">
@@ -295,24 +293,24 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                         <div className="space-y-1 pt-2 border-t border-neutral-900/60">
                           <button
                             onClick={() => handleMenuItemClick("/profile")}
-                            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900/40 transition-all duration-200"
+                            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-[#1f1f1f] transition-all duration-200"
                           >
-                            <UserCircle size={16} className="text-neutral-500" />
-                            <span className="text-xs font-semibold font-body">My Account</span>
+                            <UserCircle size={16} className="text-zinc-500" />
+                            <span className="text-[13px] font-semibold font-body tracking-wide">My Account</span>
                           </button>
 
                           <button
                             onClick={() => handleMenuItemClick("/settings")}
-                            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900/40 transition-all duration-200"
+                            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-[#1f1f1f] transition-all duration-200"
                           >
-                            <Settings size={16} className="text-neutral-500" />
-                            <span className="text-xs font-semibold font-body">Settings</span>
+                            <Settings size={16} className="text-zinc-500" />
+                            <span className="text-[13px] font-semibold font-body tracking-wide">Settings</span>
                           </button>
 
-                          <div className="pt-2 border-t border-neutral-900/60 mt-2">
+                          <div className="pt-2 border-t border-[#2a2a2a] mt-2">
                             <button
                               onClick={handleLogout}
-                              className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-red-950/20 to-transparent hover:from-[#FF0000]/10 hover:bg-[#FF0000]/5 text-[#FF0000] hover:text-[#E60000] border border-[#FF0000]/15 hover:border-[#FF0000]/30 transition-all duration-300 shadow-sm"
+                              className="w-full flex items-center justify-center space-x-2 px-3 py-3 rounded-xl bg-[#141414] hover:bg-[#1f1f1f] text-[#ff3b3b] border border-[#2a2a2a] transition-all duration-300 shadow-sm"
                             >
                               <LogOut size={16} />
                               <span className="text-xs font-bold font-body uppercase tracking-wider">

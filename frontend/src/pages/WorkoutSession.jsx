@@ -600,7 +600,7 @@ export default function WorkoutSession() {
           <div className="space-y-6">
             
             {/* Title & Description Box */}
-            <div className="p-6 bg-neutral-900 border border-neutral-800 rounded-3xl space-y-4">
+            <div className="p-4 sm:p-5 bg-neutral-900 border border-neutral-800 rounded-2xl sm:rounded-3xl space-y-3 sm:space-y-4 shadow-lg">
               <div className="flex items-center gap-2 text-xs font-bold text-orange-400 uppercase tracking-wider">
                 <Dumbbell className="w-4 h-4" /> Prepare Your Workout
               </div>
@@ -614,7 +614,7 @@ export default function WorkoutSession() {
                   value={workoutTitle}
                   onChange={(e) => setWorkoutTitle(e.target.value)}
                   placeholder="e.g. Push Heavy, Leg Day Blast..."
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-lg font-black text-white focus:outline-none focus:border-orange-500"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-base sm:text-lg font-black text-white focus:outline-none focus:border-orange-500 transition-colors"
                 />
               </div>
 
@@ -626,7 +626,7 @@ export default function WorkoutSession() {
 
             {/* Exercises List Configuration */}
             {exercises.length === 0 ? (
-              <div className="p-8 bg-neutral-900/60 border border-neutral-800 border-dashed rounded-3xl text-center space-y-4">
+              <div className="p-5 sm:p-8 bg-neutral-900/60 border border-neutral-800 border-dashed rounded-2xl sm:rounded-3xl text-center space-y-3 sm:space-y-4 shadow-inner">
                 <div className="w-12 h-12 bg-neutral-800 text-orange-500 rounded-2xl flex items-center justify-center mx-auto">
                   <Plus className="w-6 h-6" />
                 </div>
@@ -726,7 +726,7 @@ export default function WorkoutSession() {
                                       step="0.5"
                                       value={set.weight || ''}
                                       onChange={(e) => handleUpdateSet(ex.id, setIdx, 'weight', e.target.value)}
-                                      className="w-16 bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-center font-bold text-white font-mono"
+                                      className="w-12 sm:w-16 bg-neutral-950 border border-neutral-800 rounded-lg px-1 sm:px-2 py-1 text-center font-bold text-white font-mono text-[11px] sm:text-xs"
                                     />
                                     <button
                                       onClick={() => adjustSetField(ex.id, setIdx, 'weight', 2.5)}
@@ -749,7 +749,7 @@ export default function WorkoutSession() {
                                       inputMode="numeric"
                                       value={set.reps || ''}
                                       onChange={(e) => handleUpdateSet(ex.id, setIdx, 'reps', e.target.value)}
-                                      className="w-14 bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-center font-bold text-white font-mono"
+                                      className="w-10 sm:w-14 bg-neutral-950 border border-neutral-800 rounded-lg px-1 sm:px-2 py-1 text-center font-bold text-white font-mono text-[11px] sm:text-xs"
                                     />
                                     <button
                                       onClick={() => adjustSetField(ex.id, setIdx, 'reps', 1)}
@@ -770,7 +770,7 @@ export default function WorkoutSession() {
 
                 <button
                   onClick={() => setIsPickerOpen(true)}
-                  className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 border-dashed rounded-2xl text-xs font-bold text-orange-400 flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-2.5 sm:py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 border-dashed rounded-xl sm:rounded-2xl text-xs font-bold text-orange-400 flex items-center justify-center gap-2 transition-colors shadow-sm"
                 >
                   <Plus className="w-4 h-4" /> Add Another Exercise
                 </button>
@@ -779,17 +779,17 @@ export default function WorkoutSession() {
 
             {/* READY TO START BANNER & EXPLICIT START BUTTON */}
             {exercises.length > 0 && (
-              <div className="p-6 bg-gradient-to-r from-orange-500/20 via-neutral-900 to-neutral-900 border border-orange-500/40 rounded-3xl space-y-4 shadow-2xl">
+              <div className="p-4 sm:p-6 bg-gradient-to-r from-orange-500/20 via-neutral-900 to-neutral-900 border border-orange-500/40 rounded-2xl sm:rounded-3xl space-y-3 sm:space-y-4 shadow-xl">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-orange-400 text-xs font-bold uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-orange-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                     <Sparkles className="w-4 h-4" /> Ready To Start?
                   </div>
-                  <span className="text-xs text-neutral-400 font-mono">Target: {totalSetsCount} Sets</span>
+                  <span className="text-[10px] sm:text-xs text-neutral-400 font-mono">Target: {totalSetsCount} Sets</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-black text-white">Configured {exercises.length} Exercises</h3>
-                  <p className="text-xs text-neutral-300 mt-1">
+                  <h3 className="text-base sm:text-xl font-black text-white">Configured {exercises.length} Exercises</h3>
+                  <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 leading-relaxed">
                     Enter your target reps and weight above, then press <strong>START WORKOUT</strong> to begin your session timer.
                   </p>
                 </div>

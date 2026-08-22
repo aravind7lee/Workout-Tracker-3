@@ -124,7 +124,7 @@ export default function Navbar() {
       initial="visible"
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
         isScrolled
           ? "bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800/80 shadow-lg py-2"
           : "bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 py-3"
@@ -196,25 +196,26 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center gap-1.5 sm:gap-2 p-1 pr-1.5 sm:pr-3 lg:pr-4 rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-red-500/40 hover:bg-zinc-800/80 transition-all duration-300 group shadow-lg backdrop-blur-md"
+                  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] hover:bg-[#252525] transition-all duration-300 shadow-lg relative flex-shrink-0 group"
                 >
-                  <div className="relative">
+                  <div className="relative flex items-center justify-center w-[80%] h-[80%] rounded-full">
                     {user?.profileImage ? (
                       <img
                         src={user.profileImage}
                         alt="Profile"
-                        className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full object-cover border-2 border-red-500/50 group-hover:border-red-500 transition-colors"
+                        className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-black text-[9px] sm:text-xs lg:text-sm border-2 border-red-500/30 group-hover:border-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)]">
+                      <div className="w-full h-full rounded-full bg-[#cc1a1a] flex items-center justify-center text-white font-black text-[12px] sm:text-sm">
                         {(user?.name && user.name.charAt(0)?.toUpperCase()) || "U"}
                       </div>
                     )}
                     {connectionStatus.fullyOnline && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full border border-zinc-900 shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
+                      <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#ff3b3b] rounded-full border-[2.5px] border-[#1a1a1a] shadow-[0_0_8px_rgba(255,59,59,0.8)] z-10" />
                     )}
                   </div>
-                  <span className="hidden xl:block text-[11px] lg:text-xs font-black text-white tracking-widest uppercase truncate max-w-[100px]">
+                  {/* Keep text for desktop only but visually hidden on mobile */}
+                  <span className="hidden xl:block text-[11px] lg:text-xs font-black text-white tracking-widest uppercase truncate max-w-[100px] ml-2">
                     {user?.name || "User"}
                   </span>
                 </motion.button>
@@ -289,7 +290,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-1.5 sm:p-2.5 rounded-full bg-zinc-900 border border-zinc-800 shadow-lg text-zinc-400 hover:text-white hover:border-red-500/50 hover:bg-zinc-800 transition-all duration-300 ml-0.5 sm:ml-1 relative z-[60] flex-shrink-0"
+              className="lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg relative z-[60] flex-shrink-0 ml-0.5 sm:ml-1"
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (

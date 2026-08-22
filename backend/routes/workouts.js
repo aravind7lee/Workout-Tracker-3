@@ -89,7 +89,7 @@ router.get('/last', auth, async (req, res) => {
       .sort({ date: -1 });
 
     if (!workout) {
-      return res.status(404).json({ success: false, message: 'No previous workouts found' });
+      return res.status(200).json({ success: true, workout: null, message: 'No previous workouts found' });
     }
 
     res.json({ success: true, workout });

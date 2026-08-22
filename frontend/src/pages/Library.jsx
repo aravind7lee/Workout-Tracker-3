@@ -597,36 +597,45 @@ export default function Library() {
 
       {/* Video Demo Modal with 100% Embed Link Parser */}
       {selectedVideoExercise && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 max-w-2xl w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-xs text-orange-400 font-bold uppercase">{selectedVideoExercise.muscleName}</span>
-                <h3 className="text-xl font-black text-white">{selectedVideoExercise.name} Form Guide</h3>
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 transition-all"
+          onClick={() => setSelectedVideoExercise(null)}
+        >
+          <div 
+            className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 sm:p-6 max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex flex-shrink-0 items-start justify-between gap-3 mb-4">
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] sm:text-xs text-orange-500 font-bold uppercase tracking-wider">{selectedVideoExercise.muscleName}</span>
+                <h3 className="text-base sm:text-2xl font-black text-white leading-tight uppercase truncate">{selectedVideoExercise.name} FORM GUIDE</h3>
               </div>
               <button
                 onClick={() => setSelectedVideoExercise(null)}
-                className="p-2 text-neutral-400 hover:text-white rounded-xl"
+                className="p-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white rounded-xl transition-colors flex-shrink-0 active:scale-90"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="aspect-video bg-black rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl">
+            {/* Video Container - Taller and explicitly interactive */}
+            <div className="relative w-full aspect-[4/3] sm:aspect-video bg-black rounded-2xl overflow-hidden border border-neutral-800 shadow-inner">
               <iframe
                 src={getEmbedUrl(selectedVideoExercise.videoUrl)}
                 title={`${selectedVideoExercise.name} Form Video`}
-                className="w-full h-full border-0"
+                className="absolute inset-0 w-full h-full border-0 pointer-events-auto"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
             </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-neutral-400 font-mono">Official Technique Video</span>
+            {/* Footer */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 flex-shrink-0 mt-2 border-t border-neutral-800/50">
+              <span className="text-[11px] sm:text-sm text-neutral-500 font-medium tracking-wide">Official Technique Video</span>
               <button
                 onClick={() => setSelectedVideoExercise(null)}
-                className="px-5 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold rounded-xl"
+                className="w-full sm:w-auto px-6 py-3.5 sm:py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-all active:scale-95 shadow-md"
               >
                 Close Video Demo
               </button>

@@ -42,9 +42,9 @@ export default function StartWorkout() {
     try {
       // Fetch user's last workout for "Repeat Last Workout"
       try {
-        const lastRes = await api.get('/workouts/last');
-        if (lastRes.data?.success && lastRes.data?.workout) {
-          setLastWorkout(lastRes.data.workout);
+        const lastRes = await api.get('/workouts?limit=1&status=completed');
+        if (lastRes.data?.success && lastRes.data?.workouts?.length > 0) {
+          setLastWorkout(lastRes.data.workouts[0]);
         }
       } catch (err) {
         // No previous workout found - expected for new users

@@ -444,10 +444,10 @@ export default function SearchBar({ isMobile = false, onClose = () => {} }) {
         },
         onClick: () => setIsOpen(true),
         className:
-          "p-2 text-neutral-400 hover:text-white hover:bg-neutral-800/50 rounded-xl transition-all duration-200",
+          "flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-[14px] bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg",
       },
       /*#__PURE__*/ React.createElement(Search, {
-        size: 20,
+        size: 18,
       }),
     ),
     /*#__PURE__*/ React.createElement(
