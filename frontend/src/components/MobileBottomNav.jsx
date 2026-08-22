@@ -12,11 +12,11 @@ export default function MobileBottomNav() {
 
   const links = [
     { to: '/', label: 'Home', icon: Home },
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/start-workout', label: 'Workout', icon: Play, highlight: true },
     { to: '/library', label: 'Library', icon: BookOpen },
     { to: '/splits', label: 'Splits', icon: Layers },
     { to: '/analytics', label: 'Progress', icon: TrendingUp },
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/nutrition', label: 'Nutrition', icon: Utensils }
   ];
 

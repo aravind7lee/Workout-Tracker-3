@@ -126,7 +126,7 @@ export default function Workouts() {
     /*#__PURE__*/ React.createElement(
       motion.div,
       {
-        className: "relative w-full h-screen min-h-screen overflow-hidden",
+        className: "relative w-full h-[520px] sm:h-screen sm:min-h-screen overflow-hidden",
         initial: {
           opacity: 0,
         },
@@ -250,45 +250,13 @@ export default function Workouts() {
                 "div",
                 {
                   className:
-                    "absolute inset-0 flex items-center justify-center px-2 xs:px-3 sm:px-4",
-                },
-                /*#__PURE__*/ React.createElement(
-                  motion.h1,
-                  {
-                    className:
-                      "text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white drop-shadow-2xl text-center leading-tight",
-                    initial: {
-                      opacity: 0,
-                      y: 20,
-                    },
-                    animate: imageLoaded
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {
-                          opacity: 0,
-                          y: 20,
-                        },
-                    transition: {
-                      duration: 0.6,
-                      delay: 0.4,
-                    },
-                  },
-                  "YOUR WORKOUTS",
-                ),
-              ),
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className:
-                    "absolute inset-0 flex items-end justify-center pb-4 xs:pb-6 sm:pb-8 md:pb-12",
+                    "absolute inset-0 flex items-center sm:items-end justify-center pb-4 sm:pb-8 pt-8 sm:pt-0",
                 },
                 /*#__PURE__*/ React.createElement(
                   motion.div,
                   {
                     className:
-                      "text-center text-white px-2 xs:px-3 sm:px-4 max-w-6xl mx-auto w-full",
+                      "text-center text-white px-3 sm:px-4 max-w-4xl mx-auto w-full space-y-2.5 sm:space-y-3",
                     initial: {
                       opacity: 0,
                       y: 20,
@@ -308,10 +276,35 @@ export default function Workouts() {
                     },
                   },
                   /*#__PURE__*/ React.createElement(
+                    motion.h1,
+                    {
+                      className:
+                        "text-2xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-2xl text-center leading-tight tracking-tight",
+                      initial: {
+                        opacity: 0,
+                        y: 20,
+                      },
+                      animate: imageLoaded
+                        ? {
+                            opacity: 1,
+                            y: 0,
+                          }
+                        : {
+                            opacity: 0,
+                            y: 20,
+                          },
+                      transition: {
+                        duration: 0.6,
+                        delay: 0.4,
+                      },
+                    },
+                    "YOUR WORKOUTS",
+                  ),
+                  /*#__PURE__*/ React.createElement(
                     motion.p,
                     {
                       className:
-                        "text-[10px] xs:text-xs sm:text-sm md:text-base text-white/90 max-w-2xl mx-auto mb-2 xs:mb-2.5 sm:mb-3 drop-shadow-lg leading-relaxed",
+                        "text-xs sm:text-sm md:text-base text-white/90 max-w-xl mx-auto drop-shadow-lg leading-snug",
                       initial: {
                         opacity: 0,
                         y: 20,
@@ -336,7 +329,7 @@ export default function Workouts() {
                     motion.div,
                     {
                       className:
-                        "flex flex-col xs:flex-row gap-1.5 xs:gap-2 justify-center items-stretch xs:items-center mb-2 xs:mb-2.5 sm:mb-3 max-w-md mx-auto",
+                        "flex flex-row flex-wrap gap-2 justify-center items-center mb-3 max-w-md mx-auto px-2",
                       initial: {
                         opacity: 0,
                         y: 20,
