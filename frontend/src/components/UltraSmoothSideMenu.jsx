@@ -1,5 +1,5 @@
 // Ultra-Optimized Side Menu for Mobile Performance
-import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp, Target, Award, Clock, Wifi, WifiOff } from 'lucide-react';
+import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp, Target, Award, Clock, Wifi, WifiOff, LayoutDashboard } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,15 +9,14 @@ import { useConnectionStatus } from "../services/connectionService";
 import logo from "../assets/logo.png";
 
 const menuItems = [
-  { to: "/dashboard", label: "Dashboard", icon: Home, color: "#FF0000" },
+  { to: "/", label: "Home", icon: Home, color: "#FF0000" },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, color: "#FF0000" },
   { to: "/library", label: "Library", icon: Dumbbell, color: "#8B0000" },
   { to: "/my-plans", label: "My Plans", icon: Calendar, color: "#00ff88" },
   { to: "/plans", label: "Plan Builder", icon: Target, color: "#ff6b6b" },
   { to: "/splits", label: "Splits", icon: BarChart3, color: "#ff9500" },
   { to: "/nutrition", label: "Nutrition", icon: Apple, color: "#ffa502" },
   { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#FF0000" },
-  { to: "/legends", label: "Champs", icon: Award, color: "#ffd700" },
-  { to: "/profile", label: "Profile", icon: UserCircle, color: "#8B0000" },
 ];
 
 export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {

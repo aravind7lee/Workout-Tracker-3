@@ -3,7 +3,7 @@ export const API_CONFIG = {
   // Local development backend URL
   BASE_URL:
     import.meta.env.VITE_API_URL?.replace("/api", "") ||
-    "http://localhost:5000",
+    (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000" : "https://workout-tracker-backend-wga7.onrender.com"),
 
   // API Endpoints
   ENDPOINTS: {

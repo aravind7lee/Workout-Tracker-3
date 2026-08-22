@@ -14,7 +14,7 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
     formData.append("profileImage", file);
     const token = localStorage.getItem("token");
     const apiBase =
-      import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
+      import.meta.env.VITE_API_BASE || (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000/api" : "https://workout-tracker-backend-wga7.onrender.com/api");
     const response = await fetch(`${apiBase}/users/upload-profile-picture`, {
       method: "POST",
       headers: {
@@ -43,7 +43,7 @@ const ImageUploader = ({ currentImage, onImageUpdate, onImageClick }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
       const apiBase =
-        import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
+        import.meta.env.VITE_API_BASE || (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000/api" : "https://workout-tracker-backend-wga7.onrender.com/api");
       const response = await fetch(`${apiBase}/users/profile-picture`, {
         method: "PUT",
         headers: {

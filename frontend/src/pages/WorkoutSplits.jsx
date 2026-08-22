@@ -373,7 +373,7 @@ const WorkoutSplits = () => {
       // Try to load from backend first
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/favorites/splits`,
+          `${import.meta.env.VITE_API_URL || (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000" : "https://workout-tracker-backend-wga7.onrender.com")}/api/users/favorites/splits`,
           {
             method: "GET",
             headers: {
@@ -435,7 +435,7 @@ const WorkoutSplits = () => {
       // Try to save to backend
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/favorites/splits`,
+          `${import.meta.env.VITE_API_URL || (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000" : "https://workout-tracker-backend-wga7.onrender.com")}/api/users/favorites/splits`,
           {
             method: "POST",
             headers: {

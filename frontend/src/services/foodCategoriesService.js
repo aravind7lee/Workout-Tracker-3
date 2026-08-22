@@ -1,5 +1,5 @@
 // frontend/src/services/foodCategoriesService.js
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.DEV || window?.location?.hostname === 'localhost' ? "http://localhost:5000/api" : "https://workout-tracker-backend-wga7.onrender.com/api");
 
 class FoodCategoriesService {
   async getFoodCategories() {
