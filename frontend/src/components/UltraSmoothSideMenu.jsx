@@ -37,18 +37,12 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
     } else {
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
     }
 
     return () => {
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
     };
   }, [isOpen]);
 
@@ -141,7 +135,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] bg-black/75 backdrop-blur-[6px]"
+            className="fixed inset-0 z-[60] bg-black/80"
             onClick={() => setIsOpen(false)}
           />
 
@@ -152,7 +146,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 240 }}
-            className="fixed top-0 right-0 h-screen w-[280px] sm:w-[320px] max-w-[85vw] z-[70] overflow-y-auto overflow-x-hidden bg-black/95 backdrop-blur-3xl border-l border-neutral-900/90 shadow-2xl flex flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="fixed top-0 right-0 h-screen w-[280px] sm:w-[320px] max-w-[85vw] z-[70] overflow-y-auto overflow-x-hidden bg-[#0a0a0a] border-l border-neutral-900 shadow-2xl flex flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             style={{
               willChange: "transform",
               backfaceVisibility: "hidden",

@@ -379,36 +379,36 @@ const Dashboard = () => {
                     ),
                     planLastSync &&
                       /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className:
-                            "text-neutral-500 bg-neutral-900/50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full border border-neutral-800/50 hidden sm:inline",
-                        },
-                        new Date(planLastSync).toLocaleTimeString(),
-                      ),
+                      "span",
+                      {
+                        className:
+                          "text-neutral-500 bg-neutral-900/50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full border border-neutral-800/50 hidden sm:inline",
+                      },
+                      new Date(planLastSync).toLocaleTimeString(),
+                    ),
                     planSyncStatus !== "idle" &&
                       /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: `px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold border ${planSyncStatus === "syncing" ? "bg-blue-900/30 text-red-500 border-red-600/30" : planSyncStatus === "synced" ? "bg-green-900/30 text-red-500 border-red-600/30" : "bg-red-900/30 text-red-400 border-red-500/30"}`,
-                        },
-                        planSyncStatus === "syncing"
-                          ? "🔄"
-                          : planSyncStatus === "synced"
-                            ? "✅"
-                            : "❌",
+                      "span",
+                      {
+                        className: `px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-bold border ${planSyncStatus === "syncing" ? "bg-blue-900/30 text-red-500 border-red-600/30" : planSyncStatus === "synced" ? "bg-green-900/30 text-red-500 border-red-600/30" : "bg-red-900/30 text-red-400 border-red-500/30"}`,
+                      },
+                      planSyncStatus === "syncing"
+                        ? "🔄"
+                        : planSyncStatus === "synced"
+                          ? "✅"
+                          : "❌",
                         /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline ml-1",
-                          },
-                          planSyncStatus === "syncing"
-                            ? "SYNC"
-                            : planSyncStatus === "synced"
-                              ? "SYNCED"
-                              : "ERROR",
-                        ),
-                      ),
+                            "span",
+                            {
+                              className: "hidden sm:inline ml-1",
+                            },
+                            planSyncStatus === "syncing"
+                              ? "SYNC"
+                              : planSyncStatus === "synced"
+                                ? "SYNCED"
+                                : "ERROR",
+                          ),
+                    ),
                   ),
                 ),
                 /*#__PURE__*/ React.createElement(
@@ -1083,9 +1083,9 @@ const Dashboard = () => {
                     },
                     planSyncStatus === "syncing" &&
                       /*#__PURE__*/ React.createElement("div", {
-                        className:
-                          "animate-spin w-2 h-2 sm:w-3 sm:h-3 border border-orange-500 border-t-transparent rounded-full",
-                      }),
+                      className:
+                        "animate-spin w-2 h-2 sm:w-3 sm:h-3 border border-orange-500 border-t-transparent rounded-full",
+                    }),
                     /*#__PURE__*/ React.createElement(
                       "div",
                       {
@@ -1298,9 +1298,9 @@ const Dashboard = () => {
                       ),
                       planSyncStatus === "syncing" &&
                         /*#__PURE__*/ React.createElement("div", {
-                          className:
-                            "animate-spin w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 border border-green-300 border-t-transparent rounded-full",
-                        }),
+                        className:
+                          "animate-spin w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 border border-green-300 border-t-transparent rounded-full",
+                      }),
                     ),
                     /*#__PURE__*/ React.createElement(
                       "div",
@@ -1477,31 +1477,31 @@ const Dashboard = () => {
                     className: "flex flex-col sm:flex-row gap-2 sm:gap-3",
                   },
                   recentPlans &&
-                    recentPlans.length > 3 &&
+                  recentPlans.length > 3 &&
                     /*#__PURE__*/ React.createElement(
-                      "button",
+                    "button",
+                    {
+                      onClick: () => setShowAllPlans(!showAllPlans),
+                      className:
+                        "bg-orange-500/20 border border-orange-500/30 text-orange-400 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-orange-500/30 transition-all duration-300",
+                    },
+                      /*#__PURE__*/ React.createElement(
+                      "span",
                       {
-                        onClick: () => setShowAllPlans(!showAllPlans),
-                        className:
-                          "bg-orange-500/20 border border-orange-500/30 text-orange-400 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-orange-500/30 transition-all duration-300",
+                        className: "hidden sm:inline",
                       },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "hidden sm:inline",
-                        },
-                        showAllPlans
-                          ? "Show Less"
-                          : `Show More (${recentPlans.length})`,
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "sm:hidden",
-                        },
-                        showAllPlans ? "Less" : `More (${recentPlans.length})`,
-                      ),
+                      showAllPlans
+                        ? "Show Less"
+                        : `Show More (${recentPlans.length})`,
                     ),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "sm:hidden",
+                      },
+                      showAllPlans ? "Less" : `More (${recentPlans.length})`,
+                    ),
+                  ),
                   /*#__PURE__*/ React.createElement(
                     "button",
                     {
@@ -1532,361 +1532,361 @@ const Dashboard = () => {
               ),
               !recentPlans || recentPlans.length === 0
                 ? /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "text-center py-8 sm:py-12",
+                  },
+                    /*#__PURE__*/ React.createElement(
                     "div",
                     {
-                      className: "text-center py-8 sm:py-12",
+                      className:
+                        "w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-neutral-800 to-neutral-700 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6",
                     },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-neutral-800 to-neutral-700 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6",
-                      },
                       /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-3xl sm:text-4xl",
-                        },
+                      "span",
+                      {
+                        className: "text-3xl sm:text-4xl",
+                      },
                         /*#__PURE__*/ React.createElement(ClipboardList, {
-                          className: "w-[1em] h-[1em] inline-block",
-                        }),
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "h3",
-                      {
-                        className:
-                          "text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide",
-                      },
-                      dashboardStats.loading
-                        ? "LOADING ARSENAL..."
-                        : "BUILD YOUR ARSENAL",
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "p",
-                      {
-                        className:
-                          "text-neutral-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4",
-                      },
-                      dashboardStats.loading
-                        ? "Syncing your workout plans..."
-                        : "No workout plans yet. Time to create your first masterpiece!",
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "flex items-center justify-center gap-2 text-xs text-neutral-500 mb-4 sm:mb-6",
-                      },
-                      /*#__PURE__*/ React.createElement("span", {
-                        className: `w-2 h-2 rounded-full ${plansOnline ? "bg-red-500 animate-pulse" : "bg-red-400"}`,
-                      }),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "hidden sm:inline",
-                        },
-                        plansOnline ? "REAL-TIME MONGODB DATA" : "OFFLINE MODE",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "sm:hidden",
-                        },
-                        plansOnline ? "LIVE" : "OFFLINE",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "button",
-                      {
-                        onClick: () => navigate("/plans"),
-                        className:
-                          "bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-2 sm:px-8 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-600/25 text-sm sm:text-base",
-                      },
-                      /*#__PURE__*/ React.createElement(Rocket, {
                         className: "w-[1em] h-[1em] inline-block",
                       }),
-                      " ",
+                    ),
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "h3",
+                    {
+                      className:
+                        "text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide",
+                    },
+                    dashboardStats.loading
+                      ? "LOADING ARSENAL..."
+                      : "BUILD YOUR ARSENAL",
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "p",
+                    {
+                      className:
+                        "text-neutral-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4",
+                    },
+                    dashboardStats.loading
+                      ? "Syncing your workout plans..."
+                      : "No workout plans yet. Time to create your first masterpiece!",
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "flex items-center justify-center gap-2 text-xs text-neutral-500 mb-4 sm:mb-6",
+                    },
+                      /*#__PURE__*/ React.createElement("span", {
+                      className: `w-2 h-2 rounded-full ${plansOnline ? "bg-red-500 animate-pulse" : "bg-red-400"}`,
+                    }),
                       /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "hidden sm:inline",
+                      },
+                      plansOnline ? "REAL-TIME MONGODB DATA" : "OFFLINE MODE",
+                    ),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "sm:hidden",
+                      },
+                      plansOnline ? "LIVE" : "OFFLINE",
+                    ),
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "button",
+                    {
+                      onClick: () => navigate("/plans"),
+                      className:
+                        "bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-2 sm:px-8 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-600/25 text-sm sm:text-base",
+                    },
+                      /*#__PURE__*/ React.createElement(Rocket, {
+                      className: "w-[1em] h-[1em] inline-block",
+                    }),
+                    " ",
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "hidden sm:inline",
+                      },
+                      "CREATE FIRST PLAN",
+                    ),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "sm:hidden",
+                      },
+                      "CREATE PLAN",
+                    ),
+                  ),
+                )
+                : /*#__PURE__*/ React.createElement(
+                  "div",
+                  null,
+                    /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6",
+                    },
+                      /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className:
+                          "flex items-center gap-2 text-xs text-red-500 bg-red-600/20 px-3 py-2 rounded-full",
+                      },
+                        /*#__PURE__*/ React.createElement("span", {
+                        className:
+                          "w-2 h-2 bg-red-500 rounded-full animate-pulse",
+                      }),
+                        /*#__PURE__*/ React.createElement(
                         "span",
                         {
                           className: "hidden sm:inline",
                         },
-                        "CREATE FIRST PLAN",
+                        plansOnline
+                          ? "REAL-TIME MONGODB PLANS"
+                          : "LOCAL PLANS",
                       ),
-                      /*#__PURE__*/ React.createElement(
+                        /*#__PURE__*/ React.createElement(
                         "span",
                         {
                           className: "sm:hidden",
                         },
-                        "CREATE PLAN",
+                        plansOnline ? "LIVE PLANS" : "LOCAL",
                       ),
                     ),
-                  )
-                : /*#__PURE__*/ React.createElement(
-                    "div",
-                    null,
-                    /*#__PURE__*/ React.createElement(
+                      /*#__PURE__*/ React.createElement(
                       "div",
                       {
                         className:
-                          "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6",
+                          "text-xs text-neutral-400 bg-neutral-800/50 px-3 py-2 rounded-full",
                       },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
+                      dashboardStats.totalPlans,
+                      " TOTAL \u2022 ",
+                      planStats.syncedPlans,
+                      " ",
+                        /*#__PURE__*/ React.createElement(
+                        "span",
                         {
-                          className:
-                            "flex items-center gap-2 text-xs text-red-500 bg-red-600/20 px-3 py-2 rounded-full",
+                          className: "hidden sm:inline",
                         },
-                        /*#__PURE__*/ React.createElement("span", {
-                          className:
-                            "w-2 h-2 bg-red-500 rounded-full animate-pulse",
-                        }),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          plansOnline
-                            ? "REAL-TIME MONGODB PLANS"
-                            : "LOCAL PLANS",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "sm:hidden",
-                          },
-                          plansOnline ? "LIVE PLANS" : "LOCAL",
-                        ),
+                        "SYNCED",
                       ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
+                        /*#__PURE__*/ React.createElement(
+                        "span",
                         {
-                          className:
-                            "text-xs text-neutral-400 bg-neutral-800/50 px-3 py-2 rounded-full",
+                          className: "sm:hidden",
                         },
-                        dashboardStats.totalPlans,
-                        " TOTAL \u2022 ",
-                        planStats.syncedPlans,
-                        " ",
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          "SYNCED",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "sm:hidden",
-                          },
-                          "SYNC",
-                        ),
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6",
-                      },
-                      (showAllPlans
-                        ? recentPlans
-                        : recentPlans.slice(0, 3)
-                      ).map((plan, index) =>
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            key: plan.id || index,
-                            className:
-                              "group relative bg-gradient-to-br from-neutral-900/80 to-neutral-800/80 border border-neutral-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:border-red-600/30 overflow-hidden",
-                          },
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className: "absolute top-3 right-3",
-                            },
-                            plan.synced
-                              ? /*#__PURE__*/ React.createElement("div", {
-                                  className:
-                                    "w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full shadow-lg",
-                                  title: "Synced to MongoDB",
-                                })
-                              : /*#__PURE__*/ React.createElement("div", {
-                                  className:
-                                    "w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg",
-                                  title: "Pending sync",
-                                }),
-                          ),
-                          /*#__PURE__*/ React.createElement("div", {
-                            className:
-                              "absolute inset-0 bg-gradient-to-br from-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                          }),
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className: "relative z-10",
-                            },
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className: "mb-3 sm:mb-4 pr-4 sm:pr-6",
-                              },
-                              /*#__PURE__*/ React.createElement(
-                                "h3",
-                                {
-                                  className:
-                                    "font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate",
-                                },
-                                plan.name || "UNNAMED PLAN",
-                              ),
-                            ),
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className:
-                                  "flex flex-wrap items-center gap-2 mb-3 sm:mb-4",
-                              },
-                              /*#__PURE__*/ React.createElement(
-                                "span",
-                                {
-                                  className:
-                                    "text-xs text-neutral-400 bg-neutral-700/50 px-2 py-1 sm:px-3 sm:py-1 rounded-full uppercase tracking-wide",
-                                },
-                                plan.category || "GENERAL",
-                              ),
-                              /*#__PURE__*/ React.createElement(
-                                "span",
-                                {
-                                  className:
-                                    "text-xs text-red-500 font-semibold",
-                                },
-                                plan.exercises?.length || 0,
-                                " ",
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "hidden sm:inline",
-                                  },
-                                  "EXERCISES",
-                                ),
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "sm:hidden",
-                                  },
-                                  "EX",
-                                ),
-                              ),
-                              plan.isTemp &&
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className:
-                                      "text-xs text-yellow-400 font-semibold",
-                                  },
-                                  "\u2022 ",
-                                  /*#__PURE__*/ React.createElement(
-                                    "span",
-                                    {
-                                      className: "hidden sm:inline",
-                                    },
-                                    "CREATING...",
-                                  ),
-                                  /*#__PURE__*/ React.createElement(
-                                    "span",
-                                    {
-                                      className: "sm:hidden",
-                                    },
-                                    "NEW",
-                                  ),
-                                ),
-                            ),
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className:
-                                  "flex flex-col sm:flex-row gap-2 sm:gap-3",
-                              },
-                              /*#__PURE__*/ React.createElement(
-                                "button",
-                                {
-                                  onClick: () => {
-                                    const workoutId =
-                                      plan.id ||
-                                      plan.tempId ||
-                                      `temp_${Date.now()}`;
-                                    console.log(
-                                      "🚀 Starting workout for plan:",
-                                      plan.name,
-                                      "ID:",
-                                      workoutId,
-                                    );
-                                    navigate(`/workout/${workoutId}`);
-                                  },
-                                  className:
-                                    "bg-gradient-to-r from-red-600 to-red-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide flex-1 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-600/25",
-                                  title: `Start workout: ${plan.name}`,
-                                },
-                                /*#__PURE__*/ React.createElement(Dumbbell, {
-                                  className: "w-[1em] h-[1em] inline-block",
-                                }),
-                                " ",
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "hidden sm:inline",
-                                  },
-                                  "START",
-                                ),
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "sm:hidden",
-                                  },
-                                  "GO",
-                                ),
-                              ),
-                              /*#__PURE__*/ React.createElement(
-                                "button",
-                                {
-                                  onClick: () => navigate("/my-plans"),
-                                  className:
-                                    "bg-neutral-700/50 border border-neutral-500/30 text-neutral-300 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold uppercase tracking-wide flex-1 hover:bg-neutral-500/50 transition-all duration-300",
-                                },
-                                /*#__PURE__*/ React.createElement(
-                                  ClipboardList,
-                                  {
-                                    className: "w-[1em] h-[1em] inline-block",
-                                  },
-                                ),
-                                " ",
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "hidden sm:inline",
-                                  },
-                                  "VIEW",
-                                ),
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "sm:hidden",
-                                  },
-                                  "SEE",
-                                ),
-                              ),
-                            ),
-                          ),
-                          /*#__PURE__*/ React.createElement("div", {
-                            className:
-                              "absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300",
-                          }),
-                        ),
+                        "SYNC",
                       ),
                     ),
                   ),
+                    /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6",
+                    },
+                    (showAllPlans
+                      ? recentPlans
+                      : recentPlans.slice(0, 3)
+                    ).map((plan, index) =>
+                        /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        key: plan.id || index,
+                        className:
+                          "group relative bg-gradient-to-br from-neutral-900/80 to-neutral-800/80 border border-neutral-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl hover:border-red-600/30 overflow-hidden",
+                      },
+                          /*#__PURE__*/ React.createElement(
+                        "div",
+                        {
+                          className: "absolute top-3 right-3",
+                        },
+                        plan.synced
+                          ? /*#__PURE__*/ React.createElement("div", {
+                            className:
+                              "w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full shadow-lg",
+                            title: "Synced to MongoDB",
+                          })
+                          : /*#__PURE__*/ React.createElement("div", {
+                            className:
+                              "w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg",
+                            title: "Pending sync",
+                          }),
+                      ),
+                          /*#__PURE__*/ React.createElement("div", {
+                        className:
+                          "absolute inset-0 bg-gradient-to-br from-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                      }),
+                          /*#__PURE__*/ React.createElement(
+                        "div",
+                        {
+                          className: "relative z-10",
+                        },
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className: "mb-3 sm:mb-4 pr-4 sm:pr-6",
+                          },
+                              /*#__PURE__*/ React.createElement(
+                            "h3",
+                            {
+                              className:
+                                "font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate",
+                            },
+                            plan.name || "UNNAMED PLAN",
+                          ),
+                        ),
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className:
+                              "flex flex-wrap items-center gap-2 mb-3 sm:mb-4",
+                          },
+                              /*#__PURE__*/ React.createElement(
+                            "span",
+                            {
+                              className:
+                                "text-xs text-neutral-400 bg-neutral-700/50 px-2 py-1 sm:px-3 sm:py-1 rounded-full uppercase tracking-wide",
+                            },
+                            plan.category || "GENERAL",
+                          ),
+                              /*#__PURE__*/ React.createElement(
+                            "span",
+                            {
+                              className:
+                                "text-xs text-red-500 font-semibold",
+                            },
+                            plan.exercises?.length || 0,
+                            " ",
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "hidden sm:inline",
+                              },
+                              "EXERCISES",
+                            ),
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "sm:hidden",
+                              },
+                              "EX",
+                            ),
+                          ),
+                          plan.isTemp &&
+                                /*#__PURE__*/ React.createElement(
+                            "span",
+                            {
+                              className:
+                                "text-xs text-yellow-400 font-semibold",
+                            },
+                            "\u2022 ",
+                                  /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "hidden sm:inline",
+                              },
+                              "CREATING...",
+                            ),
+                                  /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "sm:hidden",
+                              },
+                              "NEW",
+                            ),
+                          ),
+                        ),
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className:
+                              "flex flex-col sm:flex-row gap-2 sm:gap-3",
+                          },
+                              /*#__PURE__*/ React.createElement(
+                            "button",
+                            {
+                              onClick: () => {
+                                const workoutId =
+                                  plan.id ||
+                                  plan.tempId ||
+                                  `temp_${Date.now()}`;
+                                console.log(
+                                  "🚀 Starting workout for plan:",
+                                  plan.name,
+                                  "ID:",
+                                  workoutId,
+                                );
+                                navigate(`/workout/${workoutId}`);
+                              },
+                              className:
+                                "bg-gradient-to-r from-red-600 to-red-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide flex-1 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-600/25",
+                              title: `Start workout: ${plan.name}`,
+                            },
+                                /*#__PURE__*/ React.createElement(Dumbbell, {
+                              className: "w-[1em] h-[1em] inline-block",
+                            }),
+                            " ",
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "hidden sm:inline",
+                              },
+                              "START",
+                            ),
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "sm:hidden",
+                              },
+                              "GO",
+                            ),
+                          ),
+                              /*#__PURE__*/ React.createElement(
+                            "button",
+                            {
+                              onClick: () => navigate("/my-plans"),
+                              className:
+                                "bg-neutral-700/50 border border-neutral-500/30 text-neutral-300 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold uppercase tracking-wide flex-1 hover:bg-neutral-500/50 transition-all duration-300",
+                            },
+                                /*#__PURE__*/ React.createElement(
+                              ClipboardList,
+                              {
+                                className: "w-[1em] h-[1em] inline-block",
+                              },
+                            ),
+                            " ",
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "hidden sm:inline",
+                              },
+                              "VIEW",
+                            ),
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "sm:hidden",
+                              },
+                              "SEE",
+                            ),
+                          ),
+                        ),
+                      ),
+                          /*#__PURE__*/ React.createElement("div", {
+                        className:
+                          "absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300",
+                      }),
+                    ),
+                    ),
+                  ),
+                ),
             ),
           ),
           /*#__PURE__*/ React.createElement(
@@ -1936,31 +1936,31 @@ const Dashboard = () => {
                   },
                   recentWorkouts.length > 5 &&
                     /*#__PURE__*/ React.createElement(
-                      "button",
+                    "button",
+                    {
+                      onClick: () => setShowAllWorkouts(!showAllWorkouts),
+                      className:
+                        "bg-red-600/20 border border-red-600/30 text-red-500 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-red-600/30 transition-all duration-300",
+                    },
+                      /*#__PURE__*/ React.createElement(
+                      "span",
                       {
-                        onClick: () => setShowAllWorkouts(!showAllWorkouts),
-                        className:
-                          "bg-red-600/20 border border-red-600/30 text-red-500 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-red-600/30 transition-all duration-300",
+                        className: "hidden sm:inline",
                       },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "hidden sm:inline",
-                        },
-                        showAllWorkouts
-                          ? "Show Less"
-                          : `Show More (${recentWorkouts.length})`,
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "sm:hidden",
-                        },
-                        showAllWorkouts
-                          ? "Less"
-                          : `More (${recentWorkouts.length})`,
-                      ),
+                      showAllWorkouts
+                        ? "Show Less"
+                        : `Show More (${recentWorkouts.length})`,
                     ),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "sm:hidden",
+                      },
+                      showAllWorkouts
+                        ? "Less"
+                        : `More (${recentWorkouts.length})`,
+                    ),
+                  ),
                   /*#__PURE__*/ React.createElement(
                     "button",
                     {
@@ -1991,354 +1991,354 @@ const Dashboard = () => {
               ),
               !recentWorkouts || recentWorkouts.length === 0
                 ? /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "text-center py-8 sm:py-12",
+                  },
+                    /*#__PURE__*/ React.createElement(
                     "div",
                     {
-                      className: "text-center py-8 sm:py-12",
+                      className:
+                        "w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6",
                     },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6",
-                      },
                       /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-3xl sm:text-4xl",
-                        },
-                        /*#__PURE__*/ React.createElement(Dumbbell, {
-                          className: "w-[1em] h-[1em] inline-block",
-                        }),
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "h3",
+                      "span",
                       {
-                        className:
-                          "text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide",
+                        className: "text-3xl sm:text-4xl",
                       },
-                      "TIME TO DOMINATE",
+                        /*#__PURE__*/ React.createElement(Dumbbell, {
+                        className: "w-[1em] h-[1em] inline-block",
+                      }),
                     ),
+                  ),
                     /*#__PURE__*/ React.createElement(
-                      "p",
+                    "h3",
+                    {
+                      className:
+                        "text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 uppercase tracking-wide",
+                    },
+                    "TIME TO DOMINATE",
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "p",
+                    {
+                      className:
+                        "text-neutral-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4",
+                    },
+                    isOnline
+                      ? `No completed workouts found for ${authUser?.name || "your account"}. Ready to make history?`
+                      : "No completed workouts found in local storage. Time to get started!",
+                  ),
+                    /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "flex items-center justify-center gap-2 text-xs text-neutral-500 mb-4 sm:mb-6",
+                    },
+                      /*#__PURE__*/ React.createElement("span", {
+                      className: `w-2 h-2 rounded-full ${isOnline ? "bg-red-500 animate-pulse" : "bg-red-400"}`,
+                    }),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
                       {
-                        className:
-                          "text-neutral-400 mb-4 sm:mb-6 text-sm sm:text-base max-w-md mx-auto px-4",
+                        className: "hidden sm:inline",
                       },
                       isOnline
-                        ? `No completed workouts found for ${authUser?.name || "your account"}. Ready to make history?`
-                        : "No completed workouts found in local storage. Time to get started!",
+                        ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || "USER"}`
+                        : "OFFLINE DATA FROM DEVICE",
                     ),
+                      /*#__PURE__*/ React.createElement(
+                      "span",
+                      {
+                        className: "sm:hidden",
+                      },
+                      isOnline ? "LIVE DATA" : "OFFLINE",
+                    ),
+                  ),
                     /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4",
+                    },
+                      /*#__PURE__*/ React.createElement(
+                      "button",
+                      {
+                        onClick: () => navigate("/my-plans"),
+                        className:
+                          "bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25 text-sm sm:text-base",
+                      },
+                        /*#__PURE__*/ React.createElement(ClipboardList, {
+                        className: "w-[1em] h-[1em] inline-block",
+                      }),
+                      " ",
+                        /*#__PURE__*/ React.createElement(
+                        "span",
+                        {
+                          className: "hidden sm:inline",
+                        },
+                        "VIEW PLANS",
+                      ),
+                        /*#__PURE__*/ React.createElement(
+                        "span",
+                        {
+                          className: "sm:hidden",
+                        },
+                        "PLANS",
+                      ),
+                    ),
+                      /*#__PURE__*/ React.createElement(
+                      "button",
+                      {
+                        onClick: () => navigate("/library"),
+                        className:
+                          "bg-neutral-800/50 border border-neutral-700 text-neutral-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold uppercase tracking-wide hover:bg-neutral-700/50 transition-all duration-300 text-sm sm:text-base",
+                      },
+                        /*#__PURE__*/ React.createElement(Book, {
+                        className: "w-[1em] h-[1em] inline-block",
+                      }),
+                      " ",
+                        /*#__PURE__*/ React.createElement(
+                        "span",
+                        {
+                          className: "hidden sm:inline",
+                        },
+                        "BROWSE EXERCISES",
+                      ),
+                        /*#__PURE__*/ React.createElement(
+                        "span",
+                        {
+                          className: "sm:hidden",
+                        },
+                        "LIBRARY",
+                      ),
+                    ),
+                  ),
+                )
+                : /*#__PURE__*/ React.createElement(
+                  "div",
+                  {
+                    className: "space-y-3 sm:space-y-4",
+                  },
+                    /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      className:
+                        "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6",
+                    },
+                      /*#__PURE__*/ React.createElement(
                       "div",
                       {
                         className:
-                          "flex items-center justify-center gap-2 text-xs text-neutral-500 mb-4 sm:mb-6",
+                          "flex items-center gap-2 text-xs text-red-500 bg-red-600/20 px-3 py-2 rounded-full",
                       },
-                      /*#__PURE__*/ React.createElement("span", {
-                        className: `w-2 h-2 rounded-full ${isOnline ? "bg-red-500 animate-pulse" : "bg-red-400"}`,
+                        /*#__PURE__*/ React.createElement("span", {
+                        className:
+                          "w-2 h-2 bg-red-500 rounded-full animate-pulse",
                       }),
-                      /*#__PURE__*/ React.createElement(
+                        /*#__PURE__*/ React.createElement(
                         "span",
                         {
                           className: "hidden sm:inline",
                         },
                         isOnline
-                          ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || "USER"}`
-                          : "OFFLINE DATA FROM DEVICE",
+                          ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || "YOU"}`
+                          : "YOUR LOCAL WORKOUTS",
                       ),
-                      /*#__PURE__*/ React.createElement(
+                        /*#__PURE__*/ React.createElement(
                         "span",
                         {
                           className: "sm:hidden",
                         },
-                        isOnline ? "LIVE DATA" : "OFFLINE",
+                        isOnline ? "LIVE DATA" : "LOCAL",
                       ),
                     ),
-                    /*#__PURE__*/ React.createElement(
+                      /*#__PURE__*/ React.createElement(
                       "div",
                       {
                         className:
-                          "flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4",
+                          "text-xs text-neutral-400 bg-neutral-800/50 px-3 py-2 rounded-full",
                       },
-                      /*#__PURE__*/ React.createElement(
-                        "button",
+                      recentWorkouts.length,
+                      " WORKOUT",
+                      recentWorkouts.length !== 1 ? "S" : "",
+                      " ",
+                        /*#__PURE__*/ React.createElement(
+                        "span",
                         {
-                          onClick: () => navigate("/my-plans"),
-                          className:
-                            "bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25 text-sm sm:text-base",
+                          className: "hidden sm:inline",
                         },
-                        /*#__PURE__*/ React.createElement(ClipboardList, {
-                          className: "w-[1em] h-[1em] inline-block",
-                        }),
-                        " ",
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          "VIEW PLANS",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "sm:hidden",
-                          },
-                          "PLANS",
-                        ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "button",
-                        {
-                          onClick: () => navigate("/library"),
-                          className:
-                            "bg-neutral-800/50 border border-neutral-700 text-neutral-300 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold uppercase tracking-wide hover:bg-neutral-700/50 transition-all duration-300 text-sm sm:text-base",
-                        },
-                        /*#__PURE__*/ React.createElement(Book, {
-                          className: "w-[1em] h-[1em] inline-block",
-                        }),
-                        " ",
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          "BROWSE EXERCISES",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "sm:hidden",
-                          },
-                          "LIBRARY",
-                        ),
-                      ),
-                    ),
-                  )
-                : /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "space-y-3 sm:space-y-4",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "flex items-center gap-2 text-xs text-red-500 bg-red-600/20 px-3 py-2 rounded-full",
-                        },
-                        /*#__PURE__*/ React.createElement("span", {
-                          className:
-                            "w-2 h-2 bg-red-500 rounded-full animate-pulse",
-                        }),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          isOnline
-                            ? `REAL-TIME DATA FOR ${authUser?.name?.toUpperCase() || "YOU"}`
-                            : "YOUR LOCAL WORKOUTS",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "sm:hidden",
-                          },
-                          isOnline ? "LIVE DATA" : "LOCAL",
-                        ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-xs text-neutral-400 bg-neutral-800/50 px-3 py-2 rounded-full",
-                        },
-                        recentWorkouts.length,
-                        " WORKOUT",
-                        recentWorkouts.length !== 1 ? "S" : "",
-                        " ",
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "hidden sm:inline",
-                          },
-                          "COMPLETED",
-                        ),
-                      ),
-                    ),
-                    (showAllWorkouts
-                      ? recentWorkouts
-                      : recentWorkouts.slice(0, 5)
-                    ).map((workout, index) =>
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          key: workout.id || index,
-                          className:
-                            "group relative bg-gradient-to-r from-neutral-900/80 to-neutral-800/80 border border-neutral-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-red-600/30 overflow-hidden",
-                        },
-                        /*#__PURE__*/ React.createElement("div", {
-                          className:
-                            "absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-600 to-red-600 rounded-l-xl sm:rounded-l-2xl",
-                        }),
-                        /*#__PURE__*/ React.createElement("div", {
-                          className:
-                            "absolute inset-0 bg-gradient-to-br from-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                        }),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className: "relative z-10",
-                          },
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className: "flex items-start gap-3 mb-3",
-                            },
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className:
-                                  "w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-red-600 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0",
-                              },
-                              /*#__PURE__*/ React.createElement(
-                                "span",
-                                {
-                                  className: "text-sm sm:text-lg",
-                                },
-                                "\u2713",
-                              ),
-                            ),
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className: "flex-1 min-w-0",
-                              },
-                              /*#__PURE__*/ React.createElement(
-                                "h3",
-                                {
-                                  className:
-                                    "font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate",
-                                },
-                                workout.exercise ||
-                                  workout.planName ||
-                                  workout.exerciseName ||
-                                  "WORKOUT SESSION",
-                              ),
-                              /*#__PURE__*/ React.createElement(
-                                "div",
-                                {
-                                  className:
-                                    "flex flex-wrap items-center gap-2 text-xs text-neutral-400 mt-1",
-                                },
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className:
-                                      "bg-neutral-700/50 px-2 py-1 rounded-full",
-                                  },
-                                  workout.exercises?.length || 1,
-                                  " EX",
-                                  (workout.exercises?.length || 1) !== 1
-                                    ? "S"
-                                    : "",
-                                ),
-                                /*#__PURE__*/ React.createElement(
-                                  "span",
-                                  {
-                                    className: "text-red-500 font-semibold",
-                                  },
-                                  "\u2713 DONE",
-                                ),
-                                workout.synced &&
-                                  /*#__PURE__*/ React.createElement(
-                                    "span",
-                                    {
-                                      className:
-                                        "text-red-500 font-semibold hidden sm:inline",
-                                    },
-                                    /*#__PURE__*/ React.createElement(Cloud, {
-                                      className: "w-[1em] h-[1em] inline-block",
-                                    }),
-                                    " SYNCED",
-                                  ),
-                              ),
-                            ),
-                          ),
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className: "flex items-center justify-between",
-                            },
-                            /*#__PURE__*/ React.createElement(
-                              "div",
-                              {
-                                className:
-                                  "text-xs text-neutral-400 font-semibold uppercase tracking-wide",
-                              },
-                              workout.completedAt
-                                ? new Date(
-                                    workout.completedAt,
-                                  ).toLocaleDateString() ===
-                                  new Date().toLocaleDateString()
-                                  ? "TODAY"
-                                  : new Date(workout.completedAt)
-                                      .toLocaleDateString()
-                                      .toUpperCase()
-                                : "TODAY",
-                            ),
-                            /*#__PURE__*/ React.createElement(
-                              "button",
-                              {
-                                onClick: () => {
-                                  const workoutId =
-                                    workout.planId || workout.id;
-                                  if (workoutId) {
-                                    console.log(
-                                      "🔄 Repeating workout:",
-                                      workout.exercise || workout.planName,
-                                      "ID:",
-                                      workoutId,
-                                    );
-                                    navigate(`/workout/${workoutId}`);
-                                  } else {
-                                    console.warn(
-                                      "⚠️ Workout ID missing, redirecting to plans",
-                                    );
-                                    navigate("/my-plans");
-                                  }
-                                },
-                                className:
-                                  "bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/25",
-                                title: `Repeat workout: ${workout.exercise || workout.planName || "Workout Session"}`,
-                              },
-                              /*#__PURE__*/ React.createElement(RefreshCw, {
-                                className: "w-[1em] h-[1em] inline-block",
-                              }),
-                              " ",
-                              /*#__PURE__*/ React.createElement(
-                                "span",
-                                {
-                                  className: "hidden sm:inline",
-                                },
-                                "REPEAT",
-                              ),
-                            ),
-                          ),
-                        ),
-                        /*#__PURE__*/ React.createElement("div", {
-                          className:
-                            "absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300",
-                        }),
+                        "COMPLETED",
                       ),
                     ),
                   ),
+                  (showAllWorkouts
+                    ? recentWorkouts
+                    : recentWorkouts.slice(0, 5)
+                  ).map((workout, index) =>
+                      /*#__PURE__*/ React.createElement(
+                    "div",
+                    {
+                      key: workout.id || index,
+                      className:
+                        "group relative bg-gradient-to-r from-neutral-900/80 to-neutral-800/80 border border-neutral-700/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl hover:border-red-600/30 overflow-hidden",
+                    },
+                        /*#__PURE__*/ React.createElement("div", {
+                      className:
+                        "absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-600 to-red-600 rounded-l-xl sm:rounded-l-2xl",
+                    }),
+                        /*#__PURE__*/ React.createElement("div", {
+                      className:
+                        "absolute inset-0 bg-gradient-to-br from-red-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                    }),
+                        /*#__PURE__*/ React.createElement(
+                      "div",
+                      {
+                        className: "relative z-10",
+                      },
+                          /*#__PURE__*/ React.createElement(
+                        "div",
+                        {
+                          className: "flex items-start gap-3 mb-3",
+                        },
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className:
+                              "w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-red-600 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0",
+                          },
+                              /*#__PURE__*/ React.createElement(
+                            "span",
+                            {
+                              className: "text-sm sm:text-lg",
+                            },
+                            "\u2713",
+                          ),
+                        ),
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className: "flex-1 min-w-0",
+                          },
+                              /*#__PURE__*/ React.createElement(
+                            "h3",
+                            {
+                              className:
+                                "font-bold text-white text-sm sm:text-base md:text-lg uppercase tracking-wide truncate",
+                            },
+                            workout.exercise ||
+                            workout.planName ||
+                            workout.exerciseName ||
+                            "WORKOUT SESSION",
+                          ),
+                              /*#__PURE__*/ React.createElement(
+                            "div",
+                            {
+                              className:
+                                "flex flex-wrap items-center gap-2 text-xs text-neutral-400 mt-1",
+                            },
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className:
+                                  "bg-neutral-700/50 px-2 py-1 rounded-full",
+                              },
+                              workout.exercises?.length || 1,
+                              " EX",
+                              (workout.exercises?.length || 1) !== 1
+                                ? "S"
+                                : "",
+                            ),
+                                /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className: "text-red-500 font-semibold",
+                              },
+                              "\u2713 DONE",
+                            ),
+                            workout.synced &&
+                                  /*#__PURE__*/ React.createElement(
+                              "span",
+                              {
+                                className:
+                                  "text-red-500 font-semibold hidden sm:inline",
+                              },
+                                    /*#__PURE__*/ React.createElement(Cloud, {
+                                className: "w-[1em] h-[1em] inline-block",
+                              }),
+                              " SYNCED",
+                            ),
+                          ),
+                        ),
+                      ),
+                          /*#__PURE__*/ React.createElement(
+                        "div",
+                        {
+                          className: "flex items-center justify-between",
+                        },
+                            /*#__PURE__*/ React.createElement(
+                          "div",
+                          {
+                            className:
+                              "text-xs text-neutral-400 font-semibold uppercase tracking-wide",
+                          },
+                          workout.completedAt
+                            ? new Date(
+                              workout.completedAt,
+                            ).toLocaleDateString() ===
+                              new Date().toLocaleDateString()
+                              ? "TODAY"
+                              : new Date(workout.completedAt)
+                                .toLocaleDateString()
+                                .toUpperCase()
+                            : "TODAY",
+                        ),
+                            /*#__PURE__*/ React.createElement(
+                          "button",
+                          {
+                            onClick: () => {
+                              const workoutId =
+                                workout.planId || workout.id;
+                              if (workoutId) {
+                                console.log(
+                                  "🔄 Repeating workout:",
+                                  workout.exercise || workout.planName,
+                                  "ID:",
+                                  workoutId,
+                                );
+                                navigate(`/workout/${workoutId}`);
+                              } else {
+                                console.warn(
+                                  "⚠️ Workout ID missing, redirecting to plans",
+                                );
+                                navigate("/my-plans");
+                              }
+                            },
+                            className:
+                              "bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-orange-500/25",
+                            title: `Repeat workout: ${workout.exercise || workout.planName || "Workout Session"}`,
+                          },
+                              /*#__PURE__*/ React.createElement(RefreshCw, {
+                            className: "w-[1em] h-[1em] inline-block",
+                          }),
+                          " ",
+                              /*#__PURE__*/ React.createElement(
+                            "span",
+                            {
+                              className: "hidden sm:inline",
+                            },
+                            "REPEAT",
+                          ),
+                        ),
+                      ),
+                    ),
+                        /*#__PURE__*/ React.createElement("div", {
+                      className:
+                        "absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300",
+                    }),
+                  ),
+                  ),
+                ),
             ),
           ),
         ),
