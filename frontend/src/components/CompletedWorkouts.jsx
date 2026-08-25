@@ -6,6 +6,7 @@ import { useRealTime } from "../context/RealTimeContext";
 import { workoutSync } from "../services/workoutSync";
 import { realTimeWorkoutSync } from "../services/realTimeWorkoutSync";
 import api from "../utils/api";
+import { getMuscleGroup, getPrimaryMuscleGroup, getExerciseDisplayName } from "../utils/muscleGroupHelper";
 
 
 
@@ -84,17 +85,26 @@ export default function CompletedWorkouts() {
         const dbWorkouts = Array.isArray(res.data) ? res.data : (res.data?.workouts || []);
         
         if (dbWorkouts && dbWorkouts.length > 0) {
-          const normalized = dbWorkouts.map(w => ({
-            ...w,
-            id: w._id || w.id,
-            exercise: w.title || w.name || 'Workout Session',
-            name: w.title || w.name || 'Workout Session',
-            completedAt: w.completedAt || w.date || w.createdAt,
-            duration: w.durationMinutes ? w.durationMinutes * 60 : (w.duration || 0),
-            caloriesBurned: w.calories || w.caloriesBurned || 0,
-            sets: w.exercises?.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0) || 0,
-            totalVolume: w.totalVolume || 0
-          }));
+          const normalized = dbWorkouts.map(w => {
+            const rawEx = Array.isArray(w.exercises) ? w.exercises : [];
+            const primaryCat = w.category || w.muscle || getPrimaryMuscleGroup(rawEx) || getMuscleGroup(w.title || w.name);
+            const displayName = getExerciseDisplayName(w.title || w.name || rawEx[0]?.exerciseName || 'Workout Session');
+
+            return {
+              ...w,
+              id: w._id || w.id,
+              exercise: displayName,
+              name: displayName,
+              completedAt: w.completedAt || w.date || w.createdAt,
+              duration: w.durationMinutes ? w.durationMinutes * 60 : (w.duration || 0),
+              caloriesBurned: w.calories || w.caloriesBurned || 0,
+              sets: rawEx.reduce((sum, ex) => sum + (Array.isArray(ex.sets) ? ex.sets.length : 0), 0),
+              reps: rawEx.reduce((sum, ex) => sum + (Array.isArray(ex.sets) ? ex.sets.reduce((s, set) => s + (Number(set.reps) || 0), 0) : 0), 0),
+              totalVolume: w.totalVolume || 0,
+              category: primaryCat,
+              muscle: primaryCat
+            };
+          });
 
           setCompletedWorkouts(normalized);
           console.log("✅ Loaded real workouts from MongoDB API:", normalized.length);
@@ -545,7 +555,7 @@ export default function CompletedWorkouts() {
                   /*#__PURE__*/ React.createElement(
                     "button",
                     {
-                      onClick: () => navigate(`/workout-details/${workout.id}`),
+                      onClick: () => navigate(`/workout-details/${workout.id}`, { state: { workout } }),
                       className:
                         "flex-1 sm:flex-none text-red-500 hover:text-blue-300 text-[10px] sm:text-sm px-3 py-1.5 bg-blue-900/20 sm:bg-transparent rounded-lg sm:rounded-none border border-red-600/30 sm:border-0",
                     },

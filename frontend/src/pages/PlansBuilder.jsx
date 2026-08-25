@@ -3057,7 +3057,7 @@ export default function PlansBuilder() {
                               },
                               "Cloud Sync:",
                             ),
-                            " Auto-syncs to MongoDB across all devices",
+                            " Auto-syncs to Cloud across all devices",
                           ),
                         ),
                       ),
@@ -3096,7 +3096,7 @@ export default function PlansBuilder() {
                             className:
                               "text-xs sm:text-sm font-medium truncate",
                           },
-                          "MongoDB Sync",
+                          "Cloud Sync",
                         ),
                       ),
                       /*#__PURE__*/ React.createElement(

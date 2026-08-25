@@ -1,7 +1,7 @@
-// backend/routes/workouts.js
 import express from 'express';
 import mongoose from 'mongoose';
 import Workout from '../models/Workout.js';
+import User from '../models/User.js';
 import auth from '../middleware/auth.js';
 import { broadcastToUser } from './sse.js';
 
@@ -48,7 +48,7 @@ router.get('/', auth, async (req, res) => {
     }
 
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
-    const limitNum = Math.min(Math.max(1, parseInt(limit, 10) || 10), 50);
+    const limitNum = Math.min(Math.max(1, parseInt(limit, 10) || 10), 200);
     const skip = (pageNum - 1) * limitNum;
 
     const [workouts, total] = await Promise.all([
@@ -250,11 +250,24 @@ router.get('/previous-performance/:exerciseName', auth, async (req, res) => {
   }
 });
 
+const inferMuscleGroup = (name = '', cat = '') => {
+  if (cat && cat !== 'General' && cat !== 'Workout') return cat;
+  const n = String(name).toLowerCase();
+  if (n.includes('bench') || n.includes('chest') || n.includes('pec') || n.includes('push-up') || n.includes('pushup') || (n.includes('fly') && !n.includes('rear delt'))) return 'Chest';
+  if (n.includes('row') || n.includes('lat') || n.includes('pull-up') || n.includes('pullup') || n.includes('pulldown') || (n.includes('deadlift') && !n.includes('romanian') && !n.includes('rdl'))) return 'Back';
+  if (n.includes('shoulder') || n.includes('military') || n.includes('overhead') || n.includes('lateral raise') || n.includes('front raise') || n.includes('rear delt') || n.includes('face pull') || n.includes('shrug') || n.includes('arnold')) return 'Shoulders';
+  if (n.includes('bicep') || (n.includes('curl') && !n.includes('leg') && !n.includes('hamstring')) || n.includes('preacher') || n.includes('hammer')) return 'Biceps';
+  if (n.includes('tricep') || n.includes('pushdown') || n.includes('skull crusher') || n.includes('kickback') || n.includes('dip')) return 'Triceps';
+  if (n.includes('squat') || n.includes('leg') || n.includes('lunge') || n.includes('calf') || n.includes('calves') || n.includes('hamstring') || n.includes('quad') || n.includes('glute') || n.includes('thrust') || n.includes('rdl') || n.includes('romanian')) return 'Legs';
+  if (n.includes('abs') || n.includes('core') || n.includes('plank') || n.includes('crunch') || n.includes('twist')) return 'Core';
+  return 'General';
+};
+
 // POST /api/workouts - Create a new workout
 router.post('/', auth, async (req, res) => {
   try {
     const userId = getUserId(req.user);
-    const { title, exercises, durationMinutes, calories, date, isPublic, status, startedAt } = req.body;
+    const { title, category, muscle, exercises, durationMinutes, calories, date, isPublic, status, startedAt } = req.body;
     
     // Validation
     if (!title || typeof title !== 'string' || title.trim() === '') {
@@ -263,35 +276,54 @@ router.post('/', auth, async (req, res) => {
 
     const validatedStatus = ['in-progress', 'completed', 'abandoned'].includes(status) ? status : 'completed';
     
+    const parsedExercises = (Array.isArray(exercises) ? exercises : []).map(ex => {
+      let exerciseId = null;
+      let exerciseName = ex.exerciseName || ex.name || '';
+
+      if (ex.exercise && mongoose.Types.ObjectId.isValid(ex.exercise)) {
+        exerciseId = ex.exercise;
+      } else if (!exerciseName && typeof ex.exercise === 'string' && ex.exercise.trim() !== '') {
+        exerciseName = ex.exercise;
+      }
+
+      if (!exerciseName) {
+        exerciseName = 'Unknown Exercise';
+      }
+
+      const exCategory = inferMuscleGroup(exerciseName, ex.category || ex.muscle);
+
+      return {
+        exercise: exerciseId,
+        exerciseName: String(exerciseName).trim(),
+        category: exCategory,
+        muscle: exCategory,
+        sets: (Array.isArray(ex.sets) ? ex.sets : []).map(set => ({
+          reps: Math.max(0, parseInt(set.reps, 10) || 0),
+          weight: Math.max(0, parseFloat(set.weight) || 0),
+          rest: Math.max(0, parseInt(set.rest, 10) || 60)
+        })),
+        notes: ex.notes ? String(ex.notes).trim() : ''
+      };
+    });
+
+    // Determine primary workout category / muscle group
+    let workoutCategory = category || muscle;
+    if (!workoutCategory || workoutCategory === 'General') {
+      const dominantCategory = parsedExercises.find(e => e.category && e.category !== 'General')?.category;
+      workoutCategory = dominantCategory || inferMuscleGroup(title) || 'General';
+    }
+
     // Construct sanitized workout object
     const workoutData = {
       user: userId,
       title: title.trim(),
+      category: workoutCategory,
+      muscle: workoutCategory,
       status: validatedStatus,
       completed: validatedStatus === 'completed',
       startedAt: startedAt ? new Date(startedAt) : new Date(),
       completedAt: validatedStatus === 'completed' ? new Date() : null,
-      exercises: (Array.isArray(exercises) ? exercises : []).map(ex => {
-        let exerciseId = null;
-        let exerciseName = ex.name || ex.exerciseName || 'Unknown Exercise';
-
-        if (ex.exercise && mongoose.Types.ObjectId.isValid(ex.exercise)) {
-          exerciseId = ex.exercise;
-        } else if (typeof ex.exercise === 'string' && ex.exercise.trim() !== '') {
-          exerciseName = ex.exercise;
-        }
-
-        return {
-          exercise: exerciseId,
-          exerciseName: String(exerciseName).trim(),
-          sets: (Array.isArray(ex.sets) ? ex.sets : []).map(set => ({
-            reps: Math.max(0, parseInt(set.reps, 10) || 0),
-            weight: Math.max(0, parseFloat(set.weight) || 0),
-            rest: Math.max(0, parseInt(set.rest, 10) || 60)
-          })),
-          notes: ex.notes ? String(ex.notes).trim() : ''
-        };
-      }),
+      exercises: parsedExercises,
       durationMinutes: Math.max(0, Number(durationMinutes) || 0),
       calories: Math.max(0, Number(calories) || 0),
       date: date ? new Date(date) : new Date(),
@@ -300,13 +332,75 @@ router.post('/', auth, async (req, res) => {
     
     const workout = new Workout(workoutData);
     const savedWorkout = await workout.save();
+    await savedWorkout.populate('exercises.exercise');
     
+    // Automatically update streak on completed workout
+    let streakInfo = null;
+    if (validatedStatus === 'completed') {
+      try {
+        const user = await User.findById(userId);
+        if (user) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const todayStr = today.toISOString().split('T')[0];
+          
+          const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
+          let lastCheckInStr = null;
+          if (lastCheckIn) {
+            lastCheckIn.setHours(0, 0, 0, 0);
+            lastCheckInStr = lastCheckIn.toISOString().split('T')[0];
+          }
+
+          if (lastCheckInStr !== todayStr) {
+            let newStreak = 1;
+            let streakStartDate = today;
+            if (lastCheckIn) {
+              const yesterday = new Date(today);
+              yesterday.setDate(yesterday.getDate() - 1);
+              const yesterdayStr = yesterday.toISOString().split('T')[0];
+              if (lastCheckInStr === yesterdayStr) {
+                newStreak = (user.currentStreak || 0) + 1;
+                streakStartDate = user.streakStartDate || today;
+              }
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(userId, {
+              currentStreak: newStreak,
+              longestStreak: Math.max(user.longestStreak || 0, newStreak),
+              lastStreakCheckIn: today,
+              streakStartDate: streakStartDate,
+              $inc: { totalCheckIns: 1 },
+              $push: {
+                streakHistory: {
+                  date: today,
+                  streakDay: newStreak,
+                  workoutId: savedWorkout._id,
+                  tier: newStreak <= 7 ? 'Beginner' : newStreak <= 30 ? 'Intermediate' : newStreak <= 100 ? 'Advanced' : 'Expert'
+                }
+              }
+            }, { new: true });
+
+            streakInfo = {
+              currentStreak: newStreak,
+              longestStreak: updatedUser.longestStreak,
+              totalCheckIns: updatedUser.totalCheckIns,
+              isActiveToday: true
+            };
+            broadcastToUser(userId, 'streak_updated', streakInfo);
+          }
+        }
+      } catch (streakErr) {
+        console.warn('⚠️ Streak auto-update warning:', streakErr.message);
+      }
+    }
+
     // Broadcast real-time event
     broadcastToUser(userId, 'workout_updated', { workoutId: savedWorkout._id });
     
     res.status(201).json({ 
       success: true,
       workout: savedWorkout,
+      streak: streakInfo,
       message: 'Workout saved successfully'
     });
   } catch (error) {
@@ -406,17 +500,25 @@ router.put('/:id', auth, async (req, res) => {
     if (Array.isArray(exercises)) {
       workout.exercises = exercises.map(ex => {
         let exerciseId = null;
-        let exerciseName = ex.name || ex.exerciseName || 'Unknown Exercise';
+        let exerciseName = ex.exerciseName || ex.name || '';
 
         if (ex.exercise && mongoose.Types.ObjectId.isValid(ex.exercise)) {
           exerciseId = ex.exercise;
-        } else if (typeof ex.exercise === 'string' && ex.exercise.trim() !== '') {
+        } else if (!exerciseName && typeof ex.exercise === 'string' && ex.exercise.trim() !== '') {
           exerciseName = ex.exercise;
         }
+
+        if (!exerciseName) {
+          exerciseName = 'Unknown Exercise';
+        }
+
+        const exCategory = inferMuscleGroup(exerciseName, ex.category || ex.muscle);
 
         return {
           exercise: exerciseId,
           exerciseName: String(exerciseName).trim(),
+          category: exCategory,
+          muscle: exCategory,
           sets: (Array.isArray(ex.sets) ? ex.sets : []).map(set => ({
             reps: Math.max(0, parseInt(set.reps, 10) || 0),
             weight: Math.max(0, parseFloat(set.weight) || 0),

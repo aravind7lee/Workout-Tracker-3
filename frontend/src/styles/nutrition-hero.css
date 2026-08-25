@@ -75,6 +75,16 @@
 }
 
 /* Full Viewport Height - Professional Gym Website Design */
+.nutrition-hero-container {
+  height: 100vh;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 640px) {
   .nutrition-hero-container {
     height: 100vh;
@@ -170,15 +180,6 @@
   }
 }
 
-/* Professional Gym Website Enhancements */
-.nutrition-hero-container {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Ensure full width coverage on all devices */
 .nutrition-hero-image {
   max-width: 100%;
@@ -249,28 +250,3 @@
     transition-duration: 0.01ms !important;
   }
 }
-
-/*
-IMAGE OPTIMIZATION GUIDANCE:
-For better performance, consider generating these image variants:
-
-1. WebP format:
-   - Nutritionheader.webp (original size)
-   - Nutritionheader-mobile.webp (800px width)
-   - Nutritionheader-tablet.webp (1200px width)
-   - Nutritionheader-desktop.webp (1920px width)
-
-2. AVIF format (next-gen):
-   - Nutritionheader.avif (original size)
-   - Nutritionheader-mobile.avif (800px width)
-
-3. Fallback JPEG:
-   - Keep current Nutritionheader.jpg as fallback
-
-Usage example:
-<picture>
-  <source srcSet="Nutritionheader.avif" type="image/avif" />
-  <source srcSet="Nutritionheader.webp" type="image/webp" />
-  <img src="Nutritionheader.jpg" alt="..." />
-</picture>
-*/

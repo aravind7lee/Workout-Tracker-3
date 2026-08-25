@@ -1,8 +1,7 @@
-import { ArrowRight, Trophy, Globe, Star, Zap } from 'lucide-react';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { ArrowRight, Trophy, Globe, Star, Zap, Search, Sparkles, Filter, Dumbbell } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 import BuilderCard from "../components/BuilderCard";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -63,344 +62,309 @@ import Sam2 from "../assets/SamSulek2.jpg";
 import Sam3 from "../assets/SamSulek3.jpg";
 import Sam4 from "../assets/SamSulek4.jpg";
 
-const buildersData = {
-  classicLegends: [
-    {
-      id: "arnold",
-      name: "Arnold Schwarzenegger",
-      category: "Classic Legend",
-      images: [
-        Arnold1,
-        Arnold2,
-        Arnold3,
-        Arnold4,
-        Arnold5,
-        Arnold6,
-        Arnold7,
-        Arnold8,
-        Arnold9,
-      ],
-      quote:
-        "The worst thing I can be is the same as everybody else. I hate that.",
-      era: "1970s-1980s",
-    },
-    {
-      id: "ronnie",
-      name: "Ronnie Coleman",
-      category: "Classic Legend",
-      images: [Ronnie1, Ronnie2, Ronnie3, Ronnie4, Ronnie5],
-      quote:
-        "Everybody wants to be a bodybuilder, but nobody wants to lift no heavy-ass weights.",
-      era: "1990s-2000s",
-    },
-    {
-      id: "mike",
-      name: "Mike Mentzer",
-      category: "Classic Legend",
-      images: [Mike1, Mike2, Mike3, Mike4, Mike5, Mike6, Mike7, Mike8],
-      quote: "The quality of training is more important than the quantity.",
-      era: "1970s-1980s",
-    },
-    {
-      id: "jay",
-      name: "Jay Cutler",
-      category: "Classic Legend",
-      images: [Jay1, Jay2, Jay3, Jay4],
-      quote: "Success is usually the culmination of controlling failure.",
-      era: "2000s-2010s",
-    },
-  ],
-  modernInfluencers: [
-    {
-      id: "chris",
-      name: "Chris Bumstead (Cbum)",
-      category: "Modern Influencer",
-      images: [
-        Chris1,
-        Chris2,
-        Chris3,
-        Chris4,
-        Chris5,
-        Chris6,
-        Chris7,
-        Chris8,
-        Chris9,
-      ],
-      quote:
-        "It's not about being the biggest. It's about building the best version of yourself.",
-      era: "2010s-Present",
-    },
-    {
-      id: "david",
-      name: "David Laid",
-      category: "Modern Influencer",
-      images: [David1, David2, David3, David4, David5, DavidLaid],
-      quote: "Transform your physique, transform your life.",
-      era: "2010s-Present",
-    },
-    {
-      id: "jeff",
-      name: "Jeff Seid",
-      category: "Modern Influencer",
-      images: [Jeff1, Jeff2, Jeff3],
-      quote: "Don't count the days — make the days count.",
-      era: "2010s-Present",
-    },
-    {
-      id: "sam",
-      name: "Sam Sulek",
-      category: "Modern Influencer",
-      images: [Sam1, Sam2, Sam3, Sam4],
-      quote: "Progress is built one rep at a time.",
-      era: "2020s-Present",
-    },
-  ],
-};
+const ALL_BUILDERS = [
+  {
+    id: "arnold",
+    name: "Arnold Schwarzenegger",
+    category: "Classic Legend",
+    achievement: "7x Mr. Olympia",
+    titleTag: "The Austrian Oak",
+    signatureMoves: ["Arnold Press", "Incline DB Press", "T-Bar Row", "Donkey Calf Raises"],
+    images: [
+      Arnold1, Arnold2, Arnold3, Arnold4, Arnold5,
+      Arnold6, Arnold7, Arnold8, Arnold9,
+    ],
+    quote: "The worst thing I can be is the same as everybody else. I hate that.",
+    era: "1970s-1980s",
+  },
+  {
+    id: "ronnie",
+    name: "Ronnie Coleman",
+    category: "Classic Legend",
+    achievement: "8x Mr. Olympia",
+    titleTag: "King of Heavy Weight",
+    signatureMoves: ["800lb Deadlift", "Barbell Rows", "T-Bar Row", "Heavy DB Bench"],
+    images: [Ronnie1, Ronnie2, Ronnie3, Ronnie4, Ronnie5],
+    quote: "Everybody wants to be a bodybuilder, but nobody wants to lift no heavy-ass weights.",
+    era: "1990s-2000s",
+  },
+  {
+    id: "mike",
+    name: "Mike Mentzer",
+    category: "Classic Legend",
+    achievement: "Heavy Duty Pioneer",
+    titleTag: "High Intensity Titan",
+    signatureMoves: ["Heavy Duty Incline Press", "Pre-Exhaust Pullovers", "Leg Extensions"],
+    images: [Mike1, Mike2, Mike3, Mike4, Mike5, Mike6, Mike7, Mike8],
+    quote: "The quality of training is more important than the quantity.",
+    era: "1970s-1980s",
+  },
+  {
+    id: "jay",
+    name: "Jay Cutler",
+    category: "Classic Legend",
+    achievement: "4x Mr. Olympia",
+    titleTag: "The Quad Stomp Icon",
+    signatureMoves: ["Quad Stomp Squats", "DB Pullovers", "FST-7 Cable Flyes"],
+    images: [Jay1, Jay2, Jay3, Jay4],
+    quote: "Success is usually the culmination of controlling failure.",
+    era: "2000s-2010s",
+  },
+  {
+    id: "chris",
+    name: "Chris Bumstead (CBum)",
+    category: "Modern Influencer",
+    achievement: "5x Classic Olympia Champ",
+    titleTag: "Classic Physique GOAT",
+    signatureMoves: ["Incline Smith Press", "Preacher Curls", "Hack Squat", "Romanian Deadlift"],
+    images: [
+      Chris1, Chris2, Chris3, Chris4, Chris5,
+      Chris6, Chris7, Chris8, Chris9,
+    ],
+    quote: "It's not about being the biggest. It's about building the best version of yourself.",
+    era: "2010s-Present",
+  },
+  {
+    id: "david",
+    name: "David Laid",
+    category: "Modern Influencer",
+    achievement: "Transformation Icon",
+    titleTag: "Aesthetic Movement",
+    signatureMoves: ["Heavy Deadlift", "Overhead Press", "Incline DB Press", "Weighted Dips"],
+    images: [David1, David2, David3, David4, David5, DavidLaid],
+    quote: "Transform your physique, transform your life.",
+    era: "2010s-Present",
+  },
+  {
+    id: "jeff",
+    name: "Jeff Seid",
+    category: "Modern Influencer",
+    achievement: "Youngest IFBB Pro",
+    titleTag: "Aesthetic Phenom",
+    signatureMoves: ["Incline Flyes", "Side Lateral Raises", "EZ Bar Curls", "Skull Crushers"],
+    images: [Jeff1, Jeff2, Jeff3],
+    quote: "Don't count the days — make the days count.",
+    era: "2010s-Present",
+  },
+  {
+    id: "sam",
+    name: "Sam Sulek",
+    category: "Modern Influencer",
+    achievement: "Raw Heavy Lifting Icon",
+    titleTag: "Daily Grind Phenom",
+    signatureMoves: ["Heavy Incline Press", "Cable Tricep Pushdowns", "Single-Arm Lat Pulldown"],
+    images: [Sam1, Sam2, Sam3, Sam4],
+    quote: "Progress is built one rep at a time.",
+    era: "2020s-Present",
+  },
+];
 
-const LegendsAndInfluencers = () => {
+export default function LegendsAndInfluencers() {
   const [isLoading, setIsLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate loading time for better UX
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500);
+    }, 300);
 
-    // Preload hero image
     const img = new Image();
-    img.onload = () => setImagesLoaded(true);
     img.src = ChampsHeader;
 
     return () => clearTimeout(timer);
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  const filteredBuilders = useMemo(() => {
+    return ALL_BUILDERS.filter((b) => {
+      const matchesCategory =
+        activeCategory === "all" ||
+        (activeCategory === "classic" && b.category === "Classic Legend") ||
+        (activeCategory === "modern" && b.category === "Modern Influencer");
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
-  };
+      const q = searchQuery.trim().toLowerCase();
+      const matchesSearch =
+        !q ||
+        b.name.toLowerCase().includes(q) ||
+        b.era.toLowerCase().includes(q) ||
+        b.achievement.toLowerCase().includes(q) ||
+        b.titleTag.toLowerCase().includes(q);
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, searchQuery]);
 
   if (isLoading) {
     return <SkeletonLoader variant="page" />;
   }
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white overflow-hidden">
-      {/* Hero Header Section */}
+    <div className="min-h-screen bg-black text-white pb-36 sm:pb-28 overflow-x-hidden">
+      
+      {/* 1. HERO SECTION */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="relative w-full min-h-screen flex items-center justify-center"
+        transition={{ duration: 0.8 }}
+        className="relative w-full min-h-[80vh] h-[80vh] sm:h-[85vh] lg:h-[88vh] flex items-center justify-center overflow-hidden border-b border-neutral-800/80 shadow-2xl bg-black"
       >
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 w-full h-full">
-          <img
-            src={ChampsHeader}
-            alt="Champions Header"
-            className="w-full h-full object-cover object-top"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-        </div>
+        <img
+          src={ChampsHeader}
+          alt="Gym Champions and Legends"
+          className="w-full h-full object-cover object-top sm:object-[center_top] filter brightness-105 contrast-100 saturate-105"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/50 pointer-events-none" />
 
-        {/* Hero Content */}
-        <div className="relative z-20 text-center px-4 w-full max-w-6xl mx-auto">
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-6"
-          >
-            <motion.h1
-              className="text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent mb-2 sm:mb-3 drop-shadow-lg font-heading preserve-color"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, #dc2626, #ef4444, #f97316)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 max-w-5xl mx-auto space-y-4 sm:space-y-6 z-10">
+          
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900/80 border border-neutral-700/80 backdrop-blur-md text-amber-400 text-xs sm:text-sm font-black uppercase tracking-wider shadow-2xl">
+            <Trophy size={14} className="text-amber-400" />
+            <span>Hall of Fame • Gym Champs</span>
+          </div>
+
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl font-black bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 bg-clip-text text-transparent uppercase tracking-wider drop-shadow-2xl font-heading">
+            LEGENDS & CHAMPS
+          </h1>
+
+          <p className="text-sm sm:text-base lg:text-xl text-neutral-200 font-medium max-w-xs sm:max-w-2xl mx-auto drop-shadow-md leading-relaxed">
+            Learn from the icons and modern champions who shaped bodybuilding and fitness culture.
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4 w-full max-w-[280px] sm:max-w-none mx-auto">
+            <button
+              onClick={() => {
+                document.getElementById("champs-directory")?.scrollIntoView({ behavior: "smooth" });
               }}
+              className="premium-btn-primary btn-primary preserve-color w-full sm:w-auto flex items-center justify-center gap-2"
             >
-              Legends & Influencers
-            </motion.h1>
+              <span>Explore Champions</span>
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
+            </button>
+            
+            <button
+              onClick={() => navigate("/splits")}
+              className="premium-btn-secondary btn-secondary preserve-color w-full sm:w-auto"
+            >
+              View Inspired Splits
+            </button>
+          </div>
 
-            <motion.p
-              className="text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-extrabold hero-text-primary drop-shadow-lg font-heading"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Learn from the icons who shaped bodybuilding & fitness culture
-            </motion.p>
-
-            <motion.div
-              className="flex items-center justify-center space-x-8 pt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <div className="flex items-center space-x-2 text-yellow-400">
-                <Trophy size={24} />
-                <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">
-                  Classic Legends
-                </span>
-              </div>
-              <div className="w-px h-8 bg-gray-600" />
-              <div className="flex items-center space-x-2 text-red-500">
-                <Globe size={24} />
-                <span className="text-xl font-extrabold hero-text-primary drop-shadow-lg font-heading">
-                  Modern Influencers
-                </span>
-              </div>
-            </motion.div>
-          </motion.div>
         </div>
       </motion.section>
 
-      {/* Scroll Indicator - Below hero section */}
-      <motion.button
-        className="relative left-1/2 transform -translate-x-1/2 -mt-20 z-30 cursor-pointer"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 8, 0] }}
-        transition={{
-          opacity: { duration: 0.6, delay: 0.8 },
-          y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-        }}
-        onClick={() => {
-          document.getElementById("content-section")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }}
-      >
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center hover:border-white/50 transition-colors">
-          <div className="w-1 h-3 bg-white/60 rounded-full mt-2" />
+      {/* 2. STATS OVERVIEW BANNER */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 bg-neutral-950/95 backdrop-blur-xl border border-neutral-800/90 rounded-2xl p-4 shadow-2xl">
+          <div className="text-center p-2">
+            <span className="text-2xl sm:text-3xl font-black text-amber-400">8</span>
+            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Iconic Champions</p>
+          </div>
+          <div className="text-center p-2">
+            <span className="text-2xl sm:text-3xl font-black text-red-500">24+</span>
+            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Olympia Titles</p>
+          </div>
+          <div className="text-center p-2">
+            <span className="text-2xl sm:text-3xl font-black text-orange-400">50+</span>
+            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Archive Photos</p>
+          </div>
+          <div className="text-center p-2">
+            <span className="text-2xl sm:text-3xl font-black text-emerald-400">100%</span>
+            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Elite Motivation</p>
+          </div>
         </div>
-      </motion.button>
-
-      {/* Main Content */}
-      <div
-        id="content-section"
-        className="relative z-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
-      >
-        {/* Classic Legends Section */}
-        <motion.section
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="py-20"
-        >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <Trophy className="text-yellow-400" size={32} />
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                Classic Legends
-              </h2>
-              <Trophy className="text-yellow-400" size={32} />
-            </div>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              The pioneers who built the foundation of modern bodybuilding
-            </p>
-          </motion.div>
-
-          <div className="space-y-12">
-            {buildersData.classicLegends.map((builder, index) => (
-              <BuilderCard key={builder.id} builder={builder} index={index} />
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Modern Influencers Section */}
-        <motion.section
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="py-20"
-        >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <Globe className="text-red-500" size={32} />
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
-                Modern Influencers
-              </h2>
-              <Globe className="text-red-500" size={32} />
-            </div>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Today's champions inspiring the next generation
-            </p>
-          </motion.div>
-
-          <div className="space-y-12">
-            {buildersData.modernInfluencers.map((builder, index) => (
-              <BuilderCard key={builder.id} builder={builder} index={index} />
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Call to Action Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="py-20 text-center"
-        >
-          <div className="bg-gradient-to-r from-black/50 to-neutral-900/50 backdrop-blur-sm rounded-3xl p-12 border border-neutral-800/50">
-            <motion.div
-              initial={{ scale: 0.9 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Get Inspired. Build Your Legacy.
-              </h3>
-              <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                Channel the dedication of legends and create your own
-                transformation story
-              </p>
-
-              <Link to="/plans">
-                <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)",
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-red-600/25 transition-all duration-300"
-                >
-                  <Zap size={24} />
-                  <span>Start Your Workout Plan</span>
-                  <ArrowRight size={24} />
-                </motion.button>
-              </Link>
-            </motion.div>
-          </div>
-        </motion.section>
       </div>
+
+      {/* 3. MAIN DIRECTORY SECTION */}
+      <div id="champs-directory" className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 space-y-8">
+        
+        {/* Category Tabs & Instant Search */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-900 pb-6">
+          
+          {/* Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <button
+              onClick={() => setActiveCategory("all")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+                activeCategory === "all"
+                  ? "bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-600/30 scale-105"
+                  : "bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800"
+              }`}
+            >
+              🔥 All Champs ({ALL_BUILDERS.length})
+            </button>
+            <button
+              onClick={() => setActiveCategory("classic")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+                activeCategory === "classic"
+                  ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-extrabold shadow-lg shadow-amber-500/30 scale-105"
+                  : "bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800"
+              }`}
+            >
+              🏆 Classic Legends (4)
+            </button>
+            <button
+              onClick={() => setActiveCategory("modern")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+                activeCategory === "modern"
+                  ? "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/30 scale-105"
+                  : "bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800"
+              }`}
+            >
+              🌐 Modern Influencers (4)
+            </button>
+          </div>
+
+          {/* Search Box */}
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+            <input
+              type="text"
+              placeholder="Search champs, era, titles, moves..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-8 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+        </div>
+
+        {/* Champs Cards Grid / List */}
+        {filteredBuilders.length === 0 ? (
+          <div className="py-16 text-center space-y-3 bg-neutral-950 border border-neutral-800 rounded-3xl p-6">
+            <Trophy className="w-10 h-10 text-amber-400 mx-auto" />
+            <h3 className="text-base font-bold text-white">No Champions Found</h3>
+            <p className="text-xs text-neutral-400">Try searching for a different name or era.</p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("all");
+              }}
+              className="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-xl"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            {filteredBuilders.map((builder, index) => (
+              <BuilderCard key={builder.id} builder={builder} index={index} />
+            ))}
+          </div>
+        )}
+
+      </div>
+
     </div>
   );
-};
-
-export default LegendsAndInfluencers;
+}

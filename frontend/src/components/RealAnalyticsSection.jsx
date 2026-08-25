@@ -341,7 +341,7 @@ export default function RealAnalyticsSection() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-amber-400" />
-            <h3 className="text-lg font-bold text-white">Personal Records (Derived from MongoDB)</h3>
+            <h3 className="text-lg font-bold text-white">Personal Records (Verified)</h3>
           </div>
           <span className="text-xs text-neutral-500 font-mono">{prs.length} Records</span>
         </div>

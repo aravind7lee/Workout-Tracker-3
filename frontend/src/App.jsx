@@ -50,6 +50,7 @@ import WorkoutSplits from "./pages/WorkoutSplits";
 import CustomSplitBuilder from "./pages/CustomSplitBuilder";
 import YourWorkoutSplits from "./pages/YourWorkoutSplits";
 import EditSplit from "./pages/EditSplit";
+import StreakHistory from "./pages/StreakHistory";
 import chromeErrorHandler from "./utils/chromeErrorHandler";
 import "./utils/finalErrorCleanup"; // Stop continuous API calls
 import "./utils/silentMode"; // Complete console silence
@@ -1061,6 +1062,34 @@ export default function App() {
                         path: "/legends",
                         element: /*#__PURE__*/ React.createElement(
                           LegendsAndInfluencers,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/champs",
+                        element: /*#__PURE__*/ React.createElement(
+                          LegendsAndInfluencers,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/streak-history",
+                        element: /*#__PURE__*/ React.createElement(
+                          StreakHistory,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/streak-analytics",
+                        element: /*#__PURE__*/ React.createElement(
+                          StreakHistory,
+                          null,
+                        ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/streak",
+                        element: /*#__PURE__*/ React.createElement(
+                          StreakHistory,
                           null,
                         ),
                       }),

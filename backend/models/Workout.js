@@ -10,6 +10,8 @@ const SetSchema = new mongoose.Schema({
 const ExerciseLogSchema = new mongoose.Schema({
   exercise: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
   exerciseName: { type: String, default: 'Unknown Exercise' },
+  category: { type: String, default: 'General' },
+  muscle: { type: String, default: 'General' },
   sets: [SetSchema],
   notes: { type: String, default: '' }
 });
@@ -17,6 +19,8 @@ const ExerciseLogSchema = new mongoose.Schema({
 const WorkoutSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   title: { type: String, required: true },
+  category: { type: String, default: 'General' },
+  muscle: { type: String, default: 'General' },
   date: { type: Date, default: Date.now },
   status: {
     type: String,

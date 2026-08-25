@@ -1,212 +1,211 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
-
 import SkeletonLoader from "./SkeletonLoader";
-import "../styles/legends.css";
 
-const ImageStrip = ({ images, name, isHovered }) => {
-  const [loadedImages, setLoadedImages] = useState([]);
-  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+export default function ImageStrip({ images = [], name = "Champion", isHovered }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isInView, setIsInView] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
 
+  // Auto-play slide
   useEffect(() => {
-    let loadedCount = 0;
-    const imagePromises = images.map((src, index) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          loadedCount++;
-          setLoadedImages((prev) => [...prev, index]);
-          if (loadedCount === images.length) {
-            setAllImagesLoaded(true);
-          }
-          resolve();
-        };
-        img.onerror = () => {
-          loadedCount++;
-          if (loadedCount === images.length) {
-            setAllImagesLoaded(true);
-          }
-          resolve();
-        };
-        img.src = src;
-      });
-    });
+    if (!isAutoPlaying || images.length <= 1) return;
 
-    Promise.all(imagePromises);
-  }, [images]);
-
-  // Auto-slide functionality - optimized
-  useEffect(() => {
-    if (!isAutoPlaying || !allImagesLoaded) return;
-
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3500);
+    }, 4000);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, allImagesLoaded, images.length]);
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, images.length]);
 
-  const nextImage = () => {
+  const nextImage = (e) => {
+    if (e) e.stopPropagation();
     setCurrentIndex((prev) => (prev + 1) % images.length);
     setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
-  const prevImage = () => {
+  const prevImage = (e) => {
+    if (e) e.stopPropagation();
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
     setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
   const handleTouchStart = (e) => {
-    setStartX(e.touches[0].clientX);
-    setIsDragging(true);
-    setIsAutoPlaying(false);
+    setTouchStartX(e.touches[0].clientX);
   };
 
   const handleTouchEnd = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const endX = e.changedTouches[0].clientX;
-    const diff = startX - endX;
-
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) {
-        nextImage();
-      } else {
-        prevImage();
-      }
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextImage();
+      else prevImage();
     }
-    setIsDragging(false);
-    setTimeout(() => setIsAutoPlaying(true), 3000);
   };
-
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    setStartX(e.clientX);
-    setIsDragging(true);
-    setIsAutoPlaying(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-  };
-
-  const handleMouseUp = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const endX = e.clientX;
-    const diff = startX - endX;
-
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) {
-        nextImage();
-      } else {
-        prevImage();
-      }
-    }
-    setIsDragging(false);
-    setTimeout(() => setIsAutoPlaying(true), 3000);
-  };
-
-  if (!allImagesLoaded) {
-    return (
-      <div className="relative h-48 bg-neutral-900/50 rounded-t-2xl overflow-hidden">
-        <div className="grid grid-cols-3 h-full gap-1">
-          {[0, 1, 2].map((index) => (
-            <div
-              key={index}
-              className="relative bg-neutral-800/50 animate-pulse"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-neutral-700/30 to-neutral-800/30" />
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div
-      className="relative h-64 sm:h-80 md:h-96 lg:h-[30rem] xl:h-[34rem] w-full overflow-hidden rounded-t-2xl bg-black/50 group"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      style={{ touchAction: "pan-y" }}
-    >
-      {/* Image Slider */}
-      <div className="relative w-full h-full">
-        <AnimatePresence mode="wait">
+    <>
+      <div
+        className="relative w-full h-80 sm:h-96 md:h-[420px] bg-neutral-950 overflow-hidden select-none group"
+        onMouseEnter={() => setIsAutoPlaying(false)}
+        onMouseLeave={() => setIsAutoPlaying(true)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Background Ambient Blur of current image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center filter blur-2xl opacity-30 scale-110 pointer-events-none"
+          style={{ backgroundImage: `url(${images[currentIndex]})` }}
+        />
+
+        {/* Main Foreground Image */}
+        <div className="relative w-full h-full flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentIndex}
+              src={images[currentIndex]}
+              alt={`${name} photo ${currentIndex + 1}`}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="w-full h-full object-contain sm:object-cover sm:object-top drop-shadow-2xl"
+              loading="lazy"
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Gradient Shadow overlays for smooth edge blend */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-black/30 pointer-events-none" />
+
+        {/* Navigation Arrows (Clean & Minimal) */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={prevImage}
+              aria-label="Previous image"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg transition-all opacity-80 group-hover:opacity-100 active:scale-90 z-20"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={nextImage}
+              aria-label="Next image"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg transition-all opacity-80 group-hover:opacity-100 active:scale-90 z-20"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
+        )}
+
+        {/* Bottom Micro Progress Indicators */}
+        {images.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(idx);
+                }}
+                className={`transition-all rounded-full ${
+                  idx === currentIndex
+                    ? "w-4 h-1.5 bg-orange-400"
+                    : "w-1.5 h-1.5 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Go to image ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Fullscreen Expand Action */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsFullscreen(true);
+          }}
+          className="absolute bottom-3 right-3 w-7 h-7 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-white/80 hover:text-white flex items-center justify-center shadow-md transition-all active:scale-90 z-20"
+          aria-label="View Fullscreen"
+        >
+          <Maximize2 size={13} />
+        </button>
+      </div>
+
+      {/* Fullscreen Gallery Modal */}
+      <AnimatePresence>
+        {isFullscreen && (
           <motion.div
-            key={currentIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0"
+            className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-between p-4 sm:p-6"
+            onClick={() => setIsFullscreen(false)}
           >
-            <img
-              src={images[currentIndex]}
-              alt={`${name} - Image ${currentIndex + 1}`}
-              className="w-full h-full object-contain"
-              loading="lazy"
-              draggable={false}
-            />
+            {/* Header */}
+            <div className="w-full flex items-center justify-between z-10" onClick={(e) => e.stopPropagation()}>
+              <div className="text-white">
+                <h4 className="text-sm sm:text-base font-bold">{name}</h4>
+                <p className="text-xs text-neutral-400">Photo {currentIndex + 1} of {images.length}</p>
+              </div>
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="p-2.5 rounded-full bg-neutral-900 border border-neutral-800 text-white hover:bg-neutral-800 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Image */}
+            <div className="relative max-w-4xl max-h-[75vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              <img
+                src={images[currentIndex]}
+                alt={`${name} photo`}
+                className="max-h-[72vh] max-w-full object-contain rounded-xl shadow-2xl"
+              />
+
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 border border-white/20 text-white hover:scale-110 transition-transform"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 border border-white/20 text-white hover:scale-110 transition-transform"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail Strip in Modal */}
+            <div
+              className="flex items-center gap-2 overflow-x-auto max-w-full pb-2 z-10 scrollbar-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+                    idx === currentIndex
+                      ? "border-orange-500 scale-105 shadow-lg shadow-orange-500/30"
+                      : "border-neutral-800 opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
           </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevImage}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-            prevImage();
-          }}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-all duration-200 opacity-70 md:opacity-0 md:group-hover:opacity-100 z-10"
-        >
-          <ChevronLeft size={18} className="text-white" />
-        </button>
-
-        <button
-          onClick={nextImage}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-            nextImage();
-          }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-all duration-200 opacity-70 md:opacity-0 md:group-hover:opacity-100 z-10"
-        >
-          <ChevronRight size={18} className="text-white" />
-        </button>
-
-        {/* Dots Indicator */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                index === currentIndex ? "bg-white" : "bg-white/40"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+        )}
+      </AnimatePresence>
+    </>
   );
-};
-
-export default ImageStrip;
+}

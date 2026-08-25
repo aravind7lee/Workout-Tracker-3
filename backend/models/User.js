@@ -186,7 +186,34 @@ const userSchema = new mongoose.Schema({
   favoriteWorkoutSplits: {
     type: [Number],
     default: []
-  }
+  },
+  // Real-time Streak tracking
+  currentStreak: {
+    type: Number,
+    default: 0
+  },
+  longestStreak: {
+    type: Number,
+    default: 0
+  },
+  lastStreakCheckIn: {
+    type: Date,
+    default: null
+  },
+  streakStartDate: {
+    type: Date,
+    default: null
+  },
+  totalCheckIns: {
+    type: Number,
+    default: 0
+  },
+  streakHistory: [{
+    date: { type: Date, default: Date.now },
+    streakDay: Number,
+    workoutId: mongoose.Schema.Types.ObjectId,
+    tier: { type: String, default: 'Beginner' }
+  }]
 }, {
   timestamps: true
 });

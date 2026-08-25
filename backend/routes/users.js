@@ -226,6 +226,7 @@ router.get('/stats', auth, async (req, res) => {
       totalCaloriesBurned: totalCaloriesBurned || 0,
       totalDuration: Math.round((totalDuration || 0) / 60),
       averageWorkoutDuration: completedWorkouts.length > 0 ? Math.round(totalDuration / completedWorkouts.length / 60) : 0,
+      currentStreak: user.currentStreak || 0,
       longestStreak: user.longestStreak || 0,
       totalCheckIns: user.totalCheckIns || 0,
       joinDate: user.createdAt || new Date(),
@@ -671,104 +672,123 @@ router.put('/settings', settingsLimiter, auth, async (req, res) => {
 
 
 
-// Start/Continue streak - FIXED for real-time persistence
+// Helper: Get local YYYY-MM-DD string
+const toLocalDateKey = (d) => {
+  if (!d) return '';
+  const dateObj = new Date(d);
+  if (isNaN(dateObj.getTime())) return '';
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+// Start/Continue streak - ROBUST REAL-TIME PERSISTENCE
 router.post('/streak/check-in', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    
-    const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
-    let lastCheckInStr = null;
-    if (lastCheckIn) {
-      lastCheckIn.setHours(0, 0, 0, 0);
-      lastCheckInStr = lastCheckIn.toISOString().split('T')[0];
-    }
-
-    // Check if already checked in today
-    if (lastCheckInStr === todayStr) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Already checked in today',
-        currentStreak: user.currentStreak || 0,
-        canCheckIn: false
-      });
-    }
-
-    // Calculate new streak
-    let newStreak = 1;
-    let streakStartDate = today;
-    
-    if (lastCheckIn) {
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
-      
-      if (lastCheckInStr === yesterdayStr) {
-        // Continue streak
-        newStreak = (user.currentStreak || 0) + 1;
-        streakStartDate = user.streakStartDate || today;
-      } else {
-        // Streak broken, start new
-        newStreak = 1;
-        streakStartDate = today;
-      }
-    }
-
-    // Update user streak data with atomic operation
-    const updateData = {
-      currentStreak: newStreak,
-      longestStreak: Math.max(user.longestStreak || 0, newStreak),
-      lastStreakCheckIn: today,
-      streakStartDate: streakStartDate,
-      totalCheckIns: (user.totalCheckIns || 0) + 1,
-
-      lastActiveDate: new Date(),
-      lastSyncDate: new Date()
-    };
-
-    // Add to streak history
-    const streakEntry = {
-      date: today,
-      streakDay: newStreak,
-      tier: newStreak <= 7 ? 'Beginner' : newStreak <= 30 ? 'Intermediate' : newStreak <= 100 ? 'Advanced' : 'Expert'
-    };
-
-    // Use findByIdAndUpdate for atomic operation
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      {
-        ...updateData,
-        $push: { streakHistory: streakEntry }
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedUser) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const responseData = {
+    const now = new Date();
+    const todayKey = toLocalDateKey(now);
+    
+    const lastCheckInKey = user.lastStreakCheckIn ? toLocalDateKey(user.lastStreakCheckIn) : null;
+
+    // Build unique active days count
+    const uniqueDates = new Set();
+    if (Array.isArray(user.streakHistory)) {
+      user.streakHistory.forEach(h => {
+        const k = toLocalDateKey(h.date);
+        if (k) uniqueDates.add(k);
+      });
+    }
+    uniqueDates.add(todayKey);
+
+    // Check if already checked in today
+    if (lastCheckInKey === todayKey && (user.currentStreak || 0) > 0) {
+      const accurateTotal = Math.max(uniqueDates.size, user.currentStreak || 1);
+      user.totalCheckIns = accurateTotal;
+      user.longestStreak = Math.max(user.longestStreak || 0, user.currentStreak || 1);
+      await user.save();
+
+      return res.status(200).json({ 
+        success: true,
+        alreadyCheckedIn: true,
+        message: `🔥 Streak Active Today (${user.currentStreak}d Logged)!`,
+        currentStreak: user.currentStreak,
+        longestStreak: user.longestStreak,
+        totalCheckIns: accurateTotal,
+        lastCheckInDate: todayKey,
+        canCheckIn: false,
+        isActiveToday: true
+      });
+    }
+
+    // Calculate yesterday's key
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = toLocalDateKey(yesterday);
+
+    let newStreak = 1;
+    let streakStartDate = now;
+
+    if (lastCheckInKey) {
+      if (lastCheckInKey === yesterdayKey) {
+        // Consecutive day check-in: increment streak
+        newStreak = (user.currentStreak || 0) + 1;
+        streakStartDate = user.streakStartDate || now;
+      } else if (lastCheckInKey === todayKey) {
+        // Same day: preserve current
+        newStreak = Math.max(1, user.currentStreak || 1);
+        streakStartDate = user.streakStartDate || now;
+      } else {
+        // Broken streak: restart fresh from day 1
+        newStreak = 1;
+        streakStartDate = now;
+      }
+    }
+
+    const newLongest = Math.max(user.longestStreak || 0, newStreak);
+    const accurateTotal = Math.max(uniqueDates.size, newStreak);
+
+    // Filter duplicate check-in entries for today
+    const existingHistory = Array.isArray(user.streakHistory) ? user.streakHistory : [];
+    const filteredHistory = existingHistory.filter(h => toLocalDateKey(h.date) !== todayKey);
+    filteredHistory.push({
+      date: now,
+      streakDay: newStreak,
+      tier: newStreak <= 7 ? 'Beginner' : newStreak <= 30 ? 'Intermediate' : newStreak <= 100 ? 'Advanced' : 'Expert'
+    });
+
+    user.currentStreak = newStreak;
+    user.longestStreak = newLongest;
+    user.lastStreakCheckIn = now;
+    user.streakStartDate = streakStartDate;
+    user.totalCheckIns = accurateTotal;
+    user.streakHistory = filteredHistory;
+    user.lastActiveDate = now;
+    user.lastSyncDate = now;
+
+    await user.save();
+
+    console.log(`✅ [Streak API] User ${req.user.id} checked in: ${newStreak} days active, total logs: ${accurateTotal}`);
+
+    return res.status(200).json({
       success: true,
       currentStreak: newStreak,
-      longestStreak: updatedUser.longestStreak,
-      totalCheckIns: updatedUser.totalCheckIns,
-      lastCheckInDate: todayStr,
-      streakStartDate: streakStartDate.toISOString().split('T')[0],
-
+      longestStreak: newLongest,
+      totalCheckIns: accurateTotal,
+      lastCheckInDate: todayKey,
+      streakStartDate: toLocalDateKey(streakStartDate),
       canCheckIn: false,
+      isActiveToday: true,
       isRealTime: true,
-      message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Keep Going!`,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log(`✅ Streak check-in successful for user ${req.user.id}: Day ${newStreak}`);
-    res.json(responseData);
+      message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Streak Logged!`,
+      streakHistory: filteredHistory,
+      timestamp: now.toISOString()
+    });
   } catch (error) {
     console.error('❌ Error checking in streak:', error);
     res.status(500).json({ 
@@ -779,132 +799,201 @@ router.post('/streak/check-in', auth, async (req, res) => {
   }
 });
 
-// Get streak status - FIXED for real-time persistence
+// Get streak status - ROBUST REAL-TIME DATA & FULL CALENDAR HISTORY
 router.get('/streak/status', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
+    const now = new Date();
+    const todayKey = toLocalDateKey(now);
     
-    const lastCheckIn = user.lastStreakCheckIn ? new Date(user.lastStreakCheckIn) : null;
-    let lastCheckInStr = null;
-    if (lastCheckIn) {
-      lastCheckIn.setHours(0, 0, 0, 0);
-      lastCheckInStr = lastCheckIn.toISOString().split('T')[0];
-    }
+    const lastCheckInKey = user.lastStreakCheckIn ? toLocalDateKey(user.lastStreakCheckIn) : null;
     
-    const canCheckIn = !lastCheckInStr || lastCheckInStr !== todayStr;
+    // Yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = toLocalDateKey(yesterday);
 
-    // Check if streak is broken and update if needed
     let currentStreak = user.currentStreak || 0;
     let streakStartDate = user.streakStartDate;
-    
-    if (lastCheckIn && currentStreak > 0) {
-      const daysDiff = Math.floor((today - lastCheckIn) / (1000 * 60 * 60 * 24));
-      if (daysDiff > 1) {
-        // Streak is broken - reset
+
+    // Check if streak was broken (more than 1 day missed)
+    if (lastCheckInKey && currentStreak > 0) {
+      if (lastCheckInKey !== todayKey && lastCheckInKey !== yesterdayKey) {
+        // Gap of 2+ days without checkin -> Reset
         currentStreak = 0;
         streakStartDate = null;
-        await User.findByIdAndUpdate(req.user.id, {
-          currentStreak: 0,
-          streakStartDate: null
-        });
-        console.log(`🔥 Streak broken for user ${req.user.id} - ${daysDiff} days gap`);
+        user.currentStreak = 0;
+        user.streakStartDate = null;
+        await user.save();
+        console.log(`🔥 Streak reset for user ${req.user.id} due to missed days`);
       }
     }
 
-    // Calculate milestones
-    const milestones = [
-      { days: 1, emoji: '🎯', title: 'First Day', tier: 'Beginner' },
-      { days: 3, emoji: '🔥', title: '3 Day Fire', tier: 'Beginner' },
-      { days: 7, emoji: '🚀', title: 'Week Warrior', tier: 'Beginner' },
-      { days: 14, emoji: '⚡', title: '2 Week Power', tier: 'Intermediate' },
-      { days: 21, emoji: '💪', title: '3 Week Strong', tier: 'Intermediate' },
-      { days: 30, emoji: '🏆', title: 'Monthly Master', tier: 'Intermediate' },
-      { days: 60, emoji: '👑', title: '2 Month King', tier: 'Advanced' },
-      { days: 100, emoji: '💎', title: 'Century Club', tier: 'Expert' },
-      { days: 365, emoji: '🌟', title: 'Year Champion', tier: 'Legendary' }
-    ];
+    const isActiveToday = lastCheckInKey === todayKey && currentStreak > 0;
+    const canCheckIn = !isActiveToday;
 
-    const milestoneProgress = milestones.map(milestone => ({
-      ...milestone,
-      achieved: currentStreak >= milestone.days,
-      progress: Math.min(currentStreak, milestone.days),
-      remaining: Math.max(0, milestone.days - currentStreak),
-      progressPercent: Math.min(100, (currentStreak / milestone.days) * 100)
-    }));
+    // Calculate unique total active days
+    const uniqueDates = new Set();
+    if (Array.isArray(user.streakHistory)) {
+      user.streakHistory.forEach(h => {
+        const k = toLocalDateKey(h.date);
+        if (k) uniqueDates.add(k);
+      });
+    }
+    if (isActiveToday || currentStreak > 0) {
+      uniqueDates.add(todayKey);
+    }
+    const accurateTotal = Math.max(uniqueDates.size, currentStreak > 0 ? currentStreak : 0);
 
-    // Get weekly progress from streak history
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - today.getDay());
+    // Generate Weekly Progress (Sunday to Saturday)
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay());
     
     const weeklyProgress = [];
     for (let i = 0; i < 7; i++) {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + i);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      const hasCheckIn = user.streakHistory?.some(entry => {
-        const entryDate = new Date(entry.date);
-        const entryDateStr = entryDate.toISOString().split('T')[0];
-        return entryDateStr === dateStr;
-      }) || false;
-      
+      const d = new Date(weekStart);
+      d.setDate(weekStart.getDate() + i);
+      const dKey = toLocalDateKey(d);
+      const isToday = dKey === todayKey;
+      const hasCheckIn = uniqueDates.has(dKey) || (isToday && isActiveToday);
+
       weeklyProgress.push({
-        date: dateStr,
-        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        dayNumber: date.getDate(),
+        date: dKey,
+        day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        dayNumber: d.getDate(),
         hasCheckIn,
-        isToday: dateStr === todayStr,
-        isPast: date < today
+        completed: hasCheckIn,
+        isToday,
+        isPast: d < now && !isToday
       });
     }
 
+    // Milestones
+    const milestones = [
+      { days: 1, title: 'First Day', tier: 'Beginner' },
+      { days: 3, title: '3 Day Fire', tier: 'Beginner' },
+      { days: 7, title: 'Week Warrior', tier: 'Beginner' },
+      { days: 14, title: '2 Week Power', tier: 'Intermediate' },
+      { days: 21, title: '3 Week Strong', tier: 'Intermediate' },
+      { days: 30, title: 'Monthly Master', tier: 'Intermediate' },
+      { days: 60, title: '2 Month King', tier: 'Advanced' },
+      { days: 100, title: 'Century Club', tier: 'Expert' }
+    ];
+
+    const milestoneProgress = milestones.map(m => ({
+      ...m,
+      achieved: currentStreak >= m.days,
+      progress: Math.min(currentStreak, m.days),
+      remaining: Math.max(0, m.days - currentStreak),
+      progressPercent: Math.min(100, (currentStreak / m.days) * 100)
+    }));
+
     const responseData = {
+      success: true,
       currentStreak,
-      longestStreak: user.longestStreak || 0,
-      totalCheckIns: user.totalCheckIns || 0,
-      lastCheckInDate: lastCheckInStr,
-      streakStartDate: streakStartDate ? streakStartDate.toISOString().split('T')[0] : null,
+      longestStreak: Math.max(user.longestStreak || 0, currentStreak),
+      totalCheckIns: accurateTotal,
+      lastCheckInDate: lastCheckInKey,
+      streakStartDate: streakStartDate ? toLocalDateKey(streakStartDate) : null,
       canCheckIn,
+      isActiveToday,
       milestones: milestoneProgress,
       weeklyProgress,
       streakHistory: user.streakHistory || [],
       isRealTime: true,
-      lastSync: new Date().toISOString(),
+      lastSync: now.toISOString(),
       dataSource: 'MongoDB'
     };
 
-    console.log(`✅ Streak status for user ${req.user.id}: ${currentStreak} days, canCheckIn: ${canCheckIn}`);
     res.json(responseData);
   } catch (error) {
     console.error('❌ Error fetching streak status:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });
 
-// Get streak details
+// Get streak details for detailed history page
 router.get('/streak-details', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
     const workouts = await Workout.find({ userId: req.user.id, completed: true }).sort({ createdAt: -1 });
     const currentStreak = user.currentStreak || 0;
+    const longestStreak = Math.max(user.longestStreak || 0, currentStreak);
+
+    // Build timeline entries & compute accurate total unique logs
+    const historyEntries = Array.isArray(user.streakHistory) ? user.streakHistory : [];
+    const uniqueDates = new Set();
+    historyEntries.forEach(h => {
+      const k = toLocalDateKey(h.date);
+      if (k) uniqueDates.add(k);
+    });
+    workouts.forEach(w => {
+      const k = toLocalDateKey(w.createdAt);
+      if (k) uniqueDates.add(k);
+    });
+    if (currentStreak > 0) {
+      uniqueDates.add(toLocalDateKey(new Date()));
+    }
+
+    const totalLogs = Math.max(uniqueDates.size, currentStreak > 0 ? currentStreak : 0);
+
+    // Sync accurate count to user document
+    if (user.totalCheckIns !== totalLogs || user.longestStreak !== longestStreak) {
+      user.totalCheckIns = totalLogs;
+      user.longestStreak = longestStreak;
+      await user.save();
+    }
     
+    // Milestones
+    const milestones = [
+      { days: 1, title: 'First Day', tier: 'Beginner' },
+      { days: 3, title: '3 Day Fire', tier: 'Beginner' },
+      { days: 7, title: 'Week Warrior', tier: 'Beginner' },
+      { days: 14, title: '2 Week Power', tier: 'Intermediate' },
+      { days: 21, title: '3 Week Strong', tier: 'Intermediate' },
+      { days: 30, title: 'Monthly Master', tier: 'Intermediate' },
+      { days: 60, title: '2 Month King', tier: 'Advanced' },
+      { days: 100, title: 'Century Club', tier: 'Expert' },
+      { days: 365, title: 'Year Champion', tier: 'Legendary' }
+    ];
+
+    const milestoneProgress = milestones.map(m => ({
+      ...m,
+      achieved: currentStreak >= m.days,
+      progress: Math.min(currentStreak, m.days),
+      remaining: Math.max(0, m.days - currentStreak),
+      progressPercent: Math.min(100, (currentStreak / m.days) * 100)
+    }));
+
     res.json({
+      success: true,
       currentStreak,
-      longestStreak: user.longestStreak || 0,
-      lastWorkoutDate: workouts.length > 0 ? workouts[0].createdAt : null,
-      streakHistory: user.streakHistory || [],
-      weeklyProgress: []
+      longestStreak,
+      totalCheckIns: totalLogs,
+      lastStreakCheckIn: user.lastStreakCheckIn,
+      streakStartDate: user.streakStartDate,
+      streakHistory: historyEntries,
+      workouts: workouts.map(w => ({
+        id: w._id,
+        name: w.name,
+        date: w.createdAt,
+        duration: w.duration,
+        calories: w.calories,
+        completedExercises: w.completedExercises?.length || 0
+      })),
+      milestones: milestoneProgress
     });
   } catch (error) {
     console.error('Streak details error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });
 

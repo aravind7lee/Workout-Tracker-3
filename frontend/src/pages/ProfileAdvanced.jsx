@@ -452,7 +452,7 @@ const ProfileAdvanced = () => {
               /*#__PURE__*/ React.createElement(Globe, {
                 className: "w-[1em] h-[1em] inline-block",
               }),
-              " Live MongoDB",
+              " Live Cloud Sync",
             ),
           stats.isRealTime &&
             /*#__PURE__*/ React.createElement(
@@ -475,7 +475,9 @@ const ProfileAdvanced = () => {
           lastSyncTime &&
             /*#__PURE__*/ React.createElement(
               "span",
-              null,
+              {
+                className: "text-[11px]",
+              },
               "Last sync: ",
               new Date(lastSyncTime).toLocaleTimeString(),
             ),
@@ -535,9 +537,9 @@ const ProfileAdvanced = () => {
           /*#__PURE__*/ React.createElement(
             "p",
             {
-              className: "text-neutral-400 mt-1",
+              className: "text-neutral-400 mt-1 text-xs sm:text-sm",
             },
-            "Professional Gym Tracker \u2022 Real-time MongoDB Integration",
+            "Professional Gym Tracker \u2022 Real-time Cloud Sync",
           ),
           currentUser &&
             /*#__PURE__*/ React.createElement(

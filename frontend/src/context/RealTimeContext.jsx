@@ -165,45 +165,51 @@ export const RealTimeProvider = ({ children }) => {
       if (workoutsRes.status === "fulfilled" && workoutsRes.value?.data) {
         let mongoWorkouts = workoutsRes.value.data;
         if (mongoWorkouts.workouts) {
-            mongoWorkouts = mongoWorkouts.workouts;
+          mongoWorkouts = mongoWorkouts.workouts;
         }
         if (Array.isArray(mongoWorkouts)) {
-          const userMongoWorkouts = mongoWorkouts.filter(w => 
-            w.user === user.id || w.user === user._id || w.userId === user.id || w.userId === user._id
+          const currentUserId = (user?.id || user?._id || '')?.toString();
+          const userMongoWorkouts = mongoWorkouts.filter(w => {
+            if (!w) return false;
+            const isCompleted = w.completed === true || w.status === 'completed';
+            if (!isCompleted) return false;
+            
+            const wUserId = (w.user?._id || w.user?.id || w.user || w.userId || '')?.toString();
+            return !currentUserId || !wUserId || wUserId === currentUserId;
+          });
+
+          const today = new Date().toDateString();
+          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+          const mongoTodayWorkouts = userMongoWorkouts.filter((w) => {
+            const wDate = new Date(w.completedAt || w.createdAt || w.date);
+            return !isNaN(wDate.getTime()) && wDate.toDateString() === today;
+          }).length;
+
+          const mongoWeeklyWorkouts = userMongoWorkouts.filter((w) => {
+            const wDate = new Date(w.completedAt || w.createdAt || w.date);
+            return !isNaN(wDate.getTime()) && wDate >= weekAgo;
+          }).length;
+
+          const mongoTotalCalories = userMongoWorkouts.reduce(
+            (sum, w) => sum + (w.calories || w.caloriesBurned || 0),
+            0
+          );
+          
+          const mongoTotalDuration = userMongoWorkouts.reduce(
+            (sum, w) => sum + (w.durationMinutes || w.duration || 0),
+            0
           );
 
-          if (userMongoWorkouts.length > 0) {
-            const today = new Date().toDateString();
-            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-            const mongoTodayWorkouts = userMongoWorkouts.filter(
-              (w) => new Date(w.completedAt || w.createdAt).toDateString() === today
-            ).length;
-
-            const mongoWeeklyWorkouts = userMongoWorkouts.filter(
-              (w) => new Date(w.completedAt || w.createdAt) >= weekAgo
-            ).length;
-
-            const mongoTotalCalories = userMongoWorkouts.reduce(
-              (sum, w) => sum + (w.caloriesBurned || 0),
-              0
-            );
-            
-            const mongoTotalDuration = userMongoWorkouts.reduce(
-              (sum, w) => sum + (w.durationMinutes || w.duration || 0),
-              0
-            );
-
-            realTimeData = {
-              ...realTimeData,
-              // If heroStats didn't give us totalWorkouts, fallback to length of userMongoWorkouts
-              totalWorkouts: Math.max(realTimeData.totalWorkouts, userMongoWorkouts.length),
-              todayWorkouts: mongoTodayWorkouts,
-              weeklyWorkouts: mongoWeeklyWorkouts,
-              totalCalories: mongoTotalCalories,
-              totalDuration: mongoTotalDuration,
-            };
-          }
+          realTimeData = {
+            ...realTimeData,
+            totalWorkouts: userMongoWorkouts.length,
+            workouts: userMongoWorkouts.length,
+            todayWorkouts: mongoTodayWorkouts,
+            weeklyWorkouts: mongoWeeklyWorkouts,
+            totalCalories: mongoTotalCalories,
+            totalDuration: mongoTotalDuration,
+          };
         }
       }
 

@@ -1,5 +1,5 @@
 // Ultra-Optimized Side Menu for Mobile Performance
-import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp, Target, Award, Clock, Wifi, WifiOff, LayoutDashboard } from 'lucide-react';
+import { User, Menu, X, Settings, LogOut, UserCircle, Zap, Home, BarChart3, Dumbbell, Calendar, Apple, TrendingUp, Target, Award, Clock, Wifi, WifiOff, LayoutDashboard, Trophy, Flame } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useConnectionStatus } from "../services/connectionService";
 import logo from "../assets/logo.png";
+import StreakWidget from "./StreakWidget";
 
 const menuItems = [
   { to: "/", label: "Home", icon: Home, color: "#FF0000" },
@@ -17,6 +18,8 @@ const menuItems = [
   { to: "/splits", label: "Splits", icon: BarChart3, color: "#ff9500" },
   { to: "/nutrition", label: "Nutrition", icon: Apple, color: "#ffa502" },
   { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#FF0000" },
+  { to: "/streak-history", label: "Streak Logs", icon: Flame, color: "#f97316" },
+  { to: "/legends", label: "Champs", icon: Trophy, color: "#eab308" },
 ];
 
 export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
@@ -282,6 +285,11 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
                               Premium Athlete
                             </span>
                           </div>
+                        </div>
+
+                        {/* Real-Time Streak Widget in Side Menu */}
+                        <div className="mb-3">
+                          <StreakWidget className="w-full justify-between" />
                         </div>
 
                         <div className="space-y-1 pt-2 border-t border-neutral-900/60">

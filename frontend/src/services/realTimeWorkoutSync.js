@@ -580,7 +580,12 @@ class RealTimeWorkoutSync {
       // Try to get user from various sources
       const authUser = localStorage.getItem("user");
       if (authUser) {
-        return JSON.parse(authUser);
+        const u = JSON.parse(authUser);
+        return {
+          ...u,
+          id: u.id || u._id || u.userId,
+          _id: u._id || u.id || u.userId,
+        };
       }
 
       // Try auth token

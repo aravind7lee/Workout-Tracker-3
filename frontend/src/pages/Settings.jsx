@@ -2053,7 +2053,7 @@ export default function Settings() {
         /*#__PURE__*/ React.createElement(
           "span",
           null,
-          isSaving ? <><RefreshCw className="w-[1em] h-[1em] inline-block animate-spin"/> SYNCING TO MONGODB...</> : <><Save className="w-[1em] h-[1em] inline-block"/> SAVE TO CLOUD</>,
+          isSaving ? <><RefreshCw className="w-[1em] h-[1em] inline-block animate-spin"/> SYNCING TO CLOUD...</> : <><Save className="w-[1em] h-[1em] inline-block"/> SAVE TO CLOUD</>,
         ),
       ),
     ),
@@ -2122,7 +2122,7 @@ export default function Settings() {
                   className:
                     "px-2 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30",
                 },
-                "MONGODB",
+                "CLOUD SYNC",
               ),
             ),
           ),
@@ -2279,7 +2279,7 @@ export default function Settings() {
                       {
                         className: "text-xs sm:text-sm text-neutral-400 mt-1",
                       },
-                      "Professional Configuration \u2022 Real-Time MongoDB \u2022 Cross-Device Sync",
+                      "Professional Configuration \u2022 Real-Time Cloud Sync \u2022 Cross-Device Sync",
                     ),
                   ),
                 ),

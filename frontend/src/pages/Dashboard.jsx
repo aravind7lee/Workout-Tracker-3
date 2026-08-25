@@ -33,6 +33,7 @@ import Dashboard1 from "../assets/Dashboard1.jpg";
 import Dashboard2 from "../assets/Dashboard2.jpg";
 import Dashboardnew from "../assets/Dashboardnew.jpg";
 import FitnessIntelligenceWidget from "../components/FitnessIntelligenceWidget";
+import StreakWidget from "../components/StreakWidget";
 
 const Dashboard = () => {
   const {
@@ -219,8 +220,8 @@ const Dashboard = () => {
   return (
     <DashboardErrorBoundary>
       <AuthGuard>
-        <div className="min-h-screen bg-black text-white selection:bg-red-500 selection:text-white">
-          {/* Top Hero Section */}
+        <div className="min-h-screen bg-black text-white selection:bg-red-500 selection:text-white pb-36 sm:pb-28 overflow-x-hidden">
+          {/* Top Hero Section - 100% PRESERVED AND UNTOUCHED */}
           <DashboardHero />
 
           {/* Completion Toast Notification */}
@@ -230,16 +231,16 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                className="fixed top-20 right-4 left-4 sm:left-auto sm:right-6 z-50 max-w-md bg-neutral-900/95 border border-emerald-500/40 p-4 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3"
+                className="fixed top-20 right-3 left-3 sm:left-auto sm:right-6 z-50 max-w-md bg-neutral-900/95 border border-emerald-500/40 p-3.5 sm:p-4 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-6 h-6" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                  <p className="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider">
                     Workout Completed!
                   </p>
-                  <p className="text-sm font-semibold text-white truncate">
+                  <p className="text-xs sm:text-sm font-semibold text-white truncate">
                     {completionData.exercise || "Great session logged"}
                   </p>
                 </div>
@@ -260,7 +261,7 @@ const Dashboard = () => {
                 <img
                   src={Dashboardnew}
                   alt="Professional Gym Training - Real-time fitness tracking"
-                  className="w-full h-48 sm:h-72 md:h-96 lg:h-[420px] object-cover object-center"
+                  className="w-full h-44 sm:h-64 md:h-80 lg:h-[400px] object-cover object-center"
                   loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -269,81 +270,87 @@ const Dashboard = () => {
           </div>
 
           {/* Main Content Layout Container */}
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-32 sm:pb-36">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
             
             {/* 1. Welcome & Status Card */}
             <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/90 via-neutral-900/60 to-neutral-950/90 border border-white/[0.08] p-4 sm:p-6 backdrop-blur-xl shadow-xl">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide">
-                      Welcome{authUser?.name ? `, ${authUser.name}` : ""}!
-                    </h1>
-                    <span className="text-xl sm:text-2xl">👋</span>
-                  </div>
-                  <p className="text-neutral-400 text-xs sm:text-sm">
-                    Track progress, manage workouts, and crush your fitness goals.
-                  </p>
-                  
-                  {/* Status Indicators */}
-                  <div className="flex flex-wrap items-center gap-2 mt-3 text-xs">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider text-[10px] sm:text-xs ${
-                        plansOnline
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-red-500/10 text-red-400 border border-red-500/20"
-                      }`}
-                    >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide">
+                        Welcome{authUser?.name ? `, ${authUser.name}` : ""}!
+                      </h1>
+                      <span className="text-xl sm:text-2xl">👋</span>
+                    </div>
+                    <p className="text-neutral-400 text-xs sm:text-sm">
+                      Track progress, manage workouts, and crush your fitness goals.
+                    </p>
+                    
+                    {/* Status Indicators */}
+                    <div className="flex flex-wrap items-center gap-2 mt-3 text-xs">
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          plansOnline ? "bg-emerald-400 animate-pulse" : "bg-red-400"
-                        }`}
-                      />
-                      {plansOnline ? "LIVE MONGODB" : "OFFLINE MODE"}
-                    </span>
-
-                    {planLastSync && (
-                      <span className="text-neutral-400 bg-neutral-800/60 border border-neutral-700/40 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-mono">
-                        Synced{" "}
-                        {new Date(planLastSync).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    )}
-
-                    {planSyncStatus !== "idle" && (
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold text-[10px] sm:text-xs border ${
-                          planSyncStatus === "syncing"
-                            ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                            : planSyncStatus === "synced"
-                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                              : "bg-red-500/10 text-red-400 border-red-500/20"
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider text-[10px] sm:text-xs ${
+                          plansOnline
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                            : "bg-red-500/10 text-red-400 border border-red-500/20"
                         }`}
                       >
-                        <RefreshCw
-                          className={`w-3 h-3 ${
-                            planSyncStatus === "syncing" ? "animate-spin" : ""
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            plansOnline ? "bg-emerald-400 animate-pulse" : "bg-red-400"
                           }`}
                         />
-                        <span>
-                          {planSyncStatus === "syncing"
-                            ? "SYNCING"
-                            : planSyncStatus === "synced"
-                              ? "SYNCED"
-                              : "ERROR"}
-                        </span>
+                        {plansOnline ? "LIVE CLOUD SYNC" : "OFFLINE MODE"}
                       </span>
-                    )}
+
+                      {planLastSync && (
+                        <span className="text-neutral-400 bg-neutral-800/60 border border-neutral-700/40 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-mono">
+                          Synced{" "}
+                          {new Date(planLastSync).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      )}
+
+                      {planSyncStatus !== "idle" && (
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold text-[10px] sm:text-xs border ${
+                            planSyncStatus === "syncing"
+                              ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                              : planSyncStatus === "synced"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-red-500/10 text-red-400 border-red-500/20"
+                          }`}
+                        >
+                          <RefreshCw
+                            className={`w-3 h-3 ${
+                              planSyncStatus === "syncing" ? "animate-spin" : ""
+                            }`}
+                          />
+                          <span>
+                            {planSyncStatus === "syncing"
+                              ? "SYNCING"
+                              : planSyncStatus === "synced"
+                                ? "SYNCED"
+                                : "ERROR"}
+                          </span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Header Action Buttons */}
-                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                {/* Right Header Area: Real-Time Streak Widget & Action Buttons */}
+                <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap justify-between md:justify-end">
+                  {/* Real-time Streak Widget */}
+                  <StreakWidget />
+
+                  {/* Header Action Buttons */}
                   <button
                     onClick={handleRefresh}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs sm:text-sm font-bold uppercase tracking-wide border border-neutral-700 transition-all hover:scale-105 active:scale-95 shadow-md"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs sm:text-sm font-bold uppercase tracking-wide border border-neutral-700 transition-all hover:scale-105 active:scale-95 shadow-md"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Refresh</span>
@@ -351,7 +358,7 @@ const Dashboard = () => {
                   <button
                     onClick={handleForceSync}
                     disabled={planSyncStatus === "syncing"}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide border border-emerald-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-md"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide border border-emerald-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-md"
                   >
                     <Zap
                       className={`w-3.5 h-3.5 ${
@@ -362,7 +369,7 @@ const Dashboard = () => {
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide border border-red-500/30 transition-all hover:scale-105 active:scale-95 shadow-md"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide border border-red-500/30 transition-all hover:scale-105 active:scale-95 shadow-md"
                   >
                     <span>Logout</span>
                   </button>
@@ -481,11 +488,11 @@ const Dashboard = () => {
               {/* Total Workouts */}
               <button
                 onClick={() => navigate("/workouts")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-4 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center shadow-md">
-                    <BicepsFlexed className="w-5 h-5" />
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center shadow-md">
+                    <BicepsFlexed className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <span className="text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {workoutStats?.lastUpdate || (isOnline && stats.isRealTime)
@@ -496,10 +503,10 @@ const Dashboard = () => {
                 <div className="text-2xl sm:text-3xl font-black text-white font-mono leading-none mb-1">
                   {stats?.totalWorkouts ?? dashboardStats?.totalWorkouts ?? 0}
                 </div>
-                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
                   Total Workouts
                 </div>
-                <div className="text-xs text-red-500 font-medium mt-1">
+                <div className="text-[11px] sm:text-xs text-red-500 font-medium mt-1 truncate">
                   {(stats?.totalWorkouts || 0) > 0
                     ? `${stats?.totalWorkouts} sessions completed`
                     : "Ready to start!"}
@@ -510,11 +517,11 @@ const Dashboard = () => {
               {/* Weekly Workouts */}
               <button
                 onClick={() => navigate("/analytics")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-4 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center shadow-md">
-                    <BarChart3 className="w-5 h-5" />
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center shadow-md">
+                    <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <span className="text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {isOnline && stats.isRealTime ? "LIVE" : "OFF"}
@@ -523,10 +530,10 @@ const Dashboard = () => {
                 <div className="text-2xl sm:text-3xl font-black text-white font-mono leading-none mb-1">
                   {stats?.weeklyWorkouts ?? 0}
                 </div>
-                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
                   This Week
                 </div>
-                <div className="text-xs text-red-500 font-medium mt-1">
+                <div className="text-[11px] sm:text-xs text-red-500 font-medium mt-1 truncate">
                   {(stats?.weeklyWorkouts || 0) > 0
                     ? `${stats?.weeklyWorkouts} logged this week`
                     : "Log a session today"}
@@ -537,11 +544,11 @@ const Dashboard = () => {
               {/* Workout Plans */}
               <button
                 onClick={() => navigate("/my-plans")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-orange-500/40 p-4 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-orange-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center shadow-md">
-                    <ClipboardList className="w-5 h-5" />
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center shadow-md">
+                    <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {plansOnline && isRealTime ? "SYNC" : "OFF"}
@@ -550,10 +557,10 @@ const Dashboard = () => {
                 <div className="text-2xl sm:text-3xl font-black text-white font-mono leading-none mb-1">
                   {dashboardStats.totalPlans}
                 </div>
-                <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
                   Workout Plans
                 </div>
-                <div className="text-xs text-orange-400 font-medium mt-1">
+                <div className="text-[11px] sm:text-xs text-orange-400 font-medium mt-1 truncate">
                   {dashboardStats.totalPlans > 0
                     ? `${dashboardStats.totalPlans} plans ready`
                     : "Create your first plan"}
@@ -701,7 +708,7 @@ const Dashboard = () => {
                       }`}
                     />
                     <span>
-                      {plansOnline ? "REAL-TIME MONGODB" : "OFFLINE MODE"}
+                      {plansOnline ? "REAL-TIME CLOUD" : "OFFLINE MODE"}
                     </span>
                   </div>
                   <div>
@@ -720,7 +727,7 @@ const Dashboard = () => {
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-4">
                     <div className="inline-flex items-center gap-2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-bold uppercase tracking-wider text-[11px]">
                       <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                      {plansOnline ? "REAL-TIME MONGODB PLANS" : "LOCAL PLANS"}
+                      {plansOnline ? "REAL-TIME CLOUD PLANS" : "LOCAL PLANS"}
                     </div>
                     <div className="text-neutral-400 bg-neutral-800/60 border border-neutral-700/40 px-3 py-1 rounded-full text-[11px]">
                       {dashboardStats.totalPlans} TOTAL • {planStats.syncedPlans}{" "}
@@ -743,7 +750,7 @@ const Dashboard = () => {
                               {plan.synced ? (
                                 <span
                                   className="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-lg shadow-emerald-400/50 shrink-0"
-                                  title="Synced to MongoDB"
+                                  title="Synced to Cloud"
                                 />
                               ) : (
                                 <span

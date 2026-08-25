@@ -1047,7 +1047,7 @@ const Profile = () => {
                           /*#__PURE__*/ React.createElement(BarChart3, {
                             className: "w-[1em] h-[1em] inline-block",
                           }),
-                          " MongoDB \u2022 ",
+                          " Cloud Database \u2022 ",
                           /*#__PURE__*/ React.createElement(Cloud, {
                             className: "w-[1em] h-[1em] inline-block",
                           }),

@@ -618,7 +618,7 @@ export default function RealTimeWorkoutSession({ plan, onWorkoutComplete }) {
           /*#__PURE__*/ React.createElement(CheckCircle2, {
             className: "w-[1em] h-[1em] inline-block",
           }),
-          " Real-time sync to MongoDB",
+          " Real-time cloud sync",
         ),
         /*#__PURE__*/ React.createElement(
           "div",

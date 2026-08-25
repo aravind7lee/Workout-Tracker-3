@@ -1109,7 +1109,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
       /*#__PURE__*/ React.createElement(
         "div",
         {
-          className: "flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8",
+          className: "flex gap-1.5 sm:gap-2.5 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap mb-4 sm:mb-6 scrollbar-none",
         },
         categoriesLoading
           ? /*#__PURE__*/ React.createElement(
@@ -1131,34 +1131,27 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 {
                   key: key,
                   onClick: () => setActiveCategory(key),
-                  className: `px-3 sm:px-4 md:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1 sm:gap-2 ${activeCategory === key ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg hover:shadow-orange-500/20 scale-105" : "bg-neutral-800/60 hover:bg-neutral-700/80 text-neutral-300 hover:text-white border border-neutral-500/30 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105"}`,
+                  className: `px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${activeCategory === key ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/25 scale-105" : "bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 hover:text-white border border-neutral-700/60 backdrop-blur-sm"}`,
                   whileHover: {
-                    scale: 1.05,
+                    scale: 1.04,
                   },
                   whileTap: {
-                    scale: 0.95,
+                    scale: 0.96,
                   },
                 },
                 /*#__PURE__*/ React.createElement(
                   "span",
                   {
-                    className: "text-sm sm:text-base md:text-lg",
+                    className: "text-sm sm:text-base",
                   },
                   category.icon,
                 ),
                 /*#__PURE__*/ React.createElement(
                   "span",
                   {
-                    className: "hidden sm:inline",
+                    className: "font-bold",
                   },
-                  category.title.split(" ")[0],
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "span",
-                  {
-                    className: "sm:hidden",
-                  },
-                  category.title.split(" ")[0].slice(0, 4),
+                  category.title,
                 ),
               ),
             ),

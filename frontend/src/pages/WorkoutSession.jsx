@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRealTime } from '../context/RealTimeContext';
 import api from '../utils/api';
 import ExercisePickerModal from '../components/ExercisePickerModal';
+import { getMuscleGroup, getPrimaryMuscleGroup } from '../utils/muscleGroupHelper';
 
 const ACTIVE_SESSION_KEY = 'active_workout_session';
 
@@ -288,11 +289,13 @@ export default function WorkoutSession() {
   // Setup Actions
   // ---------------------------------------------------------
   const handleAddExerciseFromPicker = (selectedEx) => {
+    const exCategory = getMuscleGroup(selectedEx.name, selectedEx.categoryName || selectedEx.category);
     const newEx = {
       id: `ex_${Date.now()}_${exercises.length}`,
       exerciseId: selectedEx._id || selectedEx.id || null,
       exerciseName: selectedEx.name,
-      category: selectedEx.categoryName || selectedEx.category || 'General',
+      category: exCategory,
+      muscle: exCategory,
       notes: '',
       sets: [
         { id: `set_${Date.now()}_0`, setNumber: 1, weight: 0, reps: 10, completed: false },
@@ -466,27 +469,47 @@ export default function WorkoutSession() {
       const durationMinutes = Math.max(1, Math.round(elapsedSeconds / 60));
       const estimatedCalories = Math.round(durationMinutes * 7 + completedSetsCount * 5);
 
+      // Determine primary muscle group
+      const primaryMuscle = getPrimaryMuscleGroup(exercises);
+
+      // Format exercises cleanly ensuring no sets or exercises are dropped
+      const formattedExercises = exercises
+        .map(ex => {
+          const exMuscle = ex.category || ex.muscle || getMuscleGroup(ex.exerciseName);
+          
+          // Check if any sets are marked completed
+          const completedSets = ex.sets.filter(s => s.completed);
+          
+          // If user completed sets, take those. Otherwise take all sets configured with reps > 0
+          const setsToSave = completedSets.length > 0
+            ? completedSets
+            : ex.sets.filter(s => Number(s.reps) > 0);
+
+          return {
+            exercise: ex.exerciseId,
+            exerciseName: ex.exerciseName,
+            category: exMuscle,
+            muscle: exMuscle,
+            notes: ex.notes || '',
+            sets: (setsToSave.length > 0 ? setsToSave : ex.sets).map(s => ({
+              reps: Number(s.reps) || 0,
+              weight: Number(s.weight) || 0,
+              rest: 60
+            }))
+          };
+        })
+        .filter(ex => ex.sets.length > 0);
+
       const payload = {
         title: workoutTitle.trim() || 'Workout Session',
+        category: primaryMuscle,
+        muscle: primaryMuscle,
         status: 'completed',
         durationMinutes,
         calories: estimatedCalories,
         isPublic,
         startedAt: startedAt ? startedAt.toISOString() : new Date().toISOString(),
-        exercises: exercises
-          .filter(ex => ex.sets.some(s => s.completed))
-          .map(ex => ({
-            exercise: ex.exerciseId,
-            exerciseName: ex.exerciseName,
-            notes: ex.notes || '',
-            sets: ex.sets
-              .filter(s => s.completed)
-              .map(s => ({
-                reps: s.reps,
-                weight: s.weight,
-                rest: 60
-              }))
-          }))
+        exercises: formattedExercises
       };
 
       console.log('💾 Saving completed workout session to MongoDB Atlas:', payload);
@@ -496,8 +519,10 @@ export default function WorkoutSession() {
         localStorage.removeItem(ACTIVE_SESSION_KEY);
         setSessionState('COMPLETED');
 
+        const savedWorkout = res.data?.workout || payload;
+
         window.dispatchEvent(new CustomEvent('workoutCompleted', {
-          detail: res.data?.workout || payload
+          detail: savedWorkout
         }));
         if (typeof refreshStats === 'function') {
           refreshStats();
@@ -507,12 +532,15 @@ export default function WorkoutSession() {
           triggerUpdate();
         }
 
-        const createdId = res.data?.workout?._id || res.data?.workout?.id;
+        const createdId = savedWorkout._id || savedWorkout.id;
         setShowSummaryModal(false);
 
         if (createdId) {
           navigate(`/workout-details/${createdId}`, {
-            state: { message: '🎉 Workout saved to MongoDB Atlas successfully!' }
+            state: { 
+              workout: savedWorkout,
+              message: '🎉 Workout saved to MongoDB Atlas successfully!' 
+            }
           });
         } else {
           navigate('/workouts', { state: { workoutCompleted: true } });
