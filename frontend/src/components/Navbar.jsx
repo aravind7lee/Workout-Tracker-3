@@ -149,13 +149,13 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-1 xl:gap-1.5 px-4 xl:px-8">
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-2 xl:px-6 overflow-x-hidden">
             {navLinks.map((link) => {
               const active = isActiveRoute(link.to);
               return (
-                <Link key={link.to} to={link.to} className="relative group">
+                <Link key={link.to} to={link.to} className="relative group flex-shrink-0">
                   <div
-                    className={`relative px-3.5 py-1.5 rounded-md text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center whitespace-nowrap ${
+                    className={`relative px-2.5 xl:px-3 py-1.5 rounded-md text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center whitespace-nowrap ${
                       active
                         ? "text-red-500 bg-red-950/30 border border-red-800/40"
                         : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
@@ -169,7 +169,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Section */}
-          <div className={`flex items-center gap-1.5 sm:gap-3 lg:gap-5 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
+          <div className={`flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
             {/* Connection Status */}
             <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
               {connectionStatus.fullyOnline ? (
@@ -193,12 +193,12 @@ export default function Navbar() {
             {isAuthenticated() && user ? (
               <div ref={profileRef} className="relative z-[60] flex-shrink-0">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] hover:bg-[#252525] transition-all duration-300 shadow-lg relative flex-shrink-0 group"
+                  className="flex items-center gap-2 p-1 xl:pr-3 xl:pl-1 py-1 rounded-full bg-[#1a1a1a]/90 backdrop-blur-md border border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#222] transition-all duration-200 shadow-lg relative flex-shrink-0 group"
                 >
-                  <div className="relative flex items-center justify-center w-[80%] h-[80%] rounded-full">
+                  <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden flex-shrink-0">
                     {user?.profileImage ? (
                       <img
                         src={user.profileImage}
@@ -206,17 +206,16 @@ export default function Navbar() {
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full rounded-full bg-[#cc1a1a] flex items-center justify-center text-white font-black text-[12px] sm:text-sm">
+                      <div className="w-full h-full rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white font-black text-xs shadow-inner">
                         {(user?.name && user.name.charAt(0)?.toUpperCase()) || "U"}
                       </div>
                     )}
                     {connectionStatus.fullyOnline && (
-                      <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#ff3b3b] rounded-full border-[2.5px] border-[#1a1a1a] shadow-[0_0_8px_rgba(255,59,59,0.8)] z-10" />
+                      <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#ff3b3b] rounded-full border-2 border-[#1a1a1a] shadow-[0_0_6px_rgba(255,59,59,0.8)] z-10" />
                     )}
                   </div>
-                  {/* Keep text for desktop only but visually hidden on mobile */}
-                  <span className="hidden xl:block text-[11px] lg:text-xs font-black text-white tracking-widest uppercase truncate max-w-[100px] ml-2">
-                    {user?.name || "User"}
+                  <span className="hidden xl:inline-block text-[11px] font-bold text-white tracking-wide uppercase truncate max-w-[80px]">
+                    {user?.name || "Athlete"}
                   </span>
                 </motion.button>
 

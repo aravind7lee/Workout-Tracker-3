@@ -528,6 +528,7 @@ export const RealTimeProvider = ({ children }) => {
     loading,
     lastUpdate,
     refreshStats,
+    triggerUpdate: refreshStats,
     updateStat,
     incrementStat,
     updateWorkoutStats,

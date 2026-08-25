@@ -1,5 +1,5 @@
 // Home.jsx - Ultra Performance Optimized
-import { Dumbbell, BarChart3, Target, Salad, BicepsFlexed, Globe, Star, Lock, Timer, Circle, AlertTriangle, Lightbulb, Zap } from 'lucide-react';
+import { Dumbbell, BarChart3, Target, Salad, BicepsFlexed, Globe, Star, Lock, Timer, Circle, AlertTriangle, Lightbulb, Zap, ArrowUpRight, Activity, Flame } from 'lucide-react';
 import React, {
   useState,
   useEffect,
@@ -724,6 +724,9 @@ export default function Home() {
     return display;
   }
 
+  const totalWorkoutsCount = useCountUp(totalWorkouts, 400);
+  const todayWorkoutsCount = useCountUp(todayWorkouts, 400);
+
   // Optimized Image Component with lazy loading
   const OptimizedImage = /*#__PURE__*/ React.memo(({ src, alt, className }) =>
     /*#__PURE__*/ React.createElement("img", {
@@ -735,112 +738,6 @@ export default function Home() {
     }),
   );
 
-  // Optimized components
-  const StatCard = /*#__PURE__*/ React.memo(({ stat }) => {
-    const numericValue =
-      typeof stat.value === "number" ? stat.value : parseInt(stat.value) || 0;
-    const count = useCountUp(numericValue, 300);
-    const isLocked = !isAuthenticated() || !auth?.user;
-    return /*#__PURE__*/ React.createElement(
-      "button",
-      {
-        onClick: () => handleNav(stat.path),
-        className:
-          "relative group transform transition-all duration-300 text-left w-full hover:translate-x-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500",
-      },
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "relative bg-zinc-900 border-l-2 sm:border-l-8 border-lime-500 p-3 sm:p-8 shadow-2xl group-hover:bg-neutral-900 transition-all duration-300",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "flex items-start justify-between mb-3 sm:mb-6",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "flex items-center justify-center bg-black border border-lime-500 sm:border-2 p-1.5 sm:p-4",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "text-lg sm:text-3xl",
-              },
-              stat.icon,
-            ),
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "flex flex-col items-end gap-1",
-            },
-            /*#__PURE__*/ React.createElement(
-              "span",
-              {
-                className: `inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-4 sm:py-2 bg-black border sm:border-2 text-[9px] sm:text-xs font-black uppercase tracking-wide ${isLocked ? "border-zinc-700 text-zinc-500" : isOnline && stats?.isRealTime ? "border-lime-500 text-lime-500" : "border-zinc-700 text-zinc-500"}`,
-              },
-              /*#__PURE__*/ React.createElement("div", {
-                className: `w-1 h-1 sm:w-2 sm:h-2 ${isLocked ? "bg-zinc-500" : isOnline && stats?.isRealTime ? "bg-lime-500 animate-pulse" : "bg-zinc-500"}`,
-              }),
-              isLocked
-                ? "LOCKED"
-                : isOnline && stats?.isRealTime
-                  ? "LIVE"
-                  : "OFFLINE",
-            ),
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "space-y-1.5 sm:space-y-3",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "text-2xl sm:text-5xl font-black text-white leading-none",
-            },
-            isLocked
-              ? "🔒"
-              : typeof stat.value === "number"
-                ? count
-                : stat.value,
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "text-[10px] sm:text-sm font-black text-lime-500 uppercase tracking-wide sm:tracking-widest",
-            },
-            stat.label,
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "text-[10px] sm:text-sm text-zinc-400 font-medium leading-snug",
-            },
-            isLocked ? "Login to view your stats" : stat.subtitle,
-          ),
-          process.env.NODE_ENV === "development" &&
-            !isLocked &&
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "text-[9px] sm:text-xs text-zinc-600 mt-1",
-              },
-              "Source: ",
-              stats?.dataSource || "Unknown",
-            ),
-        ),
-      ),
-    );
-  });
   const FeatureCard = ({ feature, index }) => {
     const isActive = index === activeFeature;
     return /*#__PURE__*/ React.createElement(
@@ -972,6 +869,193 @@ export default function Home() {
       ),
     );
   };
+
+  const HomeStatsSection = () => {
+    return (
+      <section
+        data-animate="true"
+        data-id="quick-stats"
+        className="mb-8 sm:mb-20 px-3 sm:px-6"
+      >
+        <div className="max-w-5xl mx-auto transition-all duration-500 opacity-100 translate-y-0">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-10">
+            <div className="inline-flex items-center justify-center mb-2 sm:mb-3">
+              <div className="h-0.5 w-10 sm:h-1 sm:w-16 bg-gradient-to-r from-lime-500 to-emerald-400 rounded-full" />
+            </div>
+            <h2 className="text-xl sm:text-4xl md:text-5xl font-black mb-2 text-white uppercase tracking-tight">
+              {isAuthenticated() && auth?.user ? "YOUR STATS" : "GET STARTED"}
+            </h2>
+            <p className="text-xs sm:text-base text-zinc-400 max-w-lg mx-auto font-medium leading-snug">
+              {isAuthenticated() && auth?.user
+                ? "Track your performance and training milestones in real-time"
+                : "Sign in to activate real-time telemetry and track your fitness journey"}
+            </p>
+          </div>
+
+          {/* Modern Bento Container */}
+          <div className="bg-[#0e0e11]/90 border border-zinc-800/80 rounded-3xl p-3.5 sm:p-5 lg:p-6 shadow-2xl backdrop-blur-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
+              
+              {/* Left: Authentic High-Impact Gym Visual Card */}
+              <div className="lg:col-span-5 relative rounded-2xl overflow-hidden min-h-[250px] sm:min-h-[300px] lg:min-h-full flex flex-col justify-between p-4 sm:p-6 group border border-zinc-800/60 shadow-inner">
+                <img
+                  src={Home4}
+                  alt="Elite Gym Training"
+                  className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/25" />
+                
+                {/* Top Badges */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-lime-500/30 text-[10px] sm:text-[11px] font-black text-lime-400 shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
+                    <span>LIVE TELEMETRY</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-zinc-700/60 text-[10px] font-bold text-zinc-300">
+                    <Zap className="w-3 h-3 text-lime-400" />
+                    <span>GRIND-X</span>
+                  </div>
+                </div>
+
+                {/* Bottom Content */}
+                <div className="relative z-10 pt-12 sm:pt-16">
+                  <div className="text-[10px] font-black text-lime-400 uppercase tracking-widest mb-1">
+                    ATHLETE ENGINE
+                  </div>
+                  <h3 className="text-lg sm:text-2xl font-black text-white uppercase tracking-tight mb-1.5 leading-tight">
+                    REAL-TIME LOGGING
+                  </h3>
+                  <p className="text-xs text-zinc-300 font-medium leading-snug line-clamp-2">
+                    Every rep, set, and session synced automatically to your personal profile.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: Modern 2x2 Stats Hub */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                
+                {/* Card 1: Total Workouts */}
+                <div 
+                  onClick={() => handleNav(isAuthenticated() && auth?.user ? "/dashboard" : "/login")}
+                  className="cursor-pointer bg-zinc-900/90 border border-zinc-800/90 hover:border-lime-500/50 rounded-2xl p-4 sm:p-5 transition-all duration-300 group hover:bg-zinc-900 shadow-md flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <BicepsFlexed className="w-5 h-5" />
+                    </div>
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+                      !isAuthenticated() || !auth?.user
+                        ? "border-zinc-700 bg-zinc-800/80 text-zinc-400"
+                        : isOnline && stats?.isRealTime
+                          ? "border-lime-500/30 bg-lime-500/10 text-lime-400"
+                          : "border-zinc-700 bg-zinc-800/80 text-zinc-400"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        !isAuthenticated() || !auth?.user ? "bg-zinc-500" : "bg-lime-500 animate-pulse"
+                      }`} />
+                      {!isAuthenticated() || !auth?.user ? "LOCKED" : "LIVE"}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black text-white leading-none mb-1 tracking-tight">
+                      {!isAuthenticated() || !auth?.user ? "0" : totalWorkoutsCount}
+                    </div>
+                    <div className="text-xs font-black text-lime-400 uppercase tracking-wider mb-1">
+                      TOTAL WORKOUTS
+                    </div>
+                    <div className="text-[11px] text-zinc-400 font-medium">
+                      {!isAuthenticated() || !auth?.user
+                        ? "Sign in to track progress"
+                        : totalWorkouts > 0
+                          ? `${totalWorkouts} completed sessions`
+                          : "Ready for your 1st workout"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 2: Today's Workouts */}
+                <div 
+                  onClick={() => handleNav(isAuthenticated() && auth?.user ? "/start-workout" : "/login")}
+                  className="cursor-pointer bg-zinc-900/90 border border-zinc-800/90 hover:border-orange-500/50 rounded-2xl p-4 sm:p-5 transition-all duration-300 group hover:bg-zinc-900 shadow-md flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Flame className="w-5 h-5" />
+                    </div>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-orange-500/30 bg-orange-500/10 text-orange-400">
+                      TODAY
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black text-white leading-none mb-1 tracking-tight">
+                      {!isAuthenticated() || !auth?.user ? "0" : todayWorkoutsCount}
+                    </div>
+                    <div className="text-xs font-black text-orange-400 uppercase tracking-wider mb-1">
+                      TODAY'S SESSIONS
+                    </div>
+                    <div className="text-[11px] text-zinc-400 font-medium">
+                      {todayWorkouts > 0 ? "Daily target active" : "Ready to hit the gym"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 3: Cloud Database Status */}
+                <div className="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-4 sm:p-5 shadow-md flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-cyan-500/30 bg-cyan-500/10 text-cyan-400">
+                      {isOnline ? "CONNECTED" : "OFFLINE"}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white leading-none mb-1 uppercase tracking-tight">
+                      {isOnline ? "REAL-TIME" : "CACHED"}
+                    </div>
+                    <div className="text-xs font-black text-cyan-400 uppercase tracking-wider mb-1">
+                      DATABASE ENGINE
+                    </div>
+                    <div className="text-[11px] text-zinc-400 font-medium">
+                      {stats?.dataSource === "mongodb" ? "MongoDB Live Cloud" : "Instant local-first storage"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 4: Action / Launch Dashboard */}
+                <div 
+                  onClick={() => handleNav("/dashboard")}
+                  className="cursor-pointer bg-gradient-to-br from-lime-500/15 via-zinc-900/95 to-zinc-900 border border-lime-500/30 hover:border-lime-400 rounded-2xl p-4 sm:p-5 transition-all duration-300 group hover:shadow-[0_0_25px_rgba(132,204,22,0.15)] flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-lime-500/20 border border-lime-500/40 text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Dumbbell className="w-5 h-5" />
+                    </div>
+                    <div className="w-7 h-7 rounded-full bg-lime-500/10 border border-lime-500/30 flex items-center justify-center text-lime-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                      <ArrowUpRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-base sm:text-lg font-black text-white leading-tight mb-1 group-hover:text-lime-300 transition-colors uppercase tracking-tight">
+                      OPEN DASHBOARD
+                    </div>
+                    <div className="text-[11px] text-zinc-300 font-medium flex items-center gap-1">
+                      <span>View charts & history</span>
+                      <span className="text-lime-400 font-bold group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
   return /*#__PURE__*/ React.createElement(
     "div",
     {
@@ -991,7 +1075,7 @@ export default function Home() {
     /*#__PURE__*/ React.createElement(
       "div",
       {
-        className: `container mx-auto px-2 sm:px-6 py-3 sm:py-8 relative z-10 transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"} space-y-6 sm:space-y-12`,
+        className: "container mx-auto px-2 sm:px-6 py-3 sm:py-8 relative z-10 space-y-6 sm:space-y-12",
       },
       /*#__PURE__*/ React.createElement(
         "section",
@@ -1106,71 +1190,7 @@ export default function Home() {
           ),
         ),
       ),
-      /*#__PURE__*/ React.createElement(
-        "section",
-        {
-          "data-animate": true,
-          "data-id": "quick-stats",
-          className: "mb-6 sm:mb-16",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: `transition-all duration-500 delay-100 ${isVisible["quick-stats"] ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`,
-            style: {
-              willChange: isVisible["quick-stats"]
-                ? "auto"
-                : "transform, opacity",
-            },
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-center mb-4 sm:mb-10",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "inline-block mb-2 sm:mb-3",
-              },
-              /*#__PURE__*/ React.createElement("div", {
-                className: "h-0.5 w-8 sm:h-1 sm:w-20 bg-lime-500 mb-2 sm:mb-3",
-              }),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "h2",
-              {
-                className:
-                  "text-xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-4 text-white uppercase tracking-tight px-3",
-              },
-              isAuthenticated() && auth?.user ? "YOUR STATS" : "GET STARTED",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "p",
-              {
-                className:
-                  "text-xs sm:text-lg text-zinc-400 max-w-2xl mx-auto font-medium px-3 leading-snug",
-              },
-              isAuthenticated() && auth?.user
-                ? "Track your performance in real-time"
-                : "Login to start tracking your fitness journey",
-            ),
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "grid grid-cols-1 gap-3 sm:gap-6 max-w-lg mx-auto px-3",
-            },
-            quickStats.map((stat, i) =>
-              /*#__PURE__*/ React.createElement(StatCard, {
-                key: `stat-${i}`,
-                stat: stat,
-              }),
-            ),
-          ),
-        ),
-      ),
+      /*#__PURE__*/ React.createElement(HomeStatsSection, null),
       /*#__PURE__*/ React.createElement(ParallaxSection, {
         id: "training-experience",
         imageSrc: Home1,

@@ -17,7 +17,7 @@ export default function WorkoutSession() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { triggerUpdate } = useRealTime();
+  const { refreshStats, fetchRealTimeStats, triggerUpdate } = useRealTime();
 
   /**
    * Session Lifecycle State Machine:
@@ -499,7 +499,13 @@ export default function WorkoutSession() {
         window.dispatchEvent(new CustomEvent('workoutCompleted', {
           detail: res.data?.workout || payload
         }));
-        triggerUpdate();
+        if (typeof refreshStats === 'function') {
+          refreshStats();
+        } else if (typeof fetchRealTimeStats === 'function') {
+          fetchRealTimeStats();
+        } else if (typeof triggerUpdate === 'function') {
+          triggerUpdate();
+        }
 
         const createdId = res.data?.workout?._id || res.data?.workout?.id;
         setShowSummaryModal(false);
