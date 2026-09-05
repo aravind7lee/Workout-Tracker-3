@@ -33,7 +33,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
   return /*#__PURE__*/ React.createElement(
     "div",
     {
-      className: `fixed inset-0 z-[99999] bg-black flex items-center justify-center transition-opacity duration-250 ${visible ? "opacity-100" : "opacity-0"}`,
+      className: `theme-dark-surface loading-screen fixed inset-0 z-[99999] bg-black flex items-center justify-center transition-opacity duration-250 ${visible ? "opacity-100" : "opacity-0"}`,
     },
     /*#__PURE__*/ React.createElement("div", {
       className: "absolute inset-0",

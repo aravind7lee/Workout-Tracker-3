@@ -48,7 +48,7 @@ export default function ImageStrip({ images = [], name = "Champion", isHovered }
   return (
     <>
       <div
-        className="relative w-full h-80 sm:h-96 md:h-[420px] bg-neutral-950 overflow-hidden select-none group"
+        className="theme-dark-surface relative w-full h-80 sm:h-96 md:h-[420px] bg-neutral-950 overflow-hidden select-none group"
         onMouseEnter={() => setIsAutoPlaying(false)}
         onMouseLeave={() => setIsAutoPlaying(true)}
         onTouchStart={handleTouchStart}

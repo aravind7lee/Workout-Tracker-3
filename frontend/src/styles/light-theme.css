@@ -79,18 +79,20 @@
 
 /* Replace complete dark surface gradients, instead of changing only gradient
    variables (which left several Rollup-generated gradients black). */
-[data-theme="light"] [class*="from-neutral-9"],
-[data-theme="light"] [class*="via-neutral-9"],
-[data-theme="light"] [class*="to-neutral-9"],
-[data-theme="light"] [class*="from-gray-9"],
-[data-theme="light"] [class*="via-gray-9"],
-[data-theme="light"] [class*="to-gray-9"],
-[data-theme="light"] [class*="from-zinc-9"],
-[data-theme="light"] [class*="via-zinc-9"],
-[data-theme="light"] [class*="to-zinc-9"],
-[data-theme="light"] [class*="from-slate-9"],
-[data-theme="light"] [class*="via-slate-9"],
-[data-theme="light"] [class*="to-slate-9"] {
+[data-theme="light"] :where(
+  [class*="from-neutral-9"],
+  [class*="via-neutral-9"],
+  [class*="to-neutral-9"],
+  [class*="from-gray-9"],
+  [class*="via-gray-9"],
+  [class*="to-gray-9"],
+  [class*="from-zinc-9"],
+  [class*="via-zinc-9"],
+  [class*="to-zinc-9"],
+  [class*="from-slate-9"],
+  [class*="via-slate-9"],
+  [class*="to-slate-9"]
+):not(.theme-dark-surface):not(.theme-dark-surface *) {
   background-color: #ffffff !important;
   background-image: linear-gradient(135deg, #ffffff 0%, #f8fafc 55%, #eef2f7 100%) !important;
 }
@@ -139,8 +141,7 @@
   border-color: rgba(24, 24, 27, 0.14) !important;
 }
 
-/* Typography. The older theme file intentionally normalizes descendants to
-   dark text; these explicit mappings restore useful secondary hierarchy. */
+/* Typography hierarchy for legacy dark utility classes. */
 [data-theme="light"] .text-white,
 [data-theme="light"] .text-gray-100,
 [data-theme="light"] .text-gray-200,
@@ -194,6 +195,9 @@
 [data-theme="light"] .theme-dark-surface h1,
 [data-theme="light"] .theme-dark-surface h2,
 [data-theme="light"] .theme-dark-surface h3,
+[data-theme="light"] .theme-dark-surface h4,
+[data-theme="light"] .theme-dark-surface h5,
+[data-theme="light"] .theme-dark-surface h6,
 [data-theme="light"] .theme-dark-surface p,
 [data-theme="light"] .theme-dark-surface .text-white,
 [data-theme="light"] .theme-dark-surface .text-gray-200,
@@ -203,6 +207,53 @@
 [data-theme="light"] .theme-dark-surface .text-zinc-200,
 [data-theme="light"] .theme-dark-surface .text-zinc-300 {
   color: #f8fafc !important;
+}
+
+/* Photo-backed heroes are intentionally dark in both themes. This prevents
+   legacy light-hero rules from washing out the image and lowering contrast. */
+[data-theme="light"] .theme-dark-surface .hero-overlay-primary {
+  background: rgba(9, 9, 11, 0.52) !important;
+}
+
+[data-theme="light"] .theme-dark-surface .hero-overlay-secondary {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.72),
+    rgba(0, 0, 0, 0.18) 58%,
+    rgba(0, 0, 0, 0.28)
+  ) !important;
+}
+
+[data-theme="light"] .theme-dark-surface :where(
+  .hero-title,
+  .hero-subtitle,
+  .hero-description,
+  .hero-feature-text,
+  .nutrition-hero-subtitle
+) {
+  color: #f8fafc !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.78) !important;
+}
+
+/* Keep text legible on saturated action surfaces after the global light-mode
+   text translation has converted legacy text-white utilities. */
+[data-theme="light"] :where(
+  button[class*="from-red-"],
+  button[class*="from-orange-"],
+  button[class*="bg-red-"],
+  a[class*="from-red-"],
+  a[class*="from-orange-"],
+  a[class*="bg-red-"]
+),
+[data-theme="light"] :where(
+  button[class*="from-red-"],
+  button[class*="from-orange-"],
+  button[class*="bg-red-"],
+  a[class*="from-red-"],
+  a[class*="from-orange-"],
+  a[class*="bg-red-"]
+) * {
+  color: #ffffff !important;
 }
 
 /* Navigation and fixed shared UI. */
@@ -219,6 +270,93 @@
 [data-theme="light"] footer span,
 [data-theme="light"] footer p {
   color: #27272a !important;
+}
+
+/* Primary navbar: crisp light glass, persistent brand visibility, and an
+   unmistakable active destination without crowding utility controls. */
+[data-theme="light"] .app-navbar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1px solid rgba(24, 24, 27, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(24, 24, 27, 0.08) !important;
+  backdrop-filter: blur(18px) saturate(145%) !important;
+}
+
+[data-theme="light"] .app-navbar-brand,
+[data-theme="light"] .app-navbar-brand img {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+[data-theme="light"] .app-navbar-item {
+  color: #3f3f46 !important;
+  border-color: transparent !important;
+}
+
+[data-theme="light"] .app-navbar-item:hover {
+  color: #18181b !important;
+  background: #f1f5f9 !important;
+}
+
+[data-theme="light"] .app-navbar-item-active,
+[data-theme="light"] .app-navbar-item-active:hover {
+  color: #b91c1c !important;
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  box-shadow: inset 0 0 0 1px rgba(190, 18, 60, 0.04) !important;
+}
+
+[data-theme="light"] .app-navbar-status,
+[data-theme="light"] .app-navbar-profile,
+[data-theme="light"] .app-navbar-menu {
+  background: #ffffff !important;
+  border-color: #d4d4d8 !important;
+  color: #3f3f46 !important;
+  box-shadow: 0 5px 16px rgba(24, 24, 27, 0.1) !important;
+}
+
+[data-theme="light"] .app-navbar-status:hover,
+[data-theme="light"] .app-navbar-profile:hover,
+[data-theme="light"] .app-navbar-menu:hover {
+  background: #f8fafc !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+[data-theme="light"] .app-navbar-profile > span {
+  color: #27272a !important;
+}
+
+/* Settings keeps the same information architecture while using stable,
+   responsive light surfaces instead of translated dark gradients. */
+[data-theme="light"] .settings-page {
+  width: 100%;
+  max-width: 100%;
+  color: #27272a !important;
+}
+
+[data-theme="light"] .settings-panel {
+  background: #ffffff !important;
+  border-color: rgba(24, 24, 27, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(24, 24, 27, 0.09) !important;
+}
+
+[data-theme="light"] .settings-panel :where(h1, h2, h3, h4, h5, h6) {
+  color: #18181b !important;
+}
+
+[data-theme="light"] .settings-panel :where(.text-neutral-300, .text-neutral-400) {
+  color: #52525b !important;
+}
+
+@media (max-width: 1023px) {
+  [data-theme="light"] .app-navbar {
+    min-height: 4.5rem;
+  }
+
+  [data-theme="light"] .settings-page {
+    padding-bottom: 6rem;
+  }
 }
 
 [data-theme="light"] input,

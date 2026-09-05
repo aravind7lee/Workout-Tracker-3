@@ -421,7 +421,7 @@ const Dashboard = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="relative h-44 sm:h-full order-1 sm:order-2 overflow-hidden">
+                  <div className="theme-dark-surface relative h-44 sm:h-full order-1 sm:order-2 overflow-hidden bg-black">
                     <img
                       src={Dashboard1}
                       alt="Beast Mode Workout"
@@ -435,7 +435,7 @@ const Dashboard = () => {
               {/* Elite Performance Card */}
               <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/95 via-neutral-900/80 to-black border border-red-600/20 shadow-xl backdrop-blur-xl group">
                 <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[280px]">
-                  <div className="relative h-44 sm:h-full order-1 overflow-hidden">
+                  <div className="theme-dark-surface relative h-44 sm:h-full order-1 overflow-hidden bg-black">
                     <img
                       src={Dashboard2}
                       alt="Elite Performance Workout"

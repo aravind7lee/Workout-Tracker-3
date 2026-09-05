@@ -1,5 +1,5 @@
 // FIXED Plan Builder - No Theme System Errors
-import { Rocket, CheckCircle2, XCircle, RefreshCw, Save, Smartphone, AlertTriangle, Edit, Zap, Sparkles, Target, MousePointer, Cloud, BarChart3, Dumbbell, Globe, BicepsFlexed, Heart, Activity, Star, ClipboardList, Book, Lightbulb, Medal, Timer } from 'lucide-react';
+import { Rocket, CheckCircle2, XCircle, RefreshCw, Save, Smartphone, AlertTriangle, Edit, Zap, Sparkles, Target, MousePointer, Cloud, BarChart3, Dumbbell, Globe, BicepsFlexed, Star, ClipboardList, Book, Lightbulb, Medal, Timer } from 'lucide-react';
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -500,7 +500,8 @@ export default function PlansBuilder() {
     /*#__PURE__*/ React.createElement(
       "div",
       {
-        className: "relative w-full h-screen overflow-hidden",
+        className:
+          "theme-dark-surface relative w-full h-screen overflow-hidden bg-black",
       },
       /*#__PURE__*/ React.createElement(
         AnimatePresence,
@@ -1703,50 +1704,35 @@ export default function PlansBuilder() {
                   {
                     value: "General",
                   },
-                  /*#__PURE__*/ React.createElement(Dumbbell, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " General",
+                  "General",
                 ),
                 /*#__PURE__*/ React.createElement(
                   "option",
                   {
                     value: "Strength",
                   },
-                  /*#__PURE__*/ React.createElement(BicepsFlexed, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Strength",
+                  "Strength",
                 ),
                 /*#__PURE__*/ React.createElement(
                   "option",
                   {
                     value: "Cardio",
                   },
-                  /*#__PURE__*/ React.createElement(Heart, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Cardio",
+                  "Cardio",
                 ),
                 /*#__PURE__*/ React.createElement(
                   "option",
                   {
                     value: "Flexibility",
                   },
-                  /*#__PURE__*/ React.createElement(Activity, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " Flexibility",
+                  "Flexibility",
                 ),
                 /*#__PURE__*/ React.createElement(
                   "option",
                   {
                     value: "HIIT",
                   },
-                  /*#__PURE__*/ React.createElement(Star, {
-                    className: "w-[1em] h-[1em] inline-block",
-                  }),
-                  " HIIT",
+                  "HIIT",
                 ),
               ),
             ),

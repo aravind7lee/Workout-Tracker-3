@@ -878,7 +878,7 @@ const WorkoutSplits = () => {
     /*#__PURE__*/ React.createElement(
       "div",
       {
-        className: "relative overflow-hidden",
+        className: "theme-dark-surface relative overflow-hidden bg-black",
       },
       /*#__PURE__*/ React.createElement(
         "div",

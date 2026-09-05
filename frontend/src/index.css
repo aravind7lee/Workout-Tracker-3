@@ -247,17 +247,16 @@ html {
   color: var(--muted) !important;
 }
 
-/* Deep Slate Buttons */
-.btn,
-button {
+/* Deep Slate Buttons. Native buttons must remain controlled by their
+   component utilities; a global !important background erased gradients. */
+.btn {
   background: var(--btn-secondary-bg) !important;
   border: 1px solid var(--panel-border) !important;
   color: var(--btn-secondary-text) !important;
   transition: all 200ms ease !important;
 }
 
-.btn:hover,
-button:hover {
+.btn:hover {
   background: var(--accent) !important;
   color: var(--accent-contrast) !important;
   border-color: var(--accent) !important;

@@ -21,7 +21,6 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const { scrollY } = useScroll();
 
   const location = useLocation();
@@ -43,19 +42,10 @@ export default function Navbar() {
     { to: "/profile", label: "Profile" },
   ];
 
-  // Handle scroll effect and scroll direction for hiding navbar
+  // Keep the primary navigation persistently available; only its surface
+  // changes after scrolling so users never lose access to app destinations.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 20);
-    const previous = scrollY.getPrevious();
-
-    // Hide navbar only when scrolling down and passed the top threshold
-    // Show navbar when scrolling up or at the very top
-    if (latest > previous && latest > 150) {
-      setHidden(true);
-      if (showProfileDropdown) setShowProfileDropdown(false);
-    } else {
-      setHidden(false);
-    }
   });
 
   // Handle body scroll lock when sidebar is open
@@ -118,14 +108,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      initial="visible"
-      animate={hidden ? "hidden" : "visible"}
-      transition={{ duration: 0.35, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+      className={`app-navbar fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
         isScrolled
           ? "bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800/80 shadow-lg py-2"
           : "bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 py-3"
@@ -134,7 +117,7 @@ export default function Navbar() {
       <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="flex items-center justify-between w-full h-12 sm:h-14">
           {/* Logo Section */}
-          <Link to="/" className="group flex-shrink-0">
+          <Link to="/" className="app-navbar-brand group flex-shrink-0" aria-label="GrindX home">
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -150,15 +133,16 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-2 xl:px-6 overflow-x-hidden">
+          <div className="app-navbar-links hidden min-w-0 lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-2 xl:px-6 overflow-x-hidden">
             {navLinks.map((link) => {
               const active = isActiveRoute(link.to);
               return (
                 <Link key={link.to} to={link.to} className="relative group flex-shrink-0">
                   <div
-                    className={`relative px-2.5 xl:px-3 py-1.5 rounded-md text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center whitespace-nowrap ${
+                    aria-current={active ? "page" : undefined}
+                    className={`app-navbar-item relative px-2.5 xl:px-3 py-1.5 rounded-lg text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center whitespace-nowrap ${
                       active
-                        ? "text-red-500 bg-red-950/30 border border-red-800/40"
+                        ? "app-navbar-item-active text-red-500 bg-red-950/30 border border-red-800/40"
                         : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                     }`}
                   >
@@ -170,9 +154,9 @@ export default function Navbar() {
           </div>
 
           {/* Right Section */}
-          <div className={`flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
+          <div className={`app-navbar-actions flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
             {/* Connection Status */}
-            <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
+            <div className="app-navbar-status hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
               {connectionStatus.fullyOnline ? (
                 <Wifi size={14} className="text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]" />
               ) : (
@@ -199,7 +183,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center gap-2 p-1 xl:pr-3 xl:pl-1 py-1 rounded-full bg-[#1a1a1a]/90 backdrop-blur-md border border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#222] transition-all duration-200 shadow-lg relative flex-shrink-0 group"
+                  className="app-navbar-profile flex items-center gap-2 p-1 xl:pr-3 xl:pl-1 py-1 rounded-full bg-[#1a1a1a]/90 backdrop-blur-md border border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#222] transition-all duration-200 shadow-lg relative flex-shrink-0 group"
                 >
                   <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden flex-shrink-0">
                     {user?.profileImage ? (
@@ -292,7 +276,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg relative z-[60] flex-shrink-0 ml-0.5 sm:ml-1"
+              className="app-navbar-menu lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg relative z-[60] flex-shrink-0 ml-0.5 sm:ml-1"
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (

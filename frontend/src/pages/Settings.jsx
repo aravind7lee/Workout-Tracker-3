@@ -1961,7 +1961,7 @@ export default function Settings() {
       "div",
       {
         className:
-          "relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl",
+          "settings-panel relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl",
       },
       /*#__PURE__*/ React.createElement("div", {
         className:
@@ -2099,7 +2099,7 @@ export default function Settings() {
           "div",
           {
             className:
-              "relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl",
+              "settings-panel relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl",
           },
           /*#__PURE__*/ React.createElement(
             "div",
@@ -2225,7 +2225,7 @@ export default function Settings() {
               duration: 0.3,
             },
             className:
-              "relative min-w-0 overflow-hidden rounded-2xl border border-neutral-800/50 bg-gradient-to-br from-neutral-900/80 to-black/80 shadow-2xl backdrop-blur-xl sm:rounded-3xl",
+              "settings-panel relative min-w-0 overflow-hidden rounded-2xl border border-neutral-800/50 bg-gradient-to-br from-neutral-900/80 to-black/80 shadow-2xl backdrop-blur-xl sm:rounded-3xl",
           },
           /*#__PURE__*/ React.createElement(
             "div",
