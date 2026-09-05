@@ -1,0 +1,304 @@
+/*
+ * GrindX light theme compatibility layer.
+ * This file is imported after index.css so legacy dark Tailwind utilities can
+ * be translated without altering the established dark-mode presentation.
+ */
+[data-theme="light"] {
+  --bg: #f4f6f8;
+  --bg-soft: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-accent: #f1f5f9;
+  --text: #27272a;
+  --text-secondary: #52525b;
+  --heading: #09090b;
+  --muted: #64748b;
+  --panel-border: rgba(24, 24, 27, 0.13);
+  --border-medium: #d4d4d8;
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-text: #27272a;
+  --btn-secondary-border: #d4d4d8;
+  --shadow-soft: 0 4px 18px rgba(24, 24, 27, 0.08);
+  --shadow-premium: 0 14px 36px rgba(24, 24, 27, 0.12);
+  --shadow-floating: 0 20px 48px rgba(24, 24, 27, 0.16);
+  color-scheme: light;
+}
+
+[data-theme="light"] body,
+[data-theme="light"] #root,
+[data-theme="light"] .app-main {
+  background: #f4f6f8 !important;
+  color: var(--text) !important;
+}
+
+/* Page canvases: only exact opaque dark utilities are translated. Translucent
+   black classes remain available for image and modal overlays. */
+[data-theme="light"] .bg-black,
+[data-theme="light"] .bg-gray-950,
+[data-theme="light"] .bg-gray-900,
+[data-theme="light"] .bg-neutral-950,
+[data-theme="light"] .bg-neutral-900,
+[data-theme="light"] .bg-zinc-950,
+[data-theme="light"] .bg-zinc-900,
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-slate-900 {
+  background: #f4f6f8 !important;
+}
+
+/* Legacy cards frequently use opacity-suffixed dark utility classes. */
+[data-theme="light"] [class*="bg-neutral-9"],
+[data-theme="light"] [class*="bg-zinc-9"],
+[data-theme="light"] [class*="bg-gray-9"],
+[data-theme="light"] [class*="bg-slate-9"],
+[data-theme="light"] [class*="bg-[#0D0D0D]"],
+[data-theme="light"] [class*="bg-[#0d0d0d]"],
+[data-theme="light"] [class*="bg-[#09090b]"],
+[data-theme="light"] [class*="bg-[#0a0a0a]"],
+[data-theme="light"] [class*="bg-[#0c0c0e]"],
+[data-theme="light"] [class*="bg-[#0d1117]"],
+[data-theme="light"] [class*="bg-[#0e0e11]"],
+[data-theme="light"] [class*="bg-[#111116]"],
+[data-theme="light"] [class*="bg-[#141414]"],
+[data-theme="light"] [class*="bg-[#18181b]"],
+[data-theme="light"] [class*="bg-[#1a1a1a]"],
+[data-theme="light"] [class*="bg-[#1f1f1f]"],
+[data-theme="light"] [class*="bg-[#252525]"] {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .bg-gray-800,
+[data-theme="light"] .bg-neutral-800,
+[data-theme="light"] .bg-zinc-800,
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] [class*="bg-gray-8"],
+[data-theme="light"] [class*="bg-neutral-8"],
+[data-theme="light"] [class*="bg-zinc-8"],
+[data-theme="light"] [class*="bg-slate-8"] {
+  background-color: #f1f5f9 !important;
+}
+
+/* Replace complete dark surface gradients, instead of changing only gradient
+   variables (which left several Rollup-generated gradients black). */
+[data-theme="light"] [class*="from-neutral-9"],
+[data-theme="light"] [class*="via-neutral-9"],
+[data-theme="light"] [class*="to-neutral-9"],
+[data-theme="light"] [class*="from-gray-9"],
+[data-theme="light"] [class*="via-gray-9"],
+[data-theme="light"] [class*="to-gray-9"],
+[data-theme="light"] [class*="from-zinc-9"],
+[data-theme="light"] [class*="via-zinc-9"],
+[data-theme="light"] [class*="to-zinc-9"],
+[data-theme="light"] [class*="from-slate-9"],
+[data-theme="light"] [class*="via-slate-9"],
+[data-theme="light"] [class*="to-slate-9"] {
+  background-color: #ffffff !important;
+  background-image: linear-gradient(135deg, #ffffff 0%, #f8fafc 55%, #eef2f7 100%) !important;
+}
+
+/* Image cards retain the current white fade treatment in light mode. */
+[data-theme="light"] [class*="from-black"] {
+  --tw-gradient-from: rgba(255, 255, 255, 0.96) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(255, 255, 255, 0) var(--tw-gradient-to-position) !important;
+}
+[data-theme="light"] [class*="via-black"] {
+  --tw-gradient-via: rgba(248, 250, 252, 0.72) var(--tw-gradient-via-position) !important;
+}
+[data-theme="light"] [class*="to-black"] {
+  --tw-gradient-to: rgba(238, 242, 247, 0.94) var(--tw-gradient-to-position) !important;
+}
+
+/* Panels and reusable legacy containers. */
+[data-theme="light"] .card,
+[data-theme="light"] .premium-card,
+[data-theme="light"] .card-premium,
+[data-theme="light"] .glass-card,
+[data-theme="light"] .glass-effect,
+[data-theme="light"] .glass-panel,
+[data-theme="light"] .container-premium,
+[data-theme="light"] .container-glass,
+[data-theme="light"] .container-floating,
+[data-theme="light"] .modal,
+[data-theme="light"] .dialog,
+[data-theme="light"] .tooltip {
+  background: #ffffff !important;
+  border-color: rgba(24, 24, 27, 0.13) !important;
+  color: #27272a !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+[data-theme="light"] .border-gray-700,
+[data-theme="light"] .border-gray-800,
+[data-theme="light"] .border-neutral-700,
+[data-theme="light"] .border-neutral-800,
+[data-theme="light"] .border-neutral-900,
+[data-theme="light"] .border-zinc-700,
+[data-theme="light"] .border-zinc-800,
+[data-theme="light"] .border-slate-700,
+[data-theme="light"] .border-slate-800,
+[data-theme="light"] [class*="border-white/"] {
+  border-color: rgba(24, 24, 27, 0.14) !important;
+}
+
+/* Typography. The older theme file intentionally normalizes descendants to
+   dark text; these explicit mappings restore useful secondary hierarchy. */
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-gray-100,
+[data-theme="light"] .text-gray-200,
+[data-theme="light"] .text-neutral-100,
+[data-theme="light"] .text-neutral-200,
+[data-theme="light"] .text-zinc-100,
+[data-theme="light"] .text-zinc-200,
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200 {
+  color: #18181b !important;
+}
+
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400,
+[data-theme="light"] .text-neutral-300,
+[data-theme="light"] .text-neutral-400,
+[data-theme="light"] .text-zinc-300,
+[data-theme="light"] .text-zinc-400,
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400 {
+  color: #52525b !important;
+}
+
+[data-theme="light"] .text-gray-500,
+[data-theme="light"] .text-neutral-500,
+[data-theme="light"] .text-zinc-500,
+[data-theme="light"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Cinematic/photo regions deliberately remain dark in either theme. */
+[data-theme="light"] .theme-dark-surface,
+[data-theme="light"] .theme-dark-surface .bg-black,
+[data-theme="light"] .theme-dark-surface [class*="bg-neutral-9"],
+[data-theme="light"] .theme-dark-surface [class*="bg-zinc-9"] {
+  background-color: #000000 !important;
+}
+
+[data-theme="light"] .theme-dark-surface [class*="from-black"] {
+  --tw-gradient-from: rgba(0, 0, 0, 0.92) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(0, 0, 0, 0) var(--tw-gradient-to-position) !important;
+}
+[data-theme="light"] .theme-dark-surface [class*="via-black"] {
+  --tw-gradient-via: rgba(0, 0, 0, 0.52) var(--tw-gradient-via-position) !important;
+}
+[data-theme="light"] .theme-dark-surface [class*="to-black"] {
+  --tw-gradient-to: rgba(0, 0, 0, 0.35) var(--tw-gradient-to-position) !important;
+}
+
+[data-theme="light"] .theme-dark-surface,
+[data-theme="light"] .theme-dark-surface h1,
+[data-theme="light"] .theme-dark-surface h2,
+[data-theme="light"] .theme-dark-surface h3,
+[data-theme="light"] .theme-dark-surface p,
+[data-theme="light"] .theme-dark-surface .text-white,
+[data-theme="light"] .theme-dark-surface .text-gray-200,
+[data-theme="light"] .theme-dark-surface .text-gray-300,
+[data-theme="light"] .theme-dark-surface .text-neutral-200,
+[data-theme="light"] .theme-dark-surface .text-neutral-300,
+[data-theme="light"] .theme-dark-surface .text-zinc-200,
+[data-theme="light"] .theme-dark-surface .text-zinc-300 {
+  color: #f8fafc !important;
+}
+
+/* Navigation and fixed shared UI. */
+[data-theme="light"] nav,
+[data-theme="light"] footer {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(24, 24, 27, 0.11) !important;
+  box-shadow: 0 8px 30px rgba(24, 24, 27, 0.08) !important;
+}
+
+[data-theme="light"] nav a,
+[data-theme="light"] nav span,
+[data-theme="light"] footer a,
+[data-theme="light"] footer span,
+[data-theme="light"] footer p {
+  color: #27272a !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background: #ffffff !important;
+  color: #18181b !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Real primary actions must not be neutralized by the legacy global button rule. */
+[data-theme="light"] button.bg-red-500,
+[data-theme="light"] button.bg-red-600,
+[data-theme="light"] button.bg-red-700,
+[data-theme="light"] a.bg-red-500,
+[data-theme="light"] a.bg-red-600,
+[data-theme="light"] a.bg-red-700,
+[data-theme="light"] button[class*="from-red-"],
+[data-theme="light"] a[class*="from-red-"],
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .premium-btn-primary,
+[data-theme="light"] .onboarding-launcher {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] button.bg-red-500 *,
+[data-theme="light"] button.bg-red-600 *,
+[data-theme="light"] button.bg-red-700 *,
+[data-theme="light"] button[class*="from-red-"] *,
+[data-theme="light"] .btn-primary *,
+[data-theme="light"] .premium-btn-primary *,
+[data-theme="light"] .onboarding-launcher * {
+  color: #ffffff !important;
+}
+
+.theme-nav-toggle {
+  display: inline-flex !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px !important;
+  background: rgba(24, 24, 27, 0.9) !important;
+  border: 1px solid #3f3f46 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+[data-theme="light"] .theme-nav-toggle {
+  background: #ffffff !important;
+  border-color: #d4d4d8 !important;
+  color: #d97706 !important;
+  box-shadow: 0 5px 18px rgba(24, 24, 27, 0.12) !important;
+}
+
+[data-theme="light"] .theme-nav-toggle:hover {
+  background: #fff7ed !important;
+  border-color: #fed7aa !important;
+  color: #c2410c !important;
+}
+
+[data-theme="light"] .onboarding-page > div:nth-child(2) {
+  background: linear-gradient(to bottom, rgba(244, 246, 248, 0.9), rgba(248, 250, 252, 0.97), #f4f6f8) !important;
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(220, 38, 38, 0.18);
+  color: #09090b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition * {
+    transition-duration: 0.01ms !important;
+  }
+}

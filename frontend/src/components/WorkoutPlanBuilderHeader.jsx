@@ -23,7 +23,7 @@ export default function WorkoutPlanBuilderHeader() {
 
   return (
     <section
-      className="workout-builder-header relative h-screen w-full overflow-hidden"
+      className="theme-dark-surface workout-builder-header relative h-screen w-full overflow-hidden"
       role="banner"
       aria-label="My Plans Hero Section"
     >

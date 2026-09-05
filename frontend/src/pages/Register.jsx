@@ -72,7 +72,7 @@ const Register = () => {
         password: formData.password,
       });
       login(result.user, result.token);
-      navigate("/");
+      navigate("/onboarding");
     } catch (err) {
       console.error("Registration error:", err);
       setError(err.message || "Registration failed. Please try again.");

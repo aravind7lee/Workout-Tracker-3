@@ -13,7 +13,7 @@ const NutritionGoalSchema = new mongoose.Schema({
   // User goals
   goal: { 
     type: String, 
-    enum: ['deficit', 'maintenance', 'bulk', 'recomposition'], 
+    enum: ['deficit', 'maintenance', 'bulk', 'strength', 'recomposition'],
     default: 'maintenance' 
   },
   
@@ -21,10 +21,10 @@ const NutritionGoalSchema = new mongoose.Schema({
   weight: { type: Number, default: 70 },
   height: { type: Number, default: 170 },
   age: { type: Number, default: 25 },
-  gender: { type: String, enum: ['male', 'female'], default: 'male' },
+  gender: { type: String, enum: ['male', 'female', 'other'], default: 'male' },
   activityLevel: { 
     type: String, 
-    enum: ['sedentary', 'light', 'moderate', 'active', 'very_active'], 
+    enum: ['sedentary', 'light', 'moderate', 'active', 'very', 'very_active', 'extra'],
     default: 'moderate' 
   },
   

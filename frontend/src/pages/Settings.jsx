@@ -1,8 +1,9 @@
 import { User, Bell, Shield, Palette, Database, HelpCircle, Save, Target, Globe, Moon, Sun, Smartphone, Mail, Activity, Trophy, Zap, BarChart3, Calendar, Clock, CheckCircle2, AlertTriangle, Timer, XCircle, Rocket, Dumbbell, Utensils, ClipboardList, RefreshCw, PartyPopper, Star, Sparkles, BicepsFlexed, Plug, Scale, TrendingUp, Armchair, Footprints, Apple, Flag, Settings as SettingsIcon, Sliders, Flame } from 'lucide-react';
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import settingsService from "../services/settingsService";
 import chromeErrorHandler from "../utils/chromeErrorHandler";
 import { onlineService } from "../services/onlineService";
@@ -10,6 +11,7 @@ import { onlineService } from "../services/onlineService";
 
 export default function Settings() {
   const { user, updateUser, isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -23,6 +25,8 @@ export default function Settings() {
     lastSync: null,
   });
   const [loading, setLoading] = useState(true);
+  const hasHydratedSettings = useRef(false);
+  const lastQueuedSettings = useRef("");
   const [settings, setSettings] = useState({
     profile: {
       name: user?.name || "",
@@ -48,7 +52,7 @@ export default function Settings() {
       analyticsOptOut: user?.privacy?.analyticsOptOut || false,
     },
     preferences: {
-      theme: "dark",
+      theme,
       language: user?.preferences?.language || "en",
       units: user?.preferences?.units || "metric",
       dateFormat: user?.preferences?.dateFormat || "MM/DD/YYYY",
@@ -119,7 +123,7 @@ export default function Settings() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       const statsResponse = await fetch(
-        `${import.meta.env.VITE_API_BASE}/users/stats`,
+        `${import.meta.env.VITE_API_BASE || "http://localhost:5000/api"}/users/stats`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -160,10 +164,20 @@ export default function Settings() {
           return await settingsService.loadSettings();
         });
         if (result) {
-          setSettings((prev) => ({
-            ...prev,
-            ...result.settings,
-          }));
+          setSettings((prev) => {
+            const hydratedSettings = {
+              ...prev,
+              ...result.settings,
+              preferences: {
+                ...prev.preferences,
+                ...result.settings?.preferences,
+                theme,
+              },
+            };
+            lastQueuedSettings.current = JSON.stringify(hydratedSettings);
+            return hydratedSettings;
+          });
+          hasHydratedSettings.current = true;
           setLastSyncResult(result);
           setSyncStatus(result.status);
           if (result.source === "mongodb") {
@@ -243,12 +257,15 @@ export default function Settings() {
       },
     }));
   }, []);
+  const handleThemeChange = useCallback((nextTheme) => {
+    setTheme(nextTheme);
+    handleSettingChange("preferences", "theme", nextTheme);
+  }, [handleSettingChange, setTheme]);
   useEffect(() => {
-    if (
-      Object.keys(settings).length > 0 &&
-      settings.profile.name !== undefined &&
-      !loading
-    ) {
+    if (!loading && hasHydratedSettings.current && settings.profile.name !== undefined) {
+      const serializedSettings = JSON.stringify(settings);
+      if (serializedSettings === lastQueuedSettings.current) return;
+      lastQueuedSettings.current = serializedSettings;
       console.log("🔄 Auto-save triggered");
       setSyncStatus("syncing");
       autoSave({
@@ -257,6 +274,8 @@ export default function Settings() {
         globalSync: true,
       });
     }
+
+    return () => autoSave.cancel?.();
   }, [settings, autoSave, loading]);
   const handleSave = async () => {
     setIsSaving(true);
@@ -1240,7 +1259,7 @@ export default function Settings() {
             /*#__PURE__*/ React.createElement(Moon, {
               size: 16,
             }),
-            "Theme (Dark Mode Only)",
+            "Appearance",
           ),
           /*#__PURE__*/ React.createElement(
             "div",
@@ -1250,8 +1269,17 @@ export default function Settings() {
             /*#__PURE__*/ React.createElement(
               motion.div,
               {
+                role: "button",
+                tabIndex: 0,
+                onClick: () => handleThemeChange(theme === "dark" ? "light" : "dark"),
+                onKeyDown: (event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleThemeChange(theme === "dark" ? "light" : "dark");
+                  }
+                },
                 className:
-                  "p-4 rounded-xl border border-red-600 bg-gradient-to-r from-neutral-700/10 to-neutral-900/10 shadow-lg",
+                  "cursor-pointer p-4 rounded-xl border border-red-600 bg-gradient-to-r from-neutral-700/10 to-neutral-900/10 shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500/40",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
@@ -1264,7 +1292,7 @@ export default function Settings() {
                     className:
                       "p-2 rounded-lg bg-gradient-to-r from-neutral-700/20 to-neutral-900/20 text-white shadow-md",
                   },
-                  /*#__PURE__*/ React.createElement(Moon, {
+                  /*#__PURE__*/ React.createElement(theme === "dark" ? Moon : Sun, {
                     size: 18,
                   }),
                 ),
@@ -1279,7 +1307,7 @@ export default function Settings() {
                       className:
                         "text-white font-medium flex items-center gap-2",
                     },
-                    "Dark Mode",
+                    theme === "dark" ? "Dark Mode" : "Light Mode",
                     /*#__PURE__*/ React.createElement(
                       "span",
                       {
@@ -1294,7 +1322,7 @@ export default function Settings() {
                     {
                       className: "text-neutral-400 text-sm",
                     },
-                    "Perfect for gym environments - Professional experience",
+                    "Tap to switch appearance across the entire application",
                   ),
                 ),
                 /*#__PURE__*/ React.createElement(
@@ -1330,16 +1358,16 @@ export default function Settings() {
               /*#__PURE__*/ React.createElement(
                 "span",
                 null,
-                "GymTracker uses ",
+                "GrindX is currently using ",
                 /*#__PURE__*/ React.createElement(
                   "strong",
                   null,
-                  /*#__PURE__*/ React.createElement(Moon, {
+                  /*#__PURE__*/ React.createElement(theme === "dark" ? Moon : Sun, {
                     className: "w-[1em] h-[1em] inline-block",
                   }),
-                  " Dark Mode Only",
+                  theme === "dark" ? " Dark Mode" : " Light Mode",
                 ),
-                " for the best gym experience",
+                " and remembers it on this device",
               ),
             ),
           ),
@@ -1427,7 +1455,7 @@ export default function Settings() {
           /*#__PURE__*/ React.createElement(
             "span",
             null,
-            "Dark mode is permanently enabled \u2022 Professional gym experience \u2022 Real-time MongoDB sync",
+            `${theme === "dark" ? "Dark" : "Light"} mode active \u2022 Instant app-wide update \u2022 Cloud preference auto-sync`,
           ),
         ),
       ),
@@ -1899,7 +1927,7 @@ export default function Settings() {
     }
   };
   const statusDisplay = settingsService.getSyncStatus(lastSyncResult);
-  if (loading) {
+  if (loading && !user) {
     return /*#__PURE__*/ React.createElement(
       "div",
       {
@@ -1927,7 +1955,7 @@ export default function Settings() {
   return /*#__PURE__*/ React.createElement(
     "div",
     {
-      className: "space-y-4 sm:space-y-6",
+      className: "settings-page w-full min-w-0 space-y-4 overflow-x-hidden sm:space-y-6",
     },
     /*#__PURE__*/ React.createElement(
       "div",
@@ -2060,12 +2088,12 @@ export default function Settings() {
     /*#__PURE__*/ React.createElement(
       "div",
       {
-        className: "grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6",
+        className: "grid w-full min-w-0 grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-4",
       },
       /*#__PURE__*/ React.createElement(
         "div",
         {
-          className: "lg:col-span-1",
+          className: "min-w-0 lg:col-span-1",
         },
         /*#__PURE__*/ React.createElement(
           "div",
@@ -2129,7 +2157,7 @@ export default function Settings() {
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className: "space-y-1 sm:space-y-2 p-3 sm:p-4",
+            className: "flex gap-2 overflow-x-auto p-3 sm:p-4 lg:block lg:space-y-2 lg:overflow-visible",
             },
             settingsTabs.map((tab) =>
               /*#__PURE__*/ React.createElement(
@@ -2143,7 +2171,7 @@ export default function Settings() {
                     scale: 0.98,
                   },
                   onClick: () => setActiveTab(tab.id),
-                  className: `w-full flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-4 rounded-xl transition-all duration-300 ${activeTab === tab.id ? `bg-gradient-to-r ${tab.color}/20 border border-white/20 text-white shadow-lg backdrop-blur-sm` : "text-neutral-300 hover:text-white hover:bg-neutral-800/50 border border-transparent"}`,
+                  className: `flex min-w-max items-center gap-2 rounded-xl px-3 py-3 transition-all duration-300 lg:w-full lg:gap-3 lg:px-4 lg:py-4 ${activeTab === tab.id ? `bg-gradient-to-r ${tab.color}/20 border border-white/20 text-white shadow-lg backdrop-blur-sm` : "text-neutral-300 hover:text-white hover:bg-neutral-800/50 border border-transparent"}`,
                 },
                 /*#__PURE__*/ React.createElement(
                   "div",
@@ -2179,7 +2207,7 @@ export default function Settings() {
       /*#__PURE__*/ React.createElement(
         "div",
         {
-          className: "lg:col-span-3",
+          className: "min-w-0 lg:col-span-3",
         },
         /*#__PURE__*/ React.createElement(
           motion.div,
@@ -2197,7 +2225,7 @@ export default function Settings() {
               duration: 0.3,
             },
             className:
-              "relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl",
+              "relative min-w-0 overflow-hidden rounded-2xl border border-neutral-800/50 bg-gradient-to-br from-neutral-900/80 to-black/80 shadow-2xl backdrop-blur-xl sm:rounded-3xl",
           },
           /*#__PURE__*/ React.createElement(
             "div",

@@ -218,7 +218,7 @@ export default function Library() {
     <div className="min-h-screen bg-black text-white pb-36 sm:pb-28 overflow-x-hidden">
       
       {/* 1. HERO SECTION (100% UNCHANGED AS EXPLICITLY REQUESTED) */}
-      <div className="relative w-full min-h-[85vh] h-[85vh] sm:h-[88vh] lg:h-[90vh] rounded-none sm:rounded-3xl overflow-hidden border-b sm:border border-neutral-800/80 shadow-2xl bg-black">
+      <div className="theme-dark-surface relative w-full min-h-[85vh] h-[85vh] sm:h-[88vh] lg:h-[90vh] rounded-none sm:rounded-3xl overflow-hidden border-b sm:border border-neutral-800/80 shadow-2xl bg-black">
         <img 
           src={LibraryHeaderImg} 
           alt="Exercise Library Hero" 

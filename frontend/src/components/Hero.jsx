@@ -159,7 +159,7 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative w-full overflow-hidden"
+      className="theme-dark-surface relative w-full overflow-hidden"
       style={{ height: "100vh", minHeight: "100svh" }}
       aria-label="GrindX Hero"
     >

@@ -48,10 +48,31 @@ const userSchema = new mongoose.Schema({
       default: 0
     }
   },
+  metrics: {
+    age: { type: Number, default: null },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
+      default: null
+    },
+    height: { type: Number, default: null },
+    currentWeight: { type: Number, default: null },
+    targetWeight: { type: Number, default: null },
+    bodyFatPercentage: { type: Number, default: null },
+    bmi: { type: Number, default: null }
+  },
+  onboardingCompleted: {
+    type: Boolean,
+    default: false
+  },
+  onboardingCompletedAt: {
+    type: Date,
+    default: null
+  },
   fitnessGoals: {
     goal: {
       type: String,
-      enum: ['lose', 'maintain', 'gain', 'muscle', 'strength'],
+      enum: ['lose', 'maintain', 'gain', 'muscle', 'deficit', 'maintenance', 'bulk', 'strength', 'recomposition'],
       default: 'maintain'
     },
     activityLevel: {
@@ -68,6 +89,21 @@ const userSchema = new mongoose.Schema({
       default: 3,
       min: 1,
       max: 7
+    },
+    trainingFrequency: {
+      type: Number,
+      default: 4,
+      min: 1,
+      max: 7
+    },
+    recommendedSplit: {
+      type: String,
+      default: null
+    },
+    experienceLevel: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced'],
+      default: 'beginner'
     }
   },
   notifications: {

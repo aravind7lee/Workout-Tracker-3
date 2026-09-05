@@ -74,7 +74,7 @@ const DashboardHero = () => {
         ease: "easeOut",
       },
       className:
-        "dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0 bg-black",
+        "theme-dark-surface dashboard-hero relative w-full h-screen min-h-[100vh] max-h-screen overflow-hidden mb-0 bg-black",
       role: "banner",
       "aria-label": "Dashboard header section",
     },

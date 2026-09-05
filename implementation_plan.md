@@ -1,714 +1,784 @@
-# Workout-Tracker-3 — Complete Product & Technical Audit
+# 🏆 Top 1% Workout Tracker — Complete Feature Implementation Plan
+
+> This plan transforms the current GrindX Workout Tracker into a production-ready, market-leading fitness application. Every feature is designed to integrate with the existing MERN stack, Tailwind dark-mode UI, Framer Motion animations, and MongoDB Atlas backend.
 
 ---
 
-## 1. EXECUTIVE SUMMARY
+## Table of Contents
 
-**Workout-Tracker-3 (branded "GrindX")** is a React + Express + MongoDB Atlas web application that combines workout tracking, nutrition logging, workout plan building, and analytics. It has an ambitious scope and a significant amount of code (~1,700+ files including node_modules). However, the application suffers from **severe code duplication**, **phantom/dead features**, **hardcoded mock data masquerading as real analytics**, **critical security vulnerabilities**, and a **fragmented architecture** that makes it difficult to maintain or extend.
-
-### Key Findings at a Glance
-
-| Area | Rating | Summary |
-|------|--------|---------|
-| **Core Workout Logging** | ⚠️ Weak | Exists but UX is exercise-by-exercise, not session-based |
-| **Workout History** | ⚠️ Weak | Data is split between localStorage and MongoDB inconsistently |
-| **Progress Tracking** | ❌ Fake | Analytics endpoints return hardcoded mock data |
-| **Nutrition Tracking** | ✅ Functional | Most complete subsystem; real CRUD with MongoDB |
-| **Plan Building** | ✅ Functional | Full CRUD, drag-and-drop builder exists |
-| **Exercise Library** | ✅ Good | ~120+ exercises with categories, form tips, videos |
-| **Security** | 🔴 Critical | Secrets in .env committed to repo; hardcoded JWT fallback |
-| **Code Health** | 🔴 Poor | 36 page files (many duplicates), 70 components, 33 services, 40 utils |
-| **Performance** | ⚠️ Concerning | ~20MB of hero images in `src/`; client-side rate limiting patches fetch() |
-
-> [!CAUTION]
-> **The .env file containing MongoDB credentials, JWT secret, Cloudinary keys, and Nutritionix API keys is checked into the repository.** This is the highest-priority issue to fix immediately.
+1. [Codebase Audit Summary](#1-codebase-audit-summary)
+2. [Feature 1: Premium Onboarding Flow](#2-feature-1-premium-onboarding-flow)
+3. [Feature 2: Smart Workout Split Recommendation Engine](#3-feature-2-smart-workout-split-recommendation-engine)
+4. [Feature 3: Body Metrics Tracking & Progress Dashboard](#4-feature-3-body-metrics-tracking--progress-dashboard)
+5. [Feature 4: TDEE / Calorie Calculator Integration](#5-feature-4-tdee--calorie-calculator-integration)
+6. [Feature 5: AI-Powered Workout Suggestions](#6-feature-5-ai-powered-workout-suggestions)
+7. [Feature 6: Progressive Overload Tracking](#7-feature-6-progressive-overload-tracking)
+8. [Feature 7: Rest Timer 2.0 with Smart Suggestions](#8-feature-7-rest-timer-20-with-smart-suggestions)
+9. [Feature 8: Workout History Timeline & PR Wall](#9-feature-8-workout-history-timeline--pr-wall)
+10. [Feature 9: Achievement & Badge System](#10-feature-9-achievement--badge-system)
+11. [Feature 10: Social Feed & Community Enhancements](#11-feature-10-social-feed--community-enhancements)
+12. [Feature 11: Weekly/Monthly Progress Reports](#12-feature-11-weeklymonthly-progress-reports)
+13. [Feature 12: Export & Share Workouts](#13-feature-12-export--share-workouts)
+14. [Verification Plan](#14-verification-plan)
+15. [Priority & Execution Order](#15-priority--execution-order)
 
 ---
 
-## 2. CURRENT APPLICATION UNDERSTANDING
+## 1. Codebase Audit Summary
 
-### Tech Stack
+### What Already Exists (DO NOT rebuild)
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + Vite + TailwindCSS + Framer Motion |
-| Backend | Express 4 (ESM) + Mongoose 8 |
-| Database | MongoDB Atlas (free tier) |
-| Auth | JWT (30-day expiry) + bcryptjs |
-| Charts | Chart.js + Recharts (both installed — duplicative) |
-| Image Upload | Cloudinary (paid service dependency) |
-| Nutrition API | Nutritionix (paid API, keys in .env) |
-| Deployment targets | Netlify (frontend) + Render (backend) |
+| Area | Existing Implementation | Key Files |
+|---|---|---|
+| **Auth** | JWT login/register, AuthContext, AuthGuard | [`AuthContext.jsx`](file:///d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx), [`auth.js`](file:///d:/Workout-Tracker-3/backend/routes/auth.js) |
+| **Workout Session** | Full session lifecycle (SETUP → ACTIVE → COMPLETED), set tracking, rest timer, exercise picker, session recovery from localStorage | [`WorkoutSession.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/WorkoutSession.jsx) |
+| **Plans Builder** | Drag-and-drop plan creation, exercise library, auto-save, real-time sync to MongoDB | [`PlansBuilder.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/PlansBuilder.jsx), [`Plan.js`](file:///d:/Workout-Tracker-3/backend/models/Plan.js) |
+| **Workout Splits** | Pre-built splits library (PPL, Upper/Lower, Bro, Full Body), custom split builder, favorites | [`WorkoutSplits.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/WorkoutSplits.jsx), [`CustomSplitBuilder.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/CustomSplitBuilder.jsx) |
+| **Nutrition** | Nutritionix API integration, meal tracking, macro progress, food categories, nutrition analytics | [`Nutrition.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Nutrition.jsx), [`Food.js`](file:///d:/Workout-Tracker-3/backend/models/Food.js) |
+| **Streak System** | Check-in streaks, streak history calendar, tier system, streak widget | [`StreakHistory.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/StreakHistory.jsx), User model streak fields |
+| **Dashboard** | Real-time stats, recent workouts, plan stats, workout completion tracking | [`Dashboard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx) |
+| **Analytics** | Workout stats, volume tracking, muscle group distribution, meal counts | [`analytics.js`](file:///d:/Workout-Tracker-3/backend/routes/analytics.js) |
+| **Profile** | Profile photo (Cloudinary), edit name/email, gym-themed backgrounds | [`Profile.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx) |
+| **Settings** | Fitness goals, notifications, privacy, preferences (units, theme, language), data settings | [`Settings.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Settings.jsx) |
+| **Forum** | Community posts, categories, likes, localStorage persistence | [`Forum.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Forum.jsx) |
+| **Exercise Library** | Comprehensive library with muscle groups, form tips, video links | [`exerciseLibrary.js`](file:///d:/Workout-Tracker-3/frontend/src/data/exerciseLibrary.js) |
+| **PR Tracking** | PR notifications on workout completion | [`PRNotification.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/PRNotification.jsx) |
+| **Real-time Sync** | SSE, real-time contexts, sync services, offline support | [`RealTimeContext.jsx`](file:///d:/Workout-Tracker-3/frontend/src/context/RealTimeContext.jsx), 15+ real-time service files |
 
-### Route Map (Frontend)
+### What's Missing (This Plan Fills These Gaps)
 
-| Route | Page | Status |
-|-------|------|--------|
-| `/` | Home | ✅ Working (marketing page) |
-| `/register` | Register | ✅ Working |
-| `/login` | Login | ✅ Working |
-| `/dashboard` | Dashboard | ⚠️ Partially working (mix of real + fake data) |
-| `/library` | LibrarySimple | ✅ Working |
-| `/analytics` | Analytics | ❌ **Fake data** — backend returns hardcoded arrays |
-| `/nutrition` | Nutrition | ✅ Mostly working |
-| `/plans` | PlansBuilder | ✅ Working |
-| `/my-plans` | MyPlans | ✅ Working |
-| `/splits` & `/workout-splits` | WorkoutSplits | ✅ Working (static data) |
-| `/custom-split-builder` | CustomSplitBuilder | ✅ Working (localStorage only) |
-| `/your-workout-splits` | YourWorkoutSplits | ✅ Working |
-| `/start-workout` | StartWorkout | ⚠️ Works but single-exercise flow |
-| `/workouts` | Workouts | ⚠️ Multiple duplicate versions exist |
-| `/profile` | Profile | ✅ Working |
-| `/settings` | Settings | ✅ Working (extensive) |
-| `/forum` | Forum | ❌ Shell only — no real backend |
-| `/contact` | Contact | ✅ Working (static) |
-| `/legends` | LegendsAndInfluencers | ❌ Content page — no real utility |
-| `/search` | Search (inline) | ❌ Hardcoded 5-exercise array |
-
-### API Routes (Backend)
-
-| Route | Description | Data Source |
-|-------|-------------|-------------|
-| `/api/auth` | Register, Login | ✅ MongoDB |
-| `/api/users` | Profile, Settings, Stats | ✅ MongoDB |
-| `/api/exercises` | Exercise CRUD | ✅ MongoDB |
-| `/api/plans` | Plan CRUD | ✅ MongoDB |
-| `/api/workouts` | Workout CRUD | ✅ MongoDB |
-| `/api/meals` | Meal CRUD | ✅ MongoDB |
-| `/api/nutrition` | Meal tracking, food search, targets | ✅ MongoDB + Nutritionix |
-| `/api/analytics/stats` | **Hardcoded mock stats** | ❌ Fake |
-| `/api/analytics/calories` | **Hardcoded mock calorie data** | ❌ Fake |
-| `/api/analytics/frequency` | **Hardcoded mock frequency** | ❌ Fake |
-| `/api/analytics/muscles` | **Hardcoded mock muscle data** | ❌ Fake |
-| `/api/analytics/hero-stats` | Real stats from MongoDB | ✅ Real |
-| `/api/analytics/achievements` | Achievement system (references missing model) | ❌ Broken |
-| `/api/dashboard` | Dashboard data | ⚠️ Minimal |
-| `/api/reviews` | Exercise reviews | ✅ MongoDB |
-| `/api/sync` | Offline sync | ⚠️ Partially implemented |
-| `/api/workout-splits` | Workout split templates | Static in-memory data |
+| Gap | Impact | Priority |
+|---|---|---|
+| No onboarding flow — new users land on Home with no guidance | Users churn immediately, don't know what to do | 🔴 Critical |
+| No body metrics storage (height, weight, age, gender) on User model | Cannot calculate TDEE, BMI, or recommend splits | 🔴 Critical |
+| NutritionGoal model has metrics but User model doesn't — data is split | Confusing, no single source of truth for user body data | 🔴 Critical |
+| No automatic split recommendation based on training frequency | Users must manually browse 20+ splits to find one | 🟡 High |
+| Achievement model exists but has no frontend UI or backend logic | Badge system is a skeleton — no triggers, no display | 🟡 High |
+| No progressive overload tracking (weight/rep progression per exercise) | Users can't see if they're actually getting stronger | 🟡 High |
+| No TDEE/macro auto-calculation from user metrics | Nutrition goals are manually entered, feels amateur | 🟡 High |
+| No workout history timeline (visual, scrollable) | Users see a list, not a timeline — not premium | 🟠 Medium |
+| No export/share (PDF, image card, social) | Users can't flex their workouts — kills virality | 🟠 Medium |
+| Forum is localStorage-only — not real social | No backend persistence, no multi-user interaction | 🟠 Medium |
+| No weekly/monthly email or in-app progress reports | Users don't get reminded of their progress | 🟠 Medium |
 
 ---
 
-## 3. CURRENT FEATURE INVENTORY
+## 2. Feature 1: Premium Onboarding Flow
 
-| Feature | Current State | Value | Problems | Recommendation | Priority |
-|---------|--------------|-------|----------|----------------|----------|
-| **User Auth (Register/Login)** | ✅ Working | High | Secrets exposed; 30-day token; no refresh token | **IMPROVE** | P0 |
-| **Dashboard** | ⚠️ Partial | High | Mixed real/fake data; 108KB component file | **REDESIGN** | P1 |
-| **Exercise Library** | ✅ Good | High | Client-side data only; good variety (~120 exercises) | **KEEP** | — |
-| **Plan Builder** | ✅ Working | High | Complex but functional; drag-and-drop | **KEEP** | — |
-| **My Plans** | ✅ Working | High | CRUD works; MongoDB sync | **KEEP** | — |
-| **Start Workout** | ⚠️ Partial | Critical | Single-exercise-at-a-time flow; no multi-exercise sessions | **REDESIGN** | P0 |
-| **Workout History** | ⚠️ Weak | High | Multiple duplicate page files; fragmented data | **REDESIGN** | P1 |
-| **Nutrition Tracking** | ✅ Working | Medium | Depends on Nutritionix API; good local food DB | **IMPROVE** | P2 |
-| **Analytics** | ❌ Fake | High | 4 endpoints return hardcoded mock arrays | **REDESIGN** | P1 |
-| **Personal Records** | ⚠️ Client-only | High | localStorage-based PR tracking; no backend persistence | **IMPROVE** | P1 |
-| **Achievements/XP** | ❌ Broken | Low | References missing Achievement model; gamification bloat | **REMOVE** | P2 |
-| **Forum** | ❌ Shell | Low | Post model exists but no real community features | **REMOVE** | — |
-| **Legends & Influencers** | ❌ Content | None | Static content page with no user value | **REMOVE** | — |
-| **Review System** | ⚠️ Partial | Low | Exercise reviews exist but stored in localStorage on frontend | **REMOVE** (for now) | P3 |
-| **Workout Splits (Templates)** | ✅ Working | Medium | Static in-memory data; only 3 templates | **IMPROVE** | P2 |
-| **Custom Split Builder** | ✅ Working | Medium | localStorage-based; functional | **KEEP** | — |
-| **Rest Timer** | ✅ Working | High | Built into StartWorkout; functional | **KEEP** | — |
-| **Profile + Settings** | ✅ Working | Medium | Extensive settings; some have no backend effect | **IMPROVE** | P2 |
-| **Search** | ❌ Broken | Medium | Hardcoded 5-exercise array inline in App.jsx | **REDESIGN** | P2 |
-| **Image Upload** | ✅ Working | Low | Cloudinary dependency (paid beyond free tier) | **IMPROVE** | P3 |
-| **Offline Support** | ⚠️ Partial | Medium | Sync endpoints exist but inconsistent implementation | **IMPROVE** | P3 |
-| **Theme System** | ✅ Working | Low | Dark mode primary; light mode has 7+ fix CSS files | **IMPROVE** | P3 |
+### Overview
+A cinematic, multi-step questionnaire shown to every new user immediately after registration. Collects body metrics and training preferences, then recommends and auto-creates a personalized workout split.
 
----
+### User Experience Flow
 
-## 4. FEATURES TO KEEP ✅
-
-1. **Exercise Library** — ~120+ exercises across chest, back, legs, shoulders, arms, abs with difficulty, type (compound/isolation), video links, form tips. This is genuinely useful.
-2. **Plan Builder** — Full CRUD with drag-and-drop exercise reordering. Saves to MongoDB.
-3. **My Plans** — View, edit, delete plans. Start workout from plan.
-4. **Rest Timer** — Built into StartWorkout with configurable rest periods.
-5. **Custom Split Builder** — Users can create custom workout splits.
-6. **Nutrition CRUD** — Meal logging with macros (protein, carbs, fat, calories) to MongoDB.
-7. **Food Database** — Local food database with ~200+ items, categories, search.
-8. **Profile Picture** — Upload with crop functionality.
-9. **Auth System** — Core JWT auth works correctly.
-
----
-
-## 5. FEATURES TO IMPROVE ⬆️
-
-### 5.1 Authentication & Security
-- **Problem**: JWT secret hardcoded as fallback in middleware; `.env` committed to git; 30-day tokens with no refresh mechanism.
-- **Action**: Remove hardcoded secret fallback, add `.env` to `.gitignore`, implement token refresh, rotate exposed secrets.
-
-### 5.2 Personal Records (PR) Tracking
-- **Problem**: Stored entirely in localStorage via `PRService`. Lost when clearing browser data. Not synced to backend.
-- **Action**: Add PR model/endpoint to backend; sync PRs from localStorage to MongoDB.
-
-### 5.3 Nutrition Tracking
-- **Problem**: Depends on Nutritionix API (has API keys in `.env`). Good local food database exists as fallback.
-- **Action**: Make local food database the primary source; keep Nutritionix as optional enhancement.
-
-### 5.4 Workout Splits Templates
-- **Problem**: Only 3 hardcoded templates (PPL, Upper/Lower, Full Body). Stored as static array in route file.
-- **Action**: Expand to 8-10 templates covering more use cases. Store in database or seed file.
-
-### 5.5 Profile & Settings
-- **Problem**: Many settings (language, data retention, sync across devices) have no backend implementation — they save to the model but nothing reads them.
-- **Action**: Remove non-functional settings or implement them. Keep preferences that actually work.
-
----
-
-## 6. FEATURES TO REDESIGN 🔄
-
-### 6.1 Start Workout Flow (CRITICAL)
-- **Current**: User navigates to an exercise → clicks "Start Workout" → logs sets for ONE exercise → completes. This is not how anyone works out.
-- **Problem**: Real gym sessions involve 4-8 exercises. The current flow makes it impossible to log a complete workout session.
-- **Redesign**: Create a proper **Workout Session** page: select plan (or freestyle) → see all exercises → log sets for each → complete session → save entire workout.
-
-### 6.2 Analytics (CRITICAL)
-- **Current**: `/api/analytics/stats`, `/calories`, `/frequency`, `/muscles` all return hardcoded fake data.
-- **Problem**: Users see fake numbers. This destroys trust and provides zero value.
-- **Redesign**: Replace all mock endpoints with real MongoDB aggregation queries against actual workout and meal data.
-
-### 6.3 Dashboard
-- **Current**: 108KB component file mixing real hero-stats with decorative elements.
-- **Problem**: Bloated, slow, mixes real and fake data sources.
-- **Redesign**: Simplify to show: today's activity, weekly progress, recent workouts, next planned workout, streak.
-
-### 6.4 Workout History
-- **Current**: Multiple duplicate files — `Workouts.jsx`, `WorkoutsFixed.jsx`, `WorkoutsComplete.jsx`, `WorkoutsTest.jsx`.
-- **Problem**: Unclear which is the "real" one. Data split between localStorage and MongoDB.
-- **Redesign**: Single `WorkoutHistory.jsx` backed entirely by MongoDB.
-
-### 6.5 Search
-- **Current**: Hardcoded 5-exercise array inline in `App.jsx` (lines 64-100).
-- **Problem**: Completely non-functional. Should search the exercise library.
-- **Redesign**: Search against `exerciseLibrary.js` data and backend exercises.
-
----
-
-## 7. FEATURES TO REMOVE ❌
-
-### 7.1 Achievement/XP/Gamification System
-- **Why**: References a `models/Achievement.js` that doesn't exist (will crash). The XP point system is arbitrary (100 per workout, 50 per meal) and doesn't provide actionable fitness insight. Gamification without substance adds complexity.
-- **Impact**: Remove ~200 lines from analytics.js, remove XP references from dashboard.
-
-### 7.2 Forum
-- **Why**: `Post.js` model exists, `routes/posts.js` has basic CRUD, but `Forum.jsx` is a 61KB component with no real community backend. Building a proper forum is out of scope for a workout tracker.
-- **Impact**: Remove `Post.js` model, `routes/posts.js`, `Forum.jsx`. Remove nav link.
-
-### 7.3 Legends & Influencers Page
-- **Why**: Static content page about bodybuilding legends. Provides no functional value to the workout tracking experience.
-- **Impact**: Remove `LegendsAndInfluencers.jsx`. Remove nav link.
-
-### 7.4 Review System (Deprioritize)
-- **Why**: Exercise reviews are interesting but the current implementation stores reviews in localStorage on the frontend, not in the backend Review model. It's partially implemented and low priority.
-- **Impact**: Remove from UI for now. Keep Review model for future implementation.
-
-### 7.5 Duplicate Page Files
-- **Why**: `Dashboard-simple.jsx`, `Home-simple.jsx`, `PlansBuilder-Fixed.jsx`, `PlansBuilder-HTML5.jsx`, `ProfileAdvanced.jsx`, `ProfileEnhanced.jsx`, `WorkoutsFixed.jsx`, `WorkoutsComplete.jsx`, `WorkoutsTest.jsx`, `Hero-backup.jsx`, `HeroSimple.jsx`, `LightModeTest.jsx` are all dead/duplicate files.
-- **Impact**: Remove ~15 dead files, reducing cognitive load.
-
-### 7.6 Excessive Error Suppression
-- **Why**: `errorSuppression.js`, `errorSuppressor.js`, `finalErrorCleanup.js`, `comprehensiveErrorHandler.js`, `silentMode.js`, `immediateCleanup.js`, `consoleFilter.js` — these mask bugs rather than fixing them. The `main.jsx` monkey-patches `window.fetch` to swallow API errors.
-- **Impact**: Remove suppression layers; fix actual errors.
-
----
-
-## 8. CURRENTLY MISSING FEATURES
-
-### 8.1 Multi-Exercise Workout Sessions (**P0**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Log a complete workout session with multiple exercises |
-| **REAL-WORLD PROBLEM** | Users cannot log a typical gym session (4-8 exercises) in one flow |
-| **WHY USERS NEED IT** | This is THE core function of any workout tracker |
-| **HOW IT SHOULD WORK** | Start session → select/add exercises → log sets for each → complete → save |
-| **DATA REQUIRED** | Workout model already supports multiple exercises with sets |
-| **BACKEND REQUIREMENTS** | Existing POST `/api/workouts` already handles it |
-| **FRONTEND REQUIREMENTS** | New `WorkoutSession.jsx` with multi-exercise UI |
-| **ALGORITHM/LOGIC** | None — straightforward CRUD |
-| **FREE TECHNOLOGY** | Existing stack |
-| **COMPLEXITY** | Medium |
-| **USER VALUE** | ★★★★★ — Without this, the app is not usable as a daily tracker |
-| **PRIORITY** | P0 |
-| **DEPENDENCIES** | None |
-| **POTENTIAL RISKS** | Must handle mid-session crashes (auto-save to localStorage) |
-
-### 8.2 Previous Performance Visibility (**P0**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Show last workout's weight/reps for each exercise while logging |
-| **REAL-WORLD PROBLEM** | Users forget what weight they used last time |
-| **WHY USERS NEED IT** | #1 most-requested feature in every workout tracker user study |
-| **HOW IT SHOULD WORK** | When logging sets, show "Last time: 3×10 @ 60kg" next to each exercise |
-| **DATA REQUIRED** | Query workout history by exercise name for current user |
-| **BACKEND REQUIREMENTS** | GET `/api/workouts/exercise-history/:exerciseName` |
-| **FRONTEND REQUIREMENTS** | Small info card in set logging UI |
-| **ALGORITHM/LOGIC** | Simple query: find last workout containing this exercise |
-| **FREE TECHNOLOGY** | Existing MongoDB |
-| **COMPLEXITY** | Low |
-| **USER VALUE** | ★★★★★ |
-| **PRIORITY** | P0 |
-
-### 8.3 Real Analytics from Actual Data (**P1**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Replace fake analytics with real MongoDB aggregations |
-| **REAL-WORLD PROBLEM** | Analytics page shows fake data — users see numbers that aren't theirs |
-| **DATA REQUIRED** | Existing Workout and Meal collections |
-| **BACKEND REQUIREMENTS** | Replace 4 hardcoded endpoints with real aggregation queries |
-| **COMPLEXITY** | Medium |
-| **USER VALUE** | ★★★★★ |
-| **PRIORITY** | P1 |
-
-### 8.4 Progressive Overload Suggestions (**P1**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Suggest next workout's weight/reps based on performance trend |
-| **REAL-WORLD PROBLEM** | Users don't know when/how to increase weight |
-| **HOW IT SHOULD WORK** | If user completed all prescribed reps across all sets, suggest +2.5kg next session |
-| **ALGORITHM/LOGIC** | Rule-based: If (all sets at target reps for 2 consecutive sessions) → suggest weight increase. No AI needed. |
-| **FREE TECHNOLOGY** | Pure JavaScript calculation |
-| **COMPLEXITY** | Low-Medium |
-| **USER VALUE** | ★★★★☆ |
-| **PRIORITY** | P1 |
-
-### 8.5 Workout Streak & Consistency Tracking (**P1**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Real streak calculation from actual workout dates |
-| **REAL-WORLD PROBLEM** | Current streak calculation queries DB day-by-day in a while loop (N+1) |
-| **ALGORITHM/LOGIC** | Single aggregation: group workouts by date → find consecutive days |
-| **COMPLEXITY** | Low |
-| **USER VALUE** | ★★★☆☆ |
-| **PRIORITY** | P1 |
-
-### 8.6 1RM Estimation (**P2**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Estimate one-rep max from logged sets |
-| **ALGORITHM/LOGIC** | Epley formula: `1RM = weight × (1 + reps/30)`. No AI needed. |
-| **COMPLEXITY** | Trivial |
-| **USER VALUE** | ★★★★☆ |
-| **PRIORITY** | P2 |
-
-### 8.7 Volume Tracking per Muscle Group (**P2**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | Weekly sets-per-muscle-group chart |
-| **REAL-WORLD PROBLEM** | Users don't know if they're training muscle groups equally |
-| **ALGORITHM/LOGIC** | Map exercises to muscle groups (exercise library already has this data) → sum sets |
-| **COMPLEXITY** | Medium |
-| **USER VALUE** | ★★★★☆ |
-| **PRIORITY** | P2 |
-
-### 8.8 "Repeat Last Workout" / Quick Start (**P2**)
-
-| Field | Detail |
-|-------|--------|
-| **FEATURE** | One-tap button to start the same workout as last time |
-| **REAL-WORLD PROBLEM** | Excessive tapping to set up each workout |
-| **COMPLEXITY** | Low |
-| **USER VALUE** | ★★★★☆ |
-| **PRIORITY** | P2 |
-
----
-
-## 9. REAL-WORLD PROBLEMS THE APP SHOULD SOLVE
-
-| Problem | Severity | Currently Solved? |
-|---------|----------|-------------------|
-| **"What weight did I use last time?"** | Critical | ❌ No |
-| **"I want to log my full gym session"** | Critical | ❌ No (single-exercise flow) |
-| **"Am I making progress?"** | High | ❌ No (fake analytics) |
-| **"What should I increase next?"** | High | ❌ No |
-| **"Am I training all muscle groups?"** | Medium | ❌ No (fake muscle distribution) |
-| **"What's my PR on bench press?"** | Medium | ⚠️ Client-only, not persistent |
-| **"I want to quickly repeat yesterday's workout"** | Medium | ❌ No |
-| **"How consistent am I?"** | Medium | ⚠️ Streak exists but calculated inefficiently |
-| **"My estimated 1RM?"** | Medium | ❌ No |
-| **"Rest timer between sets"** | Medium | ✅ Yes |
-| **"I need a workout plan"** | Medium | ✅ Yes (plan builder works) |
-
----
-
-## 10. TOP HIGH-VALUE / KILLER FEATURES
-
-### 🏆 1. Multi-Exercise Workout Session Logger
-**Why it's a killer feature**: This is table-stakes. Without it, the app cannot function as a daily-use workout tracker. The current single-exercise flow is a dealbreaker.
-
-### 🏆 2. "Last Time" Performance Display
-**Why it's a killer feature**: This single feature is cited as the #1 reason users stick with apps like Strong, Hevy, and JEFIT. Seeing your previous performance removes the biggest daily friction: "what weight do I use?"
-
-### 🏆 3. Real Progress Analytics
-**Why it's a killer feature**: Replacing fake data with real charts showing strength progression over time, volume trends, and consistency gives users the "why" for continuing to track.
-
-### 🏆 4. Progressive Overload Engine (Rule-Based)
-**Why it's a killer feature**: Most apps just show data. An app that tells you "add 2.5kg to bench press today based on your last 2 sessions" crosses from passive tracker to active training partner. This is pure math — no AI needed.
-
-### 🏆 5. 1RM Estimation & PR Board
-**Why it's a killer feature**: Estimated 1RM gives meaning to submaximal training. A PR board across all exercises creates personal competition and motivation.
-
-### 🏆 6. Volume per Muscle Group
-**Why it's a killer feature**: Exposes imbalances (skipping legs, overtraining chest) using data the user is already logging. Minimal effort → maximum insight.
-
-### 🏆 7. Quick Start / Repeat Workout
-**Why it's a killer feature**: Reduces workout start time from 2+ minutes to 1 tap. Directly reduces friction.
-
-### 🏆 8. Plateau Detection (Rule-Based)
-**Why it's a killer feature**: If weight hasn't increased for an exercise across 4+ sessions, flag it. Simple comparison — no AI. Provides actionable insight most users miss.
-
----
-
-## 11. SMART FEATURES WITHOUT PAID AI
-
-| Feature | Algorithm | AI Needed? |
-|---------|-----------|------------|
-| **Progressive Overload Suggestions** | If all sets hit target reps for 2 sessions → +2.5kg | ❌ No — rule-based |
-| **Plateau Detection** | If weight unchanged for 4+ sessions → flag | ❌ No — comparison |
-| **1RM Estimation** | Epley: weight × (1 + reps/30) | ❌ No — formula |
-| **PR Detection** | Compare new set against historical max | ❌ No — max comparison |
-| **Volume Analysis** | Sum sets × reps × weight per muscle group | ❌ No — arithmetic |
-| **Consistency Score** | workouts_this_week / target_per_week | ❌ No — division |
-| **Workout Frequency Heatmap** | Count workouts per day/week | ❌ No — aggregation |
-| **Deload Suggestion** | If RPE/volume trending up for 4+ weeks → suggest deload | ❌ No — trend comparison |
-| **"What should I do today?"** | If following a plan → show today's workout | ❌ No — calendar lookup |
-| **Muscle Group Balance** | Compare set counts across muscle groups | ❌ No — aggregation |
-
-> [!NOTE]
-> **Every "smart" feature listed above can be implemented with deterministic math and simple comparisons.** AI is NOT needed for any of them.
-
----
-
-## 12. DATA MODEL / DATABASE GAPS
-
-### Current Models vs. Required
-
-| Model | Exists? | Status | Gaps |
-|-------|---------|--------|------|
-| `User` | ✅ | Good | Missing: body weight history, height, age (for 1RM context) |
-| `Exercise` | ✅ | Adequate | Missing: primaryMuscle, secondaryMuscles (has `muscles: [String]` but loosely structured) |
-| `Workout` | ✅ | **Weak** | Missing: `completed` field (referenced in queries but not in schema), `status` (in-progress/completed), `completedAt` |
-| `Plan` | ✅ | Over-engineered | Has engagement, performance, sync metadata — most unused. Good core structure. |
-| `Food` | ✅ | Good | Well-structured with serving sizes and nutrition data |
-| `Meal` | ✅ | Adequate | Works fine |
-| `NutritionGoal` | ✅ | Good | Has TDEE calculation fields |
-| `Post` | ✅ | **Remove** | Forum feature not implemented |
-| `Review` | ✅ | Deprioritize | Not connected to frontend properly |
-| `Achievement` | ❌ **Missing** | Broken | Referenced in analytics.js but model doesn't exist — will crash |
-
-### Critical Schema Fix — Workout Model
-
-The Workout model needs:
 ```
-status: { type: String, enum: ['in-progress', 'completed', 'abandoned'], default: 'in-progress' }
-completedAt: Date
-totalVolume: Number  // Calculated on save
+Register → Redirect to /onboarding → Step-by-step animated flow → Split recommendation reveal → Dashboard
 ```
 
-The `completed: true` field is queried in analytics but doesn't exist in the schema — meaning those queries always return 0.
+**Step 1 — Welcome Screen**
+- Personalized greeting: "Welcome, {name}! Let's build your perfect plan."
+- Animated gym silhouette background
+- Single "Let's Go" CTA button
 
-### Data We Should NOT Collect
-- Social graph / friends lists (no social features planned)
-- GPS / location data
-- Heart rate / wearable data (adds complexity, requires integrations)
-- Detailed body measurements beyond body weight (unnecessary complexity for most users)
+**Step 2 — Basic Info**
+- Gender selection (Male / Female / Prefer Not to Say) — large icon cards
+- Age input — number picker with smooth scroll
+- Framer Motion slide transition between fields
 
----
+**Step 3 — Body Metrics**
+- Height input (cm or ft/in based on unit preference)
+- Current Weight input (kg or lbs)
+- Target Weight input (optional)
+- Unit toggle (Metric ↔ Imperial) inline
 
-## 13. UX / WORKOUT FLOW GAPS
+**Step 4 — Fitness Goal**
+- Large animated cards with icons:
+  - 🔥 Lose Weight → `deficit`
+  - 💪 Build Muscle → `bulk`
+  - ⚖️ Maintain → `maintenance`
+  - 🏋️ Get Stronger → `strength`
+  - 🔄 Body Recomposition → `recomposition`
+- Single selection, selected card glows with border animation
 
-### Current Flow (Broken)
+**Step 5 — Training Commitment**
+- "How many days per week can you train?"
+- Interactive slider (1–7) OR large day-count cards
+- Below the selection, show a dynamic preview: "We'll recommend a **4-Day Upper/Lower Split**"
+- The preview text updates live as the user moves the slider
+
+**Step 6 — Activity Level**
+- Cards: Sedentary / Lightly Active / Moderately Active / Very Active / Extra Active
+- Used for TDEE calculation in Feature 4
+
+**Step 7 — "Analyzing Your Profile…" (Faux Loading)**
+- 3-second animated screen with:
+  - Pulsing brain/AI icon
+  - Progress bar filling up
+  - Text cycling: "Analyzing body composition…" → "Calculating optimal split…" → "Building your plan…"
+- Creates anticipation and perceived intelligence
+
+**Step 8 — The Reveal**
+- Glassmorphism card with the recommended split name and summary
+- Example: "**Push / Pull / Legs** — 6 days per week"
+- Below: day-by-day breakdown preview (Mon: Push, Tue: Pull, etc.)
+- Two CTAs: "Accept & Start" (primary) | "Browse Other Splits" (secondary, links to /splits)
+- Confetti animation on accept
+
+### Backend Changes
+
+#### [MODIFY] [`User.js`](file:///d:/Workout-Tracker-3/backend/models/User.js)
+
+Add the following fields to the user schema:
+
+```javascript
+// Body metrics — single source of truth
+metrics: {
+  age: { type: Number, default: null },
+  gender: { type: String, enum: ['male', 'female', 'other'], default: null },
+  height: { type: Number, default: null },         // in cm (always stored metric)
+  currentWeight: { type: Number, default: null },   // in kg (always stored metric)
+  targetWeight: { type: Number, default: null },    // in kg
+  bodyFatPercentage: { type: Number, default: null },
+  bmi: { type: Number, default: null }
+},
+
+// Onboarding state
+onboardingCompleted: { type: Boolean, default: false },
+onboardingCompletedAt: { type: Date, default: null },
+
+// Training preferences (extends existing fitnessGoals)
+// Add to existing fitnessGoals object:
+fitnessGoals: {
+  // ... keep existing fields (goal, activityLevel, targetWeight, weeklyGoal)
+  trainingFrequency: { type: Number, default: 4, min: 1, max: 7 },
+  recommendedSplit: { type: String, default: null },  // e.g., 'ppl', 'upper_lower', 'full_body'
+  experienceLevel: { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'beginner' }
+}
 ```
-Library → Pick 1 exercise → Setup modal → Start Workout page → Log sets → Complete → Back to Library
+
+#### [NEW] [`backend/controllers/onboardingController.js`](file:///d:/Workout-Tracker-3/backend/controllers/onboardingController.js)
+
+```javascript
+// Core logic:
+// 1. Receive: { metrics, fitnessGoals, trainingFrequency, activityLevel }
+// 2. Update User document with all fields
+// 3. Run split recommendation algorithm (see Feature 2)
+// 4. Auto-create a Plan document with the recommended split's exercises
+// 5. Calculate TDEE and set NutritionGoal defaults (see Feature 4)
+// 6. Set onboardingCompleted = true
+// 7. Return: { user, recommendedSplit, plan, nutritionGoals }
 ```
-**Problem**: User must repeat this for EVERY exercise. A 6-exercise workout requires 6 separate navigation cycles.
 
-### Proposed Flow (Correct)
+#### [MODIFY] [`backend/routes/users.js`](file:///d:/Workout-Tracker-3/backend/routes/users.js)
+
+Add endpoint:
 ```
-Dashboard → "Start Workout" → Choose: Plan workout OR Freestyle
-  → Plan: Auto-loads exercises → Log sets for each → Complete
-  → Freestyle: Add exercises on-the-fly → Log sets → Complete
-→ Save all exercises as single Workout document → Show summary
+POST /api/users/onboarding  →  onboardingController.completeOnboarding
 ```
 
-### Additional UX Issues
+### Frontend Changes
 
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **No previous weight visibility** | Critical | User has no reference for what to lift |
-| **~20MB of hero images in `src/`** | High | 7 JPEG files (2-4MB each) bundled into app |
-| **Dashboard is 108KB JSX** | Medium | Single monolithic component |
-| **App.jsx is 1070 lines** | Medium | Contains inline Search and ExerciseDetail components with `React.createElement` calls (transpiled JSX?) |
-| **7 light-mode fix CSS files** | Medium | Indicates broken theme system patched repeatedly |
-| **No loading states in workout flow** | Medium | API calls have no feedback |
-| **Navigation unclear for new users** | Medium | Too many nav items (Library, Plans, Splits, etc.) |
+#### [NEW] [`frontend/src/pages/Onboarding.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Onboarding.jsx)
 
----
+- Multi-step form component using `framer-motion` `AnimatePresence` for step transitions
+- Each step is a sub-component rendered inside a `motion.div` with `initial`, `animate`, `exit` props
+- Progress bar at top showing current step / total steps
+- "Back" and "Next" navigation with validation per step
+- Final API call to `POST /api/users/onboarding`
+- On success: redirect to `/dashboard`
 
-## 14. TECHNICAL ARCHITECTURE AUDIT
+#### [NEW] [`frontend/src/services/onboardingService.js`](file:///d:/Workout-Tracker-3/frontend/src/services/onboardingService.js)
 
-### Frontend
+- `submitOnboarding(data)` — POST to `/api/users/onboarding`
+- `getSplitRecommendation(frequency)` — local-first preview logic
 
-| Area | Assessment |
-|------|-----------|
-| **Component Architecture** | 🔴 70 components, many duplicates (3 profile variants, 4 workout page variants, 3 hero variants) |
-| **State Management** | ⚠️ 4 contexts + heavy localStorage usage. RealTimeContext does polling, not real-time. |
-| **Service Layer** | 🔴 33 service files with massive overlap (e.g., `workoutService`, `workoutServiceReal`, `workoutSync`, `realTimeWorkoutSync`, `workoutCompletionService`, `workoutCompletionFallback`, `workoutBackendExample`) |
-| **Utils** | 🔴 40 utility files — many are one-time cleanup scripts left in the codebase |
-| **CSS** | ⚠️ TailwindCSS + 31 custom CSS files + inline styles. 7 "light-mode-fix" files indicate broken theming. |
-| **Bundle Size** | 🔴 ~20MB of hero images in `src/`. Two charting libraries (Chart.js + Recharts). Particles library. Framer Motion. |
-| **Code Quality** | ⚠️ App.jsx contains ~800 lines of transpiled `React.createElement` code (not JSX). Likely generated by a transpiler and not cleaned up. |
+#### [MODIFY] [`frontend/src/pages/Register.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Register.jsx)
 
-### Backend
+Change line 75: `navigate("/")` → `navigate("/onboarding")`
 
-| Area | Assessment |
-|------|-----------|
-| **API Design** | ⚠️ Mostly RESTful. Inconsistent response shapes (`{ workout }` vs `{ success, data }` vs `{ success, plans }`). |
-| **Validation** | ⚠️ Basic field presence checks. No schema validation library (Joi, Zod). |
-| **Error Handling** | ✅ Global error middleware exists. Error types handled (file size, multer). |
-| **Security Middleware** | 🔴 Helmet imported in package.json but **never used** in server.js. Rate limiter exists. |
-| **Test Files** | ⚠️ 8 test files in backend root — ad-hoc scripts, not proper tests. |
-| **Dead Code** | `global.io` Socket.IO references in Plan model — Socket.IO is not installed. |
+#### [MODIFY] [`frontend/src/App.jsx`](file:///d:/Workout-Tracker-3/frontend/src/App.jsx)
+
+- Import `Onboarding` page
+- Add route: `<Route path="/onboarding" element={<Onboarding />} />`
+
+#### [MODIFY] [`frontend/src/context/AuthContext.jsx`](file:///d:/Workout-Tracker-3/frontend/src/context/AuthContext.jsx)
+
+- Expose `user.onboardingCompleted` in the auth state
+- Add optional redirect logic: if logged in but `onboardingCompleted === false`, redirect to `/onboarding`
 
 ---
 
-## 15. SECURITY AUDIT
+## 3. Feature 2: Smart Workout Split Recommendation Engine
 
-| Issue | Severity | Detail |
-|-------|----------|--------|
-| **Secrets in repository** | 🔴 CRITICAL | `.env` with MongoDB URI (username+password), JWT secret, Cloudinary keys, Nutritionix keys committed to git |
-| **Hardcoded JWT fallback** | 🔴 CRITICAL | `auth.js` middleware: `process.env.JWT_SECRET \|\| 'workout_tracker_super_secret_jwt_key_2024...'` — if env var missing, uses hardcoded secret |
-| **Password in error message** | 🔴 HIGH | `server.js` line 252: `console.error('6. Make sure to replace <password> with: aravvvvc1')` — logs actual DB password |
-| **Helmet not used** | ⚠️ HIGH | Installed as dependency but never imported/used in server.js |
-| **CORS allows all origins** | ⚠️ HIGH | Line 64: `callback(null, true); // Allow all origins in production for now` |
-| **No input sanitization** | ⚠️ MEDIUM | User inputs are not sanitized against XSS. `Object.assign(workout, req.body)` in PUT allows mass assignment. |
-| **30-day token, no refresh** | ⚠️ MEDIUM | JWT expires in 30 days. No refresh token mechanism. If token is stolen, attacker has access for 30 days. |
-| **Verbose error logging** | ⚠️ LOW | Full stack traces logged to console in production; some error responses include `error.message` |
+### Overview
+An algorithm that maps training frequency → optimal split, factoring in experience level and goal.
+
+### Split Mapping Logic
+
+```
+Days/Week → Split Name → Day Breakdown
+──────────────────────────────────────────────
+1 day   → Full Body (1x)           → [Full Body]
+2 days  → Full Body (2x)           → [Full Body A, Full Body B]
+3 days  → Full Body (3x)           → [Full Body A, Full Body B, Full Body C]
+         OR Push/Pull/Legs (1x)    → [Push, Pull, Legs]  (intermediate+)
+4 days  → Upper/Lower (2x)         → [Upper A, Lower A, Upper B, Lower B]
+5 days  → Upper/Lower + Full       → [Upper, Lower, Upper, Lower, Full Body]
+         OR Bro Split (5-day)      → [Chest, Back, Shoulders, Legs, Arms]
+6 days  → Push/Pull/Legs (2x)      → [Push, Pull, Legs, Push, Pull, Legs]
+7 days  → PPL (2x) + Active Recovery → [Push, Pull, Legs, Push, Pull, Legs, Active Recovery]
+```
+
+### Goal-Based Adjustments
+
+| Goal | Rep Range Emphasis | Rest Period | Volume Modifier |
+|---|---|---|---|
+| Lose Weight | 12-15 reps, supersets | 30-60s | Higher volume, cardio finishers |
+| Build Muscle | 8-12 reps, moderate | 60-90s | Standard hypertrophy volume |
+| Get Stronger | 3-6 reps, heavy | 2-5 min | Lower volume, compound focus |
+| Recomposition | 8-12 reps, mixed | 60-90s | Moderate volume, progressive |
+
+### Backend Implementation
+
+#### [NEW] [`backend/services/splitRecommendationEngine.js`](file:///d:/Workout-Tracker-3/backend/services/splitRecommendationEngine.js)
+
+```javascript
+// Input:  { trainingFrequency, goal, experienceLevel }
+// Output: { splitName, splitType, days: [{ dayName, focusMuscles, exercises: [...] }] }
+//
+// Each exercise object includes:
+//   { name, sets, reps, rest, category, muscle, notes }
+//
+// Exercises pulled from the existing exerciseLibrary data structure
+// to maintain consistency with the frontend library
+```
+
+This service contains NO external API calls — it is a pure algorithmic engine using hardcoded workout templates enriched from the exercise library.
 
 ---
 
-## 16. PERFORMANCE AUDIT
+## 4. Feature 3: Body Metrics Tracking & Progress Dashboard
 
-| Issue | Impact | Fix |
-|-------|--------|-----|
-| **~20MB hero images in src/** | 🔴 Severe bundle size | Move to `public/` with proper optimization; use WebP format |
-| **Two charting libraries** | ⚠️ Bundle bloat | Pick one (Recharts is more React-native); remove Chart.js |
-| **Particles library** | ⚠️ CPU + bundle | Decorative only; remove or lazy-load |
-| **Streak calculation N+1** | ⚠️ DB load | Queries DB in a while loop, one query per day. Use aggregation. |
-| **Duplicate meal count queries** | ⚠️ DB load | Queries both `{ userId }` and `{ user }` every time + auto-migration on every request |
-| **Client-side fetch monkey-patch** | ⚠️ Fragility | `main.jsx` overrides `window.fetch` globally to add rate limiting and error swallowing |
-| **No pagination** | ⚠️ DB load | Workout history loads ALL workouts. No limit/offset. |
-| **localStorage abuse** | ⚠️ Storage limits | PRs, completed workouts, plans, splits, meals, reviews all stored in localStorage |
+### Overview
+Allow users to log weight, body fat %, and measurements over time. Display progress charts on the Dashboard and Profile pages.
+
+### Backend Changes
+
+#### [NEW] [`backend/models/BodyMetric.js`](file:///d:/Workout-Tracker-3/backend/models/BodyMetric.js)
+
+```javascript
+const BodyMetricSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  date: { type: Date, default: Date.now },
+  weight: { type: Number, required: true },          // kg
+  bodyFatPercentage: { type: Number, default: null },
+  measurements: {
+    chest: Number,    // cm
+    waist: Number,
+    hips: Number,
+    biceps: Number,
+    thighs: Number,
+    neck: Number
+  },
+  notes: { type: String, default: '' },
+  source: { type: String, enum: ['manual', 'smart_scale', 'onboarding'], default: 'manual' }
+}, { timestamps: true });
+
+BodyMetricSchema.index({ user: 1, date: -1 });
+```
+
+#### [NEW] [`backend/routes/bodyMetrics.js`](file:///d:/Workout-Tracker-3/backend/routes/bodyMetrics.js)
+
+```
+POST   /api/body-metrics         → Log a new entry
+GET    /api/body-metrics         → Get all entries (paginated, sorted by date desc)
+GET    /api/body-metrics/latest  → Get most recent entry
+GET    /api/body-metrics/chart   → Get data formatted for chart (last 30/90/365 days)
+DELETE /api/body-metrics/:id     → Delete an entry
+```
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/BodyMetricsLogger.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/BodyMetricsLogger.jsx)
+
+- Modal or expandable card on Dashboard/Profile
+- Quick weight entry with +/- buttons
+- Optional body fat % and measurements accordion
+- "Log Weight" button saves to API
+
+#### [NEW] [`frontend/src/components/WeightProgressChart.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/WeightProgressChart.jsx)
+
+- Line chart (using Recharts, already in dependencies) showing weight over time
+- Toggle: 30 days / 90 days / 1 year / All time
+- Overlay: target weight line (dashed)
+- Glassmorphism card container
+
+#### [MODIFY] [`frontend/src/pages/Dashboard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx)
+
+- Add `WeightProgressChart` component in the stats section
+- Add quick "Log Today's Weight" card
+
+#### [MODIFY] [`frontend/src/pages/Profile.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx)
+
+- Add body metrics display section showing current weight, BMI, body fat %
+- Add `BodyMetricsLogger` modal trigger
 
 ---
 
-## 17. ZERO-BUDGET TECHNOLOGY STRATEGY
+## 5. Feature 4: TDEE / Calorie Calculator Integration
 
-| Need | Existing Technology | Free Alternative if Needed |
-|------|-------------------|---------------------------|
-| **Database** | MongoDB Atlas (Free M0 tier — 512MB) | ✅ Sufficient for single-user/demo |
-| **Backend hosting** | Render free tier | ✅ Spins down after inactivity but works |
-| **Frontend hosting** | Netlify free tier | ✅ Excellent for SPAs |
-| **Image storage** | Cloudinary (free: 25GB bandwidth/mo, 25K transforms) | ✅ Free tier sufficient for profile pics |
-| **Nutrition data** | Nutritionix API (requires signup) | ✅ Use local food database as primary — already 200+ items |
-| **Charts** | Recharts (already installed, free) | ✅ Remove Chart.js, keep Recharts |
-| **Auth** | JWT + bcrypt (free) | ✅ Already implemented |
-| **AI features** | NOT NEEDED | All "smart" features use deterministic math |
-| **Exercise videos** | YouTube embeds (free) | ✅ Already using YouTube links |
-| **Offline support** | localStorage + IndexedDB | ✅ Use Service Worker for PWA if needed |
+### Overview
+Auto-calculate Total Daily Energy Expenditure (TDEE) from user metrics and activity level. Auto-set nutrition macro targets. Recalculate when weight changes.
+
+### Calculation Formula
+
+```
+BMR (Mifflin-St Jeor):
+  Male:   10 × weight(kg) + 6.25 × height(cm) − 5 × age − 161 + 5
+  Female: 10 × weight(kg) + 6.25 × height(cm) − 5 × age − 161
+
+TDEE = BMR × Activity Multiplier:
+  Sedentary:    1.2
+  Light:        1.375
+  Moderate:     1.55
+  Very Active:  1.725
+  Extra Active: 1.9
+
+Goal Adjustment:
+  Lose Weight:      TDEE − 500 cal (0.5 kg/week deficit)
+  Maintain:         TDEE
+  Lean Bulk:        TDEE + 300 cal
+  Bulk:             TDEE + 500 cal
+  Recomposition:    TDEE (high protein)
+
+Macro Split:
+  Protein: 2.0g × body weight (kg)  → calories = protein × 4
+  Fat:     25% of total calories     → grams = fat_cal / 9
+  Carbs:   remaining calories        → grams = carb_cal / 4
+```
+
+### Backend Changes
+
+#### [NEW] [`backend/services/tdeeCalculator.js`](file:///d:/Workout-Tracker-3/backend/services/tdeeCalculator.js)
+
+Pure function:
+```javascript
+export function calculateTDEE({ weight, height, age, gender, activityLevel }) → { bmr, tdee }
+export function calculateMacros({ tdee, goal, weight }) → { calories, protein, carbs, fat }
+```
+
+#### [MODIFY] [`backend/controllers/onboardingController.js`](file:///d:/Workout-Tracker-3/backend/controllers/onboardingController.js)
+
+- After saving user metrics, call `calculateTDEE()` and `calculateMacros()`
+- Create or update `NutritionGoal` document with calculated values
+
+#### [NEW] `POST /api/users/recalculate-tdee`
+
+- Called when user updates weight or activity level
+- Recalculates and updates NutritionGoal
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/TDEECalculatorCard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/TDEECalculatorCard.jsx)
+
+- Standalone card showing: BMR, TDEE, daily calorie target, macro split
+- Animated calorie meter (circular progress)
+- "Recalculate" button if metrics change
+- Placed on Nutrition page and optionally Dashboard
+
+---
+
+## 6. Feature 5: AI-Powered Workout Suggestions
+
+### Overview
+"Today's Suggested Workout" — a daily workout recommendation based on the user's split schedule, workout history, and what muscle groups haven't been trained recently.
+
+### Logic (No External AI API Needed)
+
+```
+1. Get user's recommended split schedule (from onboarding)
+2. Check: what day of the week is it?  →  Map to split day
+3. Check: what did the user train yesterday / recently?
+4. If they skipped a day:  suggest the skipped day's workout
+5. If on schedule:  suggest today's planned workout
+6. If no split assigned:  suggest the least-recently-trained muscle group
+```
+
+### Backend Changes
+
+#### [NEW] `GET /api/users/todays-workout`
+
+Returns:
+```json
+{
+  "suggestion": {
+    "title": "Push Day — Chest & Shoulders",
+    "exercises": [...],
+    "reason": "It's Tuesday — your PPL schedule has Push today",
+    "estimatedDuration": 55,
+    "difficulty": "intermediate"
+  },
+  "alternatives": [...]
+}
+```
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/TodaysWorkoutCard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/TodaysWorkoutCard.jsx)
+
+- Premium card on Dashboard
+- Shows today's suggested workout with muscle groups, exercise count, estimated time
+- "Start This Workout" button → navigates to `/workout-session` with exercises pre-loaded
+- "See Alternatives" → expands to show 2-3 other options
+- Animated entrance with Framer Motion
+
+---
+
+## 7. Feature 6: Progressive Overload Tracking
+
+### Overview
+Track weight/rep progression per exercise over time. Show users their strength curve for every exercise.
+
+### Backend Changes
+
+#### [MODIFY] Leverage existing [`Workout.js`](file:///d:/Workout-Tracker-3/backend/models/Workout.js) model
+
+No model changes needed — the data already exists in completed workouts (`exercises[].sets[].weight`, `exercises[].sets[].reps`).
+
+#### [NEW] `GET /api/analytics/exercise-progression/:exerciseName`
+
+Aggregation pipeline:
+```javascript
+// 1. Find all completed workouts for this user containing this exercise
+// 2. For each workout, extract the best set (highest weight × reps)
+// 3. Return sorted by date: [{ date, bestWeight, bestReps, totalVolume, estimated1RM }]
+```
+
+Estimated 1RM Formula (Epley): `1RM = weight × (1 + reps/30)`
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/ExerciseProgressionChart.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/ExerciseProgressionChart.jsx)
+
+- Line chart showing weight progression over time for a specific exercise
+- Toggle between: Weight, Volume, Estimated 1RM
+- Accessible from: Exercise Library detail, Workout History detail, Analytics page
+- Highlight PRs with star markers on the chart
+
+#### [MODIFY] [`frontend/src/pages/WorkoutDetails.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/WorkoutDetails.jsx)
+
+- For each exercise in the completed workout, show a mini progression sparkline
+- "View Full History" link → opens `ExerciseProgressionChart` in a modal
+
+---
+
+## 8. Feature 7: Rest Timer 2.0 with Smart Suggestions
+
+### Overview
+Enhance the existing rest timer with smart rest period suggestions based on the exercise type and set intensity.
+
+### Logic
+
+```
+Compound Heavy (Squat, Deadlift, Bench — ≤5 reps):  Suggest 3:00 min
+Compound Moderate (6-10 reps):                        Suggest 2:00 min
+Isolation (Curls, Laterals — 10-15 reps):             Suggest 1:00 min
+Light / Burnout (15+ reps):                           Suggest 0:45 sec
+```
+
+### Frontend Changes
+
+#### [MODIFY] [`frontend/src/pages/WorkoutSession.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/WorkoutSession.jsx)
+
+- After a set is completed, auto-suggest rest time based on exercise category and reps performed
+- Show suggestion as a pill: "Suggested: 2:00" with option to tap to start
+- User can still manually set any rest time
+- Add subtle sound/vibration when rest timer ends (using Web Audio API or Notification API)
+
+#### [MODIFY] [`frontend/src/components/RestTimerFloatingBar.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/RestTimerFloatingBar.jsx)
+
+- Add circular progress ring animation
+- Add "Skip Rest" button
+- Add "+30s" quick-add button
+
+---
+
+## 9. Feature 8: Workout History Timeline & PR Wall
+
+### Overview
+A visually stunning, scrollable timeline view of all completed workouts. Plus a dedicated "PR Wall" showing all personal records.
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/WorkoutTimeline.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/WorkoutTimeline.jsx)
+
+- Vertical timeline with cards for each workout
+- Each card shows: date, workout title, duration, volume, muscle groups trained (colored dots)
+- Cards alternate left/right on desktop, stack on mobile
+- Lazy-loaded with infinite scroll
+- Framer Motion stagger animation on scroll
+
+#### [NEW] [`frontend/src/components/PRWall.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/PRWall.jsx)
+
+- Grid of PR cards, one per exercise where a PR exists
+- Each card: exercise name, PR weight, PR date, trend arrow (up/down vs previous PR)
+- Filter by muscle group
+- Animated "NEW PR!" badge on recently broken records
+
+#### [MODIFY] [`frontend/src/pages/Dashboard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Dashboard.jsx)
+
+- Add "Recent PRs" section showing last 3-5 PRs
+
+---
+
+## 10. Feature 9: Achievement & Badge System
+
+### Overview
+The [`Achievement.js`](file:///d:/Workout-Tracker-3/backend/models/Achievement.js) model already exists but has zero implementation. Build the full system.
+
+### Achievement Definitions
+
+```
+🏋️ First Blood         → Complete your first workout
+🔥 Consistency King     → 7-day streak
+⚡ Two Weeks Strong     → 14-day streak
+💪 Iron Will            → 30-day streak
+🏆 Century Club         → 100 completed workouts
+📊 Data Nerd            → Log meals for 7 consecutive days
+🎯 Goal Setter          → Complete onboarding
+🚀 PR Hunter            → Break 5 personal records
+⚖️ Weight Tracker       → Log weight 10 times
+🍎 Nutrition Master     → Hit macro targets 7 days in a row
+🏅 Split Master         → Complete all days of a workout split
+👑 Elite                → 365-day streak
+```
+
+### Backend Changes
+
+#### [NEW] [`backend/services/achievementEngine.js`](file:///d:/Workout-Tracker-3/backend/services/achievementEngine.js)
+
+- Called after: workout completion, streak check-in, meal logging, weight logging, onboarding completion
+- Checks all achievement conditions against user data
+- Creates Achievement documents for newly unlocked achievements
+- Returns list of newly unlocked achievements for frontend toast notifications
+
+#### [MODIFY] [`backend/routes/workouts.js`](file:///d:/Workout-Tracker-3/backend/routes/workouts.js)
+
+- After saving a completed workout, call `achievementEngine.check(userId)`
+
+#### [NEW] `GET /api/achievements` → Return all achievements for user (locked + unlocked)
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/AchievementToast.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/AchievementToast.jsx)
+
+- Animated toast notification when an achievement is unlocked
+- Shows badge icon, title, description
+- Confetti particles behind the badge
+- Auto-dismiss after 5 seconds
+
+#### [NEW] [`frontend/src/pages/Achievements.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Achievements.jsx)
+
+- Full page showing all possible achievements
+- Unlocked: full color with date achieved
+- Locked: grayscale with progress bar (e.g., "3/7 day streak")
+- Categories: Workout, Nutrition, Consistency, Social
+
+#### [MODIFY] [`frontend/src/pages/Profile.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Profile.jsx)
+
+- Add "Badges" section showing top 5 most recent achievements
+
+---
+
+## 11. Feature 10: Social Feed & Community Enhancements
+
+### Overview
+Upgrade the Forum from localStorage-only to a real MongoDB-backed social feed.
+
+### Backend Changes
+
+#### [MODIFY] [`backend/models/Post.js`](file:///d:/Workout-Tracker-3/backend/models/Post.js)
+
+Expand the existing Post model:
+```javascript
+{
+  user: { type: ObjectId, ref: 'User', required: true },
+  content: { type: String, required: true, maxlength: 1000 },
+  category: { type: String, enum: ['General', 'PRs', 'Tips', 'Motivation', 'Nutrition', 'Progress'], default: 'General' },
+  likes: [{ type: ObjectId, ref: 'User' }],
+  comments: [{
+    user: { type: ObjectId, ref: 'User' },
+    content: String,
+    createdAt: { type: Date, default: Date.now }
+  }],
+  attachedWorkout: { type: ObjectId, ref: 'Workout' },  // Share a workout
+  attachedPR: { exerciseName: String, weight: Number, reps: Number },
+  isPublic: { type: Boolean, default: true }
+}
+```
+
+#### [MODIFY] [`backend/routes/posts.js`](file:///d:/Workout-Tracker-3/backend/routes/posts.js)
+
+Expand from basic to full CRUD:
+```
+GET    /api/posts              → Feed (paginated, newest first)
+POST   /api/posts              → Create post
+POST   /api/posts/:id/like     → Toggle like
+POST   /api/posts/:id/comment  → Add comment
+DELETE /api/posts/:id          → Delete own post
+```
+
+### Frontend Changes
+
+#### [MODIFY] [`frontend/src/pages/Forum.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/Forum.jsx)
+
+- Replace localStorage logic with real API calls
+- Add "Share Workout" button that attaches a completed workout to a post
+- Add "Share PR" auto-post when user breaks a record (opt-in)
+- Real-time like counts and comment threads
+
+---
+
+## 12. Feature 11: Weekly/Monthly Progress Reports
+
+### Overview
+In-app progress summaries showing the user how they performed over the past week/month.
+
+### Backend Changes
+
+#### [NEW] `GET /api/analytics/weekly-report`
+
+Returns:
+```json
+{
+  "period": "Aug 26 - Sep 1, 2026",
+  "workoutsCompleted": 5,
+  "totalVolume": 45000,
+  "totalDuration": 285,
+  "caloriesBurned": 1800,
+  "mealsLogged": 21,
+  "avgDailyCalories": 2150,
+  "avgDailyProtein": 165,
+  "weightChange": -0.5,
+  "prsSet": 2,
+  "streakDays": 7,
+  "topExercises": ["Bench Press", "Squat", "Pull-ups"],
+  "muscleGroupDistribution": { "Chest": 25, "Back": 20, "Legs": 30, ... },
+  "comparedToLastWeek": { "workouts": "+1", "volume": "+12%", "protein": "+5%" }
+}
+```
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/WeeklyReportCard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/WeeklyReportCard.jsx)
+
+- Summary card on Dashboard (collapsible)
+- Key metrics with comparison arrows (↑ green, ↓ red vs last week)
+- Mini bar chart for workout distribution by day
+- "View Full Report" → opens detailed modal/page
+
+#### [NEW] [`frontend/src/pages/ProgressReport.jsx`](file:///d:/Workout-Tracker-3/frontend/src/pages/ProgressReport.jsx)
+
+- Full-page detailed report with charts
+- Toggle: Weekly / Monthly view
+- Recharts visualizations for all metrics
+- Shareable as image (canvas screenshot)
+
+---
+
+## 13. Feature 12: Export & Share Workouts
+
+### Overview
+Let users export their workout data and share individual workouts as visual cards.
+
+### Frontend Changes
+
+#### [NEW] [`frontend/src/components/WorkoutShareCard.jsx`](file:///d:/Workout-Tracker-3/frontend/src/components/WorkoutShareCard.jsx)
+
+- Generates a beautiful card image (using `html2canvas`) of a completed workout
+- Shows: workout title, date, exercises, volume, duration, PRs
+- Dark theme with gradient background
+- "Share" button → opens system share dialog or downloads image
+
+#### [NEW] [`frontend/src/utils/exportWorkouts.js`](file:///d:/Workout-Tracker-3/frontend/src/utils/exportWorkouts.js)
+
+- Export all workouts as CSV
+- Export single workout as PDF
+- Export progress report as PDF
+
+---
+
+## 14. Verification Plan
+
+### For Each Feature
+
+1. **Backend**: Test each new API endpoint with manual curl/Postman requests
+2. **Frontend**: Verify UI renders correctly, animations are smooth, responsive on mobile
+3. **Integration**: Complete end-to-end flow test
+
+### Critical Flow Tests
+
+| Test | Steps | Expected Result |
+|---|---|---|
+| Onboarding E2E | Register → Complete all steps → Accept split | User in DB has `onboardingCompleted: true`, Plan created, NutritionGoal set |
+| Returning User | Login with existing user who completed onboarding | Goes to Dashboard, NOT /onboarding |
+| New User Gate | Login with user who hasn't completed onboarding | Redirected to /onboarding |
+| Weight Logging | Log weight → Check chart | New entry appears, chart updates |
+| TDEE Calculation | Male, 80kg, 180cm, 25yo, moderate → Calculate | TDEE ≈ 2,665 cal |
+| Achievement Trigger | Complete first workout | "First Blood" achievement toast appears |
+| PR Detection | Lift heavier than previous best | PR notification + PR Wall updated |
+| Split Recommendation | Select 6 days/week, Build Muscle, Intermediate | Recommends PPL |
+| Weekly Report | After 7 days of data | Report shows accurate stats with comparison |
+
+---
+
+## 15. Priority & Execution Order
 
 > [!IMPORTANT]
-> **No paid services are required for any recommended feature.** All "smart" features use mathematical formulas, not AI. The existing MongoDB Atlas free tier, Render free tier, and Netlify free tier are sufficient.
+> **Recommended execution order** — each phase builds on the previous one. Each phase is independently deployable.
+
+### Phase 1: Foundation (Do First)
+1. ✅ **User.js schema update** — Add `metrics`, `onboardingCompleted`, `trainingFrequency`
+2. ✅ **TDEE Calculator service** — Pure functions, no dependencies
+3. ✅ **Split Recommendation Engine** — Pure functions, no dependencies
+4. ✅ **Onboarding API endpoint** — Ties everything together
+5. ✅ **Onboarding.jsx frontend page** — The main deliverable
+
+### Phase 2: Core Tracking
+6. **BodyMetric model + routes** — Weight/measurement logging
+7. **Body metrics UI** — Logger modal + weight chart on Dashboard
+8. **TDEE Calculator Card** — Show calculated macros on Nutrition page
+9. **Exercise Progression API** — Aggregation pipeline for strength curves
+10. **Progressive Overload Charts** — Per-exercise progression visualization
+
+### Phase 3: Engagement & Gamification
+11. **Achievement Engine** — Backend service + triggers
+12. **Achievement frontend** — Toasts, page, profile badges
+13. **Today's Workout suggestion** — Dashboard card
+14. **Smart Rest Timer** — Auto-suggest rest periods
+15. **PR Wall** — Dedicated PR showcase
+
+### Phase 4: Social & Polish
+16. **Forum upgrade** — MongoDB-backed posts, likes, comments
+17. **Weekly/Monthly reports** — API + frontend cards
+18. **Workout sharing** — Image card generation
+19. **Export functionality** — CSV/PDF export
+20. **Workout Timeline** — Visual history view
+
+> [!WARNING]
+> **Phase 1 is the critical path.** Everything else depends on the User schema update and onboarding flow. Do not skip or reorder Phase 1.
 
 ---
 
-## 18. PRIORITIZED IMPLEMENTATION ROADMAP
-
-### PHASE 0 — Fix Critical Issues (1-2 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Add `.env` to `.gitignore`, rotate all exposed secrets | Low | 🔴 Critical |
-| Remove hardcoded JWT fallback from auth middleware | Trivial | 🔴 Critical |
-| Remove password from server.js console.error | Trivial | 🔴 Critical |
-| Add Helmet middleware to server.js | Trivial | High |
-| Fix Workout schema: add `status`, `completedAt`, `completed` field | Low | High |
-| Remove references to missing Achievement model | Low | High (prevents crashes) |
-| Delete dead/duplicate page files (15+ files) | Low | Medium |
-| Remove error suppression layers | Medium | Medium |
-
-### PHASE 1 — Core Workout Experience (3-5 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Build proper multi-exercise Workout Session page | High | ★★★★★ |
-| Add "Last Time" performance display for each exercise | Medium | ★★★★★ |
-| Add exercise history API endpoint | Low | ★★★★★ |
-| Implement Quick Start / Repeat Last Workout | Medium | ★★★★☆ |
-| Add auto-save to localStorage during active session | Medium | ★★★★☆ |
-| Fix and unify Workout History page (single version) | Medium | ★★★★☆ |
-
-### PHASE 2 — Progress & Analytics (2-3 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Replace all fake analytics endpoints with real MongoDB aggregations | Medium | ★★★★★ |
-| Implement exercise-specific progress charts (weight over time) | Medium | ★★★★☆ |
-| Build 1RM estimation (Epley formula) | Trivial | ★★★★☆ |
-| Persist PRs to backend | Low | ★★★★☆ |
-| Build PR Board page | Medium | ★★★☆☆ |
-| Volume per muscle group chart | Medium | ★★★★☆ |
-| Workout frequency heatmap/calendar | Medium | ★★★☆☆ |
-
-### PHASE 3 — Intelligent Fitness Features (2-3 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Progressive overload suggestion engine (rule-based) | Medium | ★★★★★ |
-| Plateau detection (flag exercises with no progress) | Low | ★★★★☆ |
-| Deload suggestion (after 4+ weeks of increasing volume) | Low | ★★★☆☆ |
-| Consistency scoring | Low | ★★★☆☆ |
-| Muscle group balance analysis | Medium | ★★★★☆ |
-
-### PHASE 4 — Advanced Features (3-5 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Expand workout split templates (8-10 templates) | Medium | ★★★☆☆ |
-| Fix search to query exercise library properly | Low | ★★★☆☆ |
-| Dashboard redesign (simplified, real data only) | High | ★★★★☆ |
-| Fix theme system (eliminate 7 CSS fix files) | Medium | ★★★☆☆ |
-| Improve navigation structure | Medium | ★★★☆☆ |
-| Remove Nutritionix dependency (local food DB primary) | Low | ★★☆☆☆ |
-
-### PHASE 5 — Polish & Production Readiness (2-3 days)
-| Task | Effort | Impact |
-|------|--------|--------|
-| Move hero images to `public/`, convert to WebP | Low | High (bundle size) |
-| Remove Chart.js, particles library | Low | Medium |
-| Add API response pagination | Medium | Medium |
-| Fix localStorage → use backend as source of truth | Medium | High |
-| Normalize API response shapes | Medium | Medium |
-| Add input validation (Zod/Joi) | Medium | Medium |
-| Add proper loading/error/empty states | Medium | Medium |
-| Clean up App.jsx (convert React.createElement back to JSX) | Medium | Medium |
-| Basic integration tests for critical flows | Medium | Medium |
-
----
-
-## 19. FEATURE DEPENDENCY MAP
-
-```mermaid
-graph TD
-    A["Phase 0: Security & Schema Fixes"] --> B["Phase 1: Workout Session"]
-    A --> C["Phase 2: Real Analytics"]
-    B --> D["Phase 3: Smart Features"]
-    B --> C
-    C --> D
-    D --> E["Phase 4: Advanced"]
-    E --> F["Phase 5: Polish"]
-    
-    B1["Multi-Exercise Session"] --> B2["Previous Performance Display"]
-    B1 --> B3["Quick Start"]
-    B2 --> D1["Progressive Overload Engine"]
-    B2 --> D2["Plateau Detection"]
-    C1["Real Analytics Endpoints"] --> C2["Progress Charts"]
-    C2 --> C3["Volume Analysis"]
-    C3 --> D3["Muscle Group Balance"]
-```
-
----
-
-## 20. MVP / V1 / V2 FEATURE BOUNDARIES
-
-### MVP (Phase 0 + Phase 1) — "It Actually Works"
-- ✅ Secure auth (rotated secrets, helmet)
-- ✅ Multi-exercise workout session logging
-- ✅ "Last time" weight/reps display
-- ✅ Quick Start / Repeat Last Workout
-- ✅ Single unified workout history page
-- ✅ Exercise library (already exists)
-- ✅ Plan builder (already exists)
-- ✅ Nutrition tracking (already exists)
-
-### V1 (+ Phase 2 + Phase 3) — "It's Actually Useful"
-- ✅ Everything in MVP
-- ✅ Real analytics (progress charts, volume, frequency)
-- ✅ 1RM estimation
-- ✅ PR Board (persisted to backend)
-- ✅ Progressive overload suggestions
-- ✅ Plateau detection
-- ✅ Muscle group balance analysis
-- ✅ Consistency scoring
-
-### V2 (+ Phase 4 + Phase 5) — "It's Polished"
-- ✅ Everything in V1
-- ✅ Redesigned dashboard (real data, fast, useful)
-- ✅ Fixed theme system
-- ✅ Optimized bundle (WebP images, single chart library)
-- ✅ Proper error handling and loading states
-- ✅ API pagination
-- ✅ Cleaned codebase
-
----
-
-## 21. FINAL PRODUCT VISION
-
-### WHO IT IS FOR
-Gym-goers of all levels (beginner through advanced) who want a **free, no-BS workout tracker** that helps them train progressively and see real progress — not a social media platform disguised as a fitness app.
-
-### WHAT PROBLEM IT SOLVES
-The two most common problems in the gym:
-1. **"What weight did I use last time?"** — Instant access to previous performance.
-2. **"Am I actually getting stronger?"** — Real progress charts and insights from your own data.
-
-### WHY USERS WOULD USE IT
-- **Zero cost** — completely free with no premium lock
-- **Fast logging** — start a workout in 1 tap, log sets with minimal friction
-- **Smart suggestions** — tells you when to increase weight (not just shows data)
-- **Real analytics** — charts from YOUR data, not fake demo numbers
-- **Plan support** — follow structured programs or go freestyle
-
-### WHAT MAKES IT DIFFERENT
-Most free workout trackers are either (a) too simple (just a spreadsheet) or (b) lock features behind paywalls. GrindX provides **intelligent workout guidance** (progressive overload, plateau detection, volume analysis) using pure math — no AI subscriptions, no premium tiers.
-
-### CORE WORKFLOW
-```
-Open App → Dashboard shows today's planned workout
-→ Tap "Start Workout" → See exercises with "last time" data
-→ Log sets (weight auto-suggested from progression engine)
-→ Rest timer between sets → Complete workout → See PR celebrations
-→ View progress charts → See muscle balance → Close app
-```
-Total time in-app: 30-60 seconds between sets. No unnecessary screens.
-
-### MOST IMPORTANT FEATURES (Ranked)
-1. Multi-exercise workout session logging
-2. Previous performance display ("Last time: 3×10 @ 60kg")
-3. Progressive overload engine ("Try 62.5kg today")
-4. Real progress analytics (weight-over-time charts)
-5. 1RM estimation and PR board
-6. Muscle group volume analysis
-7. Quick start / repeat last workout
-
----
-
-## 22. RECOMMENDED NEXT IMPLEMENTATION STEP
+## User Review Required
 
 > [!IMPORTANT]
-> **Start with Phase 0 (Security Fixes)**. The exposed credentials are a real vulnerability. This should take less than an hour.
->
-> Then proceed to **Phase 1 (Core Workout Experience)**. Building the multi-exercise workout session page is the single highest-impact change. Without it, the app cannot serve its primary purpose.
+> **Split Templates**: The plan uses hardcoded workout templates for each split type. Should we pull exercises from the existing [`exerciseLibrary.js`](file:///d:/Workout-Tracker-3/frontend/src/data/exerciseLibrary.js) data, or define separate curated templates for each split?
 
-### Immediate Action Items:
-1. Add `.env` to `.gitignore`
-2. Rotate MongoDB credentials, JWT secret, Cloudinary keys, Nutritionix keys
-3. Remove hardcoded JWT fallback from `middleware/auth.js`
-4. Add `app.use(helmet())` to `server.js`
-5. Add `status` and `completedAt` fields to Workout schema
-6. Remove Achievement model references from analytics.js
-7. Delete 15+ dead/duplicate files
+> [!IMPORTANT]
+> **Onboarding Enforcement**: Should users who haven't completed onboarding be **forcibly redirected** to `/onboarding` on every page load? Or should it be a dismissible banner/prompt on the Dashboard?
 
-After Phase 0, I will await your instruction to begin Phase 1 implementation.
+> [!IMPORTANT]
+> **Forum Backend**: The current Forum is entirely localStorage. Migrating to MongoDB means all existing forum posts will be lost for current users. Is that acceptable?
+
+> [!IMPORTANT]
+> **Execution Scope**: This plan has 4 phases with 20 items. Do you want me to implement **all phases**, or start with **Phase 1 only** and iterate?

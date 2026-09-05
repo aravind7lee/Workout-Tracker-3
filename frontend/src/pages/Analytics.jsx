@@ -21,7 +21,7 @@ function AnalyticsHero() {
   }, []);
 
   return (
-    <div className="analytics-hero relative h-80 sm:h-96 w-full overflow-hidden mb-6">
+    <div className="theme-dark-surface analytics-hero relative h-80 sm:h-96 w-full overflow-hidden mb-6">
       <div className="absolute inset-0">
         {!imageError && (
           <img

@@ -8,6 +8,7 @@ import {
   shouldPerformCleanup,
 } from "./utils/appStartupCleanup";
 import "./index.css";
+import "./styles/light-theme.css"; // Must load last so theme compatibility wins the cascade
 import "./utils/themeInit"; // Initialize theme before anything else
 
 // Perform one-time cleanup of fake meal data

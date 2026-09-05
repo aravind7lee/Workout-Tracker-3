@@ -11,6 +11,7 @@ import {
 
 import { useAuth } from "../context/AuthContext";
 import SearchBar from "./SearchBar";
+import ThemeToggle from "./ThemeToggle";
 
 import UltraSmoothSideMenu from "./UltraSmoothSideMenu";
 import { useConnectionStatus } from "../services/connectionService";
@@ -188,6 +189,8 @@ export default function Navbar() {
             <div className="lg:hidden flex-shrink-0">
               <SearchBar isMobile={true} />
             </div>
+
+            <ThemeToggle className="flex-shrink-0" />
 
             {/* Profile / Auth Dropdown */}
             {isAuthenticated() && user ? (

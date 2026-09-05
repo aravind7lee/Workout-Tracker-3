@@ -54,7 +54,7 @@ const Login = () => {
       });
       console.log("✅ Login successful, navigating to home");
       login(result.user, result.token);
-      navigate("/");
+      navigate(result.user?.onboardingCompleted === false ? "/onboarding" : "/");
     } catch (err) {
       console.error("❌ Login error details:", {
         message: err.message,

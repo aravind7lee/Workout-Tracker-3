@@ -785,12 +785,6 @@ input::placeholder, textarea::placeholder {
   color: var(--text) !important;
 }
 
-/* Base text elements - exclude colored stats and SVG elements */
-.light-theme *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color),
-[data-theme="light"] *:not(.text-blue-400):not(.text-blue-500):not(.text-green-400):not(.text-green-500):not(.text-purple-400):not(.text-purple-500):not(.text-orange-400):not(.text-orange-500):not(.text-red-400):not(.text-red-500):not(.text-yellow-400):not(.text-yellow-500):not(svg):not(path):not(.preserve-color) {
-  color: var(--text) !important;
-}
-
 /* Headings - Maximum contrast */
 .light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6,
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
@@ -859,32 +853,14 @@ input::placeholder, textarea::placeholder {
   border-color: var(--accent) !important;
 }
 
-/* Navbar specific overrides */
-.light-theme nav *:not(svg):not(path),
-[data-theme="light"] nav *:not(svg):not(path) {
-  color: var(--text) !important;
-}
-
 .light-theme nav h1, .light-theme nav h2, .light-theme nav h3,
 [data-theme="light"] nav h1, [data-theme="light"] nav h2, [data-theme="light"] nav h3 {
   color: var(--heading) !important;
 }
 
-/* Card and panel overrides */
-.light-theme .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path),
-[data-theme="light"] .card *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.text-red-400):not(.text-yellow-400):not(svg):not(path) {
-  color: var(--text) !important;
-}
-
 .light-theme .card h1, .light-theme .card h2, .light-theme .card h3, .light-theme .card h4, .light-theme .card h5, .light-theme .card h6,
 [data-theme="light"] .card h1, [data-theme="light"] .card h2, [data-theme="light"] .card h3, [data-theme="light"] .card h4, [data-theme="light"] .card h5, [data-theme="light"] .card h6 {
   color: var(--heading) !important;
-}
-
-/* Hero section overrides */
-.light-theme section *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.preserve-color):not(svg):not(path),
-[data-theme="light"] section *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(.preserve-color):not(svg):not(path) {
-  color: var(--text) !important;
 }
 
 .light-theme section h1, .light-theme section h2, .light-theme section h3, .light-theme section h4,
@@ -893,21 +869,9 @@ input::placeholder, textarea::placeholder {
   font-weight: 800 !important;
 }
 
-/* Feature section overrides */
-.light-theme .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path),
-[data-theme="light"] .features *:not(.text-blue-400):not(.text-green-400):not(.text-purple-400):not(.text-orange-400):not(svg):not(path) {
-  color: var(--text) !important;
-}
-
 .light-theme .features h3, .light-theme .features h4,
 [data-theme="light"] .features h3, [data-theme="light"] .features h4 {
   color: var(--heading) !important;
-}
-
-/* Footer overrides */
-.light-theme footer *:not(svg):not(path),
-[data-theme="light"] footer *:not(svg):not(path) {
-  color: var(--text) !important;
 }
 
 .light-theme footer h3, .light-theme footer h4,

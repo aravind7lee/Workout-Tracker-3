@@ -7,8 +7,13 @@ import Plan from '../models/Plan.js';
 import auth from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
 import { settingsLimiter } from '../middleware/rateLimiter.js';
+import { completeOnboarding, recalculateTDEE, resetOnboarding } from '../controllers/onboardingController.js';
 
 const router = express.Router();
+
+router.post('/onboarding', auth, completeOnboarding);
+router.post('/onboarding/reset', auth, resetOnboarding);
+router.post('/recalculate-tdee', auth, recalculateTDEE);
 
 // Get user profile with guaranteed profileImage persistence
 router.get('/profile', auth, async (req, res) => {
@@ -531,12 +536,14 @@ router.put('/settings', settingsLimiter, auth, async (req, res) => {
     
     // Update settings fields with validation
     if (fitnessGoals) {
-      updateData.fitnessGoals = {
-        goal: ['lose', 'maintain', 'gain', 'muscle', 'strength'].includes(fitnessGoals.goal) ? fitnessGoals.goal : 'maintain',
-        activityLevel: ['sedentary', 'light', 'moderate', 'very', 'extra'].includes(fitnessGoals.activityLevel) ? fitnessGoals.activityLevel : 'moderate',
-        targetWeight: fitnessGoals.targetWeight && !isNaN(fitnessGoals.targetWeight) ? Number(fitnessGoals.targetWeight) : null,
-        weeklyGoal: Math.max(1, Math.min(7, parseInt(fitnessGoals.weeklyGoal) || 3))
-      };
+      const supportedGoals = ['lose', 'maintain', 'gain', 'muscle', 'deficit', 'maintenance', 'bulk', 'strength', 'recomposition'];
+      updateData['fitnessGoals.goal'] = supportedGoals.includes(fitnessGoals.goal) ? fitnessGoals.goal : 'maintain';
+      updateData['fitnessGoals.activityLevel'] = ['sedentary', 'light', 'moderate', 'very', 'extra'].includes(fitnessGoals.activityLevel) ? fitnessGoals.activityLevel : 'moderate';
+      updateData['fitnessGoals.targetWeight'] = fitnessGoals.targetWeight && !isNaN(fitnessGoals.targetWeight) ? Number(fitnessGoals.targetWeight) : null;
+      updateData['fitnessGoals.weeklyGoal'] = Math.max(1, Math.min(7, parseInt(fitnessGoals.weeklyGoal) || 3));
+      if (fitnessGoals.trainingFrequency !== undefined) updateData['fitnessGoals.trainingFrequency'] = Math.max(1, Math.min(7, parseInt(fitnessGoals.trainingFrequency) || 4));
+      if (fitnessGoals.recommendedSplit !== undefined) updateData['fitnessGoals.recommendedSplit'] = fitnessGoals.recommendedSplit || null;
+      if (fitnessGoals.experienceLevel !== undefined) updateData['fitnessGoals.experienceLevel'] = ['beginner', 'intermediate', 'advanced'].includes(fitnessGoals.experienceLevel) ? fitnessGoals.experienceLevel : 'beginner';
     }
     
     if (notifications) {

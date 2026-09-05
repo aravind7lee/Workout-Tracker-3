@@ -68,6 +68,11 @@ router.post("/register", async (req, res) => {
         name: savedUser.name,
         email: savedUser.email,
         profileImage: savedUser.profileImage || null, // Explicitly ensure profileImage is included
+        metrics: savedUser.metrics,
+        fitnessGoals: savedUser.fitnessGoals,
+        onboardingCompleted: savedUser.onboardingCompleted,
+        onboardingCompletedAt: savedUser.onboardingCompletedAt,
+        preferences: savedUser.preferences,
         bio: savedUser.bio,
         registrationDate: savedUser.registrationDate,
         createdAt: savedUser.createdAt
@@ -151,6 +156,11 @@ router.post("/login", async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         profileImage: updatedUser.profileImage || null,
+        metrics: updatedUser.metrics,
+        fitnessGoals: updatedUser.fitnessGoals,
+        onboardingCompleted: updatedUser.onboardingCompleted,
+        onboardingCompletedAt: updatedUser.onboardingCompletedAt,
+        preferences: updatedUser.preferences,
         bio: updatedUser.bio,
         stats: updatedUser.stats,
         lastLogin: updatedUser.lastLogin,

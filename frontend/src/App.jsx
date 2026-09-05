@@ -1,4 +1,4 @@
-import { User, Edit3, ThumbsUp, Briefcase, GraduationCap, Shield } from 'lucide-react';
+import { User, Edit3, ThumbsUp, Briefcase, GraduationCap, Shield, Sparkles } from 'lucide-react';
 import "./utils/comprehensiveErrorHandler"; // Must be first to catch all errors
 // XP Points System Removed - Cache Bust v1.0
 import "./utils/immediateCleanup"; // Clean fake workouts immediately
@@ -6,12 +6,14 @@ import React, { useState, useEffect } from "react";
 import {
   Routes,
   Route,
+  Navigate,
+  useLocation,
   useSearchParams,
   useNavigate,
   useParams,
 } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { RealTimeProvider } from "./context/RealTimeContext";
 import { WorkoutCompletionProvider } from "./context/WorkoutCompletionContext";
 import Home from "./pages/Home";
@@ -45,6 +47,7 @@ import PRNotification from "./components/PRNotification";
 import ScrollToTop from "./components/ScrollToTop";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Onboarding from "./pages/Onboarding";
 import LegendsAndInfluencers from "./pages/LegendsAndInfluencers";
 import WorkoutSplits from "./pages/WorkoutSplits";
 import CustomSplitBuilder from "./pages/CustomSplitBuilder";
@@ -839,6 +842,47 @@ const ExerciseDetail = () => {
     ),
   );
 };
+const OnboardingGate = () => {
+  const { user, loading, isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (loading) return null;
+  if (location.pathname === '/onboarding' && !isAuthenticated()) {
+    return /*#__PURE__*/ React.createElement(Navigate, { to: "/register", replace: true });
+  }
+  const isSplitBrowser = ['/splits', '/workout-splits'].includes(location.pathname) && location.state?.fromOnboarding;
+  if (user?.onboardingCompleted === false && location.pathname !== '/onboarding' && !isSplitBrowser) {
+    return /*#__PURE__*/ React.createElement(Navigate, { to: "/onboarding", replace: true });
+  }
+  return null;
+};
+
+const OnboardingLauncher = () => {
+  const { user, loading, isAuthenticated } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const hiddenRoutes = ['/onboarding', '/login', '/register', '/workout-session', '/active-workout'];
+
+  if (loading || !user || !isAuthenticated() || hiddenRoutes.includes(location.pathname)) return null;
+
+  return /*#__PURE__*/ React.createElement(
+    "button",
+    {
+      type: "button",
+      onClick: () => navigate('/onboarding'),
+      className: "onboarding-launcher fixed bottom-24 right-4 z-[90] inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-600 px-4 py-3 text-xs font-black uppercase tracking-wider text-white shadow-[0_12px_35px_rgba(220,38,38,0.4)] transition hover:-translate-y-0.5 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-950 md:bottom-8 md:right-8",
+      "aria-label": user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
+      title: user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
+    },
+    /*#__PURE__*/ React.createElement(Sparkles, { className: "h-4 w-4" }),
+    /*#__PURE__*/ React.createElement(
+      "span",
+      { className: "hidden sm:inline" },
+      user.onboardingCompleted ? "Fitness Profile" : "Complete Fitness Setup",
+    ),
+  );
+};
+
 export default function App() {
   // Initialize Chrome error handler
   useEffect(() => {
@@ -859,6 +903,7 @@ export default function App() {
           /*#__PURE__*/ React.createElement(
             AuthProvider,
             null,
+            /*#__PURE__*/ React.createElement(OnboardingGate, null),
             /*#__PURE__*/ React.createElement(
               RealTimeProvider,
               null,
@@ -871,6 +916,7 @@ export default function App() {
                     className: "min-h-screen",
                   },
                   /*#__PURE__*/ React.createElement(ScrollToTop, null),
+                  /*#__PURE__*/ React.createElement(OnboardingLauncher, null),
                   /*#__PURE__*/ React.createElement(PRNotification, null),
                   /*#__PURE__*/ React.createElement(Navbar, null),
                   /*#__PURE__*/ React.createElement(
@@ -880,7 +926,7 @@ export default function App() {
                   /*#__PURE__*/ React.createElement(
                     "main",
                     {
-                      className: "pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen",
+                      className: "app-main pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen",
                     },
                     /*#__PURE__*/ React.createElement(
                       Routes,
@@ -899,6 +945,10 @@ export default function App() {
                       /*#__PURE__*/ React.createElement(Route, {
                         path: "/login",
                         element: /*#__PURE__*/ React.createElement(Login, null),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/onboarding",
+                        element: /*#__PURE__*/ React.createElement(Onboarding, null),
                       }),
                       /*#__PURE__*/ React.createElement(Route, {
                         path: "/dashboard",

@@ -207,7 +207,7 @@ export default function LegendsAndInfluencers() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative w-full min-h-[80vh] h-[80vh] sm:h-[85vh] lg:h-[88vh] flex items-center justify-center overflow-hidden border-b border-neutral-800/80 shadow-2xl bg-black"
+        className="theme-dark-surface relative w-full min-h-[80vh] h-[80vh] sm:h-[85vh] lg:h-[88vh] flex items-center justify-center overflow-hidden border-b border-neutral-800/80 shadow-2xl bg-black"
       >
         <img
           src={ChampsHeader}

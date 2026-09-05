@@ -281,7 +281,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const isAuthenticated = () => {
+  const isAuthenticated = useCallback(() => {
     if (!token || !user) return false;
 
     // Check token format
@@ -294,7 +294,7 @@ export const AuthProvider = ({ children }) => {
 
     // Check user has valid ID
     return !!(user.id || user._id);
-  };
+  }, [token, user]);
 
   const value = {
     user,

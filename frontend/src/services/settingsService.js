@@ -3,7 +3,7 @@ import chromeErrorHandler from "../utils/chromeErrorHandler";
 
 class SettingsService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_BASE;
+    this.baseURL = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
     this.retryAttempts = 3; // Reduced retry attempts to prevent spam
     this.retryDelay = 1000; // Reduced delay
 
@@ -74,6 +74,15 @@ class SettingsService {
               "Backend endpoint not available. Using local storage.",
             );
           }
+          if (response.status === 429) {
+            const retryAfter = response.headers.get("Retry-After");
+            const rateLimitError = new Error(
+              `Settings sync is temporarily rate limited${retryAfter ? `; retry after ${retryAfter} seconds` : ""}.`,
+            );
+            rateLimitError.status = 429;
+            rateLimitError.retryable = false;
+            throw rateLimitError;
+          }
           if (response.status >= 500) {
             if (attempt === this.retryAttempts) {
               throw new Error(
@@ -96,6 +105,7 @@ class SettingsService {
           attempt === this.retryAttempts ||
           error.message.includes("Authentication failed") ||
           error.message.includes("not found") ||
+          error.retryable === false ||
           error.name === "AbortError"
         ) {
           throw error;
@@ -328,8 +338,10 @@ class SettingsService {
   setupAutoSave(callback, delay = 2000) {
     let timeoutId;
     let isProcessing = false;
+    let pendingSettings = null;
 
-    return (settings) => {
+    const schedule = (settings) => {
+      pendingSettings = settings;
       // Prevent multiple simultaneous saves
       if (isProcessing) {
         console.log("⏳ Auto-save already in progress, skipping...");
@@ -338,18 +350,28 @@ class SettingsService {
 
       clearTimeout(timeoutId);
       timeoutId = setTimeout(async () => {
+        const settingsToSave = pendingSettings;
+        pendingSettings = null;
         try {
           isProcessing = true;
-          const result = await this.saveSettings(settings);
+          const result = await this.saveSettings(settingsToSave);
           if (callback) callback(result);
         } catch (error) {
           console.error("Auto-save failed:", error);
           if (callback) callback({ success: false, error: error.message });
         } finally {
           isProcessing = false;
+          if (pendingSettings) schedule(pendingSettings);
         }
       }, delay);
     };
+
+    schedule.cancel = () => {
+      clearTimeout(timeoutId);
+      pendingSettings = null;
+    };
+
+    return schedule;
   }
 
   // Check if online

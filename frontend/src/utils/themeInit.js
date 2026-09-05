@@ -1,37 +1,15 @@
-// Theme initialization - Dark mode only
-// This file initializes the theme before React components load
-
-(function () {
-  "use strict";
-
+// Apply the saved theme before React mounts to avoid a light/dark flash.
+(function initializeTheme() {
   try {
-    // Apply dark theme immediately to prevent flash
+    const savedTheme = localStorage.getItem("theme");
+    const theme = savedTheme === "light" ? "light" : "dark";
     const root = document.documentElement;
-
-    // Remove any existing theme classes
-    root.classList.remove("light");
-    root.classList.add("dark");
-
-    // Set data attributes for theme
-    root.setAttribute("data-theme", "dark");
-
-    // Apply to body as well
-    if (document.body) {
-      document.body.className = "dark-theme";
-    } else {
-      // If body doesn't exist yet, wait for it
-      document.addEventListener("DOMContentLoaded", () => {
-        document.body.className = "dark-theme";
-      });
-    }
-
-    // Remove any saved theme preference to enforce dark mode
-    if (typeof localStorage !== "undefined") {
-      localStorage.removeItem("theme");
-      localStorage.setItem("theme", "dark");
-    }
+    root.classList.toggle("dark", theme === "dark");
+    root.classList.toggle("light", theme === "light");
+    root.setAttribute("data-theme", theme);
+    root.style.colorScheme = theme;
   } catch (error) {
-    // Silently handle any initialization errors
-    console.warn("Theme initialization warning:", error.message);
+    document.documentElement.classList.add("dark");
+    document.documentElement.setAttribute("data-theme", "dark");
   }
 })();

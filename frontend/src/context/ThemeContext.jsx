@@ -1,40 +1,49 @@
-// Dark Mode Only Theme Context
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext(null);
+const STORAGE_KEY = "theme";
+
+const getInitialTheme = () => {
+  if (typeof window === "undefined") return "dark";
+  const savedTheme = window.localStorage.getItem(STORAGE_KEY);
+  return savedTheme === "light" ? "light" : "dark";
+};
 
 export const ThemeProvider = ({ children }) => {
-  // Apply dark theme to document on mount
-  useEffect(() => {
-    try {
-      const root = document.documentElement;
-      root.classList.remove("light");
-      root.classList.add("dark");
+  const [theme, setThemeState] = useState(getInitialTheme);
 
-      // Ensure body has dark theme
-      document.body.classList.add("dark");
-
-      // Set data attribute
-      root.setAttribute("data-theme", "dark");
-    } catch (error) {
-      // Silently handle any DOM errors
-    }
+  const setTheme = useCallback((nextTheme) => {
+    setThemeState(nextTheme === "light" ? "light" : "dark");
   }, []);
 
-  const value = {
-    theme: "dark",
-  };
+  const toggleTheme = useCallback(() => {
+    setThemeState((current) => (current === "dark" ? "light" : "dark"));
+  }, []);
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const isDark = theme === "dark";
+
+    root.classList.toggle("dark", isDark);
+    root.classList.toggle("light", !isDark);
+    root.setAttribute("data-theme", theme);
+    root.style.colorScheme = theme;
+    body.classList.toggle("dark-theme", isDark);
+    body.classList.toggle("light-theme", !isDark);
+    body.classList.add("theme-transition");
+    window.localStorage.setItem(STORAGE_KEY, theme);
+  }, [theme]);
+
+  const value = useMemo(() => ({ theme, isDark: theme === "dark", setTheme, toggleTheme }), [setTheme, theme, toggleTheme]);
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    // Return default theme instead of throwing error
-    return { theme: "dark" };
+    return { theme: "dark", isDark: true, setTheme: () => {}, toggleTheme: () => {} };
   }
   return context;
 };
