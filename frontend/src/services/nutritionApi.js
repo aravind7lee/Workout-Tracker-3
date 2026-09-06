@@ -155,6 +155,7 @@ class NutritionAPI {
       return {
         success: true,
         data: response.data.data,
+        achievements: response.data.achievements || [],
       };
     } catch (error) {
       console.error("Failed to add meal:", error);

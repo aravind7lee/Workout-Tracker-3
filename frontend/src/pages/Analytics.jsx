@@ -5,6 +5,9 @@ import AuthGuard from "../components/AuthGuard";
 import RealAnalyticsSection from "../components/RealAnalyticsSection";
 import progressAnalyticsImg from "../assets/Progress-Analytics.jpg";
 import "../styles/analytics-mobile.css";
+import PRWall from "../components/PRWall";
+import { exportAllWorkoutsCSV } from "../utils/exportWorkouts";
+import { useNavigate } from "react-router-dom";
 
 Chart.register(...registerables);
 
@@ -74,11 +77,14 @@ function AnalyticsHero() {
 }
 
 export default function Analytics() {
+  const navigate = useNavigate();
   return (
     <AuthGuard>
       <div className="min-h-screen bg-black text-white relative overflow-hidden pb-16">
         <AnalyticsHero />
         <RealAnalyticsSection />
+        <div className="mx-auto max-w-6xl px-4 pb-8"><PRWall /></div>
+        <div className="mx-auto flex max-w-6xl flex-wrap justify-end gap-2 px-4 pb-12"><button onClick={() => navigate('/workout-timeline')} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Workout timeline</button><button onClick={exportAllWorkoutsCSV} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Export workout CSV</button><button onClick={() => navigate('/progress-report')} className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-black">Open progress report</button></div>
       </div>
     </AuthGuard>
   );

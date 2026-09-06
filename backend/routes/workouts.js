@@ -4,6 +4,7 @@ import Workout from '../models/Workout.js';
 import User from '../models/User.js';
 import auth from '../middleware/auth.js';
 import { broadcastToUser } from './sse.js';
+import { check as checkAchievements } from '../services/achievementEngine.js';
 
 const router = express.Router();
 
@@ -397,11 +398,15 @@ router.post('/', auth, async (req, res) => {
     // Broadcast real-time event
     broadcastToUser(userId, 'workout_updated', { workoutId: savedWorkout._id });
     
+    const achievements = validatedStatus === 'completed'
+      ? await checkAchievements(userId).catch((error) => { console.warn('Achievement check skipped after workout save:', error.message); return []; })
+      : [];
     res.status(201).json({ 
       success: true,
       workout: savedWorkout,
       streak: streakInfo,
-      message: 'Workout saved successfully'
+      message: 'Workout saved successfully',
+      achievements
     });
   } catch (error) {
     console.error('❌ Workout save error:', error);
@@ -614,4 +619,3 @@ router.post('/cleanup-duplicates', auth, async (req, res) => {
 });
 
 export default router;
-

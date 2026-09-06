@@ -34,6 +34,11 @@ import Dashboard2 from "../assets/Dashboard2.jpg";
 import Dashboardnew from "../assets/Dashboardnew.jpg";
 import FitnessIntelligenceWidget from "../components/FitnessIntelligenceWidget";
 import StreakWidget from "../components/StreakWidget";
+import BodyMetricsLogger from "../components/BodyMetricsLogger";
+import WeightProgressChart from "../components/WeightProgressChart";
+import TodaysWorkoutCard from "../components/TodaysWorkoutCard";
+import PRWall from "../components/PRWall";
+import WeeklyReportCard from "../components/WeeklyReportCard";
 
 const Dashboard = () => {
   const {
@@ -803,6 +808,17 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
+
+            <TodaysWorkoutCard />
+
+            {/* Body composition tracking */}
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+              <WeightProgressChart targetWeight={authUser?.metrics?.targetWeight || authUser?.fitnessGoals?.targetWeight} />
+              <BodyMetricsLogger showSummary initialWeight={authUser?.metrics?.currentWeight} initialBodyFat={authUser?.metrics?.bodyFatPercentage} height={authUser?.metrics?.height} />
+            </div>
+
+            <PRWall limit={5} />
+            <WeeklyReportCard />
 
             {/* 7. RECENT WORKOUTS Section */}
             <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-950/90 via-neutral-900/80 to-neutral-950/90 border border-white/[0.08] p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-2xl">

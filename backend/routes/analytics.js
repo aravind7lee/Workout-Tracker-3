@@ -4,6 +4,7 @@ import auth from '../middleware/auth.js';
 import Workout from '../models/Workout.js';
 import Meal from '../models/Meal.js';
 import User from '../models/User.js';
+import BodyMetric from '../models/BodyMetric.js';
 
 const router = express.Router();
 
@@ -48,6 +49,106 @@ const getMuscleGroup = (name) => {
   }
   return 'Other';
 };
+
+// GET /api/analytics/exercise-progression/:exerciseName
+router.get('/exercise-progression/:exerciseName', async (req, res) => {
+  try {
+    const userObjId = new mongoose.Types.ObjectId((req.user._id || req.user.id).toString());
+    const exerciseName = decodeURIComponent(req.params.exerciseName).trim();
+    if (!exerciseName) return res.status(400).json({ success: false, message: 'Exercise name is required.' });
+
+    const escaped = exerciseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const results = await Workout.aggregate([
+      { $match: { user: userObjId, completed: true, 'exercises.exerciseName': { $regex: `^${escaped}$`, $options: 'i' } } },
+      { $unwind: '$exercises' },
+      { $match: { 'exercises.exerciseName': { $regex: `^${escaped}$`, $options: 'i' } } },
+      { $unwind: '$exercises.sets' },
+      { $addFields: {
+        setScore: { $multiply: [{ $ifNull: ['$exercises.sets.weight', 0] }, { $ifNull: ['$exercises.sets.reps', 0] }] },
+        setVolume: { $multiply: [{ $ifNull: ['$exercises.sets.weight', 0] }, { $ifNull: ['$exercises.sets.reps', 0] }] }
+      } },
+      { $sort: { date: 1, setScore: -1 } },
+      { $group: {
+        _id: '$_id',
+        date: { $first: { $ifNull: ['$completedAt', '$date'] } },
+        bestWeight: { $first: '$exercises.sets.weight' },
+        bestReps: { $first: '$exercises.sets.reps' },
+        totalVolume: { $sum: '$setVolume' }
+      } },
+      { $addFields: {
+        estimated1RM: { $round: [{ $multiply: ['$bestWeight', { $add: [1, { $divide: ['$bestReps', 30] }] }] }, 1] }
+      } },
+      { $project: { _id: 0, date: 1, bestWeight: 1, bestReps: 1, totalVolume: 1, estimated1RM: 1 } },
+      { $sort: { date: 1 } }
+    ]);
+
+    res.json({ success: true, exerciseName, data: results });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to load exercise progression', error: error.message });
+  }
+});
+
+// GET /api/analytics/weekly-report?range=week|month
+router.get('/weekly-report', async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId((req.user._id || req.user.id).toString());
+    const days = req.query.range === 'month' ? 30 : 7;
+    const end = new Date();
+    const start = new Date(end); start.setDate(start.getDate() - days);
+    const previousStart = new Date(start); previousStart.setDate(previousStart.getDate() - days);
+    const [workouts, previousWorkouts, historicWorkouts, meals, previousMeals, weights, user] = await Promise.all([
+      Workout.find({ user: userId, completed: true, date: { $gte: start, $lte: end } }).lean(),
+      Workout.find({ user: userId, completed: true, date: { $gte: previousStart, $lt: start } }).lean(),
+      Workout.find({ user: userId, completed: true, date: { $lt: start } }).select('exercises').lean(),
+      Meal.find({ userId, consumedAt: { $gte: start, $lte: end } }).lean(),
+      Meal.find({ userId, consumedAt: { $gte: previousStart, $lt: start } }).lean(),
+      BodyMetric.find({ user: userId, date: { $gte: start, $lte: end } }).sort({ date: 1 }).lean(),
+      User.findById(userId).lean()
+    ]);
+    const total = (items, field) => items.reduce((sum, item) => sum + Number(item[field] || 0), 0);
+    const totalVolume = total(workouts, 'totalVolume');
+    const previousVolume = total(previousWorkouts, 'totalVolume');
+    const protein = total(meals, 'protein');
+    const previousProtein = total(previousMeals, 'protein');
+    const percent = (current, previous) => previous ? `${current >= previous ? '+' : ''}${Math.round(((current - previous) / previous) * 100)}%` : (current ? '+100%' : '0%');
+    const exerciseCounts = {};
+    const muscleCounts = {};
+    const dayDistribution = Array.from({ length: days }, (_, index) => ({ day: new Date(start.getTime() + (index + 1) * 86400000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), workouts: 0 }));
+    workouts.forEach((workout) => {
+      const index = Math.min(days - 1, Math.max(0, Math.floor((new Date(workout.date) - start) / 86400000)));
+      dayDistribution[index].workouts += 1;
+      workout.exercises?.forEach((exercise) => {
+        const name = exercise.exerciseName || 'Exercise'; exerciseCounts[name] = (exerciseCounts[name] || 0) + 1;
+        const muscle = exercise.muscle || exercise.category || getMuscleGroup(name); muscleCounts[muscle] = (muscleCounts[muscle] || 0) + 1;
+      });
+    });
+    const muscleTotal = Object.values(muscleCounts).reduce((sum, value) => sum + value, 0) || 1;
+    const distribution = Object.fromEntries(Object.entries(muscleCounts).map(([name, value]) => [name, Math.round((value / muscleTotal) * 100)]));
+    const previousBests = new Map();
+    historicWorkouts.forEach((workout) => workout.exercises?.forEach((exercise) => exercise.sets?.forEach((set) => {
+      const name = exercise.exerciseName || 'Exercise';
+      previousBests.set(name, Math.max(previousBests.get(name) || 0, Number(set.weight || 0) * Number(set.reps || 0)));
+    })));
+    let prsSet = 0;
+    workouts.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach((workout) => workout.exercises?.forEach((exercise) => exercise.sets?.forEach((set) => {
+      const name = exercise.exerciseName || 'Exercise'; const score = Number(set.weight || 0) * Number(set.reps || 0);
+      if (score > (previousBests.get(name) || 0)) { if (previousBests.has(name)) prsSet += 1; previousBests.set(name, score); }
+    })));
+    const periodFormat = { month: 'short', day: 'numeric' };
+    res.json({ success: true, report: {
+      period: `${start.toLocaleDateString(undefined, periodFormat)} - ${end.toLocaleDateString(undefined, { ...periodFormat, year: 'numeric' })}`,
+      range: days === 30 ? 'month' : 'week', workoutsCompleted: workouts.length, totalVolume,
+      totalDuration: total(workouts, 'durationMinutes'), caloriesBurned: total(workouts, 'calories'), mealsLogged: meals.length,
+      avgDailyCalories: Math.round(total(meals, 'calories') / days), avgDailyProtein: Math.round(protein / days),
+      weightChange: weights.length > 1 ? Number((weights.at(-1).weight - weights[0].weight).toFixed(1)) : 0,
+      prsSet,
+      streakDays: user?.currentStreak || 0,
+      topExercises: Object.entries(exerciseCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([name]) => name),
+      muscleGroupDistribution: distribution, dayDistribution,
+      comparedToLastWeek: { workouts: `${workouts.length - previousWorkouts.length >= 0 ? '+' : ''}${workouts.length - previousWorkouts.length}`, volume: percent(totalVolume, previousVolume), protein: percent(protein, previousProtein) }
+    } });
+  } catch (error) { res.status(500).json({ success: false, message: 'Unable to build progress report', error: error.message }); }
+});
 
 // GET /api/analytics/stats - Real user workout and nutrition stats from MongoDB
 router.get('/stats', async (req, res) => {

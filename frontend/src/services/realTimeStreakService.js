@@ -203,6 +203,7 @@ class RealTimeStreakService {
         try {
           const checkInRes = await api.post('/users/streak/check-in');
           if (checkInRes.data?.success) {
+            if (checkInRes.data.achievements?.length) window.dispatchEvent(new CustomEvent('achievementUnlocked', { detail: checkInRes.data.achievements }));
             this.updateData({
               currentStreak: checkInRes.data.currentStreak,
               longestStreak: checkInRes.data.longestStreak,
@@ -286,6 +287,7 @@ class RealTimeStreakService {
     try {
       const res = await api.post('/users/streak/check-in');
       if (res.data?.success) {
+        if (res.data.achievements?.length) window.dispatchEvent(new CustomEvent('achievementUnlocked', { detail: res.data.achievements }));
         const updated = {
           currentStreak: res.data.currentStreak ?? optimisticStreak,
           longestStreak: res.data.longestStreak ?? optimisticData.longestStreak,

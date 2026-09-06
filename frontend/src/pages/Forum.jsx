@@ -2,6 +2,7 @@ import { Trophy, Star, BicepsFlexed, CheckCircle2, Salad, Rocket, MessageCircle,
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api";
 
 
 export default function Forum() {
@@ -15,131 +16,35 @@ export default function Forum() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [postSuccess, setPostSuccess] = useState(false);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [attachedWorkout, setAttachedWorkout] = useState(null);
+  const [sharePRs, setSharePRs] = useState(false);
 
-  // Load posts from localStorage on component mount
+  const normalizePost = (post) => ({
+    ...post,
+    user: { name: post.user?.name || 'GRIND-X Athlete', level: 'Member', avatar: /*#__PURE__*/ React.createElement(Star, { className: 'w-[1em] h-[1em] inline-block' }), verified: false },
+    likes: Array.isArray(post.likes) ? post.likes.length : Number(post.likes || 0),
+    liked: Array.isArray(post.likes) && post.likes.some((id) => String(id?._id || id) === String(user?._id || user?.id)),
+    replies: Array.isArray(post.comments) ? post.comments.length : 0,
+    timestamp: getRelativeTime(new Date(post.createdAt).getTime()),
+    createdAt: new Date(post.createdAt).getTime()
+  });
+
+  const loadPosts = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api.get('/posts', { params: { limit: 50 } });
+      const loaded = (data.posts || []).map(normalizePost);
+      setPosts(loaded);
+      setTotalPosts(data.pagination?.total ?? loaded.length);
+    } catch (error) {
+      console.error('Error loading community feed:', error);
+      setPosts([]);
+    } finally { setIsLoading(false); }
+  };
+
   useEffect(() => {
-    const loadPosts = () => {
-      try {
-        // Load user posts from localStorage
-        const savedPosts = JSON.parse(
-          localStorage.getItem("gymtracker_forum_posts") || "[]",
-        );
-
-        // Default expert posts for demonstration
-        const expertPosts = [
-          {
-            _id: "expert_1",
-            user: {
-              name: 'Alex "Beast" Johnson',
-              level: "Elite Athlete",
-              avatar: /*#__PURE__*/ React.createElement(Trophy, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              verified: true,
-            },
-            content: /*#__PURE__*/ React.createElement(
-              React.Fragment,
-              null,
-              "Just smashed my 5K PR - 18:45! ",
-              /*#__PURE__*/ React.createElement(Star, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " The key was consistent interval training and proper nutrition. Who else is working on their cardio game?",
-            ),
-            likes: 47,
-            replies: 12,
-            timestamp: "2h ago",
-            category: "Cardio",
-            liked: false,
-            trending: true,
-            createdAt: Date.now() - 7200000, // 2 hours ago
-          },
-          {
-            _id: "expert_2",
-            user: {
-              name: 'Sarah "Iron" Wilson',
-              level: "Pro Trainer",
-              avatar: /*#__PURE__*/ React.createElement(BicepsFlexed, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              verified: true,
-            },
-            content: /*#__PURE__*/ React.createElement(
-              React.Fragment,
-              null,
-              "Meal prep Sunday complete! ",
-              /*#__PURE__*/ React.createElement(CheckCircle2, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " This week: lean protein, complex carbs, and healthy fats. Consistency is everything in this game. Drop your meal prep tips below! ",
-              /*#__PURE__*/ React.createElement(Salad, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-            ),
-            likes: 89,
-            replies: 23,
-            timestamp: "4h ago",
-            category: "Nutrition",
-            liked: true,
-            trending: true,
-            createdAt: Date.now() - 14400000, // 4 hours ago
-          },
-          {
-            _id: "expert_3",
-            user: {
-              name: 'Mike "Tank" Chen',
-              level: "Strength Coach",
-              avatar: /*#__PURE__*/ React.createElement(Star, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              verified: true,
-            },
-            content: /*#__PURE__*/ React.createElement(
-              React.Fragment,
-              null,
-              "NEW DEADLIFT PR: 405lbs! ",
-              /*#__PURE__*/ React.createElement(Rocket, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Form over ego, always. Took me 2 years to get here safely. Progressive overload and patience pays off. What's your current PR?",
-            ),
-            likes: 156,
-            replies: 34,
-            timestamp: "6h ago",
-            category: "Strength",
-            liked: false,
-            trending: true,
-            createdAt: Date.now() - 21600000, // 6 hours ago
-          },
-        ];
-
-        // Combine and sort by creation time (newest first)
-        const allPosts = [...savedPosts, ...expertPosts].sort(
-          (a, b) => (b.createdAt || 0) - (a.createdAt || 0),
-        );
-        setPosts(allPosts);
-        setTotalPosts(allPosts.length);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error loading posts:", error);
-        setIsLoading(false);
-      }
-    };
     loadPosts();
   }, []);
-
-  // Save posts to localStorage whenever posts change
-  const savePosts = (newPosts) => {
-    try {
-      // Only save user posts (not expert posts)
-      const userPosts = newPosts.filter(
-        (post) => !post._id.startsWith("expert_"),
-      );
-      localStorage.setItem("gymtracker_forum_posts", JSON.stringify(userPosts));
-    } catch (error) {
-      console.error("Error saving posts:", error);
-    }
-  };
 
   // Get relative time string
   const getRelativeTime = (timestamp) => {
@@ -174,14 +79,14 @@ export default function Forum() {
       color: "blue",
     },
     {
-      name: "Strength",
+      name: "PRs",
       icon: /*#__PURE__*/ React.createElement(BicepsFlexed, {
         className: "w-[1em] h-[1em] inline-block",
       }),
       color: "red",
     },
     {
-      name: "Cardio",
+      name: "Tips",
       icon: /*#__PURE__*/ React.createElement(Activity, {
         className: "w-[1em] h-[1em] inline-block",
       }),
@@ -195,7 +100,7 @@ export default function Forum() {
       color: "orange",
     },
     {
-      name: "Transformation",
+      name: "Progress",
       icon: /*#__PURE__*/ React.createElement(Star, {
         className: "w-[1em] h-[1em] inline-block",
       }),
@@ -209,67 +114,52 @@ export default function Forum() {
       color: "yellow",
     },
   ];
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPost.trim()) {
-      const now = Date.now();
-      const post = {
-        _id: `user_${now}`,
-        user: {
-          name: user?.name || "Elite Athlete",
-          level: "Member",
-          avatar: /*#__PURE__*/ React.createElement(Star, {
-            className: "w-[1em] h-[1em] inline-block",
-          }),
-          verified: false,
-        },
-        content: newPost.trim(),
-        likes: 0,
-        replies: 0,
-        timestamp: "now",
-        category: selectedCategory,
-        liked: false,
-        trending: false,
-        createdAt: now,
-      };
-      const updatedPosts = [post, ...posts];
-      setPosts(updatedPosts);
-      savePosts(updatedPosts);
-      setTotalPosts(updatedPosts.length);
-      setNewPost("");
-
-      // Show success message
-      setPostSuccess(true);
-      setTimeout(() => setPostSuccess(false), 3000);
-
-      // Simulate real-time engagement
-      setTimeout(() => {
-        const postsWithEngagement = updatedPosts.map((p) =>
-          p._id === post._id
-            ? {
-                ...p,
-                likes: Math.floor(Math.random() * 5) + 1,
-              }
-            : p,
-        );
-        setPosts(postsWithEngagement);
-        savePosts(postsWithEngagement);
-      }, 5000);
+      try {
+        const { data } = await api.post('/posts', { content: newPost.trim(), category: selectedCategory, attachedWorkout: attachedWorkout?._id });
+        const post = normalizePost(data.post);
+        setPosts((current) => [post, ...current]);
+        setTotalPosts((count) => count + 1);
+        setNewPost(''); setAttachedWorkout(null); setPostSuccess(true);
+        setTimeout(() => setPostSuccess(false), 3000);
+      } catch (error) { console.error('Unable to publish post:', error); }
     }
   };
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map((post) =>
-      post._id === postId
-        ? {
-            ...post,
-            likes: post.liked ? post.likes - 1 : post.likes + 1,
-            liked: !post.liked,
-          }
-        : post,
-    );
-    setPosts(updatedPosts);
-    savePosts(updatedPosts);
+  const handleLike = async (postId) => {
+    try {
+      const { data } = await api.post(`/posts/${postId}/like`);
+      setPosts((items) => items.map((post) => post._id === postId ? { ...post, likes: data.likes, liked: data.liked } : post));
+    } catch (error) { console.error('Unable to update like:', error); }
   };
+
+  const handleComment = async (postId) => {
+    const content = window.prompt('Add a constructive comment');
+    if (!content?.trim()) return;
+    try {
+      const { data } = await api.post(`/posts/${postId}/comment`, { content: content.trim() });
+      setPosts((items) => items.map((post) => post._id === postId ? { ...post, comments: data.comments, replies: data.comments.length } : post));
+    } catch (error) { console.error('Unable to add comment:', error); }
+  };
+
+  const attachLatestWorkout = async () => {
+    try {
+      const { data } = await api.get('/workouts/last');
+      if (data.workout) { setAttachedWorkout(data.workout); if (!newPost.trim()) setNewPost(`Completed ${data.workout.title} — another session in the books.`); }
+    } catch (error) { console.error('Unable to attach workout:', error); }
+  };
+
+  useEffect(() => {
+    if (!sharePRs) return undefined;
+    const share = async (event) => {
+      const pr = event.detail?.updatedPR;
+      if (!pr) return;
+      try { await api.post('/posts', { content: `New personal record: ${pr.exerciseName} at ${pr.maxWeight} kg!`, category: 'PRs', attachedPR: pr }); loadPosts(); } catch { /* keep workout flow uninterrupted */ }
+    };
+    window.addEventListener('newPRRecord', share);
+    return () => window.removeEventListener('newPRRecord', share);
+  }, [sharePRs]);
   const filteredPosts = posts.filter((post) => {
     if (activeFilter === "trending") return post.trending;
     if (activeFilter === "recent") return true;
@@ -902,8 +792,6 @@ export default function Forum() {
                             key: cat.name,
                             value: cat.name,
                           },
-                          cat.icon,
-                          " ",
                           cat.name,
                         ),
                       ),
@@ -928,7 +816,7 @@ export default function Forum() {
                       className:
                         "w-full p-2.5 xs:p-3 sm:p-4 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white placeholder-neutral-400 focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 font-body resize-none text-xs xs:text-sm sm:text-base transition-all",
                       rows: window.innerWidth < 640 ? 3 : 4,
-                      maxLength: 500,
+                      maxLength: 1000,
                     }),
                     /*#__PURE__*/ React.createElement(
                       "div",
@@ -943,7 +831,7 @@ export default function Forum() {
                             "text-[10px] xs:text-xs text-neutral-500 font-body",
                         },
                         newPost.length,
-                        "/500 characters",
+                        "/1000 characters",
                       ),
                       /*#__PURE__*/ React.createElement(
                         "span",
@@ -951,8 +839,23 @@ export default function Forum() {
                           className:
                             "text-[10px] xs:text-xs text-red-500 font-body",
                         },
-                        "\u2713 Auto-saved \u2022 Visible to all users",
+                        "Saved securely to MongoDB",
                       ),
+                    ),
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "div",
+                    { className: "flex flex-wrap items-center gap-2" },
+                    /*#__PURE__*/ React.createElement(
+                      "button",
+                      { type: "button", onClick: attachLatestWorkout, className: "rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-xs font-bold text-neutral-200" },
+                      attachedWorkout ? `Attached: ${attachedWorkout.title}` : "Share latest workout",
+                    ),
+                    /*#__PURE__*/ React.createElement(
+                      "label",
+                      { className: "flex items-center gap-2 text-xs text-neutral-400" },
+                      /*#__PURE__*/ React.createElement("input", { type: "checkbox", checked: sharePRs, onChange: (event) => setSharePRs(event.target.checked) }),
+                      "Auto-share new PRs",
                     ),
                   ),
                   /*#__PURE__*/ React.createElement(
@@ -1246,6 +1149,7 @@ export default function Forum() {
                                 },
                                 post.content,
                               ),
+                              /*#__PURE__*/ React.createElement(PostExtras, { post: post }),
                               /*#__PURE__*/ React.createElement(
                                 "div",
                                 {
@@ -1284,6 +1188,7 @@ export default function Forum() {
                                 /*#__PURE__*/ React.createElement(
                                   "button",
                                   {
+                                    onClick: () => handleComment(post._id),
                                     className:
                                       "flex items-center gap-1 xs:gap-1.5 sm:gap-2 text-neutral-400 hover:text-red-500 transition-colors font-body active:scale-90",
                                   },
@@ -1483,5 +1388,17 @@ export default function Forum() {
         ),
       ),
     ),
+  );
+}
+
+function PostExtras({ post }) {
+  const comments = Array.isArray(post.comments) ? post.comments : [];
+  if (!post.attachedWorkout && !post.attachedPR && !comments.length) return null;
+  return /*#__PURE__*/ React.createElement(
+    "div",
+    { className: "mb-3 space-y-2" },
+    post.attachedWorkout && /*#__PURE__*/ React.createElement("div", { className: "rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-neutral-300" }, /*#__PURE__*/ React.createElement("strong", { className: "block text-white" }, post.attachedWorkout.title), `${post.attachedWorkout.exercises?.length || 0} exercises • ${post.attachedWorkout.totalVolume || 0} kg volume`),
+    post.attachedPR?.exerciseName && /*#__PURE__*/ React.createElement("div", { className: "rounded-xl border border-yellow-400/20 bg-yellow-400/10 p-3 text-xs text-yellow-300" }, `🏆 ${post.attachedPR.exerciseName}: ${post.attachedPR.weight || 0} kg × ${post.attachedPR.reps || 0}`),
+    comments.slice(-3).map((comment) => /*#__PURE__*/ React.createElement("div", { key: comment._id, className: "rounded-lg bg-neutral-950/70 px-3 py-2 text-xs text-neutral-400" }, /*#__PURE__*/ React.createElement("strong", { className: "mr-2 text-neutral-200" }, comment.user?.name || 'Athlete'), comment.content)),
   );
 }

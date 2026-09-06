@@ -120,6 +120,7 @@ export const useRealTimeNutrition = () => {
     try {
       const result = await nutritionApi.getNutritionTargets();
       if (result.success) {
+        if (result.achievements?.length) window.dispatchEvent(new CustomEvent('achievementUnlocked', { detail: result.achievements }));
         setTargets({
           baselineCalories: result.data.baselineCalories,
           calories:

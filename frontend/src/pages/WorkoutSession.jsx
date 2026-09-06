@@ -215,6 +215,19 @@ export default function WorkoutSession() {
     return () => clearInterval(interval);
   }, [restTimer]);
 
+  useEffect(() => {
+    if (!restTimer?.isFinished) return;
+    navigator.vibrate?.([180, 80, 180]);
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      oscillator.connect(audioContext.destination);
+      oscillator.frequency.value = 740;
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.18);
+    } catch { /* audio may require a browser interaction permission */ }
+  }, [restTimer?.isFinished]);
+
   // ---------------------------------------------------------
   // 4. Persistence Effect (Active recovery state only)
   // ---------------------------------------------------------
@@ -283,6 +296,15 @@ export default function WorkoutSession() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const suggestedRestFor = (exercise, reps) => {
+    const name = `${exercise?.exerciseName || ''} ${exercise?.category || ''}`.toLowerCase();
+    const compound = ['bench', 'squat', 'deadlift', 'press', 'row', 'pull-up', 'pulldown'].some((term) => name.includes(term));
+    if (compound && reps <= 5) return 180;
+    if (compound && reps <= 10) return 120;
+    if (reps >= 15) return 45;
+    return 60;
   };
 
   // ---------------------------------------------------------
@@ -422,11 +444,13 @@ export default function WorkoutSession() {
     }));
 
     if (newCompletedStatus) {
+      const suggestedRest = suggestedRestFor(targetEx, Number(targetSet.reps) || 0);
       setLastCompletedSetInfo({
         exerciseName: targetEx.exerciseName,
         setNumber: targetSet.setNumber,
         weight: targetSet.weight,
-        reps: targetSet.reps
+        reps: targetSet.reps,
+        suggestedRest
       });
       setSessionState('SET_COMPLETED');
     }
@@ -516,6 +540,7 @@ export default function WorkoutSession() {
       const res = await api.post('/workouts', payload);
 
       if (res.data?.success || res.status === 201) {
+        if (res.data?.achievements?.length) window.dispatchEvent(new CustomEvent('achievementUnlocked', { detail: res.data.achievements }));
         localStorage.removeItem(ACTIVE_SESSION_KEY);
         setSessionState('COMPLETED');
 
@@ -934,14 +959,17 @@ export default function WorkoutSession() {
                   <p className="text-xs text-neutral-300 mt-0.5 font-mono">
                     Logged: <strong>{lastCompletedSetInfo.weight} kg × {lastCompletedSetInfo.reps} reps</strong>
                   </p>
+                  <span className="mt-2 inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-[11px] font-bold text-blue-300">
+                    Suggested: {formatTimer(lastCompletedSetInfo.suggestedRest || 60)}
+                  </span>
                 </div>
 
                 <div className="pt-2 flex items-center gap-3">
                   <button
-                    onClick={() => handleTakeRest(60)}
+                    onClick={() => handleTakeRest(lastCompletedSetInfo.suggestedRest || 60)}
                     className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-blue-500/20"
                   >
-                    <Clock className="w-3.5 h-3.5" /> TAKE REST (1:00)
+                    <Clock className="w-3.5 h-3.5" /> TAKE REST ({formatTimer(lastCompletedSetInfo.suggestedRest || 60)})
                   </button>
                   <button
                     onClick={handleNextSetNow}

@@ -21,6 +21,7 @@ import NutritionAnalytics from "../components/NutritionAnalytics";
 import RealTimeMealsList from "../components/RealTimeMealsList";
 import AuthGuard from "../components/AuthGuard";
 import realTimeEvents from "../utils/realTimeEvents";
+import TDEECalculatorCard from "../components/TDEECalculatorCard";
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
@@ -172,6 +173,10 @@ export default function Nutrition() {
 
           {/* 2. Gallery Section */}
           <NutritionGallery />
+
+          <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
+            <TDEECalculatorCard />
+          </div>
 
           {/* 3. Main Nutrition Dashboard Wrapper */}
           <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 space-y-4 sm:space-y-6">

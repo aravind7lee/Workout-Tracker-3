@@ -54,6 +54,10 @@ import CustomSplitBuilder from "./pages/CustomSplitBuilder";
 import YourWorkoutSplits from "./pages/YourWorkoutSplits";
 import EditSplit from "./pages/EditSplit";
 import StreakHistory from "./pages/StreakHistory";
+import Achievements from "./pages/Achievements";
+import AchievementToast from "./components/AchievementToast";
+import ProgressReport from "./pages/ProgressReport";
+import WorkoutTimelinePage from "./pages/WorkoutTimelinePage";
 import chromeErrorHandler from "./utils/chromeErrorHandler";
 import "./utils/finalErrorCleanup"; // Stop continuous API calls
 import "./utils/silentMode"; // Complete console silence
@@ -918,6 +922,7 @@ export default function App() {
                   /*#__PURE__*/ React.createElement(ScrollToTop, null),
                   /*#__PURE__*/ React.createElement(OnboardingLauncher, null),
                   /*#__PURE__*/ React.createElement(PRNotification, null),
+                  /*#__PURE__*/ React.createElement(AchievementToast, null),
                   /*#__PURE__*/ React.createElement(Navbar, null),
                   /*#__PURE__*/ React.createElement(
                     WorkoutCompletionHandler,
@@ -1149,6 +1154,18 @@ export default function App() {
                           Search,
                           null,
                         ),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/achievements",
+                        element: /*#__PURE__*/ React.createElement(Achievements, null),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/progress-report",
+                        element: /*#__PURE__*/ React.createElement(ProgressReport, null),
+                      }),
+                      /*#__PURE__*/ React.createElement(Route, {
+                        path: "/workout-timeline",
+                        element: /*#__PURE__*/ React.createElement(WorkoutTimelinePage, null),
                       }),
                       /*#__PURE__*/ React.createElement(Route, {
                         path: "/exercises/:id",

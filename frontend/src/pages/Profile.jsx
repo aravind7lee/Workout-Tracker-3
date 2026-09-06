@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import ImageUploader from "../components/ImageUploader";
 import AuthGuard from "../components/AuthGuard";
 import api from "../utils/api";
+import BodyMetricsLogger from "../components/BodyMetricsLogger";
+import AchievementsPreview from "../components/AchievementsPreview";
 
 // Import gym-themed background images
 import GymBg1 from "../assets/wp8463825-male-workout-wallpapers.jpg";
@@ -1062,6 +1064,25 @@ const Profile = () => {
               ),
             ),
           ),
+        ),
+        /*#__PURE__*/ React.createElement(
+          motion.div,
+          { className: "mb-8", initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
+          /*#__PURE__*/ React.createElement(BodyMetricsLogger, {
+            showSummary: true,
+            initialWeight: user?.metrics?.currentWeight,
+            initialBodyFat: user?.metrics?.bodyFatPercentage,
+            height: user?.metrics?.height,
+            onSaved: (metric) => setUser((current) => ({
+              ...current,
+              metrics: { ...current?.metrics, currentWeight: metric.weight, bodyFatPercentage: metric.bodyFatPercentage ?? current?.metrics?.bodyFatPercentage }
+            }))
+          }),
+        ),
+        /*#__PURE__*/ React.createElement(
+          motion.div,
+          { className: "mb-8", initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
+          /*#__PURE__*/ React.createElement(AchievementsPreview, null),
         ),
         activity.length > 0 &&
           /*#__PURE__*/ React.createElement(

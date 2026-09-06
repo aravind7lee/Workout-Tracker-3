@@ -6,6 +6,9 @@ import {
 } from 'lucide-react';
 import api from '../utils/api';
 import { getMuscleGroup, getPrimaryMuscleGroup, getMuscleGroupTheme, getExerciseDisplayName } from '../utils/muscleGroupHelper';
+import ExerciseProgressionChart from '../components/ExerciseProgressionChart';
+import WorkoutShareCard from '../components/WorkoutShareCard';
+import { exportSingleWorkoutPDF } from '../utils/exportWorkouts';
 
 export default function WorkoutDetails() {
   const { workoutId } = useParams();
@@ -203,6 +206,7 @@ export default function WorkoutDetails() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+        <div className="flex justify-end"><button onClick={() => exportSingleWorkoutPDF(workout)} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2 text-xs font-black text-white">Export workout PDF</button></div>
         
         {/* =========================================================
             1. HERO WORKOUT CARD: Title, Muscle Group Badge, Date
@@ -331,6 +335,8 @@ export default function WorkoutDetails() {
                       </div>
                     </div>
 
+                    <ExerciseProgressionChart exerciseName={ex.exerciseName} compact />
+
                     {/* Set-by-Set Detailed Breakdown Table */}
                     {ex.sets && ex.sets.length > 0 && (
                       <div className="p-4">
@@ -383,6 +389,8 @@ export default function WorkoutDetails() {
             </p>
           </div>
         )}
+
+        <WorkoutShareCard workout={workout} />
 
         {/* =========================================================
             4. ADDITIONAL METADATA CARD

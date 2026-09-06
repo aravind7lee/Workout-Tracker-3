@@ -20,6 +20,9 @@ import syncRoutes from './routes/sync.js';
 import workoutSplitsRoutes from './routes/workoutSplits.js';
 import intelligenceRoutes from './routes/intelligence.js';
 import sseRoutes from './routes/sse.js';
+import bodyMetricsRoutes from './routes/bodyMetrics.js';
+import achievementRoutes from './routes/achievements.js';
+import postRoutes from './routes/posts.js';
 
 // Import rate limiters
 import { generalLimiter, settingsLimiter, authLimiter } from './middleware/rateLimiter.js';
@@ -123,6 +126,9 @@ app.use('/api/sync', syncRoutes);
 app.use('/api/workout-splits', workoutSplitsRoutes);
 app.use('/api/intelligence', intelligenceRoutes);
 app.use('/api/sse', sseRoutes);
+app.use('/api/body-metrics', bodyMetricsRoutes);
+app.use('/api/achievements', achievementRoutes);
+app.use('/api/posts', postRoutes);
 
 // Enhanced preflight handling
 app.use((req, res, next) => {

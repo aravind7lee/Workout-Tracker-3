@@ -1,0 +1,14 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight, Award, Sparkles } from 'lucide-react';
+import api from '../utils/api';
+import { getMuscleGroup } from '../utils/muscleGroupHelper';
+
+export default function PRWall({ limit }) {
+  const [prs, setPrs] = useState([]);
+  const [filter, setFilter] = useState('All');
+  useEffect(() => { api.get('/workouts/prs').then(({ data }) => setPrs(data.prs || [])).catch(() => setPrs([])); }, []);
+  const groups = useMemo(() => ['All', ...new Set(prs.map((pr) => getMuscleGroup(pr._id)))], [prs]);
+  const visible = prs.filter((pr) => filter === 'All' || getMuscleGroup(pr._id) === filter).sort((a, b) => new Date(b.latestDate) - new Date(a.latestDate)).slice(0, limit || prs.length);
+  return <section className="rounded-3xl border border-white/10 bg-neutral-900/75 p-5 shadow-xl sm:p-6"><div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-[.18em] text-yellow-400"><Award size={15} />Personal records</p><h2 className="text-xl font-black text-white">PR Wall</h2></div><div className="flex flex-wrap gap-1.5">{groups.slice(0, 6).map((group) => <button key={group} onClick={() => setFilter(group)} className={`rounded-lg px-2.5 py-1 text-[10px] font-bold ${filter === group ? 'bg-yellow-400 text-black' : 'bg-neutral-800 text-neutral-400'}`}>{group}</button>)}</div></div>{visible.length ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{visible.map((pr, index) => { const recent = Date.now() - new Date(pr.latestDate).getTime() < 7 * 86400000; return <motion.article key={pr._id} initial={{ opacity: 0, scale: .96 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: index * .05 }} className="relative overflow-hidden rounded-2xl border border-yellow-400/20 bg-neutral-950 p-4"><div className="flex items-start justify-between"><span className="grid h-9 w-9 place-items-center rounded-xl bg-yellow-400/10 text-yellow-400"><Award size={18} /></span>{recent && <span className="flex items-center gap-1 rounded-full bg-red-600 px-2 py-1 text-[9px] font-black text-white"><Sparkles size={10} />NEW PR!</span>}</div><h3 className="mt-3 truncate font-black text-white">{pr._id}</h3><p className="mt-1 text-2xl font-black text-yellow-400">{pr.maxWeight || 0} kg</p><div className="mt-2 flex justify-between text-xs text-neutral-400"><span>{pr.maxReps || 0} rep best</span><span className="flex items-center gap-1 text-emerald-400"><ArrowUpRight size={13} />Personal best</span></div></motion.article>; })}</div> : <div className="rounded-xl border border-dashed border-neutral-700 py-10 text-center text-sm text-neutral-400">Complete weighted sets to build your PR wall.</div>}</section>;
+}

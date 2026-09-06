@@ -2,6 +2,8 @@
 import express from 'express';
 import Meal from '../models/Meal.js';
 import auth from '../middleware/auth.js';
+import mongoose from 'mongoose';
+import { check as checkAchievements } from '../services/achievementEngine.js';
 
 const router = express.Router();
 
@@ -68,7 +70,8 @@ router.post('/', auth, async (req, res) => {
     });
     
     await meal.save();
-    res.status(201).json({ success: true, meal });
+    const achievements = await checkAchievements(req.user._id).catch((error) => { console.warn('Achievement check skipped after meal save:', error.message); return []; });
+    res.status(201).json({ success: true, meal, achievements });
   } catch (error) {
     console.error('Error saving meal:', error);
     res.status(500).json({ success: false, message: 'Failed to save meal', error: error.message });

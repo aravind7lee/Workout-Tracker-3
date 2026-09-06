@@ -5,6 +5,7 @@ import Food from '../models/Food.js';
 import auth from '../middleware/auth.js';
 import fetch from 'node-fetch';
 import foodDatabase from '../services/foodDatabase.js';
+import { check as checkAchievements } from '../services/achievementEngine.js';
 
 const router = express.Router();
 
@@ -112,7 +113,8 @@ router.post('/meals', auth, async (req, res) => {
       id: meal._id.toString() // Ensure we have both _id and id
     };
     
-    res.status(201).json({ success: true, data: mealResponse });
+    const achievements = await checkAchievements(req.user.id).catch((error) => { console.warn('Achievement check skipped after meal save:', error.message); return []; });
+    res.status(201).json({ success: true, data: mealResponse, achievements });
   } catch (error) {
     console.error('Add meal error:', error);
     res.status(500).json({ success: false, message: error.message });

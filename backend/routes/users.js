@@ -8,12 +8,58 @@ import auth from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
 import { settingsLimiter } from '../middleware/rateLimiter.js';
 import { completeOnboarding, recalculateTDEE, resetOnboarding } from '../controllers/onboardingController.js';
+import { recommendSplit } from '../services/splitRecommendationEngine.js';
+import { check as checkAchievements } from '../services/achievementEngine.js';
 
 const router = express.Router();
 
 router.post('/onboarding', auth, completeOnboarding);
 router.post('/onboarding/reset', auth, resetOnboarding);
 router.post('/recalculate-tdee', auth, recalculateTDEE);
+
+// Personalized suggestion derived from the user's onboarding split.
+router.get('/todays-workout', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('fitnessGoals onboardingCompleted');
+    if (!user?.onboardingCompleted) {
+      return res.status(409).json({ success: false, message: 'Complete your fitness setup to unlock daily suggestions.' });
+    }
+    const goals = user.fitnessGoals || {};
+    const recommendation = recommendSplit({
+      trainingFrequency: goals.trainingFrequency || goals.weeklyGoal || 4,
+      goal: goals.goal || 'maintenance',
+      experienceLevel: goals.experienceLevel || 'beginner'
+    });
+
+    const now = new Date();
+    const mondayIndex = (now.getDay() + 6) % 7;
+    const scheduledIndex = mondayIndex % recommendation.days.length;
+    const startOfYesterday = new Date(now); startOfYesterday.setDate(now.getDate() - 1); startOfYesterday.setHours(0, 0, 0, 0);
+    const endOfYesterday = new Date(startOfYesterday); endOfYesterday.setDate(endOfYesterday.getDate() + 1);
+    const yesterdayWorkout = await Workout.exists({ user: user._id, completed: true, date: { $gte: startOfYesterday, $lt: endOfYesterday } });
+    const useCatchUp = mondayIndex > 0 && !yesterdayWorkout;
+    const dayIndex = useCatchUp ? (scheduledIndex - 1 + recommendation.days.length) % recommendation.days.length : scheduledIndex;
+    const selected = recommendation.days[dayIndex];
+    const alternatives = recommendation.days
+      .filter((_, index) => index !== dayIndex)
+      .slice(0, 3)
+      .map((day) => ({ title: day.dayName, exercises: day.exercises, estimatedDuration: Math.max(30, day.exercises.length * 8) }));
+
+    res.json({
+      success: true,
+      suggestion: {
+        title: selected.dayName,
+        exercises: selected.exercises,
+        reason: useCatchUp ? 'Catch up on yesterday’s scheduled training day.' : `Today’s ${recommendation.splitName} rotation.`,
+        estimatedDuration: Math.max(30, selected.exercises.length * 8),
+        difficulty: goals.experienceLevel || 'beginner',
+        alternatives
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to create today’s workout', error: error.message });
+  }
+});
 
 // Get user profile with guaranteed profileImage persistence
 router.get('/profile', auth, async (req, res) => {
@@ -780,6 +826,8 @@ router.post('/streak/check-in', auth, async (req, res) => {
 
     await user.save();
 
+    const achievements = await checkAchievements(user._id).catch((error) => { console.warn('Achievement check skipped after streak save:', error.message); return []; });
+
     console.log(`✅ [Streak API] User ${req.user.id} checked in: ${newStreak} days active, total logs: ${accurateTotal}`);
 
     return res.status(200).json({
@@ -794,7 +842,8 @@ router.post('/streak/check-in', auth, async (req, res) => {
       isRealTime: true,
       message: newStreak === 1 ? '🔥 Day 1 - Streak Started!' : `🔥 Day ${newStreak} - Streak Logged!`,
       streakHistory: filteredHistory,
-      timestamp: now.toISOString()
+      timestamp: now.toISOString(),
+      achievements
     });
   } catch (error) {
     console.error('❌ Error checking in streak:', error);
