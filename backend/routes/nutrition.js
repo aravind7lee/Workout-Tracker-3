@@ -2,28 +2,146 @@ import express from 'express';
 import Meal from '../models/Meal.js';
 import User from '../models/User.js';
 import Food from '../models/Food.js';
+import NutritionGoal from '../models/NutritionGoal.js';
 import auth from '../middleware/auth.js';
 import fetch from 'node-fetch';
 import foodDatabase from '../services/foodDatabase.js';
 import { check as checkAchievements } from '../services/achievementEngine.js';
+import { calculateTDEE, calculateMacros } from '../services/tdeeCalculator.js';
 
 const router = express.Router();
 
 // Get user's nutrition targets
 router.get('/users/me/targets', auth, async (req, res) => {
   try {
+    const [user, existingNutritionGoal] = await Promise.all([
+      User.findById(req.user.id),
+      NutritionGoal.findOne({ userId: req.user.id })
+    ]);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    let nutritionGoal = existingNutritionGoal;
+
+    // If no NutritionGoal exists yet but user has body metrics, calculate dynamically
+    if (!nutritionGoal && user.metrics?.currentWeight && user.metrics?.height && user.metrics?.age && user.metrics?.gender) {
+      try {
+        const { bmr, tdee } = calculateTDEE({
+          weight: user.metrics.currentWeight,
+          height: user.metrics.height,
+          age: user.metrics.age,
+          gender: user.metrics.gender,
+          activityLevel: user.fitnessGoals?.activityLevel || 'moderate'
+        });
+        const macros = calculateMacros({
+          tdee,
+          goal: user.fitnessGoals?.goal || 'maintenance',
+          weight: user.metrics.currentWeight
+        });
+
+        nutritionGoal = await NutritionGoal.findOneAndUpdate(
+          { userId: user._id },
+          {
+            $set: {
+              dailyCalories: macros.calories,
+              dailyProtein: macros.protein,
+              dailyCarbs: macros.carbs,
+              dailyFat: macros.fat,
+              goal: user.fitnessGoals?.goal || 'maintenance',
+              weight: user.metrics.currentWeight,
+              height: user.metrics.height,
+              age: user.metrics.age,
+              gender: user.metrics.gender,
+              activityLevel: user.fitnessGoals?.activityLevel || 'moderate',
+              updatedAt: new Date()
+            }
+          },
+          { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
+        );
+      } catch (calcErr) {
+        console.warn('Auto-calculation of nutrition targets skipped:', calcErr.message);
+      }
+    }
+
+    let baselineCalories = 2000;
+    let goalType = 'maintain';
+    let macroTargets = { protein: 150, carbs: 200, fat: 65 };
+
+    if (nutritionGoal) {
+      baselineCalories = nutritionGoal.dailyCalories || 2000;
+      const rawGoal = (nutritionGoal.goal || 'maintenance').toLowerCase();
+      goalType = rawGoal === 'maintenance' ? 'maintain' : (rawGoal === 'deficit' ? 'cut' : rawGoal);
+      macroTargets = {
+        protein: nutritionGoal.dailyProtein || 150,
+        carbs: nutritionGoal.dailyCarbs || 200,
+        fat: nutritionGoal.dailyFat || 65
+      };
+    } else if (user.fitnessGoals) {
+      const rawGoal = (user.fitnessGoals.goal || 'maintain').toLowerCase();
+      goalType = rawGoal === 'maintenance' ? 'maintain' : (rawGoal === 'deficit' ? 'cut' : rawGoal);
+    }
+
+    const targets = {
+      baselineCalories,
+      calories: baselineCalories,
+      goalType,
+      macroTargets
+    };
+
+    res.json({ success: true, data: targets });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update user's nutrition targets
+router.put('/users/me/targets', auth, async (req, res) => {
+  try {
+    const { calories, protein, carbs, fat, goalType } = req.body;
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const targets = {
-      baselineCalories: user.baselineCalories || 2000,
-      goalType: user.goalType || 'maintain',
-      macroTargets: user.macroTargets || { protein: 150, carbs: 200, fat: 65 }
-    };
+    const updateFields = { updatedAt: new Date() };
+    if (calories && Number(calories) > 0) updateFields.dailyCalories = Math.round(Number(calories));
+    if (protein && Number(protein) > 0) updateFields.dailyProtein = Math.round(Number(protein));
+    if (carbs && Number(carbs) >= 0) updateFields.dailyCarbs = Math.round(Number(carbs));
+    if (fat && Number(fat) >= 0) updateFields.dailyFat = Math.round(Number(fat));
+    if (goalType) {
+      const g = String(goalType).toLowerCase();
+      const mapped = g === 'cut' ? 'deficit' : (g === 'maintain' ? 'maintenance' : g);
+      updateFields.goal = mapped;
+      if (user.fitnessGoals) {
+        user.fitnessGoals.goal = mapped;
+        await user.save();
+      }
+    }
 
-    res.json({ success: true, data: targets });
+    const nutritionGoal = await NutritionGoal.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+
+    const rawGoal = (nutritionGoal.goal || 'maintenance').toLowerCase();
+    const resolvedGoalType = rawGoal === 'maintenance' ? 'maintain' : (rawGoal === 'deficit' ? 'cut' : rawGoal);
+
+    res.json({
+      success: true,
+      data: {
+        baselineCalories: nutritionGoal.dailyCalories,
+        calories: nutritionGoal.dailyCalories,
+        goalType: resolvedGoalType,
+        macroTargets: {
+          protein: nutritionGoal.dailyProtein,
+          carbs: nutritionGoal.dailyCarbs,
+          fat: nutritionGoal.dailyFat
+        }
+      }
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -34,6 +152,7 @@ router.get('/meals', auth, async (req, res) => {
   try {
     const { date } = req.query;
     const targetDate = date ? new Date(date) : new Date();
+
     
     const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);

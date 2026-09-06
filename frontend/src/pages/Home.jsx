@@ -890,22 +890,22 @@ export default function Home() {
           </div>
 
           {/* Modern Bento Container */}
-          <div className="bg-[#0e0e11]/90 border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl backdrop-blur-xl">
+          <div className="home-telemetry-bento bg-white dark:bg-[#0e0e11]/90 border border-gray-200 dark:border-zinc-800/80 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-sm dark:shadow-2xl backdrop-blur-xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5 items-stretch">
               
               {/* Left: Authentic High-Impact Gym Visual Card */}
-              <div className="lg:col-span-5 relative rounded-xl sm:rounded-2xl overflow-hidden h-32 sm:h-44 lg:h-auto min-h-[130px] sm:min-h-[180px] lg:min-h-[260px] flex flex-col justify-between p-3 sm:p-5 group border border-zinc-800/60 shadow-inner">
+              <div className="theme-dark-surface lg:col-span-5 relative rounded-xl sm:rounded-2xl overflow-hidden h-32 sm:h-44 lg:h-auto min-h-[130px] sm:min-h-[180px] lg:min-h-[260px] flex flex-col justify-between p-3 sm:p-5 group border border-zinc-700/50 dark:border-zinc-800/60 shadow-inner">
                 <img
                   src={Home4}
                   alt="Elite Gym Training"
                   className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/30" />
                 
                 {/* Top Badges */}
                 <div className="relative z-10 flex items-center justify-between">
-                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-black/70 backdrop-blur-md border border-lime-500/30 text-[9px] sm:text-[10px] font-black text-lime-400 shadow-md">
+                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-black/70 backdrop-blur-md border border-lime-500/40 text-[9px] sm:text-[10px] font-black text-lime-400 shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
                     <span>LIVE TELEMETRY</span>
                   </div>
@@ -923,7 +923,7 @@ export default function Home() {
                   <h3 className="text-sm sm:text-xl font-black text-white uppercase tracking-tight leading-tight">
                     REAL-TIME LOGGING
                   </h3>
-                  <p className="hidden sm:block text-xs text-zinc-300 font-medium leading-snug line-clamp-1 mt-0.5">
+                  <p className="hidden sm:block text-xs text-zinc-200 font-medium leading-snug line-clamp-1 mt-0.5">
                     Every rep, set, and session synced automatically to your profile.
                   </p>
                 </div>
@@ -938,33 +938,33 @@ export default function Home() {
                   {/* Card 1: Total Workouts */}
                   <div 
                     onClick={() => navigate(isAuthenticated() && auth?.user ? "/dashboard" : "/login")}
-                    className="cursor-pointer bg-zinc-900/90 border border-zinc-800/90 hover:border-lime-500/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-300 group hover:bg-zinc-900 shadow-md flex flex-col justify-between"
+                    className="cursor-pointer bg-gray-50/80 dark:bg-zinc-900/90 border border-gray-200 dark:border-zinc-800/90 hover:border-emerald-500/60 dark:hover:border-lime-500/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-300 group hover:bg-white dark:hover:bg-zinc-900 shadow-sm dark:shadow-md flex flex-col justify-between"
                   >
                     <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-lime-500/10 border border-lime-500/20 text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-100/70 dark:bg-lime-500/10 border border-emerald-200 dark:border-lime-500/20 text-emerald-600 dark:text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <BicepsFlexed className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                       </div>
                       <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider border ${
                         !isAuthenticated() || !auth?.user
-                          ? "border-zinc-700 bg-zinc-800/80 text-zinc-400"
+                          ? "border-gray-200 bg-gray-100 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
                           : isOnline && stats?.isRealTime
-                            ? "border-lime-500/30 bg-lime-500/10 text-lime-400"
-                            : "border-zinc-700 bg-zinc-800/80 text-zinc-400"
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-lime-500/30 dark:bg-lime-500/10 dark:text-lime-400"
+                            : "border-gray-200 bg-gray-100 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
-                          !isAuthenticated() || !auth?.user ? "bg-zinc-500" : "bg-lime-500 animate-pulse"
+                          !isAuthenticated() || !auth?.user ? "bg-gray-400 dark:bg-zinc-500" : "bg-emerald-500 dark:bg-lime-500 animate-pulse"
                         }`} />
                         {!isAuthenticated() || !auth?.user ? "LOCKED" : "LIVE"}
                       </span>
                     </div>
                     <div>
-                      <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-none mb-1 tracking-tight">
+                      <div className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-none mb-1 tracking-tight">
                         {!isAuthenticated() || !auth?.user ? "0" : totalWorkouts}
                       </div>
-                      <div className="text-[9px] sm:text-xs font-black text-lime-400 uppercase tracking-wider mb-0.5 truncate">
+                      <div className="text-[9px] sm:text-xs font-black text-emerald-700 dark:text-lime-400 uppercase tracking-wider mb-0.5 truncate">
                         TOTAL WORKOUTS
                       </div>
-                      <div className="text-[9px] sm:text-[11px] text-zinc-400 font-medium truncate">
+                      <div className="text-[9px] sm:text-[11px] text-gray-500 dark:text-zinc-400 font-medium truncate">
                         {!isAuthenticated() || !auth?.user
                           ? "Sign in to track"
                           : totalWorkouts > 0
@@ -977,24 +977,24 @@ export default function Home() {
                   {/* Card 2: Today's Workouts */}
                   <div 
                     onClick={() => navigate(isAuthenticated() && auth?.user ? "/start-workout" : "/login")}
-                    className="cursor-pointer bg-zinc-900/90 border border-zinc-800/90 hover:border-orange-500/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-300 group hover:bg-zinc-900 shadow-md flex flex-col justify-between"
+                    className="cursor-pointer bg-gray-50/80 dark:bg-zinc-900/90 border border-gray-200 dark:border-zinc-800/90 hover:border-orange-500/60 dark:hover:border-orange-500/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-300 group hover:bg-white dark:hover:bg-zinc-900 shadow-sm dark:shadow-md flex flex-col justify-between"
                   >
                     <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-orange-100/70 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Flame className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                       </div>
-                      <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider border border-orange-500/30 bg-orange-500/10 text-orange-400">
+                      <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider border border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-400">
                         TODAY
                       </span>
                     </div>
                     <div>
-                      <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-none mb-1 tracking-tight">
+                      <div className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-none mb-1 tracking-tight">
                         {!isAuthenticated() || !auth?.user ? "0" : todayWorkouts}
                       </div>
-                      <div className="text-[9px] sm:text-xs font-black text-orange-400 uppercase tracking-wider mb-0.5 truncate">
+                      <div className="text-[9px] sm:text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-0.5 truncate">
                         TODAY'S SESSIONS
                       </div>
-                      <div className="text-[9px] sm:text-[11px] text-zinc-400 font-medium truncate">
+                      <div className="text-[9px] sm:text-[11px] text-gray-500 dark:text-zinc-400 font-medium truncate">
                         {todayWorkouts > 0 ? "Daily target active" : "Ready to hit gym"}
                       </div>
                     </div>
@@ -1005,22 +1005,22 @@ export default function Home() {
                 {/* Bottom Row: Full-Width Sleek Horizontal Action Button */}
                 <div 
                   onClick={() => navigate("/dashboard")}
-                  className="cursor-pointer bg-gradient-to-r from-lime-500/15 via-zinc-900/95 to-zinc-900 border border-lime-500/30 hover:border-lime-400 rounded-xl sm:rounded-2xl p-3 sm:p-3.5 transition-all duration-300 group hover:shadow-[0_0_25px_rgba(132,204,22,0.15)] flex items-center justify-between"
+                  className="cursor-pointer bg-gradient-to-r from-emerald-50 via-white to-gray-50 dark:from-lime-500/15 dark:via-zinc-900/95 dark:to-zinc-900 border border-emerald-200/80 dark:border-lime-500/30 hover:border-emerald-500 dark:hover:border-lime-400 rounded-xl sm:rounded-2xl p-3 sm:p-3.5 transition-all duration-300 group hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(132,204,22,0.15)] flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-lime-500/20 border border-lime-500/40 text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-100 dark:bg-lime-500/20 border border-emerald-200 dark:border-lime-500/40 text-emerald-600 dark:text-lime-400 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <div className="text-xs sm:text-sm md:text-base font-black text-white leading-tight group-hover:text-lime-300 transition-colors uppercase tracking-tight">
+                      <div className="text-xs sm:text-sm md:text-base font-black text-gray-900 dark:text-white leading-tight group-hover:text-emerald-700 dark:group-hover:text-lime-300 transition-colors uppercase tracking-tight">
                         OPEN DASHBOARD
                       </div>
-                      <div className="text-[9px] sm:text-xs text-zinc-400 font-medium line-clamp-1">
+                      <div className="text-[9px] sm:text-xs text-gray-600 dark:text-zinc-400 font-medium line-clamp-1">
                         View performance analytics & training history
                       </div>
                     </div>
                   </div>
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-lime-500/10 border border-lime-500/30 flex items-center justify-center text-lime-400 group-hover:translate-x-1 transition-transform flex-shrink-0">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-100 dark:bg-lime-500/10 border border-emerald-200 dark:border-lime-500/30 flex items-center justify-center text-emerald-600 dark:text-lime-400 group-hover:translate-x-1 transition-transform flex-shrink-0">
                     <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </div>
                 </div>

@@ -7,6 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import settingsService from "../services/settingsService";
 import chromeErrorHandler from "../utils/chromeErrorHandler";
 import { onlineService } from "../services/onlineService";
+import notificationService from "../services/notificationService";
 
 
 export default function Settings() {
@@ -17,6 +18,8 @@ export default function Settings() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [syncStatus, setSyncStatus] = useState("ready");
   const [lastSyncResult, setLastSyncResult] = useState(null);
+  const [browserPermission, setBrowserPermission] = useState(() => notificationService.getPermission());
+  const [testingNotification, setTestingNotification] = useState(false);
   const [realTimeStats, setRealTimeStats] = useState({
     totalWorkouts: 0,
     totalMeals: 0,
@@ -108,13 +111,14 @@ export default function Settings() {
       color: "from-gray-500 to-neutral-500",
     },
   ];
-  const autoSave = useCallback(
-    settingsService.setupAutoSave((result) => {
+  const autoSaveRef = useRef(null);
+  if (!autoSaveRef.current) {
+    autoSaveRef.current = settingsService.setupAutoSave((result) => {
       setLastSyncResult(result);
       setSyncStatus(result.status || "error");
-    }),
-    [],
-  );
+    });
+  }
+  const autoSave = autoSaveRef.current;
   const loadRealTimeData = useCallback(async () => {
     if (!isAuthenticated()) return;
     try {
@@ -261,6 +265,47 @@ export default function Settings() {
     setTheme(nextTheme);
     handleSettingChange("preferences", "theme", nextTheme);
   }, [handleSettingChange, setTheme]);
+
+  const handleNotificationToggle = async (key) => {
+    const nextValue = !settings.notifications[key];
+
+    if (key === "pushNotifications" && nextValue) {
+      const res = await notificationService.requestPermission();
+      setBrowserPermission(notificationService.getPermission());
+      if (!res.success && res.status === "denied") {
+        alert(
+          "⚠️ Push notifications are blocked by your browser settings.\n\nPlease click the lock or settings icon in your browser's address bar, enable Notifications for this site, and refresh."
+        );
+      }
+    }
+
+    handleSettingChange("notifications", key, nextValue);
+    notificationService.startReminderScheduler({
+      ...settings.notifications,
+      [key]: nextValue,
+    });
+  };
+
+  const handleTestNotification = async () => {
+    setTestingNotification(true);
+    try {
+      const res = await notificationService.testRealTimeNotification();
+      setBrowserPermission(notificationService.getPermission());
+      if (!res.success && res.status === "denied") {
+        alert(
+          "⚠️ Notifications are blocked in your browser.\n\nPlease permit notifications in your browser address bar to receive real-time alerts."
+        );
+      }
+    } finally {
+      setTimeout(() => setTestingNotification(false), 1200);
+    }
+  };
+
+  useEffect(() => {
+    if (hasHydratedSettings.current && settings.notifications) {
+      notificationService.startReminderScheduler(settings.notifications);
+    }
+  }, [settings.notifications]);
   useEffect(() => {
     if (!loading && hasHydratedSettings.current && settings.profile.name !== undefined) {
       const serializedSettings = JSON.stringify(settings);
@@ -479,56 +524,11 @@ export default function Settings() {
               className:
                 "w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all",
             },
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "lose",
-              },
-              /*#__PURE__*/ React.createElement(Star, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Lose Weight",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "maintain",
-              },
-              /*#__PURE__*/ React.createElement(Scale, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Maintain Weight",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "gain",
-              },
-              /*#__PURE__*/ React.createElement(TrendingUp, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Gain Weight",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "muscle",
-              },
-              /*#__PURE__*/ React.createElement(BicepsFlexed, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Build Muscle",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "strength",
-              },
-              /*#__PURE__*/ React.createElement(Zap, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Increase Strength",
-            ),
+            /*#__PURE__*/ React.createElement("option", { value: "lose" }, "🔥 Lose Weight"),
+            /*#__PURE__*/ React.createElement("option", { value: "maintain" }, "⚖️ Maintain Weight"),
+            /*#__PURE__*/ React.createElement("option", { value: "gain" }, "📈 Gain Weight"),
+            /*#__PURE__*/ React.createElement("option", { value: "muscle" }, "💪 Build Muscle"),
+            /*#__PURE__*/ React.createElement("option", { value: "strength" }, "⚡ Increase Strength"),
           ),
         ),
         /*#__PURE__*/ React.createElement(
@@ -558,56 +558,11 @@ export default function Settings() {
               className:
                 "w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all",
             },
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "sedentary",
-              },
-              /*#__PURE__*/ React.createElement(Armchair, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Sedentary (Little/No Exercise)",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "light",
-              },
-              /*#__PURE__*/ React.createElement(Footprints, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Light (1-3 days/week)",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "moderate",
-              },
-              /*#__PURE__*/ React.createElement(Activity, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Moderate (3-5 days/week)",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "very",
-              },
-              /*#__PURE__*/ React.createElement(Dumbbell, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Very Active (6-7 days/week)",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "extra",
-              },
-              /*#__PURE__*/ React.createElement(Zap, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Extra Active (2x/day, intense)",
-            ),
+            /*#__PURE__*/ React.createElement("option", { value: "sedentary" }, "🛋️ Sedentary (Little/No Exercise)"),
+            /*#__PURE__*/ React.createElement("option", { value: "light" }, "🚶 Light (1-3 days/week)"),
+            /*#__PURE__*/ React.createElement("option", { value: "moderate" }, "🏃 Moderate (3-5 days/week)"),
+            /*#__PURE__*/ React.createElement("option", { value: "very" }, "🏋️ Very Active (6-7 days/week)"),
+            /*#__PURE__*/ React.createElement("option", { value: "extra" }, "⚡ Extra Active (2x/day, intense)"),
           ),
         ),
         /*#__PURE__*/ React.createElement(
@@ -1084,11 +1039,7 @@ export default function Settings() {
                       scale: 0.95,
                     },
                     onClick: () =>
-                      handleSettingChange(
-                        "notifications",
-                        notification.key,
-                        !isEnabled,
-                      ),
+                      handleNotificationToggle(notification.key),
                     className: `relative w-14 h-7 sm:w-16 sm:h-8 rounded-full transition-all duration-300 flex-shrink-0 ${isEnabled ? "bg-gradient-to-r from-red-600 to-red-600 shadow-lg shadow-red-600/25" : "bg-neutral-700"}`,
                   },
                   /*#__PURE__*/ React.createElement(motion.div, {
@@ -1117,32 +1068,53 @@ export default function Settings() {
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: "flex items-center gap-3 mb-4 sm:mb-6",
+            className: "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6",
           },
-          /*#__PURE__*/ React.createElement("div", {
-            className:
-              "w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse",
-          }),
           /*#__PURE__*/ React.createElement(
-            "h3",
-            {
-              className: "text-lg sm:text-xl font-black text-white",
-              style: {
-                fontFamily: "var(--font-heading)",
-              },
-            },
-            /*#__PURE__*/ React.createElement(BarChart3, {
-              className: "w-[1em] h-[1em] inline-block",
+            "div",
+            { className: "flex items-center gap-3" },
+            /*#__PURE__*/ React.createElement("div", {
+              className:
+                "w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse",
             }),
-            " NOTIFICATION STATUS",
+            /*#__PURE__*/ React.createElement(
+              "h3",
+              {
+                className: "text-lg sm:text-xl font-black text-white",
+                style: {
+                  fontFamily: "var(--font-heading)",
+                },
+              },
+              /*#__PURE__*/ React.createElement(BarChart3, {
+                className: "w-[1em] h-[1em] inline-block",
+              }),
+              " NOTIFICATION STATUS",
+            ),
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className:
+                  "px-2 sm:px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30",
+              },
+              "LIVE SYNC",
+            ),
           ),
           /*#__PURE__*/ React.createElement(
             "div",
             {
-              className:
-                "px-2 sm:px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30",
+              className: `px-3 py-1 rounded-full text-xs font-bold border ${
+                browserPermission === "granted"
+                  ? "bg-green-600/20 text-green-400 border-green-600/30"
+                  : browserPermission === "denied"
+                  ? "bg-red-600/20 text-red-400 border-red-600/30"
+                  : "bg-yellow-600/20 text-yellow-400 border-yellow-600/30"
+              }`,
             },
-            "LIVE SYNC",
+            browserPermission === "granted"
+              ? "Browser Permission: Granted ✅"
+              : browserPermission === "denied"
+              ? "Browser Permission: Blocked ❌"
+              : "Browser Permission: Prompt on Click 🔔",
           ),
         ),
         /*#__PURE__*/ React.createElement(
@@ -1214,7 +1186,7 @@ export default function Settings() {
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: "text-center",
+            className: "flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-neutral-800/50",
           },
           /*#__PURE__*/ React.createElement(
             "div",
@@ -1231,6 +1203,31 @@ export default function Settings() {
                 className: "text-red-500 text-xs sm:text-sm font-bold",
               },
               "Changes applied instantly \u2022 MongoDB real-time sync",
+            ),
+          ),
+          /*#__PURE__*/ React.createElement(
+            motion.button,
+            {
+              whileHover: { scale: 1.03 },
+              whileTap: { scale: 0.97 },
+              onClick: handleTestNotification,
+              disabled: testingNotification,
+              className:
+                "px-5 py-2.5 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-red-600/20 transition-all duration-200 flex items-center gap-2 disabled:opacity-60",
+            },
+            testingNotification
+              ? /*#__PURE__*/ React.createElement(RefreshCw, {
+                  className: "w-4 h-4 animate-spin",
+                })
+              : /*#__PURE__*/ React.createElement(Zap, {
+                  className: "w-4 h-4 text-yellow-300",
+                }),
+            /*#__PURE__*/ React.createElement(
+              "span",
+              null,
+              testingNotification
+                ? "SENDING REAL-TIME ALERT..."
+                : "TEST REAL-TIME NOTIFICATION",
             ),
           ),
         ),
@@ -1395,46 +1392,10 @@ export default function Settings() {
               className:
                 "w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all",
             },
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "en",
-              },
-              /*#__PURE__*/ React.createElement(Flag, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " English",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "es",
-              },
-              /*#__PURE__*/ React.createElement(Flag, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " Spanish",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "fr",
-              },
-              /*#__PURE__*/ React.createElement(Flag, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " French",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "option",
-              {
-                value: "de",
-              },
-              /*#__PURE__*/ React.createElement(Flag, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-              " German",
-            ),
+            /*#__PURE__*/ React.createElement("option", { value: "en" }, "🇺🇸 English"),
+            /*#__PURE__*/ React.createElement("option", { value: "es" }, "🇪🇸 Spanish"),
+            /*#__PURE__*/ React.createElement("option", { value: "fr" }, "🇫🇷 French"),
+            /*#__PURE__*/ React.createElement("option", { value: "de" }, "🇩🇪 German"),
           ),
         ),
       ),
@@ -1550,6 +1511,172 @@ export default function Settings() {
       ),
     );
   };
+
+  const renderPrivacySettings = () => (
+    <div className="space-y-4 sm:space-y-6">
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-neutral-900/80 to-black/80 rounded-xl sm:rounded-2xl border border-neutral-800/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse" />
+          <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: "var(--font-heading)" }}>
+            <Shield className="w-[1em] h-[1em] inline-block mr-2" /> PRIVACY & SECURITY CONTROLS
+          </h3>
+          <div className="px-2 sm:px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full border border-red-600/30">
+            ENCRYPTED
+          </div>
+        </div>
+        <p className="text-neutral-300 text-sm sm:text-base">
+          Enterprise Grade Security • End-to-End Encryption • Full Control of Your Data
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className="block text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
+            <User size={16} /> Profile Visibility
+          </label>
+          <select
+            value={settings.privacy.profileVisibility}
+            onChange={(e) => handleSettingChange("privacy", "profileVisibility", e.target.value)}
+            className="w-full px-4 py-3 bg-neutral-900/60 border border-neutral-700/50 rounded-xl text-white focus:outline-none focus:border-red-600/50 focus:ring-2 focus:ring-red-600/20 transition-all"
+          >
+            <option value="public">🌐 Public (Visible to all athletes)</option>
+            <option value="private">🔒 Private (Only visible to you)</option>
+            <option value="friends">👥 Followers / Friends Only</option>
+          </select>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-neutral-900/40 rounded-xl border border-neutral-700/30">
+            <div>
+              <div className="text-white font-medium text-sm">Community Data Sharing</div>
+              <div className="text-neutral-400 text-xs mt-0.5">Share workout accomplishments on public feed</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleSettingChange("privacy", "dataSharing", !settings.privacy.dataSharing)}
+              className={`relative w-12 h-6 rounded-full transition-all duration-300 ${settings.privacy.dataSharing ? "bg-red-600 shadow-lg shadow-red-600/25" : "bg-neutral-700"}`}
+            >
+              <div
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.privacy.dataSharing ? "left-7" : "left-1"}`}
+              />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-neutral-900/40 rounded-xl border border-neutral-700/30">
+            <div>
+              <div className="text-white font-medium text-sm">Analytics Opt-Out</div>
+              <div className="text-neutral-400 text-xs mt-0.5">Disable anonymous telemetry & performance tracking</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleSettingChange("privacy", "analyticsOptOut", !settings.privacy.analyticsOptOut)}
+              className={`relative w-12 h-6 rounded-full transition-all duration-300 ${settings.privacy.analyticsOptOut ? "bg-red-600 shadow-lg shadow-red-600/25" : "bg-neutral-700"}`}
+            >
+              <div
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.privacy.analyticsOptOut ? "left-7" : "left-1"}`}
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-neutral-900/40 to-black/40 rounded-xl sm:rounded-2xl border border-neutral-800/50">
+        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+          <Shield size={16} className="text-green-400" /> Security Status & Safeguards
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+          <div className="p-3 bg-neutral-900/60 rounded-lg border border-neutral-800/50">
+            <div className="text-xs text-neutral-400">Authentication</div>
+            <div className="text-green-400 font-bold text-sm mt-1 flex items-center gap-1">
+              <CheckCircle2 size={14} /> JWT Token Active
+            </div>
+          </div>
+          <div className="p-3 bg-neutral-900/60 rounded-lg border border-neutral-800/50">
+            <div className="text-xs text-neutral-400">Cloud Storage</div>
+            <div className="text-green-400 font-bold text-sm mt-1 flex items-center gap-1">
+              <CheckCircle2 size={14} /> MongoDB TLS 1.3
+            </div>
+          </div>
+          <div className="p-3 bg-neutral-900/60 rounded-lg border border-neutral-800/50">
+            <div className="text-xs text-neutral-400">Credential Safety</div>
+            <div className="text-green-400 font-bold text-sm mt-1 flex items-center gap-1">
+              <CheckCircle2 size={14} /> Bcrypt Salt-10
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderHelpSettings = () => (
+    <div className="space-y-4 sm:space-y-6">
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-neutral-900/80 to-black/80 rounded-xl sm:rounded-2xl border border-neutral-800/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-pulse" />
+          <h3 className="text-lg sm:text-xl font-black text-white" style={{ fontFamily: "var(--font-heading)" }}>
+            <HelpCircle className="w-[1em] h-[1em] inline-block mr-2" /> HELP & SUPPORT CENTER
+          </h3>
+          <div className="px-2 sm:px-3 py-1 bg-blue-600/20 text-blue-400 text-xs font-bold rounded-full border border-blue-600/30">
+            24/7 GUIDES
+          </div>
+        </div>
+        <p className="text-neutral-300 text-sm sm:text-base">
+          Knowledge Base • Community Guides • Direct Athlete Support
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="p-4 bg-neutral-900/40 rounded-xl border border-neutral-700/30 space-y-2">
+          <div className="text-red-500 font-bold flex items-center gap-2">
+            <Dumbbell size={18} /> Training & Splits
+          </div>
+          <p className="text-xs text-neutral-300 leading-relaxed">
+            GrindX recommends custom splits based on your weekly frequency. Head to the Splits page to view pre-built or custom routines.
+          </p>
+        </div>
+
+        <div className="p-4 bg-neutral-900/40 rounded-xl border border-neutral-700/30 space-y-2">
+          <div className="text-yellow-400 font-bold flex items-center gap-2">
+            <Zap size={18} /> Real-Time Sync
+          </div>
+          <p className="text-xs text-neutral-300 leading-relaxed">
+            Your workouts, streaks, and settings automatically synchronize to MongoDB Atlas. Offline workouts sync the moment your connection restores.
+          </p>
+        </div>
+
+        <div className="p-4 bg-neutral-900/40 rounded-xl border border-neutral-700/30 space-y-2">
+          <div className="text-green-400 font-bold flex items-center gap-2">
+            <Apple size={18} /> Nutrition & TDEE
+          </div>
+          <p className="text-xs text-neutral-300 leading-relaxed">
+            Calorie targets are calculated via Mifflin-St Jeor. Adjust your weight or activity in Settings anytime to recalculate macros.
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-neutral-900/40 to-black/40 rounded-xl sm:rounded-2xl border border-neutral-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h4 className="text-white font-bold text-base">Need Direct Assistance?</h4>
+          <p className="text-neutral-400 text-xs sm:text-sm mt-1">Our support team and fitness community are available around the clock.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <a
+            href="/contact"
+            className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-lg shadow-red-600/20"
+          >
+            Contact Support
+          </a>
+          <a
+            href="/forum"
+            className="px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs sm:text-sm font-bold rounded-xl transition-all border border-neutral-700"
+          >
+            Visit Forum
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
       case "profile":
@@ -1560,6 +1687,10 @@ export default function Settings() {
         return renderNotificationsSettings();
       case "preferences":
         return renderPreferencesSettings();
+      case "privacy":
+        return renderPrivacySettings();
+      case "help":
+        return renderHelpSettings();
       case "data":
         return /*#__PURE__*/ React.createElement(
           "div",
@@ -1988,7 +2119,7 @@ export default function Settings() {
               {
                 className: "text-3xl sm:text-4xl",
               },
-              /*#__PURE__*/ React.createElement(Settings, {
+              /*#__PURE__*/ React.createElement(SettingsIcon, {
                 className: "w-[1em] h-[1em] inline-block",
               }),
             ),

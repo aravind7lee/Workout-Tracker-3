@@ -250,21 +250,25 @@
 }
 
 /* ===== LIGHT MODE ENHANCEMENTS ===== */
-/* Ensure maximum contrast inside .nutrition-page in light mode */
 .light-theme .nutrition-page,
 [data-theme="light"] .nutrition-page {
-  --text-contrast: #000000;
-  --heading-contrast: #020617;
-  --muted-contrast: #333333;
+  --text-contrast: #18181b;
+  --heading-contrast: #09090b;
+  --muted-contrast: #52525b;
 }
 
-.light-theme .nutrition-page *:not(.preserve-color):not(svg):not(path),
-[data-theme="light"] .nutrition-page *:not(.preserve-color):not(svg):not(path) {
-  color: var(--text-contrast) !important;
-}
-
-.light-theme .nutrition-page h1, .light-theme .nutrition-page h2, .light-theme .nutrition-page h3, .light-theme .nutrition-page h4, .light-theme .nutrition-page h5, .light-theme .nutrition-page h6,
-[data-theme="light"] .nutrition-page h1, [data-theme="light"] .nutrition-page h2, [data-theme="light"] .nutrition-page h3, [data-theme="light"] .nutrition-page h4, [data-theme="light"] .nutrition-page h5, [data-theme="light"] .nutrition-page h6 {
+.light-theme .nutrition-page h1:not(.preserve-color),
+.light-theme .nutrition-page h2:not(.preserve-color),
+.light-theme .nutrition-page h3:not(.preserve-color),
+.light-theme .nutrition-page h4:not(.preserve-color),
+.light-theme .nutrition-page h5:not(.preserve-color),
+.light-theme .nutrition-page h6:not(.preserve-color),
+[data-theme="light"] .nutrition-page h1:not(.preserve-color),
+[data-theme="light"] .nutrition-page h2:not(.preserve-color),
+[data-theme="light"] .nutrition-page h3:not(.preserve-color),
+[data-theme="light"] .nutrition-page h4:not(.preserve-color),
+[data-theme="light"] .nutrition-page h5:not(.preserve-color),
+[data-theme="light"] .nutrition-page h6:not(.preserve-color) {
   color: var(--heading-contrast) !important;
   font-weight: 700 !important;
 }

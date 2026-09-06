@@ -213,39 +213,39 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2, type: "spring", stiffness: 400, damping: 25 }}
-                      className="absolute right-0 mt-3 w-56 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] py-2 border border-zinc-800 bg-zinc-950/95 backdrop-blur-xl z-[60] overflow-hidden"
+                      className="app-navbar-profile-dropdown absolute right-0 mt-3 w-56 rounded-2xl shadow-xl dark:shadow-[0_10px_40px_rgba(0,0,0,0.8)] py-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/95 backdrop-blur-xl z-[60] overflow-hidden"
                     >
-                      <div className="px-4 py-3 border-b border-zinc-800/50 mb-1 bg-gradient-to-b from-red-900/10 to-transparent">
-                        <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-0.5">Signed In As</p>
-                        <p className="text-sm font-black text-white truncate">{user?.name || "Elite Athlete"}</p>
+                      <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800/50 mb-1 bg-gradient-to-b from-red-500/5 dark:from-red-900/10 to-transparent">
+                        <p className="text-[10px] font-bold text-red-600 dark:text-red-500 uppercase tracking-widest mb-0.5">Signed In As</p>
+                        <p className="text-sm font-black text-zinc-900 dark:text-white truncate">{user?.name || "Elite Athlete"}</p>
                       </div>
 
                       <Link
                         to="/profile"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-400 hover:text-white hover:bg-red-500/10 transition-colors group"
+                        className="profile-dropdown-item flex items-center gap-3 px-4 py-2.5 text-zinc-800 dark:text-zinc-300 hover:text-red-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
                       >
-                        <UserCircle size={16} className="group-hover:text-red-500 transition-colors" />
-                        <span className="text-xs font-bold uppercase tracking-widest">My Profile</span>
+                        <UserCircle size={16} className="text-zinc-600 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-shrink-0" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 group-hover:text-red-600 dark:group-hover:text-white">My Profile</span>
                       </Link>
                       
                       <Link
                         to="/settings"
                         onClick={() => setShowProfileDropdown(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-400 hover:text-white hover:bg-red-500/10 transition-colors group"
+                        className="profile-dropdown-item flex items-center gap-3 px-4 py-2.5 text-zinc-800 dark:text-zinc-300 hover:text-red-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
                       >
-                        <Settings size={16} className="group-hover:text-red-500 transition-colors" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Settings</span>
+                        <Settings size={16} className="text-zinc-600 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-shrink-0" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 group-hover:text-red-600 dark:group-hover:text-white">Settings</span>
                       </Link>
                       
-                      <div className="h-px bg-zinc-800/50 my-1 mx-4" />
+                      <div className="h-px bg-zinc-200 dark:bg-zinc-800/50 my-1 mx-4" />
                       
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-2.5 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 transition-colors w-full text-left group"
+                        className="profile-dropdown-item flex items-center gap-3 px-4 py-2.5 text-zinc-800 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors w-full text-left group"
                       >
-                        <LogOut size={16} />
-                        <span className="text-xs font-bold uppercase tracking-widest">Logout</span>
+                        <LogOut size={16} className="text-zinc-600 group-hover:text-red-600 dark:group-hover:text-red-400 flex-shrink-0" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-400">Logout</span>
                       </button>
                     </motion.div>
                   )}

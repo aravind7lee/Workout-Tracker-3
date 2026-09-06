@@ -1039,7 +1039,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
     motion.div,
     {
       className:
-        "bg-gradient-to-br from-neutral-900/90 to-neutral-800/90 backdrop-blur-md border-2 border-neutral-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden",
+        "food-categories-container bg-white dark:bg-gradient-to-br dark:from-neutral-900/90 dark:to-neutral-800/90 backdrop-blur-md border border-gray-200 dark:border-neutral-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm dark:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 relative overflow-hidden",
       initial: {
         opacity: 0,
         y: 20,
@@ -1079,7 +1079,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
           /*#__PURE__*/ React.createElement(
             "span",
             {
-              className: "text-xl sm:text-2xl md:text-3xl",
+              className: "text-xl sm:text-2xl md:text-3xl text-white",
             },
             /*#__PURE__*/ React.createElement(Utensils, {
               className: "w-[1em] h-[1em] inline-block",
@@ -1093,14 +1093,14 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
             "h3",
             {
               className:
-                "text-lg sm:text-xl md:text-2xl font-bold text-white mb-1",
+                "text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1",
             },
             "Quick Add Foods",
           ),
           /*#__PURE__*/ React.createElement(
             "p",
             {
-              className: "text-neutral-300 font-medium text-sm sm:text-base",
+              className: "text-gray-500 dark:text-neutral-300 font-medium text-sm sm:text-base",
             },
             "Pre-loaded nutrition database",
           ),
@@ -1121,7 +1121,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 /*#__PURE__*/ React.createElement("div", {
                   key: i,
                   className:
-                    "animate-pulse bg-neutral-800/50 h-10 sm:h-12 w-20 sm:w-28 rounded-lg sm:rounded-xl",
+                    "animate-pulse bg-gray-100 dark:bg-neutral-800/50 h-10 sm:h-12 w-20 sm:w-28 rounded-lg sm:rounded-xl",
                 }),
               ),
             )
@@ -1131,7 +1131,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                 {
                   key: key,
                   onClick: () => setActiveCategory(key),
-                  className: `px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${activeCategory === key ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/25 scale-105" : "bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 hover:text-white border border-neutral-700/60 backdrop-blur-sm"}`,
+                  className: `px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${activeCategory === key ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/25 scale-105" : "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 dark:bg-neutral-800/80 dark:hover:bg-neutral-700 dark:text-neutral-300 dark:hover:text-white dark:border-neutral-700/60 backdrop-blur-sm"}`,
                   whileHover: {
                     scale: 1.04,
                   },
@@ -1139,6 +1139,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                     scale: 0.96,
                   },
                 },
+
                 /*#__PURE__*/ React.createElement(
                   "span",
                   {
@@ -1207,7 +1208,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                     onMouseEnter: () => setHoveredFood(food),
                     onMouseLeave: () => setHoveredFood(null),
                     disabled: isLoading,
-                    className: `p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left transition-all duration-300 border-2 relative group overflow-hidden ${isLoading ? "bg-neutral-800/30 text-neutral-500 cursor-not-allowed border-neutral-700/30" : "bg-gradient-to-br from-neutral-800/80 to-neutral-700/80 hover:from-orange-600/20 hover:to-red-600/20 text-white border-neutral-500/50 hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 shadow-lg hover:shadow-orange-500/20"}`,
+                    className: `food-category-card p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left transition-all duration-300 border relative group overflow-hidden ${isLoading ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200 dark:bg-neutral-800/30 dark:text-neutral-500 dark:border-neutral-700/30" : "bg-white hover:bg-orange-50/50 text-gray-900 border-gray-200 shadow-sm hover:shadow-md hover:border-orange-500/50 dark:bg-neutral-800/90 dark:text-white dark:border-neutral-600/50 dark:hover:border-orange-500/50 backdrop-blur-sm hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-500/30 dark:shadow-lg dark:hover:shadow-orange-500/20"}`,
                     whileHover: !isLoading
                       ? {
                           scale: 1.05,
@@ -1234,7 +1235,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                   },
                   /*#__PURE__*/ React.createElement("div", {
                     className:
-                      "absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                      "absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
                   }),
                   /*#__PURE__*/ React.createElement(
                     "div",
@@ -1245,7 +1246,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                       "div",
                       {
                         className:
-                          "font-bold text-xs sm:text-sm text-white mb-1 group-hover:text-orange-200 transition-colors duration-300 leading-tight",
+                          "food-card-name font-bold text-xs sm:text-sm text-gray-900 dark:text-white mb-1 group-hover:text-orange-600 dark:group-hover:text-orange-200 transition-colors duration-300 leading-tight",
                       },
                       food.name,
                     ),
@@ -1253,7 +1254,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                       "div",
                       {
                         className:
-                          "text-xs text-neutral-300 mb-1 sm:mb-2 font-medium",
+                          "food-card-serving text-xs text-gray-500 dark:text-neutral-300 mb-1 sm:mb-2 font-medium",
                       },
                       food.serving,
                     ),
@@ -1267,7 +1268,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                             ? /*#__PURE__*/ React.createElement(
                                 "span",
                                 {
-                                  className: "text-blue-300",
+                                  className: "food-card-protein text-blue-600 dark:text-blue-300 font-bold",
                                 },
                                 /*#__PURE__*/ React.createElement(
                                   "span",
@@ -1292,7 +1293,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                               ? /*#__PURE__*/ React.createElement(
                                   "span",
                                   {
-                                    className: "text-purple-300",
+                                    className: "food-card-supplement text-purple-600 dark:text-purple-300 font-bold",
                                   },
                                   /*#__PURE__*/ React.createElement(
                                     "span",
@@ -1317,7 +1318,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                               : /*#__PURE__*/ React.createElement(
                                   "span",
                                   {
-                                    className: "text-green-300",
+                                    className: "food-card-supplement text-emerald-600 dark:text-green-300 font-bold",
                                   },
                                   /*#__PURE__*/ React.createElement(
                                     "span",
@@ -1343,12 +1344,12 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                         ? /*#__PURE__*/ React.createElement(
                             "div",
                             {
-                              className: "text-xs font-semibold",
+                              className: "text-xs font-semibold flex items-center gap-1",
                             },
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
-                                className: "text-orange-300",
+                                className: "food-card-calories text-orange-600 dark:text-orange-300 font-bold",
                               },
                               food.calories,
                               " cal",
@@ -1356,20 +1357,21 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
-                                className: "text-neutral-400 hidden sm:inline",
+                                className: "text-gray-400 dark:text-neutral-400 hidden sm:inline",
                               },
                               " \u2022 ",
                             ),
                             /*#__PURE__*/ React.createElement(
                               "span",
                               {
-                                className: "text-blue-300 hidden sm:inline",
+                                className: "food-card-protein text-blue-600 dark:text-blue-300 font-bold hidden sm:inline",
                               },
                               food.protein,
                               "g protein",
                             ),
                           )
                         : null,
+
                     hoveredFood === food &&
                       /*#__PURE__*/ React.createElement(
                         motion.div,
@@ -1638,7 +1640,7 @@ const FoodCategories = ({ onFoodSelect, isLoading }) => {
               "div",
               {
                 className:
-                  "flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-300 font-medium",
+                  "flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500 dark:text-neutral-300 font-medium",
               },
               /*#__PURE__*/ React.createElement(
                 "div",

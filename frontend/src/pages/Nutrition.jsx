@@ -183,7 +183,7 @@ export default function Nutrition() {
             
             {/* Live API & Goal Status Card */}
             <motion.div
-              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-neutral-900/90 via-neutral-900/70 to-neutral-950 border border-neutral-800 shadow-xl"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-gradient-to-r dark:from-neutral-900/90 dark:via-neutral-900/70 dark:to-neutral-950 border border-gray-200 dark:border-neutral-800 shadow-sm dark:shadow-xl"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -194,18 +194,18 @@ export default function Nutrition() {
                     <Apple className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-xs sm:text-base font-black text-emerald-400 uppercase tracking-wide truncate">
+                    <h2 className="text-xs sm:text-base font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wide truncate">
                       Nutrition Live Sync
                     </h2>
-                    <div className="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-xs text-neutral-400 flex-wrap">
-                      <span className="inline-flex items-center gap-1 text-emerald-400 font-bold">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-xs text-gray-500 dark:text-neutral-400 flex-wrap">
+                      <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
                         <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                         Live API
                       </span>
                       <span>•</span>
-                      <span>Goal: <strong className="text-orange-400 capitalize">{targets.goalType || "maintain"}</strong></span>
+                      <span>Goal: <strong className="text-orange-600 dark:text-orange-400 capitalize">{targets.goalType || "maintain"}</strong></span>
                       <span>•</span>
-                      <span><strong className="text-white">{meals.length}</strong> logged</span>
+                      <span><strong className="text-gray-900 dark:text-white">{meals.length}</strong> logged</span>
                     </div>
                   </div>
                 </div>

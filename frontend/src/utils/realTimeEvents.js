@@ -53,6 +53,17 @@ class RealTimeEventDispatcher {
     this.triggerProfileRefresh();
   }
 
+  // Dispatch nutrition targets updated event
+  dispatchTargetsUpdated(targetsData) {
+    console.log("🎯 Dispatching nutrition targets updated event:", targetsData);
+    window.dispatchEvent(
+      new CustomEvent("nutritionTargetsUpdated", {
+        detail: targetsData,
+      }),
+    );
+    this.triggerProfileRefresh();
+  }
+
   // Dispatch plan created event
   dispatchPlanCreated(planData) {
     console.log("📋 Dispatching plan created event:", planData);

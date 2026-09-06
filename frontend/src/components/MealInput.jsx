@@ -45,7 +45,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
   return (
     <motion.div
       data-meal-input="true"
-      className="nutrition-tracker-card relative overflow-hidden bg-neutral-900/90 border border-neutral-800 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 md:p-6 shadow-xl space-y-3.5 sm:space-y-4"
+      className="nutrition-tracker-card relative overflow-hidden bg-white dark:bg-neutral-900/90 border border-gray-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 md:p-6 shadow-sm dark:shadow-xl space-y-3.5 sm:space-y-4"
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -57,10 +57,10 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
             <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h3 className="text-xs sm:text-base font-black text-white uppercase tracking-wide">
+            <h3 className="text-xs sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-wide">
               Smart Meal & Food Search
             </h3>
-            <p className="text-[9px] sm:text-xs text-neutral-400">
+            <p className="text-[9px] sm:text-xs text-gray-500 dark:text-neutral-400">
               Natural language food tracking with instant macro breakdown
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
 
       {/* Quick Add Pills */}
       <div className="space-y-1.5">
-        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
           <Sparkles className="w-3 h-3 text-orange-400" />
           <span>Quick Add Popular Foods:</span>
         </div>
@@ -80,7 +80,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
               key={food.name}
               onClick={() => quickAdd(food.name)}
               disabled={isLookingUp}
-              className="p-2 sm:p-2.5 bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 hover:border-orange-500/40 rounded-lg sm:rounded-xl text-white flex items-center gap-1.5 transition-all active:scale-95 text-left disabled:opacity-50"
+              className="p-2 sm:p-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-orange-500/40 rounded-lg sm:rounded-xl text-gray-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:border-neutral-800 dark:text-white flex items-center gap-1.5 transition-all active:scale-95 text-left disabled:opacity-50"
             >
               <div className="shrink-0">{food.icon}</div>
               <span className="text-[10px] sm:text-xs font-semibold truncate capitalize">
@@ -99,7 +99,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g. 200g chicken breast with 1 cup brown rice"
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl pl-9 sm:pl-10 pr-24 sm:pr-28 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors shadow-inner"
+            className="w-full bg-white dark:bg-neutral-950 border border-gray-300 dark:border-neutral-800 rounded-xl pl-9 sm:pl-10 pr-24 sm:pr-28 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors shadow-inner"
             disabled={isLookingUp}
             id="nutrition-search-input"
             maxLength={200}

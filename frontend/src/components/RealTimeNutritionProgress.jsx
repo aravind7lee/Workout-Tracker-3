@@ -20,8 +20,8 @@ const RealTimeNutritionProgress = ({
     () => ({
       calories: ((totals.calories || 0) / currentCalorieTarget) * 100,
       protein: ((totals.protein || 0) / (targets.protein || 150)) * 100,
-      carbs: ((totals.carbs || 0) / (targets.carbs || 250)) * 100,
-      fat: ((totals.fat || 0) / (targets.fat || 67)) * 100,
+      carbs: ((totals.carbs || 0) / (targets.carbs || 200)) * 100,
+      fat: ((totals.fat || 0) / (targets.fat || 65)) * 100,
     }),
     [totals, currentCalorieTarget, targets],
   );
@@ -255,7 +255,7 @@ const RealTimeNutritionProgress = ({
       "div",
       {
         className:
-          "mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-neutral-900 to-neutral-950 dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl border border-neutral-800 dark:border-red-950/20 shadow-lg",
+          "mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 dark:bg-gradient-to-r dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl border border-gray-200 dark:border-red-950/20 shadow-sm dark:shadow-lg",
       },
       /*#__PURE__*/ React.createElement(
         "div",
@@ -304,6 +304,18 @@ const RealTimeNutritionProgress = ({
               className:
                 "bg-light-bg-primary dark:bg-dark-bg-primary border border-gray-300 dark:border-dark-border rounded px-2 py-1 text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary focus:border-red-600 dark:focus:border-dark-accent focus:outline-none focus:ring-2 focus:ring-red-600/20 dark:focus:ring-dark-accent/20 transition-all",
             },
+            targets.calories &&
+              ![1600, 1800, 2000, 2200, 2300, 2500, 2800, 3000].includes(
+                Math.round(targets.calories),
+              ) &&
+              /*#__PURE__*/ React.createElement(
+                "option",
+                {
+                  key: "dynamic-target",
+                  value: Math.round(targets.calories),
+                },
+                `${Math.round(targets.calories)} cal (${(targets.goalType || "Target").toUpperCase()})`,
+              ),
             /*#__PURE__*/ React.createElement(
               "option",
               {
@@ -617,7 +629,7 @@ const RealTimeNutritionProgress = ({
                   },
                   Math.round((totals.carbs || 0) * 10) / 10,
                   "g / ",
-                  targets.carbs || 250,
+                  targets.carbs || 200,
                   "g",
                 ),
               ),
@@ -700,7 +712,7 @@ const RealTimeNutritionProgress = ({
                   },
                   Math.round((totals.fat || 0) * 10) / 10,
                   "g / ",
-                  targets.fat || 67,
+                  targets.fat || 65,
                   "g",
                 ),
               ),
@@ -767,7 +779,7 @@ const RealTimeNutritionProgress = ({
               "div",
               {
                 className:
-                  "text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
+                  "text-center p-2.5 sm:p-3 bg-white dark:bg-dark-bg-tertiary/30 border border-gray-200 dark:border-transparent rounded-xl shadow-xs",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
@@ -790,7 +802,7 @@ const RealTimeNutritionProgress = ({
               "div",
               {
                 className:
-                  "text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
+                  "text-center p-2.5 sm:p-3 bg-white dark:bg-dark-bg-tertiary/30 border border-gray-200 dark:border-transparent rounded-xl shadow-xs",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
@@ -826,7 +838,7 @@ const RealTimeNutritionProgress = ({
               "div",
               {
                 className:
-                  "text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
+                  "text-center p-2.5 sm:p-3 bg-white dark:bg-dark-bg-tertiary/30 border border-gray-200 dark:border-transparent rounded-xl shadow-xs",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
@@ -850,7 +862,7 @@ const RealTimeNutritionProgress = ({
               "div",
               {
                 className:
-                  "text-center p-2 sm:p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
+                  "text-center p-2.5 sm:p-3 bg-white dark:bg-dark-bg-tertiary/30 border border-gray-200 dark:border-transparent rounded-xl shadow-xs",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
@@ -871,6 +883,7 @@ const RealTimeNutritionProgress = ({
             ),
           ),
         ),
+
       activeTab === "macros" &&
         /*#__PURE__*/ React.createElement(
           motion.div,

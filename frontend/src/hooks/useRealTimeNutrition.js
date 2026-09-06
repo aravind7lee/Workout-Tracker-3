@@ -46,7 +46,28 @@ export const useRealTimeNutrition = () => {
     } else {
       setIsLoading(false);
     }
+
+    const handleTargetsUpdated = (event) => {
+      const updated = event.detail;
+      if (updated) {
+        setTargets((prev) => ({
+          ...prev,
+          baselineCalories: updated.calories || updated.baselineCalories || prev.baselineCalories,
+          calories: updated.calories || updated.baselineCalories || prev.calories,
+          goalType: updated.goalType || updated.goal || prev.goalType,
+          protein: updated.protein || updated.macroTargets?.protein || prev.protein,
+          carbs: updated.carbs || updated.macroTargets?.carbs || prev.carbs,
+          fat: updated.fat || updated.macroTargets?.fat || prev.fat,
+        }));
+      }
+    };
+
+    window.addEventListener("nutritionTargetsUpdated", handleTargetsUpdated);
+    return () => {
+      window.removeEventListener("nutritionTargetsUpdated", handleTargetsUpdated);
+    };
   }, []);
+
 
   const loadNutritionData = async () => {
     const token = localStorage.getItem("token");

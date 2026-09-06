@@ -238,21 +238,21 @@
 /* Keep text legible on saturated action surfaces after the global light-mode
    text translation has converted legacy text-white utilities. */
 [data-theme="light"] :where(
-  button[class*="from-red-"],
-  button[class*="from-orange-"],
-  button[class*="bg-red-"],
-  a[class*="from-red-"],
-  a[class*="from-orange-"],
-  a[class*="bg-red-"]
+  button[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  button[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  button[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *)
 ),
 [data-theme="light"] :where(
-  button[class*="from-red-"],
-  button[class*="from-orange-"],
-  button[class*="bg-red-"],
-  a[class*="from-red-"],
-  a[class*="from-orange-"],
-  a[class*="bg-red-"]
-) * {
+  button[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  button[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  button[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
+  a[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *)
+) *:not(.food-category-card):not(.food-category-card *):not(.app-navbar-profile-dropdown):not(.app-navbar-profile-dropdown *):not(.profile-dropdown-item):not(.profile-dropdown-item *) {
   color: #ffffff !important;
 }
 
@@ -327,28 +327,250 @@
   color: #27272a !important;
 }
 
-/* Settings keeps the same information architecture while using stable,
-   responsive light surfaces instead of translated dark gradients. */
+/* Profile Dropdown in Light Theme - High Priority Overrides */
+html[data-theme="light"] .app-navbar-profile-dropdown,
+body.light-theme .app-navbar-profile-dropdown,
+[data-theme="light"] .app-navbar-profile-dropdown,
+.light-theme .app-navbar-profile-dropdown {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12) !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown p.truncate,
+body.light-theme .app-navbar-profile-dropdown p.truncate,
+[data-theme="light"] .app-navbar-profile-dropdown p.truncate,
+.light-theme .app-navbar-profile-dropdown p.truncate {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item,
+html[data-theme="light"] .app-navbar-profile-dropdown a,
+body.light-theme .app-navbar-profile-dropdown a,
+[data-theme="light"] .app-navbar-profile-dropdown a,
+[data-theme="light"] .app-navbar-profile-dropdown button,
+.light-theme .app-navbar-profile-dropdown a,
+.light-theme .app-navbar-profile-dropdown button {
+  color: #18181b !important;
+  display: flex !important;
+  align-items: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item span,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item span,
+html[data-theme="light"] .app-navbar-profile-dropdown span,
+body.light-theme .app-navbar-profile-dropdown span,
+[data-theme="light"] .app-navbar-profile-dropdown a span,
+[data-theme="light"] .app-navbar-profile-dropdown button span,
+.light-theme .app-navbar-profile-dropdown a span,
+.light-theme .app-navbar-profile-dropdown button span {
+  color: #18181b !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item svg,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item svg,
+html[data-theme="light"] .app-navbar-profile-dropdown svg,
+body.light-theme .app-navbar-profile-dropdown svg,
+[data-theme="light"] .app-navbar-profile-dropdown a svg,
+[data-theme="light"] .app-navbar-profile-dropdown button svg,
+.light-theme .app-navbar-profile-dropdown a svg,
+.light-theme .app-navbar-profile-dropdown button svg {
+  color: #52525b !important;
+  stroke: #52525b !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item:hover,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item:hover,
+html[data-theme="light"] .app-navbar-profile-dropdown a:hover,
+body.light-theme .app-navbar-profile-dropdown a:hover,
+[data-theme="light"] .app-navbar-profile-dropdown a:hover,
+[data-theme="light"] .app-navbar-profile-dropdown button:hover,
+.light-theme .app-navbar-profile-dropdown a:hover,
+.light-theme .app-navbar-profile-dropdown button:hover {
+  background-color: #f4f4f5 !important;
+  background: #f4f4f5 !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item:hover span,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item:hover span,
+html[data-theme="light"] .app-navbar-profile-dropdown a:hover span,
+body.light-theme .app-navbar-profile-dropdown a:hover span,
+[data-theme="light"] .app-navbar-profile-dropdown a:hover span,
+[data-theme="light"] .app-navbar-profile-dropdown button:hover span,
+.light-theme .app-navbar-profile-dropdown a:hover span,
+.light-theme .app-navbar-profile-dropdown button:hover span {
+  color: #dc2626 !important;
+}
+
+html[data-theme="light"] .app-navbar-profile-dropdown .profile-dropdown-item:hover svg,
+body.light-theme .app-navbar-profile-dropdown .profile-dropdown-item:hover svg,
+html[data-theme="light"] .app-navbar-profile-dropdown a:hover svg,
+body.light-theme .app-navbar-profile-dropdown a:hover svg,
+[data-theme="light"] .app-navbar-profile-dropdown a:hover svg,
+[data-theme="light"] .app-navbar-profile-dropdown button:hover svg,
+.light-theme .app-navbar-profile-dropdown a:hover svg,
+.light-theme .app-navbar-profile-dropdown button:hover svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+}
+
+/* ===== SETTINGS PAGE COMPLETE LIGHT THEME COVERAGE ===== */
 [data-theme="light"] .settings-page {
   width: 100%;
   max-width: 100%;
-  color: #27272a !important;
+  color: #18181b !important;
 }
 
 [data-theme="light"] .settings-panel {
   background: #ffffff !important;
   border-color: rgba(24, 24, 27, 0.12) !important;
-  box-shadow: 0 16px 40px rgba(24, 24, 27, 0.09) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
 }
 
+/* Headings and titles in settings */
 [data-theme="light"] .settings-panel :where(h1, h2, h3, h4, h5, h6) {
   color: #18181b !important;
 }
 
-[data-theme="light"] .settings-panel :where(.text-neutral-300, .text-neutral-400) {
+/* Fix text-white inside settings panel that became invisible on white background */
+[data-theme="light"] .settings-panel :where(
+  div:not([class*="bg-red-"]):not([class*="from-red-"]):not([class*="rounded-full"]):not([class*="badge"]),
+  p:not([class*="text-red-"]),
+  span:not([class*="text-red-"]):not([class*="bg-red-"]):not([class*="rounded-full"])
+).text-white {
+  color: #18181b !important;
+}
+
+/* Secondary and descriptive texts */
+[data-theme="light"] .settings-panel :where(.text-neutral-300, .text-neutral-400, .text-neutral-500) {
   color: #52525b !important;
 }
 
+/* Inner nested cards that had dark background gradients */
+[data-theme="light"] .settings-panel div[class*="from-neutral-900"],
+[data-theme="light"] .settings-panel div[class*="bg-neutral-900"],
+[data-theme="light"] .settings-panel div[class*="bg-neutral-800"] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Fix text colors inside converted light nested cards */
+[data-theme="light"] .settings-panel div[class*="from-neutral-900"] h4,
+[data-theme="light"] .settings-panel div[class*="from-neutral-900"] h3,
+[data-theme="light"] .settings-panel div[class*="from-neutral-900"] .text-white {
+  color: #18181b !important;
+}
+
+/* Accent cards (green/blue/purple/emerald status summaries) in light mode */
+[data-theme="light"] .settings-panel div[class*="from-green-900"],
+[data-theme="light"] .settings-panel div[class*="to-emerald-900"] {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+}
+[data-theme="light"] .settings-panel div[class*="from-green-900"] .text-green-300,
+[data-theme="light"] .settings-panel div[class*="to-emerald-900"] .text-green-300 {
+  color: #15803d !important;
+}
+
+[data-theme="light"] .settings-panel div[class*="from-blue-900"] {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+[data-theme="light"] .settings-panel div[class*="from-blue-900"] .text-blue-300 {
+  color: #1d4ed8 !important;
+}
+
+/* Fix pastel light text in status pills that washed out on white background */
+[data-theme="light"] .settings-panel .text-green-300 {
+  color: #15803d !important;
+}
+[data-theme="light"] .settings-panel .bg-green-900\/30,
+[data-theme="light"] .settings-panel .bg-green-900\/20 {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+[data-theme="light"] .settings-panel .text-blue-300 {
+  color: #1d4ed8 !important;
+}
+[data-theme="light"] .settings-panel .bg-blue-900\/30,
+[data-theme="light"] .settings-panel .bg-blue-900\/20 {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+[data-theme="light"] .settings-panel .text-yellow-300,
+[data-theme="light"] .settings-panel .text-yellow-400 {
+  color: #b45309 !important;
+}
+[data-theme="light"] .settings-panel .bg-yellow-900\/30 {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+/* Sidebar navigation buttons in light mode */
+[data-theme="light"] .settings-panel button.text-neutral-300 {
+  color: #52525b !important;
+}
+[data-theme="light"] .settings-panel button.text-neutral-300:hover {
+  background: #f1f5f9 !important;
+  color: #09090b !important;
+}
+[data-theme="light"] .settings-panel button.text-neutral-300 .bg-neutral-800\/50 {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+}
+
+/* Active tab button in sidebar */
+[data-theme="light"] .settings-panel button[class*="border-white\/20"] {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.08) !important;
+}
+[data-theme="light"] .settings-panel button[class*="border-white\/20"] span,
+[data-theme="light"] .settings-panel button[class*="border-white\/20"] svg,
+[data-theme="light"] .settings-panel button[class*="border-white\/20"] div {
+  color: #dc2626 !important;
+}
+
+/* Toggle switch backgrounds in light mode */
+[data-theme="light"] .settings-panel button[class*="bg-neutral-700"] {
+  background: #e4e4e7 !important;
+}
+
+/* Form labels and inputs in light mode */
+[data-theme="light"] .settings-panel label {
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+[data-theme="light"] .settings-panel input,
+[data-theme="light"] .settings-panel select,
+[data-theme="light"] .settings-panel textarea {
+  background: #ffffff !important;
+  color: #09090b !important;
+  border-color: #cbd5e1 !important;
+}
+[data-theme="light"] .settings-panel input:focus,
+[data-theme="light"] .settings-panel select:focus,
+[data-theme="light"] .settings-panel textarea:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15) !important;
+}
+[data-theme="light"] .settings-panel select option {
+  background: #ffffff !important;
+  color: #09090b !important;
+}
+
+/* Mobile adjustments */
 @media (max-width: 1023px) {
   [data-theme="light"] .app-navbar {
     min-height: 4.5rem;
@@ -357,14 +579,6 @@
   [data-theme="light"] .settings-page {
     padding-bottom: 6rem;
   }
-}
-
-[data-theme="light"] input,
-[data-theme="light"] textarea,
-[data-theme="light"] select {
-  background: #ffffff !important;
-  color: #18181b !important;
-  border-color: #cbd5e1 !important;
 }
 
 [data-theme="light"] input::placeholder,
@@ -389,13 +603,13 @@
   color: #ffffff !important;
 }
 
-[data-theme="light"] button.bg-red-500 *,
-[data-theme="light"] button.bg-red-600 *,
-[data-theme="light"] button.bg-red-700 *,
-[data-theme="light"] button[class*="from-red-"] *,
-[data-theme="light"] .btn-primary *,
-[data-theme="light"] .premium-btn-primary *,
-[data-theme="light"] .onboarding-launcher * {
+[data-theme="light"] button.bg-red-500:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] button.bg-red-600:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] button.bg-red-700:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] button[class*="from-red-"]:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] .btn-primary:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] .premium-btn-primary:not(.food-category-card) *:not(.food-category-card *),
+[data-theme="light"] .onboarding-launcher:not(.food-category-card) *:not(.food-category-card *) {
   color: #ffffff !important;
 }
 
@@ -434,9 +648,123 @@
   color: #09090b;
 }
 
+/* ===== NUTRITION PAGE LIGHT THEME COMPATIBILITY LAYER ===== */
+[data-theme="light"] .nutrition-page {
+  background: #f4f6f8 !important;
+  color: #18181b !important;
+}
+
+[data-theme="light"] .food-categories-container,
+[data-theme="light"] .food-category-card,
+.light-theme .food-categories-container,
+.light-theme .food-category-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #18181b !important;
+}
+
+[data-theme="light"] .food-category-card:hover,
+.light-theme .food-category-card:hover {
+  background: #fffaf5 !important;
+  border-color: rgba(249, 115, 22, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.12) !important;
+}
+
+/* Ensure ALL text inside food-category-card is dark and crystal clear in light mode */
+[data-theme="light"] .food-category-card .food-card-name,
+[data-theme="light"] .food-category-card [class*="text-gray-900"],
+[data-theme="light"] .food-category-card .text-gray-900,
+[data-theme="light"] .food-category-card .text-white,
+.light-theme .food-category-card .food-card-name,
+.light-theme .food-category-card [class*="text-gray-900"],
+.light-theme .food-category-card .text-gray-900,
+.light-theme .food-category-card .text-white {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .food-category-card .food-card-serving,
+[data-theme="light"] .food-category-card .text-gray-500,
+[data-theme="light"] .food-category-card .text-neutral-300,
+[data-theme="light"] .food-category-card .text-neutral-400,
+.light-theme .food-category-card .food-card-serving,
+.light-theme .food-category-card .text-gray-500,
+.light-theme .food-category-card .text-neutral-300,
+.light-theme .food-category-card .text-neutral-400 {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+[data-theme="light"] .food-category-card .food-card-calories,
+[data-theme="light"] .food-category-card [class*="text-orange-"],
+.light-theme .food-category-card .food-card-calories,
+.light-theme .food-category-card [class*="text-orange-"] {
+  color: #ea580c !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .food-category-card .food-card-protein,
+[data-theme="light"] .food-category-card [class*="text-blue-"],
+.light-theme .food-category-card .food-card-protein,
+.light-theme .food-category-card [class*="text-blue-"] {
+  color: #2563eb !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .food-category-card .food-card-carbs,
+[data-theme="light"] .food-category-card [class*="text-green-"],
+[data-theme="light"] .food-category-card [class*="text-emerald-"],
+.light-theme .food-category-card .food-card-carbs,
+.light-theme .food-category-card [class*="text-green-"],
+.light-theme .food-category-card [class*="text-emerald-"] {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .food-category-card .food-card-fat,
+[data-theme="light"] .food-category-card [class*="text-yellow-"],
+.light-theme .food-category-card .food-card-fat,
+.light-theme .food-category-card [class*="text-yellow-"] {
+  color: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .food-category-card [class*="text-purple-"],
+.light-theme .food-category-card [class*="text-purple-"] {
+  color: #9333ea !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .nutrition-tracker-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #18181b !important;
+  box-shadow: 0 4px 18px rgba(24, 24, 27, 0.06) !important;
+}
+
+[data-theme="light"] .tdee-calculator-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 18px rgba(24, 24, 27, 0.06) !important;
+}
+
+/* Home Page Telemetry Bento Light Theme */
+[data-theme="light"] .home-telemetry-bento,
+.light-theme .home-telemetry-bento {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .home-telemetry-bento .theme-dark-surface {
+  background: #000000 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .theme-transition,
   .theme-transition * {
     transition-duration: 0.01ms !important;
   }
 }
+

@@ -223,6 +223,23 @@ class NutritionAPI {
     }
   }
 
+  // Update user's nutrition targets
+  async updateNutritionTargets(targets) {
+    try {
+      const response = await this.api.put("/nutrition/users/me/targets", targets);
+      return {
+        success: true,
+        data: response.data.data,
+      };
+    } catch (error) {
+      console.error("Failed to update nutrition targets:", error);
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message,
+      };
+    }
+  }
+
   // Fallback nutrition data for common foods
   getFallbackNutrition(query) {
     const fallbackDatabase = {
