@@ -8,6 +8,7 @@ import {
   deleteUserSplit,
   saveUserSplit,
 } from "../utils/userSpecificSplits";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 
@@ -496,6 +497,10 @@ const YourWorkoutSplits = () => {
         {
           className: "max-w-7xl mx-auto px-3 py-3",
         },
+        /*#__PURE__*/ React.createElement(BackToDashboard, {
+          className: "mb-2",
+          variant: "compact",
+        }),
         /*#__PURE__*/ React.createElement(
           "div",
           {

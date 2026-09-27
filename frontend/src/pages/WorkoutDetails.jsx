@@ -115,7 +115,7 @@ export default function WorkoutDetails() {
     return {
       ...data,
       id: data._id || data.id,
-      title: data.title || data.name || data.exercise || 'Workout Session',
+      title: data.title || data.name || data.exercise || 'workout-session',
       category: primaryCategory,
       muscle: primaryCategory,
       completedAt: data.completedAt || data.date || data.createdAt || new Date().toISOString(),
@@ -156,7 +156,7 @@ export default function WorkoutDetails() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
         <div className="text-center space-y-4 animate-pulse">
-          <div className="w-16 h-16 bg-neutral-800 rounded-2xl mx-auto flex items-center justify-center text-orange-500">
+          <div className="w-16 h-16 bg-neutral-800 rounded-2xl mx-auto flex items-center justify-center text-red-500">
             <Dumbbell className="w-8 h-8 animate-spin" />
           </div>
           <p className="text-sm font-bold text-neutral-400">Loading workout details...</p>
@@ -176,7 +176,7 @@ export default function WorkoutDetails() {
           <p className="text-xs text-neutral-400">This workout could not be located or may have been removed.</p>
           <button
             onClick={() => navigate('/workouts')}
-            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-orange-500/20 transition-all"
+            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all"
           >
             Back to Workouts
           </button>
@@ -192,13 +192,21 @@ export default function WorkoutDetails() {
       {/* Top Header Navigation */}
       <div className="sticky top-0 z-30 bg-black/90 border-b border-neutral-800/80 backdrop-blur-md px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button
-            onClick={() => navigate('/workouts')}
-            className="flex items-center gap-2 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-neutral-300 hover:text-white text-xs font-bold transition-all"
-          >
-            <ArrowLeft className="w-4 h-4 text-orange-400" />
-            <span>BACK TO WORKOUTS</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-red-500/40 rounded-xl text-neutral-300 hover:text-white text-xs font-bold transition-all group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-red-500 group-hover:-translate-x-0.5 transition-transform" />
+              <span>Back to Dashboard</span>
+            </button>
+            <button
+              onClick={() => navigate('/workouts')}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/60 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-neutral-400 hover:text-white text-xs font-bold transition-all"
+            >
+              <span>Workouts</span>
+            </button>
+          </div>
           <span className="text-[11px] font-mono font-bold text-neutral-400">
             ID: {workout.id?.toString().slice(-8) || 'N/A'}
           </span>
@@ -214,7 +222,7 @@ export default function WorkoutDetails() {
         <div className="p-4 sm:p-6 bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl sm:rounded-3xl shadow-xl space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start sm:items-center gap-3.5 sm:gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20 shrink-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white shadow-lg shadow-red-600/20 shrink-0">
                 <Dumbbell className="w-6 h-6 sm:w-7 sm:h-7" />
               </div>
               <div className="space-y-1 min-w-0">
@@ -269,7 +277,7 @@ export default function WorkoutDetails() {
 
           <div className="p-4 bg-neutral-900 border border-neutral-800 rounded-2xl text-center shadow-lg space-y-1">
             <span className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider flex items-center justify-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-orange-400" /> Calories
+              <Flame className="w-3.5 h-3.5 text-red-400" /> Calories
             </span>
             <p className="text-2xl font-black text-white font-mono">{workout.caloriesBurned}</p>
           </div>
@@ -282,14 +290,14 @@ export default function WorkoutDetails() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                <Dumbbell className="w-5 h-5 text-orange-500" />
+                <Dumbbell className="w-5 h-5 text-red-500" />
                 <span>Exercises Completed</span>
                 <span className="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded-full text-xs font-mono">
                   {workout.exercises.length}
                 </span>
               </h2>
               {workout.totalVolume > 0 && (
-                <span className="text-xs font-bold text-orange-400 font-mono">
+                <span className="text-xs font-bold text-red-400 font-mono">
                   Total Volume: {workout.totalVolume.toLocaleString()} kg
                 </span>
               )}
@@ -307,7 +315,7 @@ export default function WorkoutDetails() {
                     {/* Exercise Card Header */}
                     <div className="p-4 bg-neutral-900/90 border-b border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 font-black text-xs shrink-0">
                           {idx + 1}
                         </div>
                         <div className="min-w-0">
@@ -329,7 +337,7 @@ export default function WorkoutDetails() {
                         {ex.totalVolume > 0 && (
                           <>
                             <span>•</span>
-                            <span className="text-orange-400"><strong>{ex.totalVolume.toFixed(1)}</strong> kg</span>
+                            <span className="text-red-400"><strong>{ex.totalVolume.toFixed(1)}</strong> kg</span>
                           </>
                         )}
                       </div>
@@ -341,7 +349,7 @@ export default function WorkoutDetails() {
                     {ex.sets && ex.sets.length > 0 && (
                       <div className="p-4">
                         <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                          <Layers className="w-3.5 h-3.5 text-orange-500" /> Set Log
+                          <Layers className="w-3.5 h-3.5 text-red-500" /> Set Log
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -385,7 +393,7 @@ export default function WorkoutDetails() {
             </div>
             <h3 className="text-sm font-bold text-white">Freestyle Session Record</h3>
             <p className="text-xs text-neutral-400 max-w-md mx-auto">
-              This workout session was completed with {workout.sets || 0} logged sets and a duration of {formatDuration(workout.duration)}.
+              This workout-session was completed with {workout.sets || 0} logged sets and a duration of {formatDuration(workout.duration)}.
             </p>
           </div>
         )}
@@ -418,7 +426,7 @@ export default function WorkoutDetails() {
             {workout.totalVolume > 0 && (
               <div className="p-3 bg-neutral-950/60 rounded-xl flex items-center justify-between border border-neutral-800/60">
                 <span className="text-neutral-400">Total Volume</span>
-                <span className="font-bold text-orange-400 font-mono">
+                <span className="font-bold text-red-400 font-mono">
                   {workout.totalVolume.toLocaleString()} kg
                 </span>
               </div>

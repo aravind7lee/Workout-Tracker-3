@@ -1,6 +1,7 @@
 import { Circle, XCircle, Dumbbell, Salad, Scale, BicepsFlexed, Activity, Bandage, Settings, MessageCircle, Rocket, Mail, Trophy } from 'lucide-react';
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function Contact() {
@@ -75,6 +76,10 @@ export default function Contact() {
       {
         className: "max-w-6xl mx-auto px-2 xs:px-3 sm:px-4",
       },
+      /*#__PURE__*/ React.createElement(BackToDashboard, {
+        className: "mb-4",
+        variant: "inline"
+      }),
       /*#__PURE__*/ React.createElement(
         "div",
         {

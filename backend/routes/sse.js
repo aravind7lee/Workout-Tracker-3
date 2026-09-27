@@ -1,5 +1,6 @@
 import express from 'express';
 import auth from '../middleware/auth.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const router = express.Router();
 
@@ -47,6 +48,7 @@ router.get('/stream', auth, (req, res) => {
  * @param {object} payload - Optional payload to send
  */
 export const broadcastToUser = (userId, eventType, payload = {}) => {
+  emitToUser(userId, eventType, payload);
   const userClients = clients.get(userId.toString());
   if (userClients && userClients.size > 0) {
     const dataString = JSON.stringify({ type: eventType, ...payload });

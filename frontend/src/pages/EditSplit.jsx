@@ -568,6 +568,22 @@ const EditSplit = () => {
             /*#__PURE__*/ React.createElement(
               "button",
               {
+                onClick: () => navigate("/dashboard"),
+                className:
+                  "flex items-center space-x-1 sm:space-x-2 text-gray-300 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 text-xs sm:text-sm",
+              },
+              /*#__PURE__*/ React.createElement(ArrowLeft, {
+                className: "w-3.5 h-3.5 text-red-500",
+              }),
+              /*#__PURE__*/ React.createElement(
+                "span",
+                null,
+                "Dashboard",
+              ),
+            ),
+            /*#__PURE__*/ React.createElement(
+              "button",
+              {
                 onClick: () => navigate("/your-workout-splits"),
                 className:
                   "flex items-center space-x-1 sm:space-x-2 text-gray-400 hover:text-white transition-colors",

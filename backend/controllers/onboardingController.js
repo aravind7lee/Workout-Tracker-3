@@ -3,6 +3,7 @@ import Plan from '../models/Plan.js';
 import NutritionGoal from '../models/NutritionGoal.js';
 import { recommendSplit } from '../services/splitRecommendationEngine.js';
 import { calculateMacros, calculateTDEE } from '../services/tdeeCalculator.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const GOALS = ['deficit', 'maintenance', 'bulk', 'strength', 'recomposition'];
 const ACTIVITY_LEVELS = ['sedentary', 'light', 'moderate', 'very', 'extra'];
@@ -203,6 +204,8 @@ export const completeOnboarding = async (req, res) => {
 
     const safeUser = user.toObject();
     delete safeUser.password;
+    emitToUser(user._id, 'profile_updated', { action: 'onboarding_completed' });
+    emitToUser(user._id, 'nutrition_updated', { action: 'targets_updated' });
 
     return res.json({
       success: true,
@@ -250,6 +253,7 @@ export const resetOnboarding = async (req, res) => {
     ).select('-password');
 
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    emitToUser(user._id, 'profile_updated', { action: 'onboarding_reset' });
 
     return res.json({
       success: true,
@@ -294,6 +298,7 @@ export const recalculateTDEE = async (req, res) => {
     user.fitnessGoals.activityLevel = profile.activityLevel;
     user.fitnessGoals.goal = profile.goal;
     await user.save();
+    emitToUser(user._id, 'nutrition_updated', { action: 'tdee_recalculated' });
 
     return res.json({ success: true, bmr, tdee, macros, nutritionGoals });
   } catch (error) {

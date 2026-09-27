@@ -7,6 +7,7 @@ import { useRealTime } from "../context/RealTimeContext";
 import CompletedWorkouts from "../components/CompletedWorkouts";
 import RealTimeNotification from "../components/RealTimeNotification";
 import YourWorkoutsImg from "../assets/Yourworkouts.jpg";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function Workouts() {
@@ -123,6 +124,9 @@ export default function Workouts() {
     {
       className: "min-h-screen bg-black",
     },
+    /*#__PURE__*/ React.createElement(BackToDashboard, {
+      variant: "floating",
+    }),
     /*#__PURE__*/ React.createElement(
       motion.div,
       {

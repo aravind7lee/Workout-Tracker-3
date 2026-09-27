@@ -4,6 +4,10 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import http from 'http';
+import jwt from 'jsonwebtoken';
+import { Server as SocketIOServer } from 'socket.io';
+import { initializeRealtimeGateway } from './services/realtimeGateway.js';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -54,26 +58,16 @@ const defaultAllowedOrigins = [
   'https://grind-x-workout-tracker.netlify.app'
 ];
 const allowedOrigins = Array.from(new Set([...defaultAllowedOrigins, ...envOrigins]));
+const isAllowedOrigin = (origin) => !origin
+  || origin.includes('localhost')
+  || origin.includes('127.0.0.1')
+  || origin.endsWith('.onrender.com')
+  || origin.endsWith('.netlify.app')
+  || allowedOrigins.includes(origin);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    
-    // Allow localhost with any port
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      return callback(null, true);
-    }
-    
-    // Allow .onrender.com and .netlify.app domains
-    if (origin.endsWith('.onrender.com') || origin.endsWith('.netlify.app')) {
-      return callback(null, true);
-    }
-    
-    // Check allowed origins list
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+    if (isAllowedOrigin(origin)) return callback(null, true);
     
     if (process.env.NODE_ENV === 'production') {
       return callback(new Error('CORS Policy: Origin not allowed'), false);
@@ -84,7 +78,7 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control'],
-  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
+  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'X-New-Token'],
   optionsSuccessStatus: 200,
   preflightContinue: false
 }));
@@ -282,7 +276,36 @@ const connectDB = async () => {
 // Start server
 connectDB()
   .then(() => {
-    const server = app.listen(PORT, () => {
+    const server = http.createServer(app);
+    const io = new SocketIOServer(server, {
+      cors: {
+        origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
+        credentials: true,
+        methods: ['GET', 'POST']
+      },
+      transports: ['websocket', 'polling']
+    });
+
+    io.use((socket, next) => {
+      const token = socket.handshake.auth?.token || socket.handshake.headers?.authorization?.replace('Bearer ', '');
+      if (!token) return next(new Error('Authentication required'));
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id || decoded.userId;
+        if (!userId) return next(new Error('Invalid authentication token'));
+        socket.userId = userId.toString();
+        return next();
+      } catch {
+        return next(new Error('Invalid authentication token'));
+      }
+    });
+    io.on('connection', (socket) => {
+      socket.join(`user:${socket.userId}`);
+      socket.emit('realtime:ready', { type: 'realtime:ready', timestamp: new Date().toISOString() });
+    });
+    initializeRealtimeGateway(io);
+
+    server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 API Health: http://localhost:${PORT}/api/health`);
     });

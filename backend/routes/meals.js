@@ -4,6 +4,7 @@ import Meal from '../models/Meal.js';
 import auth from '../middleware/auth.js';
 import mongoose from 'mongoose';
 import { check as checkAchievements } from '../services/achievementEngine.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const router = express.Router();
 
@@ -71,6 +72,8 @@ router.post('/', auth, async (req, res) => {
     
     await meal.save();
     const achievements = await checkAchievements(req.user._id).catch((error) => { console.warn('Achievement check skipped after meal save:', error.message); return []; });
+    emitToUser(req.user._id, 'meal_updated', { action: 'created', mealId: meal._id });
+    achievements.forEach((achievement) => emitToUser(req.user._id, 'achievement_unlocked', { achievement }));
     res.status(201).json({ success: true, meal, achievements });
   } catch (error) {
     console.error('Error saving meal:', error);
@@ -88,6 +91,7 @@ router.delete('/:id', auth, async (req, res) => {
     if (!meal) {
       return res.status(404).json({ success: false, message: 'Meal not found' });
     }
+    emitToUser(req.user._id, 'meal_updated', { action: 'deleted', mealId: req.params.id });
     
     res.json({ success: true, message: 'Meal deleted successfully' });
   } catch (error) {

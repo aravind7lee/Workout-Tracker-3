@@ -166,7 +166,7 @@ class OnlineService {
 
       // Ensure title exists for backend validation
       if (!workoutData.title) {
-        workoutData.title = workoutData.name || workoutData.planName || "Workout Session";
+        workoutData.title = workoutData.name || workoutData.planName || "workout-session";
       }
 
       const response = await api.post("/workouts", workoutData, {

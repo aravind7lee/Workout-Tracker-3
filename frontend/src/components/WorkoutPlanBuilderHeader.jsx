@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import MyPlansHeaderImg from "../assets/Myplansheader.jpg";
+import BackToDashboard from "./BackToDashboard";
 import "../styles/my-plans-hero.css";
 
 export default function WorkoutPlanBuilderHeader() {
@@ -27,6 +28,7 @@ export default function WorkoutPlanBuilderHeader() {
       role="banner"
       aria-label="My Plans Hero Section"
     >
+      <BackToDashboard variant="floating" />
       {/* Background Image */}
       <div className="absolute inset-0">
         {/* LQIP Placeholder */}

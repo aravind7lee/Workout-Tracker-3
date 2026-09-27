@@ -238,21 +238,13 @@
 /* Keep text legible on saturated action surfaces after the global light-mode
    text translation has converted legacy text-white utilities. */
 [data-theme="light"] :where(
-  button[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  button[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  button[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *)
-),
-[data-theme="light"] :where(
-  button[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  button[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  button[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *),
-  a[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *)
-) *:not(.food-category-card):not(.food-category-card *):not(.app-navbar-profile-dropdown):not(.app-navbar-profile-dropdown *):not(.profile-dropdown-item):not(.profile-dropdown-item *) {
+  button[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"]):not(.btn-save-plan:disabled),
+  button[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"]):not(.btn-save-plan:disabled),
+  button[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"]):not(.btn-save-plan:disabled),
+  a[class*="from-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"]),
+  a[class*="from-orange-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"]),
+  a[class*="bg-red-"]:not(.food-category-card):not(.app-navbar-profile-dropdown *):not(.selection-card):not([class*="/"]):not([aria-label="Favorite Split"])
+) *:not(.food-category-card):not(.food-category-card *):not(.app-navbar-profile-dropdown):not(.app-navbar-profile-dropdown *):not(.profile-dropdown-item):not(.profile-dropdown-item *):not(.selection-card *):not([aria-label="Favorite Split"] *) {
   color: #ffffff !important;
 }
 
@@ -767,4 +759,1279 @@ body.light-theme .app-navbar-profile-dropdown a:hover svg,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Shared light-mode recovery surfaces: keep media intentional, but make the
+   app shell, mobile navigation and loading feedback unmistakably readable. */
+[data-theme="light"] .app-side-menu {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #18181b !important;
+  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.14) !important;
+}
+
+[data-theme="light"] .app-side-menu .bg-\[\#141414\]\/80,
+[data-theme="light"] .app-side-menu .bg-\[\#141414\]\/90,
+[data-theme="light"] .app-side-menu .bg-\[\#1a1a1a\],
+[data-theme="light"] .app-side-menu .bg-\[\#1f1f1f\],
+[data-theme="light"] .app-side-menu .bg-neutral-900\/50 {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .app-side-menu .text-white,
+[data-theme="light"] .app-side-menu .text-zinc-400,
+[data-theme="light"] .app-side-menu .text-zinc-500,
+[data-theme="light"] .app-side-menu .text-neutral-400 {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .loading-screen {
+  background: #f8fafc !important;
+  color: #18181b !important;
+}
+
+[data-theme="light"] .loading-screen > div:first-child {
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #e2e8f0 100%) !important;
+}
+
+[data-theme="light"] .loading-screen h1,
+[data-theme="light"] .loading-screen .text-white,
+[data-theme="light"] .loading-screen .text-zinc-600,
+[data-theme="light"] .loading-screen .text-zinc-500 {
+  color: #1e293b !important;
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .loading-screen .bg-zinc-900,
+[data-theme="light"] .loading-screen .bg-zinc-950\/80 {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   FLAGSHIP MODERNIZATION: FITNESS PROFILE SECTION LIGHT THEME
+   ========================================================================== */
+[data-theme="light"] .fitness-profile-page,
+.light-theme .fitness-profile-page {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .fitness-profile-page .onboarding-backdrop,
+.light-theme .fitness-profile-page .onboarding-backdrop {
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.98) 50%, #f1f5f9 100%) !important;
+}
+
+[data-theme="light"] .fitness-profile-back-btn,
+.light-theme .fitness-profile-back-btn {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-theme="light"] .fitness-profile-back-btn:hover,
+.light-theme .fitness-profile-back-btn:hover {
+  background: #f8fafc !important;
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
+}
+
+[data-theme="light"] .fitness-profile-back-btn span,
+.light-theme .fitness-profile-back-btn span {
+  color: inherit !important;
+}
+
+[data-theme="light"] .fitness-profile-status-pill,
+.light-theme .fitness-profile-status-pill {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+[data-theme="light"] .fitness-profile-card,
+.light-theme .fitness-profile-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .fitness-profile-header,
+.light-theme .fitness-profile-header {
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 60%) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .fitness-profile-header h1,
+.light-theme .fitness-profile-header h1 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .fitness-profile-header p,
+.light-theme .fitness-profile-header p {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .fitness-profile-icon-back,
+.light-theme .fitness-profile-icon-back {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .fitness-profile-icon-back:hover,
+.light-theme .fitness-profile-icon-back:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+[data-theme="light"] .fitness-profile-sparkle-box,
+.light-theme .fitness-profile-sparkle-box {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3) !important;
+}
+
+[data-theme="light"] .fitness-profile-sparkle-box svg,
+.light-theme .fitness-profile-sparkle-box svg {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .fitness-profile-rec-box,
+.light-theme .fitness-profile-rec-box {
+  background: linear-gradient(135deg, #fff1f2 0%, #fff7ed 100%) !important;
+  border: 1px solid #fecdd3 !important;
+}
+
+[data-theme="light"] .fitness-profile-rec-box h2,
+.light-theme .fitness-profile-rec-box h2 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .fitness-profile-day-chip,
+.light-theme .fitness-profile-day-chip {
+  background: #ffffff !important;
+  border-color: #fecdd3 !important;
+  color: #991b1b !important;
+}
+
+[data-theme="light"] .fitness-profile-metric-tile,
+.light-theme .fitness-profile-metric-tile {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .fitness-profile-metric-tile:hover,
+.light-theme .fitness-profile-metric-tile:hover {
+  background: #ffffff !important;
+  border-color: #fca5a5 !important;
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.08) !important;
+}
+
+[data-theme="light"] .fitness-profile-metric-tile div,
+.light-theme .fitness-profile-metric-tile div {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .fitness-profile-metric-tile p,
+.light-theme .fitness-profile-metric-tile p {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .fitness-profile-metric-icon,
+.light-theme .fitness-profile-metric-icon {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+[data-theme="light"] .fitness-profile-btn-secondary,
+.light-theme .fitness-profile-btn-secondary {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .fitness-profile-btn-secondary:hover,
+.light-theme .fitness-profile-btn-secondary:hover {
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+[data-theme="light"] .fitness-profile-btn-primary,
+.light-theme .fitness-profile-btn-primary {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3) !important;
+}
+
+[data-theme="light"] .fitness-profile-btn-primary *,
+.light-theme .fitness-profile-btn-primary * {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .fitness-profile-modal,
+.light-theme .fitness-profile-modal {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .fitness-profile-modal h2,
+.light-theme .fitness-profile-modal h2 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .fitness-profile-modal p,
+.light-theme .fitness-profile-modal p {
+  color: #475569 !important;
+}
+
+
+/* ==========================================================================
+   FLAGSHIP MODERNIZATION: PLAN BUILDER LIGHT THEME (IMAGE 1 & IMAGE 2)
+   ========================================================================== */
+/* Tips Box at top of Plan Builder */
+[data-theme="light"] .plan-builder-tips-box,
+.light-theme .plan-builder-tips-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 4px solid #ef4444 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .plan-builder-tips-box *,
+.light-theme .plan-builder-tips-box * {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .plan-builder-tips-box h3,
+[data-theme="light"] .plan-builder-tips-box h4,
+[data-theme="light"] .plan-builder-tips-box strong,
+.light-theme .plan-builder-tips-box h3,
+.light-theme .plan-builder-tips-box h4,
+.light-theme .plan-builder-tips-box strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Save Plan Button (Image 1) */
+[data-theme="light"] .btn-save-plan:disabled,
+.light-theme .btn-save-plan:disabled,
+[data-theme="light"] button:disabled.btn-save-plan,
+.light-theme button:disabled.btn-save-plan,
+[data-theme="light"] button.btn-save-plan[disabled],
+.light-theme button.btn-save-plan[disabled],
+[data-theme="light"] button.btn-save-plan[class*="cursor-not-allowed"],
+.light-theme button.btn-save-plan[class*="cursor-not-allowed"] {
+  background: #f1f5f9 !important;
+  background-image: none !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+[data-theme="light"] .btn-save-plan:disabled *,
+.light-theme .btn-save-plan:disabled *,
+[data-theme="light"] button:disabled.btn-save-plan *,
+.light-theme button:disabled.btn-save-plan *,
+[data-theme="light"] button.btn-save-plan[disabled] *,
+.light-theme button.btn-save-plan[disabled] *,
+[data-theme="light"] button.btn-save-plan[class*="cursor-not-allowed"] *,
+.light-theme button.btn-save-plan[class*="cursor-not-allowed"] * {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .btn-save-plan:not(:disabled),
+.light-theme .btn-save-plan:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3) !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .btn-save-plan:not(:disabled) *,
+.light-theme .btn-save-plan:not(:disabled) * {
+  color: #ffffff !important;
+}
+
+/* Sync Bar: Live status badge (Image 1) */
+[data-theme="light"] span[class*="bg-green-900/30"],
+.light-theme span[class*="bg-green-900/30"] {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+[data-theme="light"] span[class*="bg-green-900/30"] *,
+.light-theme span[class*="bg-green-900/30"] * {
+  color: #047857 !important;
+}
+
+/* Sync Bar: Auto-Save button (Image 1) */
+[data-theme="light"] button[class*="bg-neutral-800/50"],
+.light-theme button[class*="bg-neutral-800/50"] {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] button[class*="bg-neutral-800/50"] *,
+.light-theme button[class*="bg-neutral-800/50"] * {
+  color: #475569 !important;
+}
+
+/* Sync Bar: Load Draft button (Image 1) */
+[data-theme="light"] button[class*="bg-purple-900"],
+.light-theme button[class*="bg-purple-900"] {
+  background: #faf5ff !important;
+  border: 1px solid #d8b4fe !important;
+  color: #7e22ce !important;
+}
+
+[data-theme="light"] button[class*="bg-purple-900"] *,
+.light-theme button[class*="bg-purple-900"] * {
+  color: #7e22ce !important;
+}
+
+/* Your Workout Plan heading (Image 2) */
+[data-theme="light"] .plan-builder-plan-heading,
+.light-theme .plan-builder-plan-heading,
+[data-theme="light"] h3 span[class*="from-orange-400"][class*="bg-clip-text"],
+.light-theme h3 span[class*="from-orange-400"][class*="bg-clip-text"] {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* Plan Builder Inputs & Selects */
+[data-theme="light"] input[placeholder="Enter plan name..."],
+.light-theme input[placeholder="Enter plan name..."],
+[data-theme="light"] select.bg-neutral-800,
+.light-theme select.bg-neutral-800 {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] select.bg-neutral-800 option,
+.light-theme select.bg-neutral-800 option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Exercise Library List in Light Mode */
+[data-theme="light"] .exercise-library-container,
+[data-theme="light"] div[class*="overflow-y-auto"] {
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+/* Exercise Category Tab Buttons */
+[data-theme="light"] button.bg-red-600,
+.light-theme button.bg-red-600 {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] button.bg-red-600 *,
+.light-theme button.bg-red-600 * {
+  color: #ffffff !important;
+}
+
+/* Start Building Plan Droppable Box (Image 2) */
+[data-theme="light"] div[class*="border-dashed"],
+.light-theme div[class*="border-dashed"] {
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"] div[class*="border-dashed"] h3,
+[data-theme="light"] div[class*="border-dashed"] p,
+[data-theme="light"] div[class*="border-dashed"] span,
+.light-theme div[class*="border-dashed"] h3,
+.light-theme div[class*="border-dashed"] p,
+.light-theme div[class*="border-dashed"] span {
+  color: #334155 !important;
+}
+
+
+/* ==========================================================================
+   FLAGSHIP MODERNIZATION: WORKOUT SPLITS LIGHT THEME (IMAGE 3)
+   ========================================================================== */
+/* Top Stat Pills */
+[data-theme="light"] .split-stat-pill,
+.light-theme .split-stat-pill {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-theme="light"] .split-stat-pill span,
+.light-theme .split-stat-pill span {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .split-stat-pill svg,
+.light-theme .split-stat-pill svg {
+  color: #dc2626 !important;
+}
+
+/* Workout Split Cards */
+[data-theme="light"] .workout-split-card,
+.light-theme .workout-split-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-theme="light"] .workout-split-card:hover,
+.light-theme .workout-split-card:hover {
+  border-color: #fca5a5 !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1) !important;
+}
+
+[data-theme="light"] .workout-split-card h3,
+.light-theme .workout-split-card h3 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .workout-split-card p,
+.light-theme .workout-split-card p {
+  color: #475569 !important;
+}
+
+/* Split badge inside card: sleek dark micro-pill with crimson icon (Image 3) */
+[data-theme="light"] .split-badge-pill,
+.light-theme .split-badge-pill,
+[data-theme="light"] .workout-split-card span[class*="bg-orange-950"],
+.light-theme .workout-split-card span[class*="bg-orange-950"],
+[data-theme="light"] .workout-split-card span[class*="bg-slate-900"],
+.light-theme .workout-split-card span[class*="bg-slate-900"] {
+  background: #0f172a !important;
+  border: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+}
+
+[data-theme="light"] .split-badge-pill svg,
+.light-theme .split-badge-pill svg,
+[data-theme="light"] .workout-split-card span[class*="bg-orange-950"] svg,
+.light-theme .workout-split-card span[class*="bg-orange-950"] svg,
+[data-theme="light"] .workout-split-card span[class*="bg-slate-900"] svg,
+.light-theme .workout-split-card span[class*="bg-slate-900"] svg {
+  color: #ef4444 !important;
+}
+
+/* Frequency, Difficulty, Duration Spec Boxes */
+[data-theme="light"] .workout-split-card div[class*="bg-neutral-900"],
+.light-theme .workout-split-card div[class*="bg-neutral-900"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .workout-split-card div[class*="bg-neutral-900"] span:first-of-type,
+.light-theme .workout-split-card div[class*="bg-neutral-900"] span:first-of-type {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .workout-split-card div[class*="bg-neutral-900"] span:last-of-type,
+.light-theme .workout-split-card div[class*="bg-neutral-900"] span:last-of-type {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* Favorite Heart Button Light Theme (Image 3) */
+[data-theme="light"] button[aria-label="Favorite Split"],
+.light-theme button[aria-label="Favorite Split"],
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"],
+.light-theme .workout-split-card button[aria-label="Favorite Split"] {
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] button[aria-label="Favorite Split"] svg,
+.light-theme button[aria-label="Favorite Split"] svg,
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"] svg,
+.light-theme .workout-split-card button[aria-label="Favorite Split"] svg {
+  color: #94a3b8 !important;
+  stroke: #94a3b8 !important;
+  fill: none !important;
+}
+
+[data-theme="light"] button[aria-label="Favorite Split"]:hover,
+.light-theme button[aria-label="Favorite Split"]:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+}
+
+[data-theme="light"] button[aria-label="Favorite Split"]:hover svg,
+.light-theme button[aria-label="Favorite Split"]:hover svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+}
+
+/* When favorited */
+[data-theme="light"] button[aria-label="Favorite Split"][class*="text-red"],
+[data-theme="light"] button[aria-label="Favorite Split"][class*="bg-red"],
+.light-theme button[aria-label="Favorite Split"][class*="text-red"],
+.light-theme button[aria-label="Favorite Split"][class*="bg-red"],
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"][class*="text-red"],
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"][class*="bg-red"],
+.light-theme .workout-split-card button[aria-label="Favorite Split"][class*="text-red"],
+.light-theme .workout-split-card button[aria-label="Favorite Split"][class*="bg-red"] {
+  background: #fee2e2 !important;
+  background-image: none !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+[data-theme="light"] button[aria-label="Favorite Split"][class*="text-red"] svg,
+[data-theme="light"] button[aria-label="Favorite Split"][class*="bg-red"] svg,
+.light-theme button[aria-label="Favorite Split"][class*="text-red"] svg,
+.light-theme button[aria-label="Favorite Split"][class*="bg-red"] svg,
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"][class*="text-red"] svg,
+[data-theme="light"] .workout-split-card button[aria-label="Favorite Split"][class*="bg-red"] svg,
+.light-theme .workout-split-card button[aria-label="Favorite Split"][class*="text-red"] svg,
+.light-theme .workout-split-card button[aria-label="Favorite Split"][class*="bg-red"] svg {
+  color: #dc2626 !important;
+  fill: #dc2626 !important;
+  stroke: #dc2626 !important;
+}
+
+
+/* ==========================================================================
+   SELECTION CARD IN ONBOARDING / WIZARD (IMAGE 4)
+   ========================================================================== */
+[data-theme="light"] .selection-card,
+.light-theme .selection-card {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .selection-card .selection-card-title,
+.light-theme .selection-card .selection-card-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .selection-card .selection-card-detail,
+.light-theme .selection-card .selection-card-detail {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .selection-card .selection-card-icon,
+.light-theme .selection-card .selection-card-icon {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+/* SELECTED STATE: Bold, crisp crimson & dark red on light mint-red tint */
+[data-theme="light"] .selection-card.selection-card-selected,
+.light-theme .selection-card.selection-card-selected,
+[data-theme="light"] button.selection-card[class*="border-red-500"],
+.light-theme button.selection-card[class*="border-red-500"] {
+  background: #fff1f2 !important;
+  border: 2px solid #ef4444 !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12) !important;
+}
+
+[data-theme="light"] .selection-card.selection-card-selected .selection-card-title,
+.light-theme .selection-card.selection-card-selected .selection-card-title,
+[data-theme="light"] button.selection-card[class*="border-red-500"] .selection-card-title,
+.light-theme button.selection-card[class*="border-red-500"] .selection-card-title {
+  color: #991b1b !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .selection-card.selection-card-selected .selection-card-detail,
+.light-theme .selection-card.selection-card-selected .selection-card-detail,
+[data-theme="light"] button.selection-card[class*="border-red-500"] .selection-card-detail,
+.light-theme button.selection-card[class*="border-red-500"] .selection-card-detail {
+  color: #dc2626 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .selection-card.selection-card-selected .selection-card-icon,
+.light-theme .selection-card.selection-card-selected .selection-card-icon,
+[data-theme="light"] button.selection-card[class*="border-red-500"] .selection-card-icon,
+.light-theme button.selection-card[class*="border-red-500"] .selection-card-icon {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .selection-card.selection-card-selected .selection-card-check,
+.light-theme .selection-card.selection-card-selected .selection-card-check,
+[data-theme="light"] button.selection-card[class*="border-red-500"] .selection-card-check,
+.light-theme button.selection-card[class*="border-red-500"] .selection-card-check {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+}
+
+/* Wizard progress step pill (Image 4 top right: "Setup Step 2 of 8") */
+[data-theme="light"] span[class*="bg-red-600/20"],
+.light-theme span[class*="bg-red-600/20"] {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+
+
+/* ==========================================================================
+   FLAGSHIP MODERNIZATION: PROGRESS & ANALYTICS LIGHT THEME (IMAGE 4)
+   ========================================================================== */
+/* 1RM Highlight Bento Bar */
+[data-theme="light"] div[class*="bg-neutral-950"][class*="grid-cols-2"],
+.light-theme div[class*="bg-neutral-950"][class*="grid-cols-2"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] div[class*="bg-neutral-950"][class*="grid-cols-2"] span[class*="text-[10px]"],
+.light-theme div[class*="bg-neutral-950"][class*="grid-cols-2"] span[class*="text-[10px]"] {
+  color: #64748b !important;
+}
+
+[data-theme="light"] div[class*="bg-neutral-950"][class*="grid-cols-2"] span[class*="text-lg"],
+.light-theme div[class*="bg-neutral-950"][class*="grid-cols-2"] span[class*="text-lg"] {
+  color: #0f172a !important;
+}
+
+/* Formula Note */
+[data-theme="light"] div[class*="bg-neutral-950/60"],
+.light-theme div[class*="bg-neutral-950/60"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] div[class*="bg-neutral-950/60"] strong,
+.light-theme div[class*="bg-neutral-950/60"] strong {
+  color: #0f172a !important;
+}
+
+/* Exercise select dropdown in Analytics */
+[data-theme="light"] select.bg-neutral-950,
+.light-theme select.bg-neutral-950 {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] select.bg-neutral-950 option,
+.light-theme select.bg-neutral-950 option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+
+/* ==========================================================================
+   FLAGSHIP MODERNIZATION: MY PROFILE LIGHT THEME (IMAGE 5)
+   ========================================================================== */
+/* Suppress gym background photo and red/cyan gradient wash in Light Mode */
+[data-theme="light"] .profile-page-backdrop,
+[data-theme="light"] .profile-gym-bg,
+[data-theme="light"] .profile-dark-gradient,
+[data-theme="light"] .profile-gradient-overlay,
+.light-theme .profile-page-backdrop,
+.light-theme .profile-gym-bg,
+.light-theme .profile-dark-gradient,
+.light-theme .profile-gradient-overlay {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* Suppress ghost image behind avatars in Light Mode */
+[data-theme="light"] .profile-card-ghost-img,
+.light-theme .profile-card-ghost-img {
+  display: none !important;
+}
+
+/* Profile cards in Light Mode */
+[data-theme="light"] .profile-main-card,
+.light-theme .profile-main-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Profile picture card inner box */
+[data-theme="light"] .profile-main-card div[class*="from-neutral-900/50"],
+.light-theme .profile-main-card div[class*="from-neutral-900/50"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .profile-main-card div[class*="from-neutral-900/50"] span,
+.light-theme .profile-main-card div[class*="from-neutral-900/50"] span {
+  color: #334155 !important;
+}
+
+/* Profile info labels & values */
+[data-theme="light"] .profile-main-card .text-neutral-400,
+.light-theme .profile-main-card .text-neutral-400 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .profile-main-card .text-white,
+.light-theme .profile-main-card .text-white {
+  color: #0f172a !important;
+}
+
+/* Profile live sync badge */
+[data-theme="light"] div[class*="bg-red-600/20"][class*="text-green-300"],
+.light-theme div[class*="bg-red-600/20"][class*="text-green-300"] {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #047857 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1) !important;
+}
+
+[data-theme="light"] div[class*="bg-red-600/20"][class*="text-green-300"] span,
+.light-theme div[class*="bg-red-600/20"][class*="text-green-300"] span {
+  color: #047857 !important;
+}
+
+[data-theme="light"] div[class*="bg-red-600/20"][class*="text-green-300"] svg,
+.light-theme div[class*="bg-red-600/20"][class*="text-green-300"] svg {
+  color: #059669 !important;
+}
+
+/* Profile action buttons: REFRESH & LOGOUT */
+[data-theme="light"] button[class*="from-red-700"],
+.light-theme button[class*="from-red-700"] {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] button[class*="from-red-700"] *,
+.light-theme button[class*="from-red-700"] * {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] button[class*="from-red-600"][class*="to-pink-600"],
+.light-theme button[class*="from-red-600"][class*="to-pink-600"] {
+  background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] button[class*="from-red-600"][class*="to-pink-600"] *,
+.light-theme button[class*="from-red-600"][class*="to-pink-600"] * {
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   FITNESS PROFILE SPLIT BROWSER & STICKY DOCK (LIGHT THEME)
+   ========================================================================== */
+
+/* Universal scrollbar reset for filter bar across all themes */
+.split-filter-bar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+.split-filter-bar::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+}
+
+[data-theme="light"] .split-browser-modal,
+.light-theme .split-browser-modal {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="light"] .split-browser-modal h3,
+.light-theme .split-browser-modal h3,
+[data-theme="light"] .split-browser-modal #split-browser-title,
+.light-theme .split-browser-modal #split-browser-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .split-browser-modal p,
+.light-theme .split-browser-modal p {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .split-browser-modal .border-b,
+.light-theme .split-browser-modal .border-b,
+[data-theme="light"] .split-browser-modal .border-t,
+.light-theme .split-browser-modal .border-t {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .split-filter-bar,
+.light-theme .split-filter-bar {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .split-filter-btn:not(.active),
+.light-theme .split-filter-btn:not(.active) {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .split-filter-btn:not(.active):hover,
+.light-theme .split-filter-btn:not(.active):hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .split-filter-btn.active,
+.light-theme .split-filter-btn.active {
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25) !important;
+}
+
+[data-theme="light"] .split-browser-modal button[aria-label="Close modal"],
+.light-theme .split-browser-modal button[aria-label="Close modal"] {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .split-browser-modal button[aria-label="Close modal"]:hover,
+.light-theme .split-browser-modal button[aria-label="Close modal"]:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .split-cards-container,
+.light-theme .split-cards-container {
+  background: #f8fafc !important;
+}
+
+[data-theme="light"] .split-browser-card,
+.light-theme .split-browser-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .split-browser-card:hover,
+.light-theme .split-browser-card:hover {
+  background: #fff8f8 !important;
+  border-color: #fca5a5 !important;
+}
+
+[data-theme="light"] .split-browser-card h4,
+.light-theme .split-browser-card h4 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .split-browser-card p,
+.light-theme .split-browser-card p {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .split-browser-card .rounded-lg.border,
+.light-theme .split-browser-card .rounded-lg.border {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+/* Modal Footer in light mode */
+[data-theme="light"] .split-browser-modal .flex-none.bg-black\/40,
+.light-theme .split-browser-modal .flex-none.bg-black\/40 {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+[data-theme="light"] .split-browser-modal .flex-none.bg-black\/40 button,
+.light-theme .split-browser-modal .flex-none.bg-black\/40 button {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+/* Sticky Fitness Profile In Progress banner on splits page in light mode */
+[data-theme="light"] div[class*="sticky"][class*="from-red-950"],
+.light-theme div[class*="sticky"][class*="from-red-950"] {
+  background: linear-gradient(to right, #fef2f2, #ffffff, #fef2f2) !important;
+  border-color: #fecaca !important;
+  box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.08) !important;
+}
+
+[data-theme="light"] div[class*="sticky"][class*="from-red-950"] .text-gray-200,
+.light-theme div[class*="sticky"][class*="from-red-950"] .text-gray-200 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] div[class*="sticky"][class*="from-red-950"] button,
+.light-theme div[class*="sticky"][class*="from-red-950"] button {
+  background: #ffffff !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+[data-theme="light"] div[class*="sticky"][class*="from-red-950"] button:hover,
+.light-theme div[class*="sticky"][class*="from-red-950"] button:hover {
+  background: #fef2f2 !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+}
+
+/* Wizard navigation buttons in light theme */
+[data-theme="light"] .onboarding-page button.border-gray-700,
+.light-theme .onboarding-page button.border-gray-700 {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .onboarding-page button.border-gray-700:hover,
+.light-theme .onboarding-page button.border-gray-700:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+/* =========================================================
+   START WORKOUT LAUNCHPAD LIGHT THEME OVERRIDES
+   ========================================================= */
+[data-theme="light"] .start-workout-page,
+.light-theme .start-workout-page {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .start-workout-page .start-workout-card,
+.light-theme .start-workout-page .start-workout-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .start-workout-page .split-hero-card,
+.light-theme .start-workout-page .split-hero-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%) !important;
+  border-color: #fca5a5 !important;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.08) !important;
+}
+
+/* Guaranteed High-Contrast Red Action Buttons */
+[data-theme="light"] .start-workout-page .start-repeat-btn,
+.light-theme .start-workout-page .start-repeat-btn,
+[data-theme="light"] button.start-repeat-btn,
+.light-theme button.start-repeat-btn {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+}
+
+[data-theme="light"] .start-workout-page .start-repeat-btn *,
+.light-theme .start-workout-page .start-repeat-btn *,
+[data-theme="light"] button.start-repeat-btn *,
+.light-theme button.start-repeat-btn * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Bento Stat Cards */
+[data-theme="light"] .start-workout-page .bento-stat-card,
+.light-theme .start-workout-page .bento-stat-card {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Calendar Days */
+[data-theme="light"] .start-workout-page .calendar-day-btn,
+.light-theme .start-workout-page .calendar-day-btn {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .start-workout-page .calendar-day-btn.selected,
+.light-theme .start-workout-page .calendar-day-btn.selected {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+}
+
+[data-theme="light"] .start-workout-page .calendar-day-btn.selected *,
+.light-theme .start-workout-page .calendar-day-btn.selected * {
+  color: #ffffff !important;
+}
+
+/* Training Protocols & Readiness Radar */
+[data-theme="light"] .start-workout-page select,
+.light-theme .start-workout-page select,
+[data-theme="light"] .start-workout-page input,
+.light-theme .start-workout-page input {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .start-workout-page button.border-neutral-800,
+.light-theme .start-workout-page button.border-neutral-800 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .start-workout-page button.border-neutral-800:hover,
+.light-theme .start-workout-page button.border-neutral-800:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Quick Start Cards */
+[data-theme="light"] .start-workout-page .quick-start-card,
+.light-theme .start-workout-page .quick-start-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .start-workout-page .quick-start-card:hover,
+.light-theme .start-workout-page .quick-start-card:hover {
+  border-color: #ef4444 !important;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12) !important;
+}
+
+/* =========================================================
+   WORKOUT SESSION LIGHT THEME OVERRIDES (FIXES IMAGE 3 & 4)
+   ========================================================= */
+[data-theme="light"] .workout-session-page,
+.light-theme .workout-session-page {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Fixed Sticky Header: Pristine Frosted Light Bar in Light Theme */
+[data-theme="light"] .workout-session-page .session-header-nav,
+.light-theme .workout-session-page .session-header-nav {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .workout-session-page .session-title-text,
+.light-theme .workout-session-page .session-title-text {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .workout-session-page .header-back-btn,
+.light-theme .workout-session-page .header-back-btn {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .workout-session-page .header-back-btn:hover,
+.light-theme .workout-session-page .header-back-btn:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .workout-session-page .session-status-badge,
+.light-theme .workout-session-page .session-status-badge {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+/* Cards & Bento Containers */
+[data-theme="light"] .workout-session-page .session-card,
+.light-theme .workout-session-page .session-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .workout-session-page .session-card h3,
+[data-theme="light"] .workout-session-page .session-card h4,
+.light-theme .workout-session-page .session-card h3,
+.light-theme .workout-session-page .session-card h4 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .workout-session-page .ready-to-start-card,
+.light-theme .workout-session-page .ready-to-start-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%) !important;
+  border-color: #fca5a5 !important;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.08) !important;
+}
+
+/* Guaranteed High-Contrast START WORKOUT Action Button */
+[data-theme="light"] .workout-session-page .start-session-btn,
+.light-theme .workout-session-page .start-session-btn,
+[data-theme="light"] button.start-session-btn,
+.light-theme button.start-session-btn {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+}
+
+[data-theme="light"] .workout-session-page .start-session-btn *,
+.light-theme .workout-session-page .start-session-btn *,
+[data-theme="light"] button.start-session-btn *,
+.light-theme button.start-session-btn * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Input Fields and Controls */
+[data-theme="light"] .workout-session-page .session-card input,
+.light-theme .workout-session-page .session-card input,
+[data-theme="light"] .workout-session-page input,
+.light-theme .workout-session-page input {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .workout-session-page .session-card input:focus,
+.light-theme .workout-session-page .session-card input:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Stepper [-] / [+] Buttons */
+[data-theme="light"] .workout-session-page button.bg-neutral-800,
+.light-theme .workout-session-page button.bg-neutral-800,
+[data-theme="light"] .workout-session-page .session-card button.bg-neutral-800,
+.light-theme .workout-session-page .session-card button.bg-neutral-800 {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .workout-session-page button.bg-neutral-800:hover,
+.light-theme .workout-session-page button.bg-neutral-800:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Neutral Containers, Strips & Sub-wrappers */
+[data-theme="light"] .workout-session-page .bg-neutral-950,
+.light-theme .workout-session-page .bg-neutral-950,
+[data-theme="light"] .workout-session-page .bg-neutral-950\/70,
+.light-theme .workout-session-page .bg-neutral-950\/70,
+[data-theme="light"] .workout-session-page .bg-neutral-900\/90,
+.light-theme .workout-session-page .bg-neutral-900\/90 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .workout-session-page .border-neutral-800,
+.light-theme .workout-session-page .border-neutral-800,
+[data-theme="light"] .workout-session-page .border-neutral-800\/80,
+.light-theme .workout-session-page .border-neutral-800\/80,
+[data-theme="light"] .workout-session-page .border-neutral-800\/60,
+.light-theme .workout-session-page .border-neutral-800\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Set Table Styling */
+[data-theme="light"] .workout-session-page .session-card table thead tr,
+.light-theme .workout-session-page .session-card table thead tr {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .workout-session-page .session-card table thead th,
+.light-theme .workout-session-page .session-card table thead th {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .workout-session-page .session-card table tbody tr,
+.light-theme .workout-session-page .session-card table tbody tr {
+  border-color: #f1f5f9 !important;
+}
+
+[data-theme="light"] .workout-session-page .session-card table td,
+.light-theme .workout-session-page .session-card table td {
+  color: #0f172a !important;
+}
+
+/* Normal Set Type Badge in Light Mode */
+[data-theme="light"] .workout-session-page td button.bg-neutral-800,
+.light-theme .workout-session-page td button.bg-neutral-800 {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+/* Quick Action Buttons (Plate Calc, Duplicate Set, Swap, Delete) */
+[data-theme="light"] .workout-session-page button[title*="Plate"],
+.light-theme .workout-session-page button[title*="Plate"],
+[data-theme="light"] .workout-session-page button[title*="Copy"],
+.light-theme .workout-session-page button[title*="Copy"],
+[data-theme="light"] .workout-session-page button[title*="Swap"],
+.light-theme .workout-session-page button[title*="Swap"],
+[data-theme="light"] .workout-session-page button[title*="Remove"],
+.light-theme .workout-session-page button[title*="Remove"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Add Exercise Dashed Button */
+[data-theme="light"] .workout-session-page button.border-dashed,
+.light-theme .workout-session-page button.border-dashed {
+  background-color: #ffffff !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+[data-theme="light"] .workout-session-page button.border-dashed:hover,
+.light-theme .workout-session-page button.border-dashed:hover {
+  background-color: #fef2f2 !important;
+}
+
+/* Workout Modals (Plate Calculator, Summary, Abandon) */
+[data-theme="light"] .workout-session-page .fixed .bg-neutral-900,
+.light-theme .workout-session-page .fixed .bg-neutral-900 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .workout-session-page .fixed .bg-neutral-950,
+.light-theme .workout-session-page .fixed .bg-neutral-950 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .workout-session-page .fixed h3,
+.light-theme .workout-session-page .fixed h3 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .workout-session-page .fixed p,
+.light-theme .workout-session-page .fixed p {
+  color: #475569 !important;
+}
+
+
 

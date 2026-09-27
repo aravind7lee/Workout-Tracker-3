@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export default function auth(req, res, next) {
   const token = req.header('Authorization')?.replace('Bearer ', '') || req.query.token;
   
-  if (!token) {
+  if (!token || token === 'null' || token === 'undefined') {
     return res.status(401).json({ success: false, message: 'No token, authorization denied' });
   }
 
@@ -24,9 +24,31 @@ export default function auth(req, res, next) {
     req.user = { id: userId, _id: userId };
     next();
   } catch (error) {
-    console.error('JWT verification failed:', error.message);
-    
     if (error.name === 'TokenExpiredError') {
+      try {
+        // Authenticate cryptographically using the server secret ignoring expiration
+        const decoded = jwt.verify(token, jwtSecret, { ignoreExpiration: true });
+        const userId = decoded.id || decoded.userId;
+        
+        if (userId) {
+          req.user = { id: userId, _id: userId };
+          
+          // Generate renewed 30-day token
+          const refreshedToken = jwt.sign(
+            { id: userId, email: decoded.email },
+            jwtSecret,
+            { expiresIn: '30d' }
+          );
+          
+          res.setHeader('X-New-Token', refreshedToken);
+          res.setHeader('Access-Control-Expose-Headers', 'X-New-Token');
+          console.log(`🔄 [Auth Middleware] Seamlessly renewed expired token for user: ${userId}`);
+          return next();
+        }
+      } catch (renewalErr) {
+        console.warn('Token signature check failed during renewal attempt:', renewalErr.message);
+      }
+      
       return res.status(401).json({ success: false, message: 'Token expired', expired: true });
     }
     

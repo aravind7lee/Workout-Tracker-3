@@ -3,21 +3,21 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Egg, Drumstick, Salad, Banana, Apple, Soup, Fish, Milk, 
-  Zap, Search, Lightbulb, AlertTriangle, ArrowRight, Sparkles 
+  Zap, Search, Lightbulb, AlertTriangle, ArrowRight, Sparkles, Plus 
 } from 'lucide-react';
 
-export default function MealInput({ onLookup, isLookingUp, error }) {
+export default function MealInput({ onLookup, isLookingUp, error, onOpenFastMacro }) {
   const [query, setQuery] = useState("");
 
   const quickAddFoods = [
-    { name: "2 eggs", icon: <Egg className="w-4 h-4 text-amber-400" /> },
-    { name: "chicken 100g", icon: <Drumstick className="w-4 h-4 text-orange-400" /> },
-    { name: "1 cup rice", icon: <Salad className="w-4 h-4 text-emerald-400" /> },
-    { name: "banana", icon: <Banana className="w-4 h-4 text-yellow-400" /> },
-    { name: "apple", icon: <Apple className="w-4 h-4 text-red-400" /> },
-    { name: "1 cup oats", icon: <Soup className="w-4 h-4 text-amber-300" /> },
-    { name: "salmon 100g", icon: <Fish className="w-4 h-4 text-rose-400" /> },
-    { name: "greek yogurt", icon: <Milk className="w-4 h-4 text-blue-400" /> },
+    { name: "2 eggs", icon: <Egg className="w-4 h-4 text-amber-500" /> },
+    { name: "chicken 100g", icon: <Drumstick className="w-4 h-4 text-orange-500" /> },
+    { name: "1 cup rice", icon: <Salad className="w-4 h-4 text-emerald-500" /> },
+    { name: "banana", icon: <Banana className="w-4 h-4 text-yellow-500" /> },
+    { name: "apple", icon: <Apple className="w-4 h-4 text-red-500" /> },
+    { name: "1 cup oats", icon: <Soup className="w-4 h-4 text-amber-600" /> },
+    { name: "salmon 100g", icon: <Fish className="w-4 h-4 text-rose-500" /> },
+    { name: "greek yogurt", icon: <Milk className="w-4 h-4 text-blue-500" /> },
   ];
 
   const handleSubmit = async (e) => {
@@ -45,7 +45,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
   return (
     <motion.div
       data-meal-input="true"
-      className="nutrition-tracker-card relative overflow-hidden bg-white dark:bg-neutral-900/90 border border-gray-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 md:p-6 shadow-sm dark:shadow-xl space-y-3.5 sm:space-y-4"
+      className="nutrition-tracker-card relative overflow-hidden bg-white dark:bg-neutral-900/90 border border-gray-200 dark:border-white/10 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 md:p-6 shadow-sm dark:shadow-xl space-y-3.5 sm:space-y-4 backdrop-blur-xl text-gray-900 dark:text-white transition-colors"
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -53,7 +53,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg sm:rounded-xl flex items-center justify-center text-orange-500 shrink-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg sm:rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
             <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
@@ -65,12 +65,23 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
             </p>
           </div>
         </div>
+
+        {onOpenFastMacro && (
+          <button
+            type="button"
+            onClick={onOpenFastMacro}
+            className="px-2.5 sm:px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs flex items-center gap-1.5 shadow-md shadow-orange-500/20 active:scale-95 transition-all"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Fast Macros</span>
+          </button>
+        )}
       </div>
 
       {/* Quick Add Pills */}
       <div className="space-y-1.5">
         <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
-          <Sparkles className="w-3 h-3 text-orange-400" />
+          <Sparkles className="w-3 h-3 text-orange-500" />
           <span>Quick Add Popular Foods:</span>
         </div>
 
@@ -80,10 +91,10 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
               key={food.name}
               onClick={() => quickAdd(food.name)}
               disabled={isLookingUp}
-              className="p-2 sm:p-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-orange-500/40 rounded-lg sm:rounded-xl text-gray-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:border-neutral-800 dark:text-white flex items-center gap-1.5 transition-all active:scale-95 text-left disabled:opacity-50"
+              className="p-2 sm:p-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:bg-neutral-950/80 dark:hover:bg-neutral-800 dark:border-white/10 rounded-lg sm:rounded-xl text-gray-800 dark:text-white flex items-center gap-1.5 transition-all active:scale-95 text-left disabled:opacity-50"
             >
               <div className="shrink-0">{food.icon}</div>
-              <span className="text-[10px] sm:text-xs font-semibold truncate capitalize">
+              <span className="text-[10px] sm:text-xs font-semibold truncate capitalize text-gray-800 dark:text-neutral-200">
                 {food.name}
               </span>
             </button>
@@ -99,7 +110,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g. 200g chicken breast with 1 cup brown rice"
-            className="w-full bg-white dark:bg-neutral-950 border border-gray-300 dark:border-neutral-800 rounded-xl pl-9 sm:pl-10 pr-24 sm:pr-28 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors shadow-inner"
+            className="w-full bg-white dark:bg-neutral-950 border border-gray-300 dark:border-white/10 rounded-xl pl-9 sm:pl-10 pr-24 sm:pr-28 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors shadow-sm"
             disabled={isLookingUp}
             id="nutrition-search-input"
             maxLength={200}
@@ -111,7 +122,7 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
           <button
             type="submit"
             disabled={isLookingUp || !query.trim()}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 sm:px-4 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 text-white font-bold text-[10px] sm:text-xs rounded-lg shadow-md flex items-center gap-1 transition-all uppercase tracking-wider"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 sm:px-4 py-1.5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 disabled:opacity-40 text-white font-bold text-[10px] sm:text-xs rounded-lg shadow-md flex items-center gap-1 transition-all uppercase tracking-wider"
           >
             {isLookingUp ? (
               <span className="animate-pulse">Searching...</span>
@@ -125,15 +136,15 @@ export default function MealInput({ onLookup, isLookingUp, error }) {
         </div>
 
         {/* Tip / Feedback */}
-        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-neutral-400 px-1">
-          <Lightbulb className="w-3 h-3 text-amber-400 shrink-0" />
+        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-gray-500 dark:text-neutral-400 px-1">
+          <Lightbulb className="w-3 h-3 text-amber-500 shrink-0" />
           <span>Tip: Specify amounts (e.g., &apos;100g&apos;, &apos;2 cups&apos;, &apos;1 tbsp&apos;) for accurate macros.</span>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-2.5 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-[10px] sm:text-xs flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-600 dark:text-red-300 text-[10px] sm:text-xs flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
             <span>{error}</span>
           </div>
         )}

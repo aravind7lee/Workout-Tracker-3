@@ -5,8 +5,10 @@ import {
 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import api from '../utils/api';
+import { useTheme } from '../context/ThemeContext';
 
 export default function RealAnalyticsSection() {
+  const { isDark } = useTheme();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalWorkouts: 0,
@@ -104,14 +106,15 @@ export default function RealAnalyticsSection() {
     ]
   };
 
+  const defaultMuscleColors = ['#ef4444', '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#06b6d4'];
   const muscleChartData = {
     labels: muscleData.map(m => m.muscle),
     datasets: [
       {
         data: muscleData.map(m => m.percentage),
-        backgroundColor: muscleData.map(m => m.color || '#6b7280'),
+        backgroundColor: muscleData.map((m, idx) => m.color || defaultMuscleColors[idx % defaultMuscleColors.length]),
         borderWidth: 2,
-        borderColor: '#171717'
+        borderColor: isDark ? '#171717' : '#ffffff'
       }
     ]
   };
@@ -144,11 +147,17 @@ export default function RealAnalyticsSection() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: '#d4d4d4', font: { size: 12 } } }
+      legend: { labels: { color: isDark ? '#d4d4d4' : '#1e293b', font: { size: 12, weight: '600' } } }
     },
     scales: {
-      x: { ticks: { color: '#a3a3a3' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-      y: { ticks: { color: '#a3a3a3' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      x: {
+        ticks: { color: isDark ? '#a3a3a3' : '#64748b' },
+        grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)' }
+      },
+      y: {
+        ticks: { color: isDark ? '#a3a3a3' : '#64748b' },
+        grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)' }
+      }
     }
   };
 
@@ -169,10 +178,10 @@ export default function RealAnalyticsSection() {
         <div className="p-5 bg-neutral-900 border border-neutral-800 rounded-3xl shadow-xl space-y-1">
           <span className="text-xs text-neutral-500 uppercase tracking-wider block font-semibold">Total Volume</span>
           <div className="flex items-center justify-between">
-            <span className="text-2xl sm:text-3xl font-black text-orange-400 font-mono">
+            <span className="text-2xl sm:text-3xl font-black text-red-400 font-mono">
               {(stats.totalVolume || 0).toLocaleString()} <span className="text-xs">kg</span>
             </span>
-            <div className="p-2 bg-orange-500/10 text-orange-400 rounded-xl">
+            <div className="p-2 bg-red-500/10 text-red-400 rounded-xl">
               <Activity className="w-5 h-5" />
             </div>
           </div>
@@ -230,7 +239,7 @@ export default function RealAnalyticsSection() {
       <div className="p-6 bg-neutral-900 border border-neutral-800 rounded-3xl space-y-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs text-orange-400 font-bold uppercase tracking-wider">Performance Progression</span>
+            <span className="text-xs text-red-400 font-bold uppercase tracking-wider">Performance Progression</span>
             <h3 className="text-xl font-bold text-white">Exercise 1RM & Weight Progression</h3>
           </div>
 
@@ -238,7 +247,7 @@ export default function RealAnalyticsSection() {
             <select
               value={selectedExercise}
               onChange={(e) => setSelectedExercise(e.target.value)}
-              className="bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2 text-xs font-semibold text-white focus:outline-none focus:border-orange-500"
+              className="bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2 text-xs font-semibold text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/30"
             >
               {prs.length > 0 ? (
                 prs.map(p => (
@@ -260,7 +269,7 @@ export default function RealAnalyticsSection() {
             </div>
             <div>
               <span className="text-[10px] text-neutral-500 uppercase tracking-wider block font-semibold">Estimated 1RM</span>
-              <span className="text-lg font-black text-orange-400 font-mono">{exerciseTrend.stats.estimated1RM} kg</span>
+              <span className="text-lg font-black text-red-400 font-mono">{exerciseTrend.stats.estimated1RM} kg</span>
             </div>
             <div>
               <span className="text-[10px] text-neutral-500 uppercase tracking-wider block font-semibold">Max Volume Session</span>
@@ -289,9 +298,9 @@ export default function RealAnalyticsSection() {
         </div>
 
         <div className="p-3 bg-neutral-950/60 border border-neutral-800 rounded-xl flex items-center gap-2 text-xs text-neutral-400">
-          <Info className="w-4 h-4 text-orange-400 flex-shrink-0" />
+          <Info className="w-4 h-4 text-red-400 flex-shrink-0" />
           <span>
-            <strong>Formula Note:</strong> Estimated 1RM is calculated using the established Epley Formula: <code className="text-orange-400">Weight × (1 + Reps/30)</code>.
+            <strong>Formula Note:</strong> Estimated 1RM is calculated using the established Epley Formula: <code className="text-red-400">Weight × (1 + Reps/30)</code>.
           </span>
         </div>
       </div>
@@ -317,7 +326,7 @@ export default function RealAnalyticsSection() {
         <div className="p-6 bg-neutral-900 border border-neutral-800 rounded-3xl space-y-4 shadow-xl">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-white">Muscle Group Distribution</h3>
-            <Layers className="w-4 h-4 text-orange-400" />
+            <Layers className="w-4 h-4 text-red-400" />
           </div>
           <div className="h-60 w-full flex items-center justify-center">
             {muscleData.length > 0 ? (
@@ -365,7 +374,7 @@ export default function RealAnalyticsSection() {
                 {prs.map((pr) => (
                   <tr key={pr._id} className="hover:bg-neutral-800/40 transition-colors">
                     <td className="py-3 pl-3 font-bold text-white">{pr._id}</td>
-                    <td className="py-3 font-mono font-bold text-orange-400">{pr.maxWeight} kg</td>
+                    <td className="py-3 font-mono font-bold text-red-400">{pr.maxWeight} kg</td>
                     <td className="py-3 font-mono text-emerald-400">{pr.maxReps} reps</td>
                     <td className="py-3 text-right pr-3 text-neutral-400 font-mono">
                       {new Date(pr.latestDate).toLocaleDateString()}

@@ -1,4 +1,4 @@
-// Real-time Workout Session Component
+// Real-time workout-session Component
 import { Hourglass, Star, CheckCircle2, RefreshCw, PartyPopper, Rocket } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from "react";
 import { onlineService } from "../services/onlineService";

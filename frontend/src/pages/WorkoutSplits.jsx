@@ -1,12 +1,13 @@
-import { Target, TrendingUp, TrendingDown, BarChart3, Dumbbell, Calendar, Clock, Users, Star, ChevronRight, Filter, Search, Heart, Play, BookOpen, Award, Zap, BicepsFlexed, Bomb, Activity, Lock, Moon, Save } from 'lucide-react';
+import { Target, TrendingUp, TrendingDown, BarChart3, Dumbbell, Calendar, Clock, Users, Star, ChevronRight, Filter, Search, Heart, Play, BookOpen, Award, Zap, BicepsFlexed, Bomb, Activity, Lock, Moon, Save, Sparkles } from 'lucide-react';
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 import workoutSplitsService from "../services/workoutSplitsService";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getUserSplits } from "../utils/userSpecificSplits";
 import splitImg from "../assets/split.jpg";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 const WorkoutSplits = () => {
@@ -21,6 +22,12 @@ const WorkoutSplits = () => {
   const [heroImageError, setHeroImageError] = useState(false);
   const { isAuthenticated, user, token } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isOnboardingActive = Boolean(
+    location.state?.fromOnboarding ||
+    sessionStorage.getItem('grindx_onboarding_in_progress') === 'true'
+  );
 
   // Muscle group mapping and categorization functions
   const muscleGroupMapping = {
@@ -875,6 +882,77 @@ const WorkoutSplits = () => {
       className:
         "min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 pb-36 sm:pb-28 overflow-x-hidden",
     },
+    isOnboardingActive &&
+      /*#__PURE__*/ React.createElement(
+        "div",
+        {
+          className:
+            "sticky top-16 z-50 bg-gradient-to-r from-red-950/95 via-neutral-950/95 to-red-950/95 border-b border-red-500/40 backdrop-blur-xl px-4 py-3 shadow-2xl transition-all",
+        },
+        /*#__PURE__*/ React.createElement(
+          "div",
+          {
+            className:
+              "max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3",
+          },
+          /*#__PURE__*/ React.createElement(
+            "div",
+            {
+              className: "flex items-center gap-3 text-center sm:text-left",
+            },
+            /*#__PURE__*/ React.createElement(
+              "div",
+              {
+                className:
+                  "w-9 h-9 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0 shadow-inner",
+              },
+              /*#__PURE__*/ React.createElement(Sparkles, {
+                className: "w-5 h-5",
+              }),
+            ),
+            /*#__PURE__*/ React.createElement(
+              "div",
+              null,
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className:
+                    "text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-2 justify-center sm:justify-start",
+                },
+                /*#__PURE__*/ React.createElement("span", {
+                  className: "w-2 h-2 rounded-full bg-red-500 animate-ping",
+                }),
+                "Fitness Profile Setup In Progress",
+              ),
+              /*#__PURE__*/ React.createElement(
+                "div",
+                {
+                  className: "text-xs sm:text-sm text-gray-200 font-medium",
+                },
+                "Select any workout split below to assign it to your profile, or return to setup.",
+              ),
+            ),
+          ),
+          /*#__PURE__*/ React.createElement(
+            "div",
+            {
+              className: "flex items-center gap-2 w-full sm:w-auto justify-end",
+            },
+            /*#__PURE__*/ React.createElement(
+              "button",
+              {
+                onClick: () =>
+                  navigate("/onboarding", {
+                    state: { resumeStep: 7 },
+                  }),
+                className:
+                  "w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md",
+              },
+              "← Return to Profile Setup",
+            ),
+          ),
+        ),
+      ),
     /*#__PURE__*/ React.createElement(
       "div",
       {
@@ -885,6 +963,9 @@ const WorkoutSplits = () => {
         {
           className: "relative w-full h-screen min-h-[100vh] max-h-screen",
         },
+        /*#__PURE__*/ React.createElement(BackToDashboard, {
+          variant: "floating",
+        }),
         !heroImageLoaded &&
           /*#__PURE__*/ React.createElement(
             "div",
@@ -1142,11 +1223,11 @@ const WorkoutSplits = () => {
             "div",
             {
               className:
-                "group flex items-center space-x-2 sm:space-x-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-full border border-orange-500/40 hover:border-orange-400/60 transition-all duration-300",
+                "split-stat-pill group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-zinc-800/80 shadow-md transition-all duration-200 hover:border-red-500/40",
             },
             /*#__PURE__*/ React.createElement(Users, {
               className:
-                "w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-orange-400 group-hover:text-orange-300 transition-colors",
+                "w-4 h-4 sm:w-5 sm:h-5 text-red-500 transition-colors",
             }),
             /*#__PURE__*/ React.createElement(
               "span",
@@ -1161,11 +1242,11 @@ const WorkoutSplits = () => {
             "div",
             {
               className:
-                "group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-lg border border-zinc-800 hover:border-zinc-700 transition-all duration-200",
+                "split-stat-pill group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-zinc-800/80 shadow-md transition-all duration-200 hover:border-red-500/40",
             },
             /*#__PURE__*/ React.createElement(Target, {
               className:
-                "w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-500 transition-colors",
+                "w-4 h-4 sm:w-5 sm:h-5 text-red-500 transition-colors",
             }),
             /*#__PURE__*/ React.createElement(
               "span",
@@ -1180,11 +1261,11 @@ const WorkoutSplits = () => {
             "div",
             {
               className:
-                "group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-lg border border-zinc-800 hover:border-zinc-700 transition-all duration-200",
+                "split-stat-pill group flex items-center space-x-2 sm:space-x-3 bg-zinc-900/90 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-zinc-800/80 shadow-md transition-all duration-200 hover:border-red-500/40",
             },
             /*#__PURE__*/ React.createElement(Clock, {
               className:
-                "w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-600 group-hover:text-purple-300 transition-colors",
+                "w-4 h-4 sm:w-5 sm:h-5 text-red-500 transition-colors",
             }),
             /*#__PURE__*/ React.createElement(
               "span",
@@ -1332,7 +1413,7 @@ const WorkoutSplits = () => {
               {
                 key: split.id,
                 className:
-                  "group relative bg-gradient-to-br from-neutral-900/95 via-neutral-950/95 to-black/95 backdrop-blur-md border border-neutral-800/90 hover:border-orange-500/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden flex flex-col justify-between",
+                  "workout-split-card group relative bg-gradient-to-br from-neutral-900/95 via-neutral-950/95 to-black/95 backdrop-blur-md border border-neutral-800/90 hover:border-orange-500/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden flex flex-col justify-between",
                 style: {
                   contain: "layout style paint",
                 },
@@ -1367,10 +1448,10 @@ const WorkoutSplits = () => {
                         "span",
                         {
                           className:
-                            "px-2.5 py-0.5 bg-orange-950/80 border border-orange-800/60 text-orange-400 font-extrabold text-[10px] sm:text-xs rounded-full flex items-center gap-1 uppercase tracking-wider",
+                            "split-badge-pill px-2.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-100 dark:bg-orange-950/80 dark:border-orange-800/60 dark:text-orange-400 font-extrabold text-[10px] sm:text-xs rounded-full flex items-center gap-1 uppercase tracking-wider",
                         },
                         /*#__PURE__*/ React.createElement(Dumbbell, {
-                          className: "w-3 h-3 text-orange-400 shrink-0",
+                          className: "w-3 h-3 text-red-500 dark:text-orange-400 shrink-0",
                         }),
                         split.isCustom ? "CUSTOM SPLIT" : "WORKOUT SPLIT",
                       ),
@@ -1409,11 +1490,12 @@ const WorkoutSplits = () => {
                             e.stopPropagation();
                             handleToggleFavorite(split.id);
                           },
-                          className: `p-2 rounded-full transition-all active:scale-90 ${favorites.includes(split.id) ? "text-red-500 bg-red-500/20 shadow-md shadow-red-500/20" : "text-neutral-400 hover:text-red-400 hover:bg-neutral-800"}`,
+                          className: `p-2 rounded-full border transition-all active:scale-90 ${favorites.includes(split.id) ? "border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/20 text-red-600 dark:text-red-500 shadow-sm" : "border-slate-200 dark:border-transparent bg-white/90 dark:bg-transparent text-slate-400 dark:text-neutral-400 hover:text-red-500 hover:border-red-200 dark:hover:bg-neutral-800"}`,
                           "aria-label": "Favorite Split",
                         },
                         /*#__PURE__*/ React.createElement(Heart, {
                           size: 16,
+                          className: favorites.includes(split.id) ? "text-red-600 dark:text-red-500" : "text-slate-400 dark:text-neutral-400",
                           fill: favorites.includes(split.id)
                             ? "currentColor"
                             : "none",
@@ -1537,42 +1619,77 @@ const WorkoutSplits = () => {
                 "div",
                 {
                   className:
-                    "mt-3 pt-3 border-t border-neutral-800/80 flex items-center justify-between gap-2",
+                    "mt-3 pt-3 border-t border-neutral-800/80 flex flex-col gap-2",
                 },
-                /*#__PURE__*/ React.createElement(
-                  "button",
-                  {
-                    onClick: (e) => {
-                      e.stopPropagation();
-                      setSelectedSplit(split);
+                isOnboardingActive &&
+                  /*#__PURE__*/ React.createElement(
+                    "button",
+                    {
+                      onClick: (e) => {
+                        e.stopPropagation();
+                        try {
+                          const draftRaw = sessionStorage.getItem('grindx_onboarding_draft');
+                          const draft = draftRaw ? JSON.parse(draftRaw) : {};
+                          draft.selectedSplitOverride = split;
+                          draft.step = 7;
+                          sessionStorage.setItem('grindx_onboarding_draft', JSON.stringify(draft));
+                        } catch (err) {}
+                        navigate("/onboarding", {
+                          state: {
+                            selectedSplit: split,
+                            resumeStep: 7,
+                            fromSplits: true,
+                          },
+                        });
+                      },
+                      className:
+                        "w-full py-2.5 px-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white text-xs font-black rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-red-950/40 transition-all active:scale-95 border border-red-500/50",
                     },
-                    className:
-                      "flex-1 py-2 px-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95",
-                  },
-                  /*#__PURE__*/ React.createElement(BookOpen, {
-                    className: "w-3.5 h-3.5 text-neutral-400",
-                  }),
-                  "View Details",
-                ),
+                    /*#__PURE__*/ React.createElement(Sparkles, {
+                      className: "w-3.5 h-3.5 fill-current",
+                    }),
+                    "Select For Fitness Profile",
+                  ),
                 /*#__PURE__*/ React.createElement(
-                  "button",
+                  "div",
                   {
-                    onClick: (e) => {
-                      e.stopPropagation();
-                      navigate("/start-workout", {
-                        state: {
-                          selectedSplit: split,
-                          fromSplits: true,
-                        },
-                      });
-                    },
-                    className:
-                      "flex-1 py-2 px-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-xs font-black rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/25 transition-all active:scale-95",
+                    className: "flex items-center justify-between gap-2",
                   },
-                  /*#__PURE__*/ React.createElement(Play, {
-                    className: "w-3.5 h-3.5 fill-current",
-                  }),
-                  "Start Split",
+                  /*#__PURE__*/ React.createElement(
+                    "button",
+                    {
+                      onClick: (e) => {
+                        e.stopPropagation();
+                        setSelectedSplit(split);
+                      },
+                      className:
+                        "flex-1 py-2 px-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-200 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95",
+                    },
+                    /*#__PURE__*/ React.createElement(BookOpen, {
+                      className: "w-3.5 h-3.5 text-neutral-400",
+                    }),
+                    "View Details",
+                  ),
+                  /*#__PURE__*/ React.createElement(
+                    "button",
+                    {
+                      onClick: (e) => {
+                        e.stopPropagation();
+                        navigate("/start-workout", {
+                          state: {
+                            selectedSplit: split,
+                            fromSplits: true,
+                          },
+                        });
+                      },
+                      className:
+                        "flex-1 py-2 px-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-xs font-black rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/25 transition-all active:scale-95",
+                    },
+                    /*#__PURE__*/ React.createElement(Play, {
+                      className: "w-3.5 h-3.5 fill-current",
+                    }),
+                    "Start Split",
+                  ),
                 ),
               ),
             );
@@ -2125,8 +2242,42 @@ const WorkoutSplits = () => {
               "div",
               {
                 className:
-                  "mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-700/50",
+                  "mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-700/50 flex flex-col gap-2.5",
               },
+              isOnboardingActive &&
+                /*#__PURE__*/ React.createElement(
+                  "button",
+                  {
+                    onClick: () => {
+                      try {
+                        const draftRaw = sessionStorage.getItem('grindx_onboarding_draft');
+                        const draft = draftRaw ? JSON.parse(draftRaw) : {};
+                        draft.selectedSplitOverride = selectedSplit;
+                        draft.step = 7;
+                        sessionStorage.setItem('grindx_onboarding_draft', JSON.stringify(draft));
+                      } catch (err) {}
+                      setSelectedSplit(null);
+                      navigate("/onboarding", {
+                        state: {
+                          selectedSplit: selectedSplit,
+                          resumeStep: 7,
+                          fromSplits: true,
+                        },
+                      });
+                    },
+                    className:
+                      "w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black py-3 rounded-lg sm:rounded-xl transition-all duration-200 text-sm sm:text-base shadow-xl shadow-red-950/40 border border-red-500/50 active:scale-95",
+                  },
+                  /*#__PURE__*/ React.createElement(Sparkles, {
+                    size: 16,
+                    className: "fill-current",
+                  }),
+                  /*#__PURE__*/ React.createElement(
+                    "span",
+                    null,
+                    "Select This Split For Fitness Profile",
+                  ),
+                ),
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
@@ -2136,8 +2287,12 @@ const WorkoutSplits = () => {
                   "button",
                   {
                     onClick: () => {
+                      try {
+                        localStorage.setItem('grindx_active_split', JSON.stringify(selectedSplit));
+                        sessionStorage.setItem('grindx_active_split', JSON.stringify(selectedSplit));
+                      } catch (e) {}
                       setSelectedSplit(null);
-                      navigate("/library");
+                      navigate("/start-workout", { state: { selectedSplit } });
                     },
                     className:
                       "flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-colors duration-200 text-sm sm:text-base",

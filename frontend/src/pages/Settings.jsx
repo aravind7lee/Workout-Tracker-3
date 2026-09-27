@@ -8,6 +8,7 @@ import settingsService from "../services/settingsService";
 import chromeErrorHandler from "../utils/chromeErrorHandler";
 import { onlineService } from "../services/onlineService";
 import notificationService from "../services/notificationService";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function Settings() {
@@ -2088,6 +2089,10 @@ export default function Settings() {
     {
       className: "settings-page w-full min-w-0 space-y-4 overflow-x-hidden sm:space-y-6",
     },
+    /*#__PURE__*/ React.createElement(BackToDashboard, {
+      className: "mb-3",
+      variant: "inline"
+    }),
     /*#__PURE__*/ React.createElement(
       "div",
       {

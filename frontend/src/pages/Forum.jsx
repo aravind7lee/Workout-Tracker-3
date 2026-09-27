@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function Forum() {
@@ -192,6 +193,10 @@ export default function Forum() {
       {
         className: "max-w-7xl mx-auto px-2 xs:px-3 sm:px-4 md:px-5 lg:px-6",
       },
+      /*#__PURE__*/ React.createElement(BackToDashboard, {
+        className: "mb-4",
+        variant: "inline"
+      }),
       /*#__PURE__*/ React.createElement(
         "div",
         {

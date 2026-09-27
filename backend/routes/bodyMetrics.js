@@ -4,6 +4,7 @@ import auth from '../middleware/auth.js';
 import BodyMetric from '../models/BodyMetric.js';
 import User from '../models/User.js';
 import { check as checkAchievements } from '../services/achievementEngine.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const router = express.Router();
 router.use(auth);
@@ -50,6 +51,8 @@ router.post('/', async (req, res) => {
       console.warn('Achievement check skipped after metric save:', error.message);
       return [];
     });
+    emitToUser(userId(req), 'metric_updated', { action: 'created', metricId: metric._id });
+    achievements.forEach((achievement) => emitToUser(userId(req), 'achievement_unlocked', { achievement }));
     res.status(201).json({ success: true, metric, achievements });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to log body metric', error: error.message });
@@ -113,6 +116,7 @@ router.delete('/:id', async (req, res) => {
     }
     const metric = await BodyMetric.findOneAndDelete({ _id: req.params.id, user: userId(req) });
     if (!metric) return res.status(404).json({ success: false, message: 'Metric not found.' });
+    emitToUser(userId(req), 'metric_updated', { action: 'deleted', metricId: req.params.id });
     res.json({ success: true, message: 'Metric deleted.' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to delete body metric', error: error.message });

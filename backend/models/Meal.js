@@ -9,7 +9,7 @@ const MealSchema = new mongoose.Schema({
   fat: { type: Number, required: true },
   quantity: { type: Number, default: 1 },
   unit: { type: String, default: 'serving' },
-  mealType: { type: String, enum: ['breakfast', 'lunch', 'dinner', 'snack'], default: 'snack' },
+  mealType: { type: String, enum: ['breakfast', 'lunch', 'dinner', 'snack', 'pre-workout', 'post-workout'], default: 'snack' },
   consumedAt: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 }, {

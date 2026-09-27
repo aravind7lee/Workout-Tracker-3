@@ -1,70 +1,66 @@
-import { Sunrise, Utensils, BicepsFlexed, Apple, Clock, Droplet, Target, TrendingUp, Brain, Lightbulb, Calendar, CheckCircle2, Hourglass } from 'lucide-react';
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Sunrise, Utensils, BicepsFlexed, Apple, Clock, Droplets, 
+  Target, TrendingUp, Brain, Lightbulb, Sparkles, AlertCircle, ChevronDown, ChevronUp 
+} from 'lucide-react';
 
-
-const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
+export default function NutritionInsights({
+  totals = {},
+  targets = {},
+  meals = [],
+  customCalorieTarget,
+  waterIntake = 0,
+}) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showRecommendations, setShowRecommendations] = useState(true);
 
-  // Update time every minute for time-based recommendations
+  // Update time every minute
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
-  const currentCalorieTarget = customCalorieTarget || targets.calories || 2000;
 
-  // Advanced analytics
+  const currentCalorieTarget = customCalorieTarget || targets.calories || 2000;
+  const currentProteinTarget = targets.protein || 150;
+  const currentCarbTarget = targets.carbs || 200;
+  const currentFatTarget = targets.fat || 65;
+
   const analytics = useMemo(() => {
     const hour = currentTime.getHours();
-    const caloriesRemaining = Math.max(
-      0,
-      currentCalorieTarget - (totals.calories || 0),
-    );
-    const proteinDeficit = Math.max(
-      0,
-      (targets.protein || 150) - (totals.protein || 0),
-    );
-    const carbDeficit = Math.max(
-      0,
-      (targets.carbs || 250) - (totals.carbs || 0),
-    );
-    const fatDeficit = Math.max(0, (targets.fat || 67) - (totals.fat || 0));
+    const caloriesRemaining = Math.max(0, currentCalorieTarget - (totals.calories || 0));
+    const proteinDeficit = Math.max(0, currentProteinTarget - (totals.protein || 0));
+    const carbDeficit = Math.max(0, currentCarbTarget - (totals.carbs || 0));
+    const fatDeficit = Math.max(0, currentFatTarget - (totals.fat || 0));
 
     // Meal timing analysis
-    const mealTimes = meals.map((meal) =>
-      new Date(meal.consumedAt || Date.now()).getHours(),
-    );
-    const lastMealTime = mealTimes.length > 0 ? Math.max(...mealTimes) : 0;
-    const hoursSinceLastMeal = hour - lastMealTime;
+    const hasMeals = Array.isArray(meals) && meals.length > 0;
+    let hoursSinceLastMeal = null;
+    let lastMealTimeLabel = "None yet";
 
-    // Hydration estimate (basic)
-    const estimatedHydration = meals.length * 250; // 250ml per meal assumption
-    const hydrationGoal = 2500;
+    if (hasMeals) {
+      const timestamps = meals.map((m) => new Date(m.consumedAt || Date.now()).getTime());
+      const latestTime = Math.max(...timestamps);
+      const diffMs = Math.max(0, Date.now() - latestTime);
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      hoursSinceLastMeal = diffHours;
+      lastMealTimeLabel = `${diffHours}h`;
+    }
+
+    const currentPeriod = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+
     return {
       caloriesRemaining,
       proteinDeficit,
       carbDeficit,
       fatDeficit,
+      hasMeals,
       hoursSinceLastMeal,
-      estimatedHydration,
-      hydrationGoal,
-      mealTiming: {
-        breakfast: mealTimes.some((t) => t >= 6 && t <= 10),
-        lunch: mealTimes.some((t) => t >= 11 && t <= 14),
-        dinner: mealTimes.some((t) => t >= 17 && t <= 21),
-        snacks: mealTimes.filter(
-          (t) => (t >= 15 && t <= 16) || (t >= 21 && t <= 23),
-        ).length,
-      },
-      currentPeriod:
-        hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening",
+      lastMealTimeLabel,
+      currentPeriod,
     };
-  }, [totals, targets, meals, currentCalorieTarget, currentTime]);
+  }, [totals, targets, meals, currentCalorieTarget, currentProteinTarget, currentCarbTarget, currentFatTarget, currentTime]);
 
-  // Smart recommendations based on current state
   const recommendations = useMemo(() => {
     const recs = [];
     const {
@@ -72,575 +68,185 @@ const NutritionInsights = ({ totals, targets, meals, customCalorieTarget }) => {
       proteinDeficit,
       carbDeficit,
       fatDeficit,
+      hasMeals,
       hoursSinceLastMeal,
       currentPeriod,
     } = analytics;
 
-    // Time-based recommendations
-    if (currentPeriod === "morning" && !analytics.mealTiming.breakfast) {
+    // 1. First meal / morning recommendation
+    if (!hasMeals) {
       recs.push({
         type: "timing",
         priority: "high",
-        icon: /*#__PURE__*/ React.createElement(Sunrise, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Start Your Day Right",
-        message:
-          "Consider having breakfast to kickstart your metabolism and energy levels.",
-        action: "Add breakfast meal",
-      });
-    }
-    if (currentPeriod === "afternoon" && !analytics.mealTiming.lunch) {
-      recs.push({
-        type: "timing",
-        priority: "high",
-        icon: /*#__PURE__*/ React.createElement(Utensils, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Lunch Time",
-        message:
-          "It's time for lunch! Your body needs fuel to maintain energy through the afternoon.",
-        action: "Add lunch meal",
+        icon: <Sunrise className="w-5 h-5 text-amber-500" />,
+        title: "Kickstart Muscle Protein Synthesis",
+        message: "No meals logged yet today. Start with high-protein fuel (eggs, oats, Greek yogurt, or a protein shake) to ignite energy.",
+        accent: "border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-300",
       });
     }
 
-    // Macro-specific recommendations
-    if (proteinDeficit > 20) {
+    // 2. Protein Deficit Warning
+    if (proteinDeficit > 25) {
       recs.push({
         type: "macro",
         priority: "high",
-        icon: /*#__PURE__*/ React.createElement(BicepsFlexed, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Protein Boost Needed",
-        message: `You need ${Math.round(proteinDeficit)}g more protein. Try chicken, fish, eggs, or protein powder.`,
-        action: "Add protein source",
+        icon: <BicepsFlexed className="w-5 h-5 text-rose-500" />,
+        title: "Protein Threshold Deficit",
+        message: `You need ${Math.round(proteinDeficit)}g more protein to hit optimal muscle repair targets. Consider chicken breast, canned tuna, or whey isolate.`,
+        accent: "border-rose-500/30 bg-rose-500/10 text-rose-900 dark:text-rose-300",
       });
     }
-    if (caloriesRemaining > 500 && currentPeriod === "evening") {
+
+    // 3. Evening Calorie Deficit
+    if (caloriesRemaining > 400 && currentPeriod === "evening") {
       recs.push({
         type: "calories",
         priority: "medium",
-        icon: /*#__PURE__*/ React.createElement(Apple, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Fuel Up",
-        message: `You have ${Math.round(caloriesRemaining)} calories remaining. Consider a balanced snack.`,
-        action: "Add healthy snack",
+        icon: <Apple className="w-5 h-5 text-emerald-500" />,
+        title: "Sufficient Energy Budget Remaining",
+        message: `You have ${Math.round(caloriesRemaining)} kcal left. Add a nutrient-dense dinner with complex carbs to replenish glycogen before tomorrow's workout.`,
+        accent: "border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-300",
       });
     }
-    if (hoursSinceLastMeal > 4 && hoursSinceLastMeal < 24) {
+
+    // 4. Time Since Last Meal (only if meals have actually been logged)
+    if (hasMeals && hoursSinceLastMeal !== null && hoursSinceLastMeal >= 4) {
       recs.push({
         type: "timing",
         priority: "medium",
-        icon: /*#__PURE__*/ React.createElement(Clock, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Time for a Meal",
-        message: `It's been ${hoursSinceLastMeal} hours since your last meal. Consider eating something.`,
-        action: "Add meal or snack",
+        icon: <Clock className="w-5 h-5 text-blue-500" />,
+        title: "Anabolic Window Refueling",
+        message: `It has been ${hoursSinceLastMeal} hours since your last meal. An amino acid boost or balanced snack will sustain anti-catabolic signaling.`,
+        accent: "border-blue-500/30 bg-blue-500/10 text-blue-900 dark:text-blue-300",
       });
     }
 
-    // Hydration reminder
-    if (analytics.estimatedHydration < analytics.hydrationGoal * 0.6) {
+    // 5. Hydration Check
+    if (waterIntake < 1500) {
       recs.push({
         type: "hydration",
         priority: "medium",
-        icon: /*#__PURE__*/ React.createElement(Droplet, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Stay Hydrated",
-        message:
-          "Don't forget to drink water! Aim for 8-10 glasses throughout the day.",
-        action: "Drink water",
+        icon: <Droplets className="w-5 h-5 text-cyan-500" />,
+        title: "Intracellular Hydration Alert",
+        message: "Water volume is currently below 1.5L. Drink a large shaker of water to maintain intramuscular pump and cognitive alertness.",
+        accent: "border-cyan-500/30 bg-cyan-500/10 text-cyan-900 dark:text-cyan-300",
       });
     }
 
-    // Goal-specific recommendations
-    if (
-      targets.goalType === "cut" &&
-      (totals.calories || 0) > currentCalorieTarget * 0.9
-    ) {
-      recs.push({
-        type: "goal",
-        priority: "low",
-        icon: /*#__PURE__*/ React.createElement(Target, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Cutting Goal",
-        message:
-          "You're close to your calorie limit. Focus on protein and vegetables for remaining meals.",
-        action: "Choose low-cal options",
-      });
-    }
-    if (targets.goalType === "bulk" && caloriesRemaining > 300) {
-      recs.push({
-        type: "goal",
-        priority: "medium",
-        icon: /*#__PURE__*/ React.createElement(TrendingUp, {
-          className: "w-[1em] h-[1em] inline-block",
-        }),
-        title: "Bulking Goal",
-        message:
-          "You need more calories for your bulking goal. Add calorie-dense healthy foods.",
-        action: "Add calorie-dense foods",
-      });
-    }
-    return recs.sort((a, b) => {
-      const priorityOrder = {
-        high: 3,
-        medium: 2,
-        low: 1,
-      };
-      return priorityOrder[b.priority] - priorityOrder[a.priority];
-    });
-  }, [analytics, targets, totals, currentCalorieTarget]);
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "high":
-        return "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20";
-      case "medium":
-        return "border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20";
-      case "low":
-        return "border-neutral-800 dark:border-red-950/20 bg-neutral-900/40 dark:bg-neutral-950/40";
-      default:
-        return "border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/20";
-    }
-  };
-  const getTypeColor = (type) => {
-    switch (type) {
-      case "timing":
-        return "text-red-800 dark:text-red-600";
-      case "macro":
-        return "text-red-700 dark:text-red-500";
-      case "calories":
-        return "text-green-600 dark:text-red-500";
-      case "hydration":
-        return "text-red-700 dark:text-red-500";
-      case "goal":
-        return "text-orange-600 dark:text-orange-400";
-      default:
-        return "text-gray-600 dark:text-gray-400";
-    }
-  };
-  return /*#__PURE__*/ React.createElement(
-    "div",
-    {
-      className: "space-y-6",
-    },
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className:
-          "bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-xl p-4 border border-neutral-800 dark:border-red-950/30",
-      },
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className: "flex items-center justify-between",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "flex items-center gap-3",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className:
-                "w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center",
-            },
-            /*#__PURE__*/ React.createElement(
-              "span",
-              {
-                className: "text-white text-lg",
-              },
-              /*#__PURE__*/ React.createElement(Brain, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-            ),
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            null,
-            /*#__PURE__*/ React.createElement(
-              "h3",
-              {
-                className:
-                  "font-semibold text-light-text-primary dark:text-dark-text-primary",
-              },
-              "Smart Nutrition Assistant",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className:
-                  "text-sm text-light-text-muted dark:text-dark-text-muted",
-              },
-              currentTime.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-              " \u2022 ",
-              analytics.currentPeriod,
-            ),
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "button",
-          {
-            onClick: () => setShowRecommendations(!showRecommendations),
-            className:
-              "px-3 py-1.5 text-sm bg-red-600/10 text-red-700 dark:text-red-500 rounded-lg hover:bg-red-600/20 transition-all",
-          },
-          showRecommendations ? "Hide" : "Show",
-          " Tips",
-        ),
-      ),
-    ),
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "grid grid-cols-2 sm:grid-cols-4 gap-4",
-      },
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-lg font-bold text-light-text-primary dark:text-dark-text-primary",
-          },
-          Math.round(analytics.caloriesRemaining),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-xs text-light-text-muted dark:text-dark-text-muted",
-          },
-          "Calories Left",
-        ),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "text-lg font-bold text-red-700 dark:text-red-500",
-          },
-          Math.round(analytics.proteinDeficit),
-          "g",
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-xs text-light-text-muted dark:text-dark-text-muted",
-          },
-          "Protein Needed",
-        ),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "text-lg font-bold text-red-700 dark:text-red-500",
-          },
-          Math.round(
-            (analytics.estimatedHydration / analytics.hydrationGoal) * 100,
-          ),
-          "%",
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-xs text-light-text-muted dark:text-dark-text-muted",
-          },
-          "Hydration",
-        ),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className:
-            "text-center p-3 bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-lg",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "text-lg font-bold text-red-800 dark:text-red-600",
-          },
-          analytics.hoursSinceLastMeal > 24
-            ? "24+"
-            : analytics.hoursSinceLastMeal,
-          "h",
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-xs text-light-text-muted dark:text-dark-text-muted",
-          },
-          "Since Last Meal",
-        ),
-      ),
-    ),
-    /*#__PURE__*/ React.createElement(
-      AnimatePresence,
-      null,
-      showRecommendations &&
-        recommendations.length > 0 &&
-        /*#__PURE__*/ React.createElement(
-          motion.div,
-          {
-            initial: {
-              opacity: 0,
-              height: 0,
-            },
-            animate: {
-              opacity: 1,
-              height: "auto",
-            },
-            exit: {
-              opacity: 0,
-              height: 0,
-            },
-            className: "space-y-3",
-          },
-          /*#__PURE__*/ React.createElement(
-            "h4",
-            {
-              className:
-                "font-semibold text-light-text-primary dark:text-dark-text-primary flex items-center gap-2",
-            },
-            /*#__PURE__*/ React.createElement(
-              "span",
-              null,
-              /*#__PURE__*/ React.createElement(Lightbulb, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-            ),
-            " Smart Recommendations",
-          ),
-          recommendations.slice(0, 3).map((rec, index) =>
-            /*#__PURE__*/ React.createElement(
-              motion.div,
-              {
-                key: `${rec.type}-${index}`,
-                initial: {
-                  opacity: 0,
-                  x: -20,
-                },
-                animate: {
-                  opacity: 1,
-                  x: 0,
-                },
-                transition: {
-                  delay: index * 0.1,
-                },
-                className: `p-4 rounded-xl border ${getPriorityColor(rec.priority)}`,
-              },
-              /*#__PURE__*/ React.createElement(
-                "div",
-                {
-                  className: "flex items-start gap-3",
-                },
-                /*#__PURE__*/ React.createElement(
-                  "span",
-                  {
-                    className: "text-2xl",
-                  },
-                  rec.icon,
-                ),
-                /*#__PURE__*/ React.createElement(
-                  "div",
-                  {
-                    className: "flex-1",
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "flex items-center gap-2 mb-1",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "h5",
-                      {
-                        className:
-                          "font-medium text-light-text-primary dark:text-dark-text-primary",
-                      },
-                      rec.title,
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "span",
-                      {
-                        className: `text-xs px-2 py-0.5 rounded-full ${getTypeColor(rec.type)} bg-current/10`,
-                      },
-                      rec.type,
-                    ),
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "p",
-                    {
-                      className:
-                        "text-sm text-light-text-muted dark:text-dark-text-muted mb-2",
-                    },
-                    rec.message,
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "button",
-                    {
-                      className: `text-xs font-medium ${getTypeColor(rec.type)} hover:underline`,
-                    },
-                    rec.action,
-                    " \u2192",
-                  ),
-                ),
-              ),
-            ),
-          ),
-          recommendations.length > 3 &&
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "text-center",
-              },
-              /*#__PURE__*/ React.createElement(
-                "button",
-                {
-                  className:
-                    "text-sm text-red-700 dark:text-red-500 hover:underline",
-                },
-                "View ",
-                recommendations.length - 3,
-                " more recommendations",
-              ),
-            ),
-        ),
-    ),
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "bg-gray-50 dark:bg-dark-bg-tertiary/30 rounded-xl p-4",
-      },
-      /*#__PURE__*/ React.createElement(
-        "h4",
-        {
-          className:
-            "font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2",
-        },
-        /*#__PURE__*/ React.createElement(
-          "span",
-          null,
-          /*#__PURE__*/ React.createElement(Calendar, {
-            className: "w-[1em] h-[1em] inline-block",
-          }),
-        ),
-        " Today's Meal Pattern",
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className: "grid grid-cols-4 gap-2",
-        },
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: `text-center p-2 rounded-lg ${analytics.mealTiming.breakfast ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}`,
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-sm font-medium",
-            },
-            "Breakfast",
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-xs",
-            },
-            analytics.mealTiming.breakfast ? "✅" : "⏳",
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: `text-center p-2 rounded-lg ${analytics.mealTiming.lunch ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}`,
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-sm font-medium",
-            },
-            "Lunch",
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-xs",
-            },
-            analytics.mealTiming.lunch ? "✅" : "⏳",
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: `text-center p-2 rounded-lg ${analytics.mealTiming.dinner ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}`,
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-sm font-medium",
-            },
-            "Dinner",
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-xs",
-            },
-            analytics.mealTiming.dinner ? "✅" : "⏳",
-          ),
-        ),
-        /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className:
-              "text-center p-2 rounded-lg bg-red-100/10 dark:bg-red-950/30 text-red-700 dark:text-red-300",
-          },
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-sm font-medium",
-            },
-            "Snacks",
-          ),
-          /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-xs",
-            },
-            analytics.mealTiming.snacks,
-          ),
-        ),
-      ),
-    ),
+    return recs;
+  }, [analytics, waterIntake]);
+
+  return (
+    <div className="nutrition-insights-card rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900/90 p-4 sm:p-6 shadow-sm dark:shadow-xl backdrop-blur-xl space-y-4 sm:space-y-6 text-gray-900 dark:text-white transition-colors">
+      
+      {/* Top Banner */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-white shadow-lg shadow-red-600/25 shrink-0">
+            <Brain className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h3 className="text-sm sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-1.5">
+              <span>Smart Nutrition Assistant</span>
+            </h3>
+            <div className="flex items-center gap-2 text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400">
+              <span className="font-mono">{currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+              <span>•</span>
+              <span className="capitalize text-orange-600 dark:text-orange-400 font-semibold">{analytics.currentPeriod}</span>
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setShowRecommendations(!showRecommendations)}
+          className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-700 dark:text-neutral-300 text-xs font-bold transition-all flex items-center gap-1.5"
+        >
+          {showRecommendations ? "Hide" : "Show"} Tips
+          {showRecommendations ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
+      </div>
+
+      {/* 4 Stat Badges */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        {/* Calories Left */}
+        <div className="bg-gray-50 dark:bg-neutral-950/70 border border-gray-200 dark:border-white/5 rounded-xl p-3 text-center">
+          <div className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white font-mono">
+            {Math.round(analytics.caloriesRemaining)}
+          </div>
+          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400 font-medium mt-0.5">
+            Calories Left
+          </div>
+        </div>
+
+        {/* Protein Needed */}
+        <div className="bg-gray-50 dark:bg-neutral-950/70 border border-gray-200 dark:border-white/5 rounded-xl p-3 text-center">
+          <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono">
+            {Math.round(analytics.proteinDeficit)}g
+          </div>
+          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400 font-medium mt-0.5">
+            Protein Needed
+          </div>
+        </div>
+
+        {/* Hydration */}
+        <div className="bg-gray-50 dark:bg-neutral-950/70 border border-gray-200 dark:border-white/5 rounded-xl p-3 text-center">
+          <div className="text-xl sm:text-2xl font-black text-cyan-600 dark:text-cyan-400 font-mono">
+            {waterIntake.toLocaleString()}ml
+          </div>
+          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400 font-medium mt-0.5">
+            Water Logged
+          </div>
+        </div>
+
+        {/* Since Last Meal */}
+        <div className="bg-gray-50 dark:bg-neutral-950/70 border border-gray-200 dark:border-white/5 rounded-xl p-3 text-center">
+          <div className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 font-mono">
+            {analytics.hasMeals ? analytics.lastMealTimeLabel : "0h"}
+          </div>
+          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400 font-medium mt-0.5">
+            {analytics.hasMeals ? "Since Last Meal" : "Awaiting 1st Meal"}
+          </div>
+        </div>
+      </div>
+
+      {/* Recommendations Cards */}
+      <AnimatePresence>
+        {showRecommendations && recommendations.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-2.5"
+          >
+            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+              <span>Smart Athletic Recommendations:</span>
+            </div>
+
+            <div className="space-y-2">
+              {recommendations.slice(0, 3).map((rec, index) => (
+                <motion.div
+                  key={`${rec.title}-${index}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`p-3.5 rounded-xl border ${rec.accent} flex items-start gap-3 backdrop-blur-md`}
+                >
+                  <div className="shrink-0 mt-0.5">{rec.icon}</div>
+                  <div className="min-w-0">
+                    <h4 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wide">
+                      {rec.title}
+                    </h4>
+                    <p className="text-[11px] sm:text-xs text-gray-700 dark:text-neutral-300 mt-0.5 leading-relaxed">
+                      {rec.message}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
-};
-export default NutritionInsights;
+}

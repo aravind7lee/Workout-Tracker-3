@@ -215,7 +215,7 @@ const NutritionAnalytics = ({
       "div",
       {
         className:
-          "relative overflow-hidden bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg",
+          "relative overflow-hidden bg-white dark:bg-gradient-to-r dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200 dark:border-neutral-800 shadow-sm dark:shadow-lg",
       },
       /*#__PURE__*/ React.createElement(
         "div",
@@ -717,7 +717,7 @@ const NutritionAnalytics = ({
       "div",
       {
         className:
-          "bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg",
+          "bg-gray-50 dark:bg-gradient-to-r dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200 dark:border-neutral-800 shadow-sm dark:shadow-lg",
       },
       /*#__PURE__*/ React.createElement(
         "h4",
@@ -742,7 +742,7 @@ const NutritionAnalytics = ({
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.improving ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" : "bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850"}`,
+            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.improving ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" : "bg-white dark:bg-neutral-900/50 text-gray-500 dark:text-neutral-500 border border-gray-200 dark:border-neutral-850"}`,
           },
           /*#__PURE__*/ React.createElement(
             "div",
@@ -763,7 +763,7 @@ const NutritionAnalytics = ({
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.consistent ? "bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300" : "bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850"}`,
+            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.consistent ? "bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300" : "bg-white dark:bg-neutral-900/50 text-gray-500 dark:text-neutral-500 border border-gray-200 dark:border-neutral-850"}`,
           },
           /*#__PURE__*/ React.createElement(
             "div",
@@ -784,7 +784,7 @@ const NutritionAnalytics = ({
         /*#__PURE__*/ React.createElement(
           "div",
           {
-            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.balanced ? "bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300" : "bg-neutral-900/50 dark:bg-neutral-900/50 text-neutral-500 border border-neutral-850"}`,
+            className: `text-center p-2 sm:p-2.5 md:p-3 rounded-lg shadow-md ${analytics.trends.balanced ? "bg-red-100/10 dark:bg-red-950/30 text-red-650 dark:text-red-300" : "bg-white dark:bg-neutral-900/50 text-gray-500 dark:text-neutral-500 border border-gray-200 dark:border-neutral-850"}`,
           },
           /*#__PURE__*/ React.createElement(
             "div",

@@ -31,12 +31,12 @@ export default function Navbar() {
 
   const navLinks = [
     { to: "/dashboard", label: "Dashboard" },
-    { to: "/start-workout", label: "Start Workout" },
+    { to: "/start-workout", label: "workout-session" },
     { to: "/library", label: "Library" },
     { to: "/my-plans", label: "My Plans" },
     { to: "/plans", label: "Plans" },
     { to: "/splits", label: "Splits" },
-    { to: "/nutrition", label: "Nutrition" },
+    { to: "/nutrition", label: "Nutrition Tracker" },
     { to: "/analytics", label: "Analytics" },
     { to: "/legends", label: "Champs" },
     { to: "/profile", label: "Profile" },
@@ -133,7 +133,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="app-navbar-links hidden min-w-0 lg:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-2 xl:px-6 overflow-x-hidden">
+          <div className="app-navbar-links hidden min-w-0 xl:flex items-center justify-center flex-1 gap-0.5 xl:gap-1 px-2 xl:px-6 overflow-x-hidden">
             {navLinks.map((link) => {
               const active = isActiveRoute(link.to);
               return (
@@ -154,7 +154,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Section */}
-          <div className={`app-navbar-actions flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100'}`}>
+          <div className={`app-navbar-actions flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 flex-shrink-0 transition-opacity duration-200 ${isOpen ? 'opacity-0 pointer-events-none xl:opacity-100 xl:pointer-events-auto' : 'opacity-100'}`}>
             {/* Connection Status */}
             <div className="app-navbar-status hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900/80 border border-zinc-800 shadow-inner backdrop-blur-md">
               {connectionStatus.fullyOnline ? (
@@ -165,12 +165,12 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Search */}
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <SearchBar isMobile={false} />
             </div>
 
             {/* Mobile Search */}
-            <div className="lg:hidden flex-shrink-0">
+            <div className="xl:hidden flex-shrink-0">
               <SearchBar isMobile={true} />
             </div>
 
@@ -276,7 +276,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="app-navbar-menu lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg relative z-[60] flex-shrink-0 ml-0.5 sm:ml-1"
+              className="app-navbar-menu xl:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1a1a1a]/80 backdrop-blur-md border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#252525] transition-all duration-300 shadow-lg relative z-[60] flex-shrink-0 ml-0.5 sm:ml-1"
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (

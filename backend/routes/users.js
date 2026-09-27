@@ -10,6 +10,7 @@ import { settingsLimiter } from '../middleware/rateLimiter.js';
 import { completeOnboarding, recalculateTDEE, resetOnboarding } from '../controllers/onboardingController.js';
 import { recommendSplit } from '../services/splitRecommendationEngine.js';
 import { check as checkAchievements } from '../services/achievementEngine.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const router = express.Router();
 
@@ -138,6 +139,7 @@ router.put('/profile', auth, async (req, res) => {
     const updatedFields = Object.keys(updateData).filter(key => key !== 'updatedAt' && key !== 'lastActiveDate');
     console.log(`✅ Real-time update for user ${user._id}: ${updatedFields.join(', ')}`);
     
+    emitToUser(user._id, 'profile_updated', { fields: updatedFields });
     res.json({ 
       success: true, 
       user,
@@ -701,6 +703,7 @@ router.put('/settings', settingsLimiter, auth, async (req, res) => {
     
     console.log(`✅ Settings updated for user ${user._id}`);
     
+    emitToUser(user._id, 'profile_updated', { action: 'settings_updated', fields: updatedFields });
     res.json({ 
       success: true, 
       settings, 
@@ -827,6 +830,8 @@ router.post('/streak/check-in', auth, async (req, res) => {
     await user.save();
 
     const achievements = await checkAchievements(user._id).catch((error) => { console.warn('Achievement check skipped after streak save:', error.message); return []; });
+    emitToUser(user._id, 'streak_updated', { currentStreak: newStreak, longestStreak: newLongest, totalCheckIns: accurateTotal });
+    achievements.forEach((achievement) => emitToUser(user._id, 'achievement_unlocked', { achievement }));
 
     console.log(`✅ [Streak API] User ${req.user.id} checked in: ${newStreak} days active, total logs: ${accurateTotal}`);
 

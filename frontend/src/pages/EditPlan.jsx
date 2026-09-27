@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { planService } from "../services/planService";
 import { exerciseLibrary } from "../data/exerciseLibrary";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function EditPlan() {
@@ -265,6 +266,10 @@ export default function EditPlan() {
     {
       className: "space-y-4 sm:space-y-6",
     },
+    /*#__PURE__*/ React.createElement(BackToDashboard, {
+      className: "mb-3",
+      variant: "inline"
+    }),
     /*#__PURE__*/ React.createElement(
       "div",
       {

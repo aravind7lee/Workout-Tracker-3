@@ -8,6 +8,7 @@ import "../styles/analytics-mobile.css";
 import PRWall from "../components/PRWall";
 import { exportAllWorkoutsCSV } from "../utils/exportWorkouts";
 import { useNavigate } from "react-router-dom";
+import BackToDashboard from "../components/BackToDashboard";
 
 Chart.register(...registerables);
 
@@ -54,7 +55,7 @@ function AnalyticsHero() {
             transition={{ duration: 0.6 }}
           >
             <h1
-              className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-orange-500 drop-shadow-2xl"
+              className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-red-500 drop-shadow-2xl"
               style={{
                 textShadow: "0 4px 20px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7)",
               }}
@@ -81,10 +82,16 @@ export default function Analytics() {
   return (
     <AuthGuard>
       <div className="min-h-screen bg-black text-white relative overflow-hidden pb-16">
+        <BackToDashboard variant="floating" />
         <AnalyticsHero />
         <RealAnalyticsSection />
         <div className="mx-auto max-w-6xl px-4 pb-8"><PRWall /></div>
-        <div className="mx-auto flex max-w-6xl flex-wrap justify-end gap-2 px-4 pb-12"><button onClick={() => navigate('/workout-timeline')} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Workout timeline</button><button onClick={exportAllWorkoutsCSV} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Export workout CSV</button><button onClick={() => navigate('/progress-report')} className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-black">Open progress report</button></div>
+        <div className="mx-auto flex max-w-6xl flex-wrap justify-end gap-2 px-4 pb-12">
+          <button onClick={() => navigate('/dashboard')} className="rounded-xl border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 px-4 py-2.5 text-xs font-black text-white transition-all">← Dashboard</button>
+          <button onClick={() => navigate('/workout-timeline')} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Workout timeline</button>
+          <button onClick={exportAllWorkoutsCSV} className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-xs font-black">Export workout CSV</button>
+          <button onClick={() => navigate('/progress-report')} className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-black">Open progress report</button>
+        </div>
       </div>
     </AuthGuard>
   );

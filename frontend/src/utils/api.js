@@ -99,9 +99,31 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Enhanced response interceptor with better token handling
+// Enhanced response interceptor with automatic token renewal & handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // 1. Capture auto-renewed token from backend
+    const newToken = response.headers?.['x-new-token'] || response.headers?.['X-New-Token'];
+    if (newToken) {
+      localStorage.setItem("token", newToken);
+      setAuthToken(newToken);
+      console.log("🔄 Auth token seamlessly auto-refreshed by backend");
+    }
+
+    // 2. Handle 401 if validateStatus allows status < 500
+    if (response.status === 401) {
+      const hadToken = !!localStorage.getItem("token");
+      if (hadToken) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setAuthToken(null);
+        window.dispatchEvent(new CustomEvent("userLoggedOut"));
+      }
+      return Promise.reject(new Error("Unauthorized: Invalid authentication credentials"));
+    }
+
+    return response;
+  },
   (error) => {
     // Silently handle browser extension conflicts
     if (
@@ -122,18 +144,13 @@ api.interceptors.response.use(
 
     // Handle authentication errors from the server
     if (error.response?.status === 401) {
-      // Only clear token and redirect if the user was previously logged in
       const hadToken = !!localStorage.getItem("token");
-
       if (hadToken) {
-        // Clear invalid/expired tokens
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-
-        // Dispatch logout event to clean up auth context
+        setAuthToken(null);
         window.dispatchEvent(new CustomEvent("userLoggedOut"));
 
-        // Only redirect if not already on auth pages
         if (
           window.location.pathname !== "/login" &&
           window.location.pathname !== "/register"

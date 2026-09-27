@@ -1,5 +1,6 @@
 // frontend/src/pages/MealPlanner.jsx
 import React, { useState } from "react";
+import BackToDashboard from "../components/BackToDashboard";
 
 export default function MealPlanner() {
   const [meals, setMeals] = useState([]);
@@ -38,6 +39,7 @@ export default function MealPlanner() {
 
   return (
     <div>
+      <BackToDashboard className="mb-4" variant="inline" />
       <h2 className="text-2xl font-semibold mb-4">Meal & Nutrition Planner</h2>
       <div className="grid md:grid-cols-2 gap-4">
         <div className="card p-4">

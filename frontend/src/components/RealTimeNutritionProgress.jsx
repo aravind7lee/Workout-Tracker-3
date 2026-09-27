@@ -152,7 +152,7 @@ const RealTimeNutritionProgress = ({
     "div",
     {
       className:
-        "bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow",
+        "nutrition-progress-card bg-white dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow",
     },
     /*#__PURE__*/ React.createElement(
       "div",

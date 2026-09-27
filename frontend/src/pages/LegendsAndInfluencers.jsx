@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { ArrowRight, Trophy, Globe, Star, Zap, Search, Sparkles, Filter, Dumbbell } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import BackToDashboard from "../components/BackToDashboard";
 
 import BuilderCard from "../components/BuilderCard";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -201,6 +202,7 @@ export default function LegendsAndInfluencers() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-36 sm:pb-28 overflow-x-hidden">
+      <BackToDashboard variant="floating" />
       
       {/* 1. HERO SECTION */}
       <motion.section

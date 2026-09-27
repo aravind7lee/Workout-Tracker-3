@@ -58,13 +58,14 @@ import Achievements from "./pages/Achievements";
 import AchievementToast from "./components/AchievementToast";
 import ProgressReport from "./pages/ProgressReport";
 import WorkoutTimelinePage from "./pages/WorkoutTimelinePage";
+import BackToDashboard from "./components/BackToDashboard";
 import chromeErrorHandler from "./utils/chromeErrorHandler";
 import "./utils/finalErrorCleanup"; // Stop continuous API calls
 import "./utils/silentMode"; // Complete console silence
 import "./utils/errorSuppression"; // Suppress import errors
 
-import "./utils/testWorkoutCompletion"; // Test utilities for real-time updates
-import "./utils/testPlanWorkoutCompletion"; // Test plan workout completion flow
+
+
 import "./utils/cleanupFakeWorkouts"; // Cleanup fake workouts
 
 import "./styles/button-improvements.css"; // Global button improvements
@@ -125,6 +126,10 @@ const Search = () => {
     {
       className: "max-w-4xl mx-auto py-8",
     },
+    /*#__PURE__*/ React.createElement(BackToDashboard, {
+      className: "mb-4",
+      variant: "inline"
+    }),
     /*#__PURE__*/ React.createElement(
       "h1",
       {
@@ -320,10 +325,10 @@ const ExerciseDetail = () => {
     /*#__PURE__*/ React.createElement(
       "button",
       {
-        onClick: () => navigate(-1),
+        onClick: () => navigate("/dashboard"),
         className: "mb-6 text-blue-600 hover:text-blue-800",
       },
-      "\u2190 Back",
+      "\u2190 Back to Dashboard",
     ),
     /*#__PURE__*/ React.createElement(
       "div",
@@ -854,7 +859,9 @@ const OnboardingGate = () => {
   if (location.pathname === '/onboarding' && !isAuthenticated()) {
     return /*#__PURE__*/ React.createElement(Navigate, { to: "/register", replace: true });
   }
-  const isSplitBrowser = ['/splits', '/workout-splits'].includes(location.pathname) && location.state?.fromOnboarding;
+  const isSplitBrowser = ['/splits', '/workout-splits'].includes(location.pathname) && (
+    location.state?.fromOnboarding || sessionStorage.getItem('grindx_onboarding_in_progress') === 'true'
+  );
   if (user?.onboardingCompleted === false && location.pathname !== '/onboarding' && !isSplitBrowser) {
     return /*#__PURE__*/ React.createElement(Navigate, { to: "/onboarding", replace: true });
   }
@@ -865,24 +872,30 @@ const OnboardingLauncher = () => {
   const { user, loading, isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const hiddenRoutes = ['/onboarding', '/login', '/register', '/workout-session', '/active-workout'];
+  const hiddenRoutes = ['/onboarding', '/login', '/register', '/workout-session', '/active-workout', '/start-workout'];
 
   if (loading || !user || !isAuthenticated() || hiddenRoutes.includes(location.pathname)) return null;
+
+  const isInProgress = sessionStorage.getItem('grindx_onboarding_in_progress') === 'true';
 
   return /*#__PURE__*/ React.createElement(
     "button",
     {
       type: "button",
-      onClick: () => navigate('/onboarding'),
-      className: "onboarding-launcher fixed bottom-24 right-4 z-[90] inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-600 px-4 py-3 text-xs font-black uppercase tracking-wider text-white shadow-[0_12px_35px_rgba(220,38,38,0.4)] transition hover:-translate-y-0.5 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-950 md:bottom-8 md:right-8",
-      "aria-label": user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
-      title: user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
+      onClick: () => navigate('/onboarding', { state: { resumeStep: 7 } }),
+      className: `onboarding-launcher fixed bottom-24 right-4 z-[90] inline-flex items-center gap-2 rounded-full border px-4 py-3 text-xs font-black uppercase tracking-wider text-white shadow-[0_12px_35px_rgba(220,38,38,0.4)] transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-950 md:bottom-8 md:right-8 ${
+        isInProgress
+          ? 'bg-gradient-to-r from-red-600 to-orange-600 border-orange-400/60 shadow-orange-600/30 animate-pulse'
+          : 'border-red-400/30 bg-red-600 hover:bg-red-500'
+      }`,
+      "aria-label": isInProgress ? "Resume fitness profile setup" : user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
+      title: isInProgress ? "Resume fitness profile setup" : user.onboardingCompleted ? "Open fitness profile" : "Complete fitness setup",
     },
     /*#__PURE__*/ React.createElement(Sparkles, { className: "h-4 w-4" }),
     /*#__PURE__*/ React.createElement(
       "span",
       { className: "hidden sm:inline" },
-      user.onboardingCompleted ? "Fitness Profile" : "Complete Fitness Setup",
+      isInProgress ? "Resume Setup" : user.onboardingCompleted ? "Fitness Profile" : "Complete Fitness Setup",
     ),
   );
 };

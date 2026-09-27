@@ -8,6 +8,7 @@ import fetch from 'node-fetch';
 import foodDatabase from '../services/foodDatabase.js';
 import { check as checkAchievements } from '../services/achievementEngine.js';
 import { calculateTDEE, calculateMacros } from '../services/tdeeCalculator.js';
+import { emitToUser } from '../services/realtimeGateway.js';
 
 const router = express.Router();
 
@@ -128,6 +129,7 @@ router.put('/users/me/targets', auth, async (req, res) => {
 
     const rawGoal = (nutritionGoal.goal || 'maintenance').toLowerCase();
     const resolvedGoalType = rawGoal === 'maintenance' ? 'maintain' : (rawGoal === 'deficit' ? 'cut' : rawGoal);
+    emitToUser(req.user.id, 'nutrition_updated', { action: 'targets_updated' });
 
     res.json({
       success: true,
@@ -233,6 +235,8 @@ router.post('/meals', auth, async (req, res) => {
     };
     
     const achievements = await checkAchievements(req.user.id).catch((error) => { console.warn('Achievement check skipped after meal save:', error.message); return []; });
+    emitToUser(req.user.id, 'meal_updated', { action: 'created', mealId: meal._id });
+    achievements.forEach((achievement) => emitToUser(req.user.id, 'achievement_unlocked', { achievement }));
     res.status(201).json({ success: true, data: mealResponse, achievements });
   } catch (error) {
     console.error('Add meal error:', error);
@@ -263,6 +267,8 @@ router.delete('/meals/:id', auth, async (req, res) => {
     if (!meal) {
       return res.status(404).json({ success: false, message: 'Meal not found' });
     }
+
+    emitToUser(req.user.id, 'meal_updated', { action: 'deleted', mealId });
 
     res.json({ success: true, message: 'Meal deleted successfully' });
   } catch (error) {

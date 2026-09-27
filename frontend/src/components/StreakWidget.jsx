@@ -407,7 +407,7 @@ export default function StreakWidget({ className = "", compact = false }) {
                 className="w-full py-2.5 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white font-bold text-xs uppercase tracking-wider border border-neutral-700/60 hover:border-orange-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5 text-orange-400" />
-                <span>Start Workout Session</span>
+                <span>Start workout-session</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

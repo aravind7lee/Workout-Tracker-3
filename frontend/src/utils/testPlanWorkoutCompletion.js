@@ -209,14 +209,8 @@ function runPlanWorkoutCompletionTests() {
   }
 }
 
-// Auto-run tests when script loads
+// Available globally for manual developer console testing only (disabled auto-run on app boot)
 if (typeof window !== "undefined") {
-  // Wait for real-time services to be available
-  setTimeout(() => {
-    runPlanWorkoutCompletionTests();
-  }, 1000);
-
-  // Make test functions available globally for manual testing
   window.testPlanWorkoutCompletion = testPlanWorkoutCompletion;
   window.testWorkoutsPageData = testWorkoutsPageData;
   window.testStatsUpdates = testStatsUpdates;

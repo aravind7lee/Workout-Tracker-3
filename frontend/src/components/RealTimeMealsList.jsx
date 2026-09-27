@@ -1,551 +1,273 @@
-import { Utensils, Hourglass, Trash2, Star, X } from 'lucide-react';
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Utensils, Trash2, Copy, Coffee, Sun, Moon, Zap, Dumbbell, 
+  Sparkles, Clock, AlertTriangle, Check 
+} from "lucide-react";
 
+export default function RealTimeMealsList({
+  meals = [],
+  isLoading = false,
+  onDeleteMeal,
+  onDuplicateMeal,
+}) {
+  const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [duplicatingId, setDuplicatingId] = useState(null);
 
-const RealTimeMealsList = ({ meals, isLoading, onDeleteMeal }) => {
-  const [stableMeals, setStableMeals] = useState([]);
-  const [deletingMealIds, setDeletingMealIds] = useState(new Set());
-  const prevMealsRef = useRef([]);
-
-  // Ensure meals persist and don't disappear
-  useEffect(() => {
-    if (meals && meals.length > 0) {
-      setStableMeals(
-        meals.filter((meal) => !deletingMealIds.has(meal._id || meal.id)),
-      );
-    } else if (!isLoading) {
-      setStableMeals([]);
-    }
-  }, [meals, isLoading, deletingMealIds]);
-  const handleDeleteMeal = async (mealId) => {
-    if (!mealId || deletingMealIds.has(mealId)) return;
-    if (window.confirm("Are you sure you want to delete this meal?")) {
-      try {
-        // Add to deleting set to prevent re-adding
-        setDeletingMealIds((prev) => new Set([...prev, mealId]));
-
-        // Optimistically remove from stable meals
-        setStableMeals((prev) =>
-          prev.filter(
-            (meal) =>
-              meal._id &&
-              meal._id.toString() !== mealId.toString() &&
-              meal.id &&
-              meal.id.toString() !== mealId.toString(),
-          ),
-        );
-
-        // Call parent delete function
-        await onDeleteMeal(mealId);
-
-        // Show success notification
-        const notification = document.createElement("div");
-        notification.className =
-          "fixed top-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg z-50";
-        notification.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="text-xl">✅</div>
-            <div class="font-medium">Meal Deleted Successfully</div>
-          </div>
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => {
-          if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-          }
-        }, 2000);
-      } catch (error) {
-        console.error("Delete meal error:", error);
-
-        // Remove from deleting set on error
-        setDeletingMealIds((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(mealId);
-          return newSet;
-        });
-
-        // Show error notification
-        const errorNotification = document.createElement("div");
-        errorNotification.className =
-          "fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50";
-        errorNotification.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div className="text-xl"><X className="w-[1em] h-[1em] inline-block" /></div>
-            <div>
-              <div class="font-medium">Delete Failed</div>
-              <div class="text-sm opacity-90">${error.message}</div>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(errorNotification);
-        setTimeout(() => {
-          if (document.body.contains(errorNotification)) {
-            document.body.removeChild(errorNotification);
-          }
-        }, 4000);
-      } finally {
-        // Clean up deleting state after a delay
-        setTimeout(() => {
-          setDeletingMealIds((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(mealId);
-            return newSet;
-          });
-        }, 1000);
-      }
+  const handleDelete = async (mealId) => {
+    if (!mealId) return;
+    try {
+      setDeletingId(mealId);
+      await onDeleteMeal(mealId);
+    } catch (err) {
+      console.error("Delete failed:", err);
+    } finally {
+      setDeletingId(null);
+      setConfirmDeleteId(null);
     }
   };
-  const displayMeals = meals || [];
-  return /*#__PURE__*/ React.createElement(
-    "div",
-    {
-      className:
-        "bg-light-bg-soft dark:bg-dark-bg-soft backdrop-blur-premium border border-gray-200 dark:border-dark-border rounded-2xl p-6 shadow-light-card dark:shadow-dark-card transition-all duration-300 hover:shadow-lg dark:hover:shadow-dark-glow",
-    },
-    /*#__PURE__*/ React.createElement(
-      "div",
-      {
-        className: "flex items-center justify-between mb-4",
-      },
-      /*#__PURE__*/ React.createElement(
-        "h3",
-        {
-          className:
-            "text-lg font-semibold text-light-text-primary dark:text-dark-text-primary flex items-center gap-2",
-        },
-        /*#__PURE__*/ React.createElement(
-          "span",
-          null,
-          /*#__PURE__*/ React.createElement(Utensils, {
-            className: "w-[1em] h-[1em] inline-block",
-          }),
-        ),
-        " Today's Meals",
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        {
-          className: "flex items-center gap-2",
-        },
-        /*#__PURE__*/ React.createElement("span", {
-          className: "w-2 h-2 bg-red-600 rounded-full animate-pulse",
-        }),
-        /*#__PURE__*/ React.createElement(
-          "span",
-          {
-            className:
-              "text-sm text-light-text-muted dark:text-dark-text-muted",
-          },
-          displayMeals.length,
-          " meals",
-        ),
-      ),
-    ),
-    isLoading && displayMeals.length === 0
-      ? /*#__PURE__*/ React.createElement(
-          "div",
-          {
-            className: "space-y-3",
-          },
-          [1, 2, 3].map((i) =>
-            /*#__PURE__*/ React.createElement("div", {
-              key: i,
-              className:
-                "animate-pulse bg-gray-200 dark:bg-dark-bg-tertiary/50 h-16 rounded-lg",
-            }),
-          ),
-        )
-      : displayMeals.length === 0
-        ? /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "text-center py-8",
-            },
-            /*#__PURE__*/ React.createElement(
-              "div",
-              {
-                className: "text-4xl mb-3",
-              },
-              /*#__PURE__*/ React.createElement(Utensils, {
-                className: "w-[1em] h-[1em] inline-block",
-              }),
-            ),
-            /*#__PURE__*/ React.createElement(
-              "p",
-              {
-                className:
-                  "text-light-text-muted dark:text-dark-text-muted mb-4",
-              },
-              "No meals logged today",
-            ),
-            /*#__PURE__*/ React.createElement(
-              "p",
-              {
-                className:
-                  "text-sm text-light-text-muted/80 dark:text-dark-text-muted/80",
-              },
-              "Add your first meal above to start tracking!",
-            ),
-          )
-        : /*#__PURE__*/ React.createElement(
-            "div",
-            {
-              className: "space-y-3",
-            },
-            /*#__PURE__*/ React.createElement(
-              AnimatePresence,
-              {
-                mode: "popLayout",
-              },
-              displayMeals.map((meal) => {
-                const mealId = meal._id || meal.id || `meal-${Math.random()}`;
-                const isDeleting = deletingMealIds.has(mealId);
-                return /*#__PURE__*/ React.createElement(
-                  motion.div,
-                  {
-                    key: mealId,
-                    layout: true,
-                    initial: {
-                      opacity: 0,
-                      y: 20,
-                      scale: 0.95,
-                    },
-                    animate: {
-                      opacity: isDeleting ? 0.5 : 1,
-                      y: 0,
-                      scale: isDeleting ? 0.95 : 1,
-                    },
-                    exit: {
-                      opacity: 0,
-                      x: -100,
-                      scale: 0.9,
-                    },
-                    transition: {
-                      duration: 0.3,
-                      ease: "easeOut",
-                    },
-                    className: `flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-200 space-y-3 sm:space-y-0 ${isDeleting ? "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800" : meal.synced === false ? "bg-red-600/10 dark:bg-red-600/10 border border-red-600/30 dark:border-red-500/30" : "bg-gray-50 dark:bg-dark-bg-secondary/60 hover:bg-gray-100 dark:hover:bg-dark-bg-secondary/80 border border-gray-200 dark:border-dark-border backdrop-blur-xs"}`,
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "flex-1 space-y-2",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "flex items-center justify-between",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "flex items-center gap-2 flex-1",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "font-medium text-light-text-primary dark:text-dark-text-primary capitalize text-sm sm:text-base",
-                          },
-                          meal.parsedName || meal.name || "Unknown Food",
-                        ),
-                        meal.synced === false &&
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className:
-                                "text-xs bg-red-600/20 text-red-500 px-2 py-1 rounded animate-pulse",
-                            },
-                            "Syncing...",
-                          ),
-                        isDeleting &&
-                          /*#__PURE__*/ React.createElement(
-                            "div",
-                            {
-                              className:
-                                "text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded",
-                            },
-                            "Deleting...",
-                          ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "button",
-                        {
-                          onClick: () => handleDeleteMeal(mealId),
-                          disabled: isDeleting || (!meal._id && !meal.id),
-                          className:
-                            "sm:hidden text-red-400 hover:text-red-300 hover:bg-red-500/20 dark:hover:bg-red-500/30 p-1.5 rounded-lg transition-all border border-red-400/30 hover:border-red-400/60 disabled:opacity-50 disabled:cursor-not-allowed",
-                          title: "Delete meal",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: "text-xs",
-                          },
-                          isDeleting ? "⏳" : "🗑️",
-                        ),
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "text-xs sm:text-sm text-light-text-muted dark:text-dark-text-muted",
-                      },
-                      meal.servingText || "Standard serving",
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "text-xs text-light-text-muted/80 dark:text-dark-text-muted/80 flex flex-wrap items-center gap-2",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        null,
-                        new Date(
-                          meal.consumedAt || Date.now(),
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "capitalize",
-                        },
-                        meal.mealType || "snack",
-                      ),
-                      meal.source &&
-                        /*#__PURE__*/ React.createElement(
-                          "span",
-                          {
-                            className: `px-1 rounded text-xs ${meal.source === "nutritionix" ? "bg-red-600/20 text-red-500" : meal.source === "fallback" ? "bg-yellow-500/20 text-yellow-400" : "bg-neutral-700/50 text-neutral-400"}`,
-                          },
-                          meal.source === "nutritionix"
-                            ? "🔥 Live"
-                            : meal.source,
-                        ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className:
-                          "grid grid-cols-4 gap-2 sm:hidden pt-2 border-t border-gray-200 dark:border-dark-border",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-center",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-light-text-primary dark:text-dark-text-primary font-medium text-sm",
-                          },
-                          Math.round(meal.calories || 0),
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-light-text-muted dark:text-dark-text-muted text-xs",
-                          },
-                          "cal",
-                        ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-center",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-red-700 dark:text-red-500 font-medium text-sm",
-                          },
-                          Math.round((meal.protein || 0) * 10) / 10,
-                          "g",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-light-text-muted dark:text-dark-text-muted text-xs",
-                          },
-                          "protein",
-                        ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-center",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-green-600 dark:text-red-500 font-medium text-sm",
-                          },
-                          Math.round((meal.carbs || 0) * 10) / 10,
-                          "g",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-light-text-muted dark:text-dark-text-muted text-xs",
-                          },
-                          "carbs",
-                        ),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className: "text-center",
-                        },
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-yellow-600 dark:text-yellow-400 font-medium text-sm",
-                          },
-                          Math.round((meal.fat || 0) * 10) / 10,
-                          "g",
-                        ),
-                        /*#__PURE__*/ React.createElement(
-                          "div",
-                          {
-                            className:
-                              "text-light-text-muted dark:text-dark-text-muted text-xs",
-                          },
-                          "fat",
-                        ),
-                      ),
-                    ),
-                  ),
-                  /*#__PURE__*/ React.createElement(
-                    "div",
-                    {
-                      className: "hidden sm:flex items-center gap-4 text-sm",
-                    },
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "text-center",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-light-text-primary dark:text-dark-text-primary font-medium",
-                        },
-                        Math.round(meal.calories || 0),
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-light-text-muted dark:text-dark-text-muted text-xs",
-                        },
-                        "cal",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "text-center",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-red-700 dark:text-red-500 font-medium",
-                        },
-                        Math.round((meal.protein || 0) * 10) / 10,
-                        "g",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-light-text-muted dark:text-dark-text-muted text-xs",
-                        },
-                        "protein",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "text-center",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-green-600 dark:text-red-500 font-medium",
-                        },
-                        Math.round((meal.carbs || 0) * 10) / 10,
-                        "g",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-light-text-muted dark:text-dark-text-muted text-xs",
-                        },
-                        "carbs",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "div",
-                      {
-                        className: "text-center",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-yellow-600 dark:text-yellow-400 font-medium",
-                        },
-                        Math.round((meal.fat || 0) * 10) / 10,
-                        "g",
-                      ),
-                      /*#__PURE__*/ React.createElement(
-                        "div",
-                        {
-                          className:
-                            "text-light-text-muted dark:text-dark-text-muted text-xs",
-                        },
-                        "fat",
-                      ),
-                    ),
-                    /*#__PURE__*/ React.createElement(
-                      "button",
-                      {
-                        onClick: () => handleDeleteMeal(mealId),
-                        disabled: isDeleting || (!meal._id && !meal.id),
-                        className:
-                          "text-red-400 hover:text-red-300 hover:bg-red-500/20 dark:hover:bg-red-500/30 p-2 rounded-lg transition-all ml-2 border border-red-400/30 hover:border-red-400/60 dark:hover:shadow-red-500/20 dark:hover:shadow-lg backdrop-blur-xs disabled:opacity-50 disabled:cursor-not-allowed",
-                        title: "Delete meal",
-                      },
-                      /*#__PURE__*/ React.createElement(
-                        "span",
-                        {
-                          className: "text-sm",
-                        },
-                        isDeleting ? "⏳ Deleting..." : "🗑️ Remove",
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
+
+  const handleDuplicate = async (meal) => {
+    const mId = meal._id || meal.id;
+    try {
+      setDuplicatingId(mId);
+      await onDuplicateMeal?.(meal);
+    } catch (err) {
+      console.error("Duplicate failed:", err);
+    } finally {
+      setDuplicatingId(null);
+    }
+  };
+
+  // Group meals by period
+  const periods = [
+    { key: "breakfast", label: "Breakfast", icon: Coffee, color: "text-amber-400" },
+    { key: "lunch", label: "Lunch", icon: Sun, color: "text-orange-400" },
+    { key: "dinner", label: "Dinner", icon: Moon, color: "text-purple-400" },
+    { key: "pre-workout", label: "Pre-Workout Fuel", icon: Zap, color: "text-yellow-400" },
+    { key: "post-workout", label: "Post-Workout Anabolism", icon: Dumbbell, color: "text-blue-400" },
+    { key: "snack", label: "Snacks & Drinks", icon: Sparkles, color: "text-emerald-400" },
+  ];
+
+  const grouped = periods.map((period) => {
+    const periodMeals = meals.filter((m) => {
+      const type = (m.mealType || "snack").toLowerCase();
+      if (period.key === "snack") {
+        return type === "snack" || !periods.some((p) => p.key === type);
+      }
+      return type === period.key;
+    });
+
+    const cals = periodMeals.reduce((acc, m) => acc + (m.calories || 0), 0);
+    const protein = periodMeals.reduce((acc, m) => acc + (m.protein || 0), 0);
+
+    return {
+      ...period,
+      meals: periodMeals,
+      cals: Math.round(cals),
+      protein: Math.round(protein * 10) / 10,
+    };
+  });
+
+  const totalLoggedMeals = meals.length;
+
+  return (
+    <div className="meals-list-card rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900/90 p-4 sm:p-6 shadow-sm dark:shadow-xl backdrop-blur-xl space-y-5 text-gray-900 dark:text-white transition-colors">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-white/5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-500 dark:text-orange-400 shrink-0">
+            <Utensils className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+              <span>Today&apos;s Meal Log</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 font-mono font-bold">
+                {totalLoggedMeals}
+              </span>
+            </h3>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-neutral-400">
+              Chronological nutrition logs with macro subtotals
+            </p>
+          </div>
+        </div>
+
+        {totalLoggedMeals > 0 && (
+          <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Active</span>
+          </div>
+        )}
+      </div>
+
+      {/* Loading Skeleton */}
+      {isLoading && totalLoggedMeals === 0 && (
+        <div className="space-y-3 py-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-16 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && totalLoggedMeals === 0 && (
+        <div className="text-center py-10 sm:py-12 space-y-3">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 dark:text-neutral-500">
+            <Utensils className="w-7 h-7" />
+          </div>
+          <div>
+            <h4 className="text-base font-bold text-gray-900 dark:text-white">No meals logged for this date</h4>
+            <p className="text-xs text-gray-500 dark:text-neutral-400 max-w-sm mx-auto mt-1">
+              Search for ingredients, pick from quick-add foods, or tap &quot;Fast Macros&quot; above to log your intake!
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Grouped Meal Sections */}
+      {totalLoggedMeals > 0 && (
+        <div className="space-y-5">
+          {grouped
+            .filter((g) => g.meals.length > 0)
+            .map((group) => {
+              const GroupIcon = group.icon;
+              return (
+                <div key={group.key} className="space-y-2.5">
+                  {/* Period Header */}
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-2">
+                      <GroupIcon className={`w-4 h-4 ${group.color}`} />
+                      <h4 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                        {group.label}
+                      </h4>
+                      <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-mono">
+                        ({group.meals.length})
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold">
+                      <span className="text-orange-500 dark:text-orange-400">{group.cals} kcal</span>
+                      <span className="text-gray-300 dark:text-neutral-600">•</span>
+                      <span className="text-blue-500 dark:text-blue-400">{group.protein}g protein</span>
+                    </div>
+                  </div>
+
+                  {/* Meals List for this Period */}
+                  <div className="space-y-2">
+                    <AnimatePresence mode="popLayout">
+                      {group.meals.map((meal) => {
+                        const mId = meal._id || meal.id;
+                        const isConfirmingDelete = confirmDeleteId === mId;
+                        const isDeletingThis = deletingId === mId;
+                        const isDuplicatingThis = duplicatingId === mId;
+
+                        const timeString = meal.consumedAt
+                          ? new Date(meal.consumedAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "";
+
+                        return (
+                          <motion.div
+                            key={mId}
+                            layout
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="p-3 sm:p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-neutral-950/70 hover:bg-gray-100/80 dark:hover:bg-neutral-950 hover:border-orange-500/30 dark:hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+                          >
+                            {/* Meal Info */}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h5 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate capitalize">
+                                  {meal.name}
+                                </h5>
+                                {timeString && (
+                                  <span className="text-[10px] text-gray-500 dark:text-neutral-500 flex items-center gap-0.5 font-mono">
+                                    <Clock className="w-2.5 h-2.5" />
+                                    {timeString}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-gray-500 dark:text-neutral-400 truncate">
+                                {meal.servingText || "1 serving"}
+                              </p>
+                            </div>
+
+                            {/* Macros & Actions */}
+                            <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                              {/* Macro Pills */}
+                              <div className="flex items-center gap-1.5 text-[11px] font-mono font-semibold">
+                                <span className="px-2 py-0.5 rounded-md bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/20 font-bold">
+                                  {Math.round(meal.calories || 0)} kcal
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                  {Math.round(meal.protein || 0)}g P
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                  {Math.round(meal.carbs || 0)}g C
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                  {Math.round(meal.fat || 0)}g F
+                                </span>
+                              </div>
+
+                              {/* Action Buttons */}
+                              <div className="flex items-center gap-1">
+                                {/* Duplicate / Eat Again */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleDuplicate(meal)}
+                                  disabled={isDuplicatingThis}
+                                  className="p-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                  title="Eat Again / Duplicate"
+                                >
+                                  <Copy className="w-3.5 h-3.5" />
+                                </button>
+
+                                {/* Delete / Confirm Delete */}
+                                {isConfirmingDelete ? (
+                                  <div className="flex items-center gap-1 bg-red-50 dark:bg-red-950/60 border border-red-500/40 p-0.5 rounded-lg">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDelete(mId)}
+                                      disabled={isDeletingThis}
+                                      className="px-2 py-0.5 bg-red-600 hover:bg-red-500 text-white font-bold text-[10px] rounded transition-colors"
+                                    >
+                                      {isDeletingThis ? "..." : "Delete"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setConfirmDeleteId(null)}
+                                      className="px-1.5 py-0.5 text-[10px] text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white"
+                                    >
+                                      No
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => setConfirmDeleteId(mId)}
+                                    className="p-1.5 rounded-lg border border-gray-200 dark:border-white/5 hover:border-red-500/30 bg-gray-100/60 dark:bg-white/[0.02] hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                                    title="Delete Meal"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      )}
+    </div>
   );
-};
-export default RealTimeMealsList;
+}

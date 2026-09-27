@@ -48,7 +48,7 @@
 
 /* ===== PREMIUM BUTTONS ===== */
 .dark .btn,
-.dark button {
+.dark button.btn {
   background: #27272a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f8fafc;
@@ -56,7 +56,7 @@
 }
 
 .dark .btn:hover,
-.dark button:hover {
+.dark button.btn:hover {
   background: #dc2626;
   border-color: #dc2626;
   color: #ffffff;
@@ -64,9 +64,9 @@
   transform: translateY(-1px);
 }
 
-.dark .btn-primary,
-.dark .bg-blue-600,
-.dark .bg-blue-500 {
+.dark .btn-primary {
+/* .dark .bg-blue-600, */
+/* .dark .bg-blue-500 */
   background: #dc2626 !important;
   border: none !important;
   color: #ffffff !important;
@@ -182,10 +182,10 @@
 }
 
 /* ===== PROGRESS BARS ===== */
-.dark .progress-bar,
-.dark .bg-green-500,
-.dark .bg-blue-500,
-.dark .bg-purple-500 {
+.dark .progress-bar-brand, .dark .progress-bar-danger {
+/* .dark .bg-green-500, */
+/* .dark .bg-blue-500, */
+/* .dark .bg-purple-500 */
   background: #FF0000 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }

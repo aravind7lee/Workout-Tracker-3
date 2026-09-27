@@ -3,6 +3,7 @@ import { BicepsFlexed, Dumbbell, Activity, Star, Target, Drumstick, Milk, Soup, 
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import BackToDashboard from "../components/BackToDashboard";
 
 
 export default function Search() {
@@ -333,6 +334,10 @@ export default function Search() {
     {
       className: "max-w-4xl mx-auto py-8",
     },
+    /*#__PURE__*/ React.createElement(BackToDashboard, {
+      className: "mb-4",
+      variant: "inline"
+    }),
     /*#__PURE__*/ React.createElement(
       "div",
       {

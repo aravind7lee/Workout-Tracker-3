@@ -195,7 +195,7 @@ const NutritionSocialDashboard = ({
       "div",
       {
         className:
-          "relative overflow-hidden bg-gradient-to-r from-neutral-950 to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-neutral-800 dark:border-red-950/20 shadow-lg",
+          "relative overflow-hidden bg-white dark:bg-gradient-to-r dark:from-neutral-950 dark:to-neutral-900 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200 dark:border-neutral-800 shadow-sm dark:shadow-lg",
       },
       /*#__PURE__*/ React.createElement(
         "div",

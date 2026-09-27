@@ -16,6 +16,7 @@ import PlanBuilder4 from "../assets/PlanBuilder4.jpg";
 import Particles from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import PremiumSkeletonLoader from "../components/PremiumSkeletonLoader";
+import BackToDashboard from "../components/BackToDashboard";
 import "../styles/plan-builder-header.css";
 
 
@@ -428,10 +429,10 @@ export default function PlansBuilder() {
       case "synced":
         return {
           icon: /*#__PURE__*/ React.createElement(CheckCircle2, {
-            className: "w-[1em] h-[1em] inline-block",
+            className: "w-[1em] h-[1em] inline-block text-emerald-600 dark:text-emerald-400",
           }),
           text: "Synced",
-          color: "text-red-500",
+          color: "text-emerald-600 dark:text-emerald-400",
         };
       case "syncing":
         return {
@@ -503,6 +504,9 @@ export default function PlansBuilder() {
         className:
           "theme-dark-surface relative w-full h-screen overflow-hidden bg-black",
       },
+      /*#__PURE__*/ React.createElement(BackToDashboard, {
+        variant: "floating",
+      }),
       /*#__PURE__*/ React.createElement(
         AnimatePresence,
         null,
@@ -1516,10 +1520,10 @@ export default function PlansBuilder() {
                 "span",
                 {
                   className:
-                    "text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded-full border border-green-700/50 w-fit",
+                    "text-xs font-semibold text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-green-300 dark:bg-green-900/30 dark:border-green-700/50 px-2.5 py-1 rounded-full border w-fit flex items-center gap-1 shadow-sm",
                 },
                 /*#__PURE__*/ React.createElement(Globe, {
-                  className: "w-[1em] h-[1em] inline-block",
+                  className: "w-[1em] h-[1em] inline-block text-emerald-600 dark:text-green-400",
                 }),
                 " Live",
               ),
@@ -1533,7 +1537,7 @@ export default function PlansBuilder() {
               "button",
               {
                 onClick: () => setAutoSave(!autoSave),
-                className: `text-xs px-3 py-2 rounded-full transition-all duration-200 ${autoSave ? "bg-blue-900/30 text-blue-300 border border-blue-700 hover:bg-blue-800/40" : "bg-neutral-800/50 text-neutral-400 border border-neutral-700 hover:bg-neutral-700/50"}`,
+                className: `text-xs px-3 py-2 rounded-full font-medium transition-all duration-200 ${autoSave ? "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-neutral-800/50 dark:text-neutral-400 dark:border-neutral-700"}`,
               },
               /*#__PURE__*/ React.createElement(
                 "span",
@@ -1555,7 +1559,7 @@ export default function PlansBuilder() {
                 /*#__PURE__*/ React.createElement(
                   "span",
                   {
-                    className: "font-medium",
+                    className: "font-bold",
                   },
                   autoSave ? "ON" : "OFF",
                 ),
@@ -1566,7 +1570,7 @@ export default function PlansBuilder() {
               {
                 onClick: loadDraft,
                 className:
-                  "text-xs px-3 py-2 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700 hover:bg-purple-800/40 transition-all duration-200",
+                  "text-xs px-3 py-2 rounded-full font-medium bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700 transition-all duration-200 shadow-sm",
               },
               /*#__PURE__*/ React.createElement(
                 "span",
@@ -1577,7 +1581,7 @@ export default function PlansBuilder() {
                   "span",
                   null,
                   /*#__PURE__*/ React.createElement(Edit, {
-                    className: "w-[1em] h-[1em] inline-block",
+                    className: "w-[1em] h-[1em] inline-block text-purple-600 dark:text-purple-400",
                   }),
                 ),
                 /*#__PURE__*/ React.createElement("span", null, "Load Draft"),
@@ -1742,7 +1746,11 @@ export default function PlansBuilder() {
                 onClick: savePlan,
                 disabled: saving || !planName.trim() || plan.length === 0,
                 className:
-                  "w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95",
+                  `btn-save-plan w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+                    saving || !planName.trim() || plan.length === 0
+                      ? "bg-slate-100 text-slate-400 border border-slate-300 dark:bg-neutral-800 dark:text-neutral-500 dark:border-neutral-700 cursor-not-allowed shadow-none"
+                      : "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg hover:shadow-xl active:scale-95 cursor-pointer"
+                  }`,
               },
               /*#__PURE__*/ React.createElement(
                 "span",
@@ -1813,7 +1821,7 @@ export default function PlansBuilder() {
       /*#__PURE__*/ React.createElement(
         "div",
         {
-          className: `border rounded-lg p-3 sm:p-4 ${currentMuscleGroup.color}/20 border-${currentMuscleGroup.color.split("-")[1]}-500/30 transition-all duration-300`,
+          className: `plan-builder-tips-box border rounded-lg p-3 sm:p-4 bg-white border-slate-200 dark:${currentMuscleGroup.color}/20 dark:border-${currentMuscleGroup.color.split("-")[1]}-500/30 transition-all duration-300`,
         },
         /*#__PURE__*/ React.createElement(
           "div",
@@ -2405,13 +2413,13 @@ export default function PlansBuilder() {
                   "h3",
                   {
                     className:
-                      "text-base sm:text-lg md:text-xl font-bold text-white truncate",
+                      "text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate",
                   },
                   /*#__PURE__*/ React.createElement(
                     "span",
                     {
                       className:
-                        "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent",
+                        "plan-builder-plan-heading text-slate-900 dark:bg-gradient-to-r dark:from-orange-400 dark:to-red-500 dark:bg-clip-text dark:text-transparent",
                     },
                     "Your Workout Plan",
                   ),
@@ -2446,7 +2454,7 @@ export default function PlansBuilder() {
                 "span",
                 {
                   className:
-                    "text-[10px] sm:text-xs font-medium text-neutral-300 bg-neutral-800/60 px-2 py-1 rounded-full border border-neutral-700",
+                    "text-[10px] sm:text-xs font-semibold text-slate-700 bg-slate-100 border-slate-200 dark:text-neutral-300 dark:bg-neutral-800/60 dark:border-neutral-700 px-2 py-1 rounded-full border flex items-center gap-1",
                 },
                 /*#__PURE__*/ React.createElement(
                   "span",
@@ -2486,10 +2494,10 @@ export default function PlansBuilder() {
                   "span",
                   {
                     className:
-                      "text-[10px] bg-green-900/30 text-green-300 px-2 py-1 rounded-full border border-green-700/50",
+                      "text-[10px] font-semibold text-emerald-700 bg-emerald-50 border-emerald-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700/50 px-2 py-1 rounded-full border flex items-center gap-1",
                   },
                   /*#__PURE__*/ React.createElement(Cloud, {
-                    className: "w-[1em] h-[1em] inline-block",
+                    className: "w-[1em] h-[1em] inline-block text-emerald-600 dark:text-green-400",
                   }),
                   /*#__PURE__*/ React.createElement(
                     "span",

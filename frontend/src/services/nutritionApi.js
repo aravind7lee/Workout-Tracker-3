@@ -99,7 +99,8 @@ class NutritionAPI {
   // Get user's meals for a specific date
   async getMeals(date = null) {
     try {
-      const params = date ? { date: date.toISOString().split("T")[0] } : {};
+      const dateStr = date ? (typeof date === "string" ? date : date.toISOString().split("T")[0]) : null;
+      const params = dateStr ? { date: dateStr } : {};
       const response = await this.api.get("/nutrition/meals", { params });
 
       return {
@@ -119,7 +120,8 @@ class NutritionAPI {
   // Get nutrition totals for a specific date
   async getNutritionTotals(date = null) {
     try {
-      const params = date ? { date: date.toISOString().split("T")[0] } : {};
+      const dateStr = date ? (typeof date === "string" ? date : date.toISOString().split("T")[0]) : null;
+      const params = dateStr ? { date: dateStr } : {};
       const response = await this.api.get("/nutrition/meals/totals", {
         params,
       });

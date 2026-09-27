@@ -12,11 +12,12 @@ import StreakWidget from "./StreakWidget";
 const menuItems = [
   { to: "/", label: "Home", icon: Home, color: "#FF0000" },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, color: "#FF0000" },
+  { to: "/start-workout", label: "workout-session", icon: Zap, color: "#ff3b3b" },
   { to: "/library", label: "Library", icon: Dumbbell, color: "#8B0000" },
   { to: "/my-plans", label: "My Plans", icon: Calendar, color: "#00ff88" },
   { to: "/plans", label: "Plan Builder", icon: Target, color: "#ff6b6b" },
   { to: "/splits", label: "Splits", icon: BarChart3, color: "#ff9500" },
-  { to: "/nutrition", label: "Nutrition", icon: Apple, color: "#ffa502" },
+  { to: "/nutrition", label: "Nutrition Tracker", icon: Apple, color: "#ffa502" },
   { to: "/analytics", label: "Analytics", icon: TrendingUp, color: "#FF0000" },
   { to: "/streak-history", label: "Streak Logs", icon: Flame, color: "#f97316" },
   { to: "/legends", label: "Champs", icon: Trophy, color: "#eab308" },
@@ -83,7 +84,6 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
   const handleLogout = useCallback(() => {
     logout();
     navigate("/");
-    setShowProfileDropdown(false);
     setIsOpen(false);
   }, [logout, navigate, setIsOpen]);
 
@@ -149,7 +149,7 @@ export default function UltraSmoothSideMenu({ isOpen, setIsOpen }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 240 }}
-            className="fixed top-0 right-0 h-screen w-[280px] sm:w-[320px] max-w-[85vw] z-[70] overflow-y-auto overflow-x-hidden bg-[#0a0a0a] border-l border-neutral-900 shadow-2xl flex flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="app-side-menu fixed top-0 right-0 h-screen w-[280px] sm:w-[320px] max-w-[85vw] z-[70] overflow-y-auto overflow-x-hidden bg-[#0a0a0a] border-l border-neutral-900 shadow-2xl flex flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             style={{
               willChange: "transform",
               backfaceVisibility: "hidden",

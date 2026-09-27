@@ -31,8 +31,8 @@ export default function FitnessIntelligenceWidget() {
 
   if (loading) {
     return (
-      <div className="p-6 bg-neutral-900 border border-neutral-800 rounded-3xl animate-pulse space-y-4">
-        <div className="h-4 w-32 bg-neutral-800 rounded" />
+      <div className="p-6 bg-neutral-900/80 border border-white/[0.08] rounded-3xl animate-pulse space-y-4">
+        <div className="h-4 w-36 bg-neutral-800 rounded" />
         <div className="h-16 bg-neutral-800 rounded-2xl" />
       </div>
     );
@@ -45,25 +45,25 @@ export default function FitnessIntelligenceWidget() {
     <div className="space-y-6">
       {/* 1. What Should I Do Today Banner */}
       {todayFocus && (
-        <div className="p-6 bg-gradient-to-r from-orange-500/20 via-neutral-900 to-neutral-900 border border-orange-500/40 rounded-3xl shadow-xl space-y-4">
+        <div className="p-5 sm:p-6 bg-gradient-to-r from-red-600/20 via-neutral-900 to-neutral-900 border border-red-500/30 rounded-3xl shadow-xl space-y-4 backdrop-blur-xl">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-orange-400 text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-red-400 text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-4 h-4" /> Today's Training Focus
             </div>
             {todayFocus.hasPlan && (
-              <span className="text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2.5 py-0.5 rounded-full font-bold uppercase">
+              <span className="text-[10px] bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full font-bold uppercase">
                 Active Plan
               </span>
             )}
           </div>
 
           <div>
-            <h3 className="text-xl font-black text-white">{todayFocus.recommendation}</h3>
-            <p className="text-xs text-neutral-400 mt-1">{todayFocus.reason}</p>
+            <h3 className="text-xl font-black text-white tracking-wide">{todayFocus.recommendation}</h3>
+            <p className="text-xs sm:text-sm text-neutral-300 mt-1 leading-relaxed">{todayFocus.reason}</p>
           </div>
 
-          <div className="pt-2 flex items-center justify-between">
-            <span className="text-[11px] text-neutral-500">
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="text-[11px] text-neutral-400 font-mono">
               {todayFocus.lastWorkoutDate ? `Last session: ${new Date(todayFocus.lastWorkoutDate).toLocaleDateString()}` : 'No recent session'}
             </span>
 
@@ -75,7 +75,7 @@ export default function FitnessIntelligenceWidget() {
                   navigate('/start-workout');
                 }
               }}
-              className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-orange-500/20 inline-flex items-center gap-1.5 transition-all"
+              className="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-red-600/25 inline-flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 min-h-[44px]"
             >
               Start Session <Play className="w-3.5 h-3.5 fill-current" />
             </button>
@@ -87,21 +87,21 @@ export default function FitnessIntelligenceWidget() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-orange-500" />
-            <h3 className="text-lg font-bold text-white">Fitness Intelligence Insights</h3>
+            <Zap className="w-5 h-5 text-red-500" />
+            <h3 className="text-base sm:text-lg font-black uppercase tracking-wide text-white">Fitness Intelligence Insights</h3>
           </div>
-          <span className="text-xs text-neutral-500 font-mono">
+          <span className="text-xs text-neutral-400 font-mono">
             {recommendations.length} Active Insights
           </span>
         </div>
 
         {recommendations.length === 0 ? (
-          <div className="p-6 bg-neutral-900 border border-neutral-800 rounded-3xl text-center space-y-2">
-            <div className="w-10 h-10 bg-neutral-800 text-orange-500 rounded-2xl flex items-center justify-center mx-auto">
+          <div className="p-6 bg-neutral-900/60 border border-white/[0.06] rounded-3xl text-center space-y-2">
+            <div className="w-10 h-10 bg-neutral-800 text-red-500 rounded-2xl flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-5 h-5" />
             </div>
-            <h4 className="text-sm font-bold text-white">No Progression Alerts</h4>
-            <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider">No Progression Alerts</h4>
+            <p className="text-xs text-neutral-400 max-w-sm mx-auto leading-relaxed">
               Log more completed workouts to generate deterministic progressive overload, plateau detection, and muscle balance insights.
             </p>
           </div>
@@ -116,27 +116,27 @@ export default function FitnessIntelligenceWidget() {
               return (
                 <div
                   key={rec.id}
-                  className={`p-5 rounded-2xl border transition-all ${
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all ${
                     isOverload
-                      ? 'bg-emerald-500/5 border-emerald-500/30'
+                      ? 'bg-emerald-500/5 border-emerald-500/25'
                       : isPlateau
-                      ? 'bg-amber-500/5 border-amber-500/30'
+                      ? 'bg-amber-500/5 border-amber-500/25'
                       : isRecovery
-                      ? 'bg-blue-500/5 border-blue-500/30'
-                      : 'bg-neutral-900 border-neutral-800'
+                      ? 'bg-blue-500/5 border-blue-500/25'
+                      : 'bg-neutral-900/80 border-white/[0.08]'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
                       <div
-                        className={`p-2.5 rounded-xl text-sm ${
+                        className={`p-2.5 rounded-xl text-sm shrink-0 ${
                           isOverload
-                            ? 'bg-emerald-500/10 text-emerald-400'
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                             : isPlateau
-                            ? 'bg-amber-500/10 text-amber-400'
+                            ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                             : isRecovery
-                            ? 'bg-blue-500/10 text-blue-400'
-                            : 'bg-orange-500/10 text-orange-400'
+                            ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                            : 'bg-red-500/10 text-red-400 border border-red-500/20'
                         }`}
                       >
                         {isOverload && <TrendingUp className="w-4 h-4" />}
@@ -145,8 +145,8 @@ export default function FitnessIntelligenceWidget() {
                         {isBalance && <Layers className="w-4 h-4" />}
                       </div>
 
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="text-sm font-bold text-white">{rec.title}</h4>
                           <span
                             className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase ${

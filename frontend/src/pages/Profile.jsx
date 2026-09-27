@@ -8,6 +8,7 @@ import AuthGuard from "../components/AuthGuard";
 import api from "../utils/api";
 import BodyMetricsLogger from "../components/BodyMetricsLogger";
 import AchievementsPreview from "../components/AchievementsPreview";
+import BackToDashboard from "../components/BackToDashboard";
 
 // Import gym-themed background images
 import GymBg1 from "../assets/wp8463825-male-workout-wallpapers.jpg";
@@ -425,16 +426,16 @@ const Profile = () => {
       /*#__PURE__*/ React.createElement(
         "div",
         {
-          className: "absolute inset-0",
+          className: "profile-page-backdrop absolute inset-0",
         },
         /*#__PURE__*/ React.createElement("div", {
           className:
-            "absolute inset-0 bg-gradient-to-br from-black/95 via-neutral-900/90 to-black/95 z-10",
+            "profile-dark-gradient absolute inset-0 bg-gradient-to-br from-black/95 via-neutral-900/90 to-black/95 z-10",
         }),
         /*#__PURE__*/ React.createElement(
           motion.div,
           {
-            className: "absolute inset-0 opacity-20",
+            className: "profile-gym-bg absolute inset-0 opacity-20",
             initial: {
               scale: 1.1,
             },
@@ -455,7 +456,7 @@ const Profile = () => {
         ),
         /*#__PURE__*/ React.createElement("div", {
           className:
-            "absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-cyan-900/10 z-20",
+            "profile-gradient-overlay absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-cyan-900/10 z-20",
         }),
       ),
       /*#__PURE__*/ React.createElement(
@@ -464,6 +465,9 @@ const Profile = () => {
           className:
             "relative z-30 max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8",
         },
+        /*#__PURE__*/ React.createElement(BackToDashboard, {
+          variant: "floating",
+        }),
         /*#__PURE__*/ React.createElement(
           motion.div,
           {
@@ -609,12 +613,12 @@ const Profile = () => {
               "div",
               {
                 className:
-                  "relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50",
+                  "profile-main-card relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
-                  className: "absolute inset-0 opacity-10",
+                  className: "profile-card-ghost-img absolute inset-0 opacity-10",
                 },
                 /*#__PURE__*/ React.createElement("img", {
                   src: ArnoldBg,
@@ -766,12 +770,12 @@ const Profile = () => {
               "div",
               {
                 className:
-                  "relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50",
+                  "profile-main-card relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl border border-neutral-800/50 shadow-2xl shadow-black/50",
               },
               /*#__PURE__*/ React.createElement(
                 "div",
                 {
-                  className: "absolute inset-0 opacity-10",
+                  className: "profile-card-ghost-img absolute inset-0 opacity-10",
                 },
                 /*#__PURE__*/ React.createElement("img", {
                   src: ChrisBg,

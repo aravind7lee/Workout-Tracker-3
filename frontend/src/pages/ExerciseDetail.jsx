@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import ReviewSystem from "../components/ReviewSystem";
+import BackToDashboard from "../components/BackToDashboard";
 
 export default function ExerciseDetail() {
   const { id } = useParams();
@@ -152,13 +153,7 @@ export default function ExerciseDetail() {
     <div className="max-w-4xl mx-auto py-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-        >
-          <ArrowLeftIcon className="h-5 w-5 mr-2" />
-          Back
-        </button>
+        <BackToDashboard variant="inline" />
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setIsFavorite(!isFavorite)}

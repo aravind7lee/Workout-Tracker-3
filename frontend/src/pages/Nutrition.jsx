@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { 
   Utensils, BarChart3, CheckCircle2, Search, XCircle, 
-  Apple, Star, Target, Zap, Flame, ShieldAlert, Sparkles 
+  Apple, Star, Target, Zap, Flame, ShieldAlert, Sparkles,
+  ChevronLeft, ChevronRight, Calendar, Plus
 } from 'lucide-react';
 import { useRealTimeNutrition } from "../hooks/useRealTimeNutrition";
 import { useAuthGuard } from "../hooks/useAuthGuard";
@@ -22,26 +23,38 @@ import RealTimeMealsList from "../components/RealTimeMealsList";
 import AuthGuard from "../components/AuthGuard";
 import realTimeEvents from "../utils/realTimeEvents";
 import TDEECalculatorCard from "../components/TDEECalculatorCard";
+import BackToDashboard from "../components/BackToDashboard";
+import HydrationTracker from "../components/HydrationTracker";
+import FastMacroModal from "../components/FastMacroModal";
 
 export default function Nutrition() {
   const [searchParams] = useSearchParams();
   const navbarSearch = searchParams.get("search") || "";
   const { isAuthenticated, loading } = useAuthGuard();
 
-  // Real-time nutrition data with Nutritionix API
+  // Real-time nutrition hook with athlete features
   const {
+    selectedDate,
+    changeDate,
     meals,
     totals,
     targets,
+    waterIntake,
+    waterGoal,
+    logWater,
+    updateWaterGoal,
     isLoading,
     error,
     lookupFood,
     addMeal,
+    addCustomMeal,
+    duplicateMeal,
     deleteMeal,
     setError,
   } = useRealTimeNutrition();
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showFastMacroModal, setShowFastMacroModal] = useState(false);
   const [nutritionItems, setNutritionItems] = useState([]);
   const [isAddingMeal, setIsAddingMeal] = useState(false);
   const [customCalorieTarget, setCustomCalorieTarget] = useState(null);
@@ -149,6 +162,33 @@ export default function Nutrition() {
     }
   };
 
+  // Date Navigation Helpers
+  const todayStr = new Date().toISOString().split("T")[0];
+  const isToday = selectedDate === todayStr;
+
+  const navigateDay = (offset) => {
+    const cur = new Date(selectedDate);
+    cur.setDate(cur.getDate() + offset);
+    const nextStr = cur.toISOString().split("T")[0];
+    // Prevent navigating to the future
+    if (nextStr <= todayStr) {
+      changeDate(nextStr);
+    }
+  };
+
+  const formatSelectedDate = () => {
+    if (isToday) return "Today";
+    const cur = new Date(selectedDate + "T00:00:00");
+    const yest = new Date();
+    yest.setDate(yest.getDate() - 1);
+    if (cur.toDateString() === yest.toDateString()) return "Yesterday";
+    return cur.toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   if (!isAuthenticated && !loading) {
     return (
       <AuthGuard>
@@ -159,11 +199,12 @@ export default function Nutrition() {
 
   return (
     <NutritionErrorBoundary>
-      <div className="nutrition-page min-h-screen bg-black text-white pb-40 sm:pb-32 relative overflow-hidden">
+      <div className="nutrition-page min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white pb-40 sm:pb-32 relative overflow-hidden transition-colors duration-200">
+        <BackToDashboard variant="floating" />
         
         {/* Ambient Glow Elements */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-950/25 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute top-20 left-10 w-24 h-24 bg-orange-600/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-500/5 dark:from-orange-950/25 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-20 left-10 w-24 h-24 bg-orange-500/10 dark:bg-orange-600/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute top-60 right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 space-y-4 sm:space-y-6 md:space-y-8">
@@ -181,14 +222,15 @@ export default function Nutrition() {
           {/* 3. Main Nutrition Dashboard Wrapper */}
           <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 space-y-4 sm:space-y-6">
             
-            {/* Live API & Goal Status Card */}
+            {/* Live API & Date Navigator Banner */}
             <motion.div
-              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-gradient-to-r dark:from-neutral-900/90 dark:via-neutral-900/70 dark:to-neutral-950 border border-gray-200 dark:border-neutral-800 shadow-sm dark:shadow-xl"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-neutral-900/90 border border-gray-200 dark:border-white/10 shadow-sm dark:shadow-xl backdrop-blur-xl"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex items-center justify-between gap-2.5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Live API Indicator */}
                 <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
                     <Apple className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -203,18 +245,50 @@ export default function Nutrition() {
                         Live API
                       </span>
                       <span>•</span>
-                      <span>Goal: <strong className="text-orange-600 dark:text-orange-400 capitalize">{targets.goalType || "maintain"}</strong></span>
+                      <span>Goal: <strong className="text-orange-500 dark:text-orange-400 capitalize">{targets.goalType || "maintain"}</strong></span>
                       <span>•</span>
                       <span><strong className="text-gray-900 dark:text-white">{meals.length}</strong> logged</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-lg shrink-0">
-                  <span className="text-emerald-400 font-black text-[9px] sm:text-xs uppercase tracking-wider flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-current" />
-                    <span className="hidden xs:inline">Active</span>
-                  </span>
+                {/* Athlete Date Navigator */}
+                <div className="flex items-center justify-between sm:justify-end gap-2 bg-gray-100 dark:bg-neutral-950/70 p-1 rounded-xl border border-gray-200 dark:border-white/10 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => navigateDay(-1)}
+                    className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    title="Previous Day"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex items-center gap-1.5 px-2">
+                    <Calendar className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
+                    <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+                      {formatSelectedDate()}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => navigateDay(1)}
+                    disabled={isToday}
+                    className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-colors"
+                    title="Next Day"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  {!isToday && (
+                    <button
+                      type="button"
+                      onClick={() => changeDate(todayStr)}
+                      className="px-2 py-0.5 rounded-md bg-orange-500 text-white font-black text-[10px] uppercase tracking-wider hover:bg-orange-600 transition-colors ml-1"
+                    >
+                      Today
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -225,6 +299,7 @@ export default function Nutrition() {
                 onLookup={handleLookup}
                 isLookingUp={isLookingUp}
                 error={error}
+                onOpenFastMacro={() => setShowFastMacroModal(true)}
               />
             </div>
 
@@ -247,6 +322,16 @@ export default function Nutrition() {
               />
             </div>
 
+            {/* Interactive Athlete Hydration Tracker */}
+            <div>
+              <HydrationTracker
+                waterIntake={waterIntake}
+                waterGoal={waterGoal}
+                onLogWater={logWater}
+                onUpdateGoal={updateWaterGoal}
+              />
+            </div>
+
             {/* Nutrition AI Insights */}
             <div>
               <NutritionInsights
@@ -254,6 +339,7 @@ export default function Nutrition() {
                 targets={targets}
                 meals={meals}
                 customCalorieTarget={customCalorieTarget}
+                waterIntake={waterIntake}
               />
             </div>
 
@@ -268,7 +354,7 @@ export default function Nutrition() {
             </div>
 
             {/* Analytics Section */}
-            <div>
+            <div data-analytics-section="true">
               <NutritionAnalytics
                 totals={totals}
                 targets={targets}
@@ -277,24 +363,32 @@ export default function Nutrition() {
               />
             </div>
 
-            {/* Real-Time Meals Log List */}
+            {/* Real-Time Meals Log List with Period Grouping & Duplicate */}
             <div className="pb-4">
               <RealTimeMealsList
                 meals={meals}
                 isLoading={isLoading}
                 onDeleteMeal={handleDeleteMeal}
+                onDuplicateMeal={duplicateMeal}
               />
             </div>
 
           </div>
 
-          {/* Modal Preview */}
+          {/* Modal Preview for searched items */}
           <NutritionPreviewModal
             isOpen={showPreviewModal}
             onClose={() => setShowPreviewModal(false)}
             nutritionItems={nutritionItems}
             onConfirm={handleConfirmMeal}
             isAdding={isAddingMeal}
+          />
+
+          {/* Fast Macro Direct Entry Modal */}
+          <FastMacroModal
+            isOpen={showFastMacroModal}
+            onClose={() => setShowFastMacroModal(false)}
+            onAddMeal={addCustomMeal}
           />
 
         </div>

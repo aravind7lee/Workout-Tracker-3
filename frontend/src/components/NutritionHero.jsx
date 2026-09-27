@@ -84,8 +84,8 @@ export default function NutritionHero() {
         style={{
           background:
             theme === "light"
-              ? "rgba(0,0,0,0.45)"
-              : "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.3) 100%)",
+              ? "linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.60) 45%, rgba(0,0,0,0.45) 100%)"
+              : "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.3) 100%)",
         }}
       />
 
@@ -93,64 +93,77 @@ export default function NutritionHero() {
         <div className="text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
           
           <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 leading-tight nutrition-hero-title preserve-color bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 leading-tight nutrition-hero-title preserve-color bg-gradient-to-r from-green-400 via-emerald-400 to-teal-300 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{
               fontWeight: "900",
-              backgroundImage: "linear-gradient(to right, #4ade80, #10b981, #059669)",
+              backgroundImage: "linear-gradient(to right, #4ade80, #10b981, #2dd4bf)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              textShadow: "none",
+              filter: "drop-shadow(0 3px 12px rgba(0, 0, 0, 0.85))",
             }}
           >
             Nutrition Tracker
           </motion.h1>
 
-          <motion.p
-            className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 leading-relaxed font-medium max-w-3xl mx-auto nutrition-hero-subtitle"
+          <motion.div
+            role="doc-subtitle"
+            className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 leading-relaxed font-semibold max-w-3xl mx-auto nutrition-hero-subtitle"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
             style={{
-              color: theme === "light" ? "#374151" : "#CCCCCC",
-              textShadow: "none",
-              fontWeight: theme === "light" ? "700" : "500",
+              color: "#FFFFFF",
+              textShadow: "0 2px 10px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.7)",
+              fontWeight: "600",
             }}
           >
-            Transform your fitness journey with precision nutrition tracking
+            <span
+              className="nutrition-hero-main-text inline-block"
+              style={{
+                color: "#FFFFFF",
+                textShadow: "0 2px 10px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.7)",
+                fontWeight: "600",
+              }}
+            >
+              Transform your fitness journey with precision nutrition tracking
+            </span>
             <br className="hidden sm:block" />
             <span
               className="nutrition-hero-accent"
               style={{
-                color: theme === "light" ? "#4B5563" : "#AAAAAA",
-                fontWeight: theme === "light" ? "600" : "500",
+                color: "#6EE7B7",
+                fontWeight: "700",
+                textShadow: "0 2px 8px rgba(0, 0, 0, 0.9)",
               }}
             >
               Real-time insights
             </span>
-            {" • "}
+            <span style={{ color: "rgba(255, 255, 255, 0.7)", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}> • </span>
             <span
               className="nutrition-hero-accent"
               style={{
-                color: theme === "light" ? "#4B5563" : "#AAAAAA",
-                fontWeight: theme === "light" ? "600" : "500",
+                color: "#6EE7B7",
+                fontWeight: "700",
+                textShadow: "0 2px 8px rgba(0, 0, 0, 0.9)",
               }}
             >
               Smart goals
             </span>
-            {" • "}
+            <span style={{ color: "rgba(255, 255, 255, 0.7)", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}> • </span>
             <span
               className="nutrition-hero-accent"
               style={{
-                color: theme === "light" ? "#4B5563" : "#AAAAAA",
-                fontWeight: theme === "light" ? "600" : "500",
+                color: "#6EE7B7",
+                fontWeight: "700",
+                textShadow: "0 2px 8px rgba(0, 0, 0, 0.9)",
               }}
             >
               Professional results
             </span>
-          </motion.p>
+          </motion.div>
 
           <motion.div
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"

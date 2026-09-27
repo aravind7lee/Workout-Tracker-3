@@ -12,6 +12,7 @@ import { workoutSync } from "../services/workoutSync";
 import { realTimeWorkoutSync } from "../services/realTimeWorkoutSync";
 import { detectInfiniteLoop } from "../utils/emergencyReset";
 import api from "../utils/api";
+import { socketService } from "../services/socketService";
 
 const RealTimeContext = createContext();
 
@@ -24,7 +25,7 @@ export const useRealTime = () => {
 };
 
 export const RealTimeProvider = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, token, isAuthenticated } = useAuth();
   const [stats, setStats] = useState({
     workouts: 0,
     meals: 0,
@@ -108,7 +109,8 @@ export const RealTimeProvider = ({ children }) => {
 
   // Fetch real-time stats from MongoDB with instant sync
   const fetchRealTimeStats = useCallback(async () => {
-    if (!isAuthenticated() || !user) {
+    const token = localStorage.getItem('token');
+    if (!isAuthenticated() || !user || !token || token === 'null' || token === 'undefined') {
       console.log("🔒 User not authenticated, setting zero stats");
       setStats({
         workouts: 0,
@@ -306,10 +308,10 @@ export const RealTimeProvider = ({ children }) => {
 
     // Initialize Server-Sent Events (SSE) for True Instant Cross-Device Sync
     let sse;
-    const token = localStorage.getItem("token");
-    if (user && token && navigator.onLine) {
+    const sseToken = localStorage.getItem("token");
+    if (user && sseToken && navigator.onLine) {
       const baseUrl = api.defaults.baseURL;
-      sse = new EventSource(`${baseUrl}/sse/stream?token=${token}`);
+      sse = new EventSource(`${baseUrl}/sse/stream?token=${sseToken}`);
 
       sse.onmessage = (event) => {
         try {
@@ -333,14 +335,42 @@ export const RealTimeProvider = ({ children }) => {
       };
     }
 
+    // Socket.IO provides authenticated, user-scoped cross-device updates. SSE
+    // remains connected for older clients and the existing workout fallback.
+    const socket = user && token && navigator.onLine ? socketService.connect(token) : null;
+    let socketRefreshTimer;
+    const refreshFromSocket = (eventName) => {
+      window.clearTimeout(socketRefreshTimer);
+      socketRefreshTimer = window.setTimeout(() => {
+        fetchRealTimeStats();
+        window.dispatchEvent(new CustomEvent("realtime:data-changed", { detail: { eventName } }));
+      }, 150);
+    };
+    const socketEvents = [
+      "meal_updated",
+      "nutrition_updated",
+      "metric_updated",
+      "profile_updated",
+      "streak_updated",
+      "achievement_unlocked",
+    ];
+    socketEvents.forEach((eventName) => socket?.on(eventName, () => refreshFromSocket(eventName)));
+    socket?.on("connect", () => setIsOnline(true));
+    socket?.on("disconnect", () => setIsOnline(navigator.onLine));
+
     // Then fetch from MongoDB
     fetchRealTimeStats();
 
     return () => {
       if (unsubscribe) unsubscribe();
       if (sse) sse.close();
+      window.clearTimeout(socketRefreshTimer);
+      socketEvents.forEach((eventName) => socket?.off(eventName));
+      socket?.off("connect");
+      socket?.off("disconnect");
+      socketService.disconnect();
     };
-  }, [user, isAuthenticated, fetchRealTimeStats]); // loadWorkoutStats removed from deps since it's inside fetch
+  }, [user, token, isAuthenticated, fetchRealTimeStats]); // loadWorkoutStats removed from deps since it's inside fetch
 
   // Listen for real-time events
   useEffect(() => {

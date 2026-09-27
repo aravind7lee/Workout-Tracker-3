@@ -79,16 +79,18 @@ export default function CompletedWorkouts() {
     try {
       setLoading(true);
 
-      // Attempt to load from MongoDB Atlas API
-      try {
-        const res = await api.get('/workouts');
-        const dbWorkouts = Array.isArray(res.data) ? res.data : (res.data?.workouts || []);
+      // Only attempt API load if user is authenticated
+      const token = localStorage.getItem('token');
+      if (user || (token && token !== 'null' && token !== 'undefined')) {
+        try {
+          const res = await api.get('/workouts');
+          const dbWorkouts = Array.isArray(res.data) ? res.data : (res.data?.workouts || []);
         
         if (dbWorkouts && dbWorkouts.length > 0) {
           const normalized = dbWorkouts.map(w => {
             const rawEx = Array.isArray(w.exercises) ? w.exercises : [];
             const primaryCat = w.category || w.muscle || getPrimaryMuscleGroup(rawEx) || getMuscleGroup(w.title || w.name);
-            const displayName = getExerciseDisplayName(w.title || w.name || rawEx[0]?.exerciseName || 'Workout Session');
+            const displayName = getExerciseDisplayName(w.title || w.name || rawEx[0]?.exerciseName || 'workout-session');
 
             return {
               ...w,
@@ -113,6 +115,7 @@ export default function CompletedWorkouts() {
       } catch (apiError) {
         console.warn("API fetch failed, trying local sync service fallback:", apiError.message);
       }
+    }
 
       // Fallback to local sync service
       const workouts = realTimeWorkoutSync.getWorkoutHistory(365);

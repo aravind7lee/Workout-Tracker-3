@@ -321,23 +321,33 @@ button.hero-button-secondary:hover,
   -webkit-text-fill-color: transparent !important;
 }
 
-.nutrition-hero-subtitle {
-  color: var(--color-text-secondary) !important;
+.nutrition-hero-subtitle,
+.nutrition-hero-main-text {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.7) !important;
 }
 
 .nutrition-hero-accent {
-  color: var(--color-text-secondary) !important;
+  color: #6EE7B7 !important;
   font-weight: 700 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85) !important;
 }
 
 .light-theme .nutrition-hero-subtitle,
-[data-theme="light"] .nutrition-hero-subtitle {
-  color: #374151 !important; /* Light Mode secondary text */
+[data-theme="light"] .nutrition-hero-subtitle,
+.light-theme .nutrition-hero-main-text,
+[data-theme="light"] .nutrition-hero-main-text,
+.nutrition-hero-container .nutrition-hero-subtitle,
+.nutrition-hero-container .nutrition-hero-main-text {
+  color: #ffffff !important; /* Hero has a photographic dark food image background; text must be white in light mode */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.7) !important;
 }
 
 .light-theme .nutrition-hero-accent,
-[data-theme="light"] .nutrition-hero-accent {
-  color: #4B5563 !important; /* Slightly lighter gray for accent text */
+[data-theme="light"] .nutrition-hero-accent,
+.nutrition-hero-container .nutrition-hero-accent {
+  color: #6EE7B7 !important; /* Vivid emerald mint for crystal-clear readability */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
 }
 
 /* ===== HIGH CONTRAST MODE ===== */

@@ -138,7 +138,7 @@ class ProfileServiceReal {
         id: workout.id,
         type: "workout",
         title: "Completed Workout",
-        description: workout.planName || "Workout Session",
+        description: workout.planName || "workout-session",
         timestamp: workout.completedAt || workout.date,
         icon: "💪",
       });

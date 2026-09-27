@@ -140,6 +140,12 @@ option,
 }
 
 /* Font Utility Classes */
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
 .font-sans {
   font-family: var(--font-body) !important;
 }
@@ -591,4 +597,138 @@ select:focus {
 
 .premium-btn-secondary * {
   color: rgba(255,255,255,0.9) !important;
+}
+
+/* ===== GRIND X FLAGSHIP WORKOUT SYSTEM ===== */
+.touch-target-44 {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}
+
+.workout-card {
+  background: #121215;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.workout-card-active {
+  background: #18181d;
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.workout-number-input {
+  background: #09090b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  text-align: center !important;
+  border-radius: 10px !important;
+  min-height: 40px !important;
+  transition: all 0.2s ease !important;
+}
+
+.workout-number-input:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+  background: #121215 !important;
+}
+
+.workout-adjust-btn {
+  min-width: 40px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #27272a !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  font-size: 16px !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.workout-adjust-btn:hover {
+  background: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+.workout-adjust-btn:active {
+  transform: scale(0.92) !important;
+  background: #ef4444 !important;
+}
+
+/* ==========================================================================
+   WORKOUT-SESSION PAGE LIGHT/DARK CONTRAST & ACCESSIBILITY
+   ========================================================================== */
+.light .workout-session-page,
+[data-theme="light"] .workout-session-page {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.light .workout-session-page .session-header-nav,
+[data-theme="light"] .workout-session-page .session-header-nav {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light .workout-session-page .session-title-text,
+[data-theme="light"] .workout-session-page .session-title-text {
+  color: #0f172a !important;
+}
+
+.light .workout-session-page .header-back-btn,
+[data-theme="light"] .workout-session-page .header-back-btn {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+.light .workout-session-page .session-card,
+[data-theme="light"] .workout-session-page .session-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
+}
+
+.light .workout-session-page input,
+[data-theme="light"] .workout-session-page input {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Saturated button contrast: always pure white text on red/emerald actions */
+.start-session-btn,
+.session-action-btn,
+button.bg-red-600,
+button.bg-emerald-500,
+button.bg-emerald-600,
+.dashboard-page button[class*="from-red-600"],
+.dashboard-page button[class*="from-orange-500"] {
+  color: #ffffff !important;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.8s infinite ease-in-out;
+}
+
+@keyframes skeleton-wave {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

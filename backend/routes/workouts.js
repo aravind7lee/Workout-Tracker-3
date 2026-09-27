@@ -401,6 +401,7 @@ router.post('/', auth, async (req, res) => {
     const achievements = validatedStatus === 'completed'
       ? await checkAchievements(userId).catch((error) => { console.warn('Achievement check skipped after workout save:', error.message); return []; })
       : [];
+    achievements.forEach((achievement) => broadcastToUser(userId, 'achievement_unlocked', { achievement }));
     res.status(201).json({ 
       success: true,
       workout: savedWorkout,

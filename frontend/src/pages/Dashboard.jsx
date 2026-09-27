@@ -20,6 +20,8 @@ import {
   Activity,
   ArrowRight,
   TrendingUp,
+  Play,
+  Trash2,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useRealTime } from "../context/RealTimeContext";
@@ -77,7 +79,35 @@ const Dashboard = () => {
   const [completionData, setCompletionData] = useState(null);
   const [showAllWorkouts, setShowAllWorkouts] = useState(false);
   const [showAllPlans, setShowAllPlans] = useState(false);
+  const [activeSession, setActiveSession] = useState(null);
   const navigate = useNavigate();
+
+  // Real-time active workout-session detection
+  useEffect(() => {
+    const checkActiveSession = () => {
+      try {
+        const raw = localStorage.getItem("active_workout_session");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && ["ACTIVE", "RESTING", "SET_COMPLETED"].includes(parsed.sessionState)) {
+            setActiveSession(parsed);
+            return;
+          }
+        }
+        setActiveSession(null);
+      } catch (e) {
+        setActiveSession(null);
+      }
+    };
+
+    checkActiveSession();
+    window.addEventListener("storage", checkActiveSession);
+    const interval = setInterval(checkActiveSession, 2500);
+    return () => {
+      window.removeEventListener("storage", checkActiveSession);
+      clearInterval(interval);
+    };
+  }, []);
 
   const loadDashboardData = async () => {
     try {
@@ -91,38 +121,60 @@ const Dashboard = () => {
         window.realTimeWorkoutSync?.getWorkoutHistory(30) || [];
       setRecentWorkouts(localWorkouts);
 
-      // Try to load from MongoDB backend as well
-      try {
-        const response = await api.get("/workouts");
-        if (response?.data) {
-          const mongoWorkouts = Array.isArray(response.data.workouts)
-            ? response.data.workouts
-            : Array.isArray(response.data)
-              ? response.data
-              : [];
-          const realCompletedWorkouts = mongoWorkouts.filter(
-            (workout) => workout.completed === true || workout.completedAt,
-          );
+      // Try to load from MongoDB backend with complete normalization
+      const token = localStorage.getItem("token");
+      if (authUser || (token && token !== "null" && token !== "undefined")) {
+        try {
+          const response = await api.get("/workouts");
+          if (response?.data) {
+            const rawWorkouts = Array.isArray(response.data.workouts)
+              ? response.data.workouts
+              : Array.isArray(response.data)
+                ? response.data
+                : [];
+            
+            const realCompletedWorkouts = rawWorkouts
+              .filter((w) => w && (w.completed === true || w.status === "completed" || w.completedAt))
+              .map((w) => {
+                const rawEx = Array.isArray(w.exercises) ? w.exercises : [];
+                const displayName = w.title || w.exercise || w.name || rawEx[0]?.exerciseName || "workout-session";
+                return {
+                  ...w,
+                  id: w._id || w.id,
+                  exercise: displayName,
+                  title: displayName,
+                  name: displayName,
+                  exercises: rawEx,
+                  completedAt: w.completedAt || w.date || w.createdAt,
+                  duration: w.durationMinutes ? w.durationMinutes * 60 : (w.duration || 0),
+                  caloriesBurned: w.calories || w.caloriesBurned || 0,
+                  sets: rawEx.reduce((sum, ex) => sum + (Array.isArray(ex.sets) ? ex.sets.length : 0), 0),
+                  reps: rawEx.reduce((sum, ex) => sum + (Array.isArray(ex.sets) ? ex.sets.reduce((s, set) => s + (Number(set.reps) || 0), 0) : 0), 0),
+                  synced: true,
+                };
+              });
 
-          // Combine and deduplicate
-          const allWorkouts = [...localWorkouts, ...realCompletedWorkouts];
-          const uniqueWorkouts = allWorkouts.filter(
-            (workout, index, self) =>
-              index ===
-              self.findIndex(
-                (w) =>
-                  w.id === workout.id ||
-                  (w.exercise === workout.exercise &&
-                    w.completedAt === workout.completedAt),
-              ),
+            // Combine and deduplicate
+            const allWorkouts = [...localWorkouts, ...realCompletedWorkouts];
+            const uniqueWorkouts = allWorkouts.filter(
+              (workout, index, self) =>
+                index ===
+                self.findIndex(
+                  (w) =>
+                    (w.id && workout.id && w.id === workout.id) ||
+                    (w.exercise === workout.exercise &&
+                      w.completedAt === workout.completedAt),
+                ),
+            );
+            uniqueWorkouts.sort((a, b) => new Date(b.completedAt || 0) - new Date(a.completedAt || 0));
+            setRecentWorkouts(uniqueWorkouts);
+          }
+        } catch (apiError) {
+          console.warn(
+            "⚠️ MongoDB load failed, using local data:",
+            apiError.message,
           );
-          setRecentWorkouts(uniqueWorkouts);
         }
-      } catch (apiError) {
-        console.warn(
-          "⚠️ MongoDB load failed, using local data:",
-          apiError.message,
-        );
       }
     } catch (error) {
       console.error("❌ Dashboard load error:", error.message);
@@ -178,16 +230,26 @@ const Dashboard = () => {
       refreshStats();
     };
 
+    const handleRealTimeSync = () => {
+      loadDashboardData();
+    };
+
     window.addEventListener("workoutCompleted", handleWorkoutCompleted);
     window.addEventListener("planCreated", handlePlanCreated);
     window.addEventListener("mealAdded", handleMealAdded);
     window.addEventListener("mealDeleted", handleMealDeleted);
+    window.addEventListener("realTimeStatsSync", handleRealTimeSync);
+    window.addEventListener("realTimeStatsUpdate", handleRealTimeSync);
+    window.addEventListener("refreshCompletedWorkouts", handleRealTimeSync);
 
     return () => {
       window.removeEventListener("workoutCompleted", handleWorkoutCompleted);
       window.removeEventListener("planCreated", handlePlanCreated);
       window.removeEventListener("mealAdded", handleMealAdded);
       window.removeEventListener("mealDeleted", handleMealDeleted);
+      window.removeEventListener("realTimeStatsSync", handleRealTimeSync);
+      window.removeEventListener("realTimeStatsUpdate", handleRealTimeSync);
+      window.removeEventListener("refreshCompletedWorkouts", handleRealTimeSync);
     };
   }, [isAuthenticated, refreshStats, authLoading]);
 
@@ -225,7 +287,7 @@ const Dashboard = () => {
   return (
     <DashboardErrorBoundary>
       <AuthGuard>
-        <div className="min-h-screen bg-black text-white selection:bg-red-500 selection:text-white pb-36 sm:pb-28 overflow-x-hidden">
+        <div className="dashboard-page min-h-screen bg-black text-white selection:bg-red-500 selection:text-white pb-36 sm:pb-28 overflow-x-hidden">
           {/* Top Hero Section - 100% PRESERVED AND UNTOUCHED */}
           <DashboardHero />
 
@@ -382,25 +444,73 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* Active Session in Progress Quick-Resume Banner */}
+            {activeSession && (
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-red-950/90 via-neutral-900/95 to-neutral-950/95 border-2 border-red-500/50 p-4 sm:p-5 shadow-2xl backdrop-blur-xl animate-pulse-subtle">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white shadow-lg shadow-red-600/40 shrink-0">
+                      <Play className="w-6 h-6 fill-current animate-pulse" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-red-500/20 text-red-400 border border-red-500/30">
+                          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                          SESSION IN PROGRESS
+                        </span>
+                        <span className="text-xs text-neutral-400 font-mono">
+                          {activeSession.sessionState || "ACTIVE"}
+                        </span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-wide mt-1">
+                        {activeSession.title || activeSession.workoutTitle || "Freestyle Session"}
+                      </h3>
+                      <p className="text-xs text-neutral-300">
+                        {activeSession.exercises?.length || 0} exercise{activeSession.exercises?.length !== 1 ? "s" : ""} • Started {activeSession.startedAt ? new Date(activeSession.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "recently"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 sm:self-center">
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("active_workout_session");
+                        setActiveSession(null);
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 text-xs font-bold uppercase tracking-wider transition-all"
+                    >
+                      Discard
+                    </button>
+                    <button
+                      onClick={() => navigate("/workout-session")}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      <Play className="w-4 h-4 fill-current" />
+                      <span>Resume Session</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* 2. Fitness Intelligence Widget */}
             <FitnessIntelligenceWidget />
 
             {/* 3. Beast Mode & Elite Performance Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Beast Mode Card */}
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/95 via-neutral-900/80 to-black border border-orange-500/20 shadow-xl backdrop-blur-xl group">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900/95 via-neutral-900/80 to-black border border-red-500/20 shadow-xl backdrop-blur-xl group">
                 <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[280px]">
                   <div className="p-5 sm:p-6 flex flex-col justify-between order-2 sm:order-1">
                     <div>
                       <div className="flex items-center gap-2.5 mb-2">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg shadow-orange-500/30 text-white">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center shadow-lg shadow-red-600/30 text-white">
                           <Star className="w-5 h-5 fill-current" />
                         </div>
                         <div>
                           <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-wider">
                             BEAST MODE
                           </h3>
-                          <span className="text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-widest">
+                          <span className="text-[10px] sm:text-xs font-bold text-red-400 uppercase tracking-widest">
                             ACTIVATED
                           </span>
                         </div>
@@ -412,7 +522,7 @@ const Dashboard = () => {
                     <div className="flex items-center gap-2 mt-4">
                       <button
                         onClick={() => navigate("/my-plans")}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/20 hover:scale-105 active:scale-95 transition-all"
                       >
                         <Dumbbell className="w-3.5 h-3.5" />
                         <span>Train</span>
@@ -488,9 +598,9 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* 4. Key Stats Summary */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-              {/* Total Workouts */}
+            {/* 4. Key Stats Summary - 4-Metric Pro Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {/* Card 1: Total Workouts */}
               <button
                 onClick={() => navigate("/workouts")}
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
@@ -519,43 +629,70 @@ const Dashboard = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </button>
 
-              {/* Weekly Workouts */}
+              {/* Card 2: Weekly Consistency */}
               <button
                 onClick={() => navigate("/analytics")}
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
               >
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center shadow-md">
-                    <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center shadow-md">
+                    <Activity className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    {isOnline && stats.isRealTime ? "LIVE" : "OFF"}
+                  <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    THIS WEEK
                   </span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-white font-mono leading-none mb-1">
                   {stats?.weeklyWorkouts ?? 0}
+                  <span className="text-base sm:text-lg font-normal text-neutral-500 ml-1">/ {authUser?.fitnessGoals?.targetWorkoutsPerWeek || 4}</span>
                 </div>
                 <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
-                  This Week
+                  Weekly Goal
                 </div>
-                <div className="text-[11px] sm:text-xs text-red-500 font-medium mt-1 truncate">
+                <div className="text-[11px] sm:text-xs text-orange-400 font-medium mt-1 truncate">
                   {(stats?.weeklyWorkouts || 0) > 0
                     ? `${stats?.weeklyWorkouts} logged this week`
                     : "Log a session today"}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </button>
 
-              {/* Workout Plans */}
+              {/* Card 3: Active Streak */}
               <button
-                onClick={() => navigate("/my-plans")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-orange-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
+                onClick={() => navigate("/streak-history")}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-amber-500/40 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
               >
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center shadow-md">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-md">
+                    <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    STREAK
+                  </span>
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-white font-mono leading-none mb-1">
+                  {stats?.currentStreak ?? authUser?.streak?.currentStreak ?? 0}
+                  <span className="text-xs sm:text-sm font-bold text-amber-400 uppercase ml-1.5">DAYS</span>
+                </div>
+                <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                  Active Habit
+                </div>
+                <div className="text-[11px] sm:text-xs text-amber-400 font-medium mt-1 truncate">
+                  Best: {stats?.longestStreak ?? authUser?.streak?.longestStreak ?? 0} days streak
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              </button>
+
+              {/* Card 4: Workout Plans */}
+              <button
+                onClick={() => navigate("/my-plans")}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900/90 to-neutral-900/50 border border-white/[0.08] hover:border-red-500/30 p-3.5 sm:p-5 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-lg backdrop-blur-sm"
+              >
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 flex items-center justify-center shadow-md">
                     <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {plansOnline && isRealTime ? "SYNC" : "OFF"}
                   </span>
                 </div>
@@ -565,12 +702,12 @@ const Dashboard = () => {
                 <div className="text-[10px] sm:text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
                   Workout Plans
                 </div>
-                <div className="text-[11px] sm:text-xs text-orange-400 font-medium mt-1 truncate">
+                <div className="text-[11px] sm:text-xs text-red-400 font-medium mt-1 truncate">
                   {dashboardStats.totalPlans > 0
                     ? `${dashboardStats.totalPlans} plans ready`
                     : "Create your first plan"}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </button>
             </div>
 
@@ -591,13 +728,29 @@ const Dashboard = () => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-4">
+                {/* Start Workout */}
+                <button
+                  onClick={() => navigate("/start-workout")}
+                  className="group p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-600/20 to-neutral-900 border border-red-500/40 hover:border-red-500 text-center transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-md"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center text-white shadow-lg shadow-red-600/40 mb-2 sm:mb-3">
+                    <Play className="w-5 h-5 fill-current" />
+                  </div>
+                  <div className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
+                    Start Workout
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-red-400 font-semibold mt-0.5">
+                    Launch
+                  </div>
+                </button>
+
                 {/* Library */}
                 <button
                   onClick={() => navigate("/library")}
                   className="group p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/80 hover:bg-neutral-800/90 border border-white/[0.06] hover:border-red-500/40 text-center transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-md"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center text-white shadow-lg shadow-red-600/30 mb-2 sm:mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-700 flex items-center justify-center text-white shadow-lg shadow-neutral-800/30 mb-2 sm:mb-3">
                     <Book className="w-5 h-5" />
                   </div>
                   <div className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
@@ -611,9 +764,9 @@ const Dashboard = () => {
                 {/* Plans */}
                 <button
                   onClick={() => navigate("/my-plans")}
-                  className="group p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/80 hover:bg-neutral-800/90 border border-white/[0.06] hover:border-orange-500/40 text-center transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-md"
+                  className="group p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/80 hover:bg-neutral-800/90 border border-white/[0.06] hover:border-red-500/30 text-center transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-md"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/30 mb-2 sm:mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-700 flex items-center justify-center text-white shadow-lg shadow-neutral-800/30 mb-2 sm:mb-3">
                     <ClipboardList className="w-5 h-5" />
                   </div>
                   <div className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
@@ -674,7 +827,7 @@ const Dashboard = () => {
                   {recentPlans && recentPlans.length > 3 && (
                     <button
                       onClick={() => setShowAllPlans(!showAllPlans)}
-                      className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-xl text-xs font-bold transition-all"
+                      className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-500/10 hover:bg-red-500/20 text-red-400 border border-orange-500/30 rounded-xl text-xs font-bold transition-all"
                     >
                       {showAllPlans ? "Show Less" : `More (${recentPlans.length})`}
                     </button>
@@ -785,7 +938,9 @@ const Dashboard = () => {
                               onClick={() => {
                                 const workoutId =
                                   plan.id || plan.tempId || `temp_${Date.now()}`;
-                                navigate(`/workout/${workoutId}`);
+                                navigate(`/workout/${workoutId}`, {
+                                  state: { workoutPlan: plan },
+                                });
                               }}
                               className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:scale-105 active:scale-95 transition-all"
                             >
@@ -844,8 +999,8 @@ const Dashboard = () => {
                     </button>
                   )}
                   <button
-                    onClick={() => navigate("/my-plans")}
-                    className="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all"
+                    onClick={() => navigate("/start-workout")}
+                    className="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-red-600/20 hover:scale-105 active:scale-95 transition-all"
                   >
                     <Star className="w-3.5 h-3.5 fill-current" />
                     <span className="hidden sm:inline">START WORKOUT</span>
@@ -857,7 +1012,7 @@ const Dashboard = () => {
               {!recentWorkouts || recentWorkouts.length === 0 ? (
                 /* Empty State */
                 <div className="text-center py-8 sm:py-12 px-4 rounded-2xl bg-neutral-900/40 border border-white/[0.04]">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-orange-500/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-2xl text-orange-400">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-orange-500/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-2xl text-red-400">
                     <Dumbbell className="w-8 h-8 sm:w-10 sm:h-10" />
                   </div>
                   <h3 className="text-base sm:text-lg md:text-xl font-black text-white uppercase tracking-wider mb-2">
@@ -884,10 +1039,17 @@ const Dashboard = () => {
                         : "OFFLINE DEVICE DATA"}
                     </span>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-sm mx-auto">
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+                    <button
+                      onClick={() => navigate("/start-workout")}
+                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm shadow-xl shadow-red-500/20 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      <Dumbbell className="w-4 h-4" />
+                      <span>START WORKOUT</span>
+                    </button>
                     <button
                       onClick={() => navigate("/my-plans")}
-                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm shadow-xl shadow-red-500/20 hover:scale-105 active:scale-95 transition-all"
+                      className="inline-flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all"
                     >
                       <ClipboardList className="w-4 h-4" />
                       <span>VIEW PLANS</span>
@@ -897,7 +1059,7 @@ const Dashboard = () => {
                       className="inline-flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all"
                     >
                       <Book className="w-4 h-4" />
-                      <span>BROWSE EXERCISES</span>
+                      <span>EXERCISES</span>
                     </button>
                   </div>
                 </div>
@@ -936,7 +1098,7 @@ const Dashboard = () => {
                             {workout.exercise ||
                               workout.planName ||
                               workout.exerciseName ||
-                              "WORKOUT SESSION"}
+                              "workout-session"}
                           </h3>
                           <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-400 mt-0.5">
                             <span className="bg-neutral-800/80 border border-neutral-700/40 px-2 py-0.5 rounded-full text-neutral-300">
@@ -971,12 +1133,9 @@ const Dashboard = () => {
                         </span>
                         <button
                           onClick={() => {
-                            const workoutId = workout.planId || workout.id;
-                            if (workoutId) {
-                              navigate(`/workout/${workoutId}`);
-                            } else {
-                              navigate("/my-plans");
-                            }
+                            navigate("/workout-session", {
+                              state: { repeatWorkout: workout },
+                            });
                           }}
                           className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:scale-105 active:scale-95 transition-all"
                         >

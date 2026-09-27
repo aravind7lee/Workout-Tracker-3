@@ -143,7 +143,7 @@ export default function StreakHistory() {
           const existing = map.get(k);
           map.set(k, {
             type: 'workout',
-            title: w.name || 'Workout Session',
+            title: w.name || 'workout-session',
             date: new Date(w.date),
             duration: w.duration,
             calories: w.calories,
@@ -261,7 +261,7 @@ export default function StreakHistory() {
         list.push({
           id: w.id || `workout-${dObj.getTime()}`,
           type: 'workout',
-          title: w.name || 'Workout Session',
+          title: w.name || 'workout-session',
           date: dObj,
           duration: w.duration ? `${w.duration} min` : 'Completed',
           calories: w.calories ? `${w.calories} kcal` : null,
@@ -391,11 +391,11 @@ export default function StreakHistory() {
             <div className="space-y-2">
               <div className="flex items-center gap-2.5 flex-wrap">
                 <button
-                  onClick={() => navigate(-1)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-700 text-xs font-bold text-neutral-300 hover:text-white transition-all cursor-pointer border border-white/10 shadow-sm"
+                  onClick={() => navigate('/dashboard')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-neutral-200 hover:text-white transition-all cursor-pointer border border-white/10 hover:border-orange-500/40 shadow-sm group"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Back</span>
+                  <ArrowLeft className="w-3.5 h-3.5 text-orange-400 group-hover:-translate-x-0.5 transition-transform" />
+                  <span>Back to Dashboard</span>
                 </button>
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-[10px] sm:text-xs font-black text-orange-400">
